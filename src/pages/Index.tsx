@@ -254,10 +254,12 @@ const Index = () => {
       />
 
       {showKYC && (
-        <KYCForm
-          onSubmit={handleKYCSubmit}
-          onBack={() => setShowKYC(false)}
-        />
+        <div className="fixed inset-0 z-50">
+          <KYCForm
+            onSubmit={handleKYCSubmit}
+            onBack={() => setShowKYC(false)}
+          />
+        </div>
       )}
       {/* Debug info */}
       <div className="fixed top-16 left-4 bg-black/80 text-white p-2 rounded text-xs z-50">
