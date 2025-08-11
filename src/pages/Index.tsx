@@ -6,15 +6,23 @@ import { KYCForm } from "@/components/KYCForm";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 
+// Import profile images
+import sarahProfile from "@/assets/sarah-profile.jpg";
+import davidProfile from "@/assets/david-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
+import amitProfile from "@/assets/amit-profile.jpg";
+import rachelProfile from "@/assets/rachel-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
+
 // Mock data for development
 const mockPosts = [
   {
     id: "1",
-    username: "sarah_politics",
-    handle: "sarahp",
-    profileImage: "https://images.unsplash.com/photo-1494790108755-2616b57da81f?w=150&h=150&fit=crop&crop=face",
+    username: "שרה_פוליטיקה",
+    handle: "sarah_politics",
+    profileImage: sarahProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    caption: "The future of democracy depends on trust networks. Here's why we need to rethink how we choose our representatives... #TrustNetwork #Democracy",
+    caption: "איך אמון דיגיטלי יכול לשנות את הדמוקרטיה שלנו? הנה הדעה שלי על העתיד של הצבעה ברשת 🗳️",
     trustCount: 1247,
     watchCount: 856,
     commentCount: 234,
@@ -24,48 +32,87 @@ const mockPosts = [
   },
   {
     id: "2", 
-    username: "tech_expert_mike",
-    handle: "techexpert",
+    username: "דוד_טק",
+    handle: "david_tech",
+    profileImage: davidProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    caption: "Breaking down blockchain voting systems and why transparency matters. Trust should be earned, not assumed. 🔗 #Blockchain #Trust",
+    caption: "בלוקצ'יין + רשתות אמון = העתיד של הטכנולוגיה החברתית. מסבירים איך זה עובד! 🚀",
     trustCount: 892,
     watchCount: 1203,
     commentCount: 167,
     shareCount: 45,
-    isVerified: false,
+    isVerified: true,
     kycLevel: 2 as const,
   },
   {
     id: "3",
-    username: "climate_activist_anna",
-    handle: "climateanna",
-    profileImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", 
-    caption: "Climate action needs trusted voices, not corporate interests. Here's how we can build a movement based on real expertise... 🌱",
-    trustCount: 2156,
-    watchCount: 1834,
-    commentCount: 445,
-    shareCount: 156,
+    username: "מיה_חינוך",
+    handle: "maya_edu",
+    profileImage: mayaProfile,
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    caption: "איך אנחנו יכולים לשלב אמון דיגיטלי במערכת החינוך? רעיונות חדשניים לכיתת העתיד 📚",
+    trustCount: 456,
+    watchCount: 621,
+    commentCount: 89,
+    shareCount: 23,
+    isVerified: false,
+    kycLevel: 2 as const,
+  },
+  {
+    id: "4",
+    username: "עמית_יזמות",
+    handle: "amit_startup",
+    profileImage: amitProfile,
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    caption: "למה כל סטארט-אפ צריך לחשוב על רשתות אמון מהיום הראשון? הדוגמאות המוצלחות ביותר 💡",
+    trustCount: 234,
+    watchCount: 389,
+    commentCount: 56,
+    shareCount: 12,
+    isVerified: false,
+    kycLevel: 1 as const,
+  },
+  {
+    id: "5",
+    username: "רחל_אקדמיה",
+    handle: "rachel_academic",
+    profileImage: rachelProfile,
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    caption: "המחקר החדש שלנו על השפעת רשתות אמון על קבלת החלטות קהילתיות. תוצאות מפתיעות! 🔬",
+    trustCount: 678,
+    watchCount: 934,
+    commentCount: 123,
+    shareCount: 34,
     isVerified: true,
     kycLevel: 3 as const,
   },
+  {
+    id: "6",
+    username: "נועה_אמנות",
+    handle: "noa_art",
+    profileImage: noaProfile,
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    caption: "איך אמנות דיגיטלית יכולה לבטא אמון? הפרויקט החדש שלי בנושא NFT ואמון קהילתי 🎨",
+    trustCount: 123,
+    watchCount: 267,
+    commentCount: 45,
+    shareCount: 8,
+    isVerified: false,
+    kycLevel: 1 as const,
+  }
 ];
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
-  const [zoozBalance] = useState(125);
+  const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
-  const [isKYCVerified] = useState(false); // Mock KYC status
+  const [zoozBalance] = useState(1250);
   const { toast } = useToast();
 
-  // Set RTL direction for Hebrew
   useEffect(() => {
+    // Set RTL direction for the entire app
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
-    return () => {
-      document.documentElement.setAttribute('dir', 'ltr');
-      document.documentElement.setAttribute('lang', 'en');
-    };
   }, []);
 
   const handleTrust = (postId: string) => {
@@ -122,9 +169,8 @@ const Index = () => {
                 description: "Your trust helps build a better network.",
               });
             }}
-            className="h-screen"
           >
-            <VideoFeed 
+            <VideoFeed
               posts={mockPosts}
               onTrust={handleTrust}
               onWatch={handleWatch}
@@ -173,10 +219,6 @@ const Index = () => {
     }
   };
 
-  if (showKYC) {
-    return <KYCForm onSubmit={handleKYCSubmit} onBack={() => setShowKYC(false)} />;
-  }
-
   return (
     <div className="h-screen bg-background relative overflow-hidden">
       {/* Add Content Button */}
@@ -195,6 +237,13 @@ const Index = () => {
         onTabChange={setActiveTab}
         zoozBalance={zoozBalance}
       />
+
+      {showKYC && (
+        <KYCForm
+          onSubmit={handleKYCSubmit}
+          onBack={() => setShowKYC(false)}
+        />
+      )}
     </div>
   );
 };

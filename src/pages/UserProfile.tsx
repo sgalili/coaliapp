@@ -6,13 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+// Import profile images
+import sarahProfile from "@/assets/sarah-profile.jpg";
+
 // Mock user data - in real app this would come from API
 const mockUserData = {
   "1": {
     id: "1",
     username: "שרה_פוליטיקה",
     handle: "sarahp",
-    profileImage: "https://images.unsplash.com/photo-1494790108755-2616b57da81f?w=150&h=150&fit=crop&crop=face",
+    profileImage: sarahProfile,
     bio: "מומחית למדיניות ציבורית ודמוקרטיה דיגיטלית. פועלת למען שקיפות ואמון ברשתות חברתיות.",
     location: "תל אביב, ישראל",
     joinDate: "מאי 2023",
