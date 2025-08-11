@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Heart, Eye } from "lucide-react";
+import { Handshake, Crown, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SwipeHandlerProps {
@@ -128,8 +128,9 @@ export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }:
           className="absolute inset-0 bg-trust/20 flex items-center justify-center pointer-events-none transition-opacity"
           style={{ opacity }}
         >
-          <div className="bg-trust text-trust-foreground p-4 rounded-full">
-            <Heart className="w-8 h-8 fill-current" />
+          <div className="bg-trust text-trust-foreground p-4 rounded-full relative">
+            <Handshake className="w-8 h-8" />
+            <Crown className="w-4 h-4 text-yellow-400 absolute -top-1 -right-1" />
           </div>
         </div>
       )}
