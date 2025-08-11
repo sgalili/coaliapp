@@ -261,10 +261,6 @@ const Index = () => {
           />
         </div>
       )}
-      {/* Debug info */}
-      <div className="fixed top-16 left-4 bg-black/80 text-white p-2 rounded text-xs z-50">
-        showKYC: {showKYC.toString()}
-      </div>
     </div>
   );
 };
