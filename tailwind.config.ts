@@ -61,6 +61,18 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				trust: {
+					DEFAULT: 'hsl(var(--trust))',
+					foreground: 'hsl(var(--trust-foreground))'
+				},
+				watch: {
+					DEFAULT: 'hsl(var(--watch))',
+					foreground: 'hsl(var(--watch-foreground))'
+				},
+				zooz: {
+					DEFAULT: 'hsl(var(--zooz))',
+					foreground: 'hsl(var(--zooz-foreground))'
 				}
 			},
 			borderRadius: {
