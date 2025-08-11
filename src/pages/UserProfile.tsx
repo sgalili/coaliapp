@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, Settings, UserCheck, MapPin, Calendar, Shield } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, Settings, UserCheck, MapPin, Calendar, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -41,22 +41,30 @@ const mockUserData = {
 };
 
 const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
-  const variants = {
-    1: "bg-amber-500 text-amber-50",
-    2: "bg-blue-500 text-blue-50", 
-    3: "bg-emerald-500 text-emerald-50"
+  const config = {
+    1: { 
+      icon: Shield, 
+      variant: "bg-gray-400 text-gray-50", 
+      label: "אימות רמה 1" 
+    },
+    2: { 
+      icon: ShieldAlert, 
+      variant: "bg-blue-500 text-blue-50", 
+      label: "אימות רמה 2" 
+    },
+    3: { 
+      icon: ShieldCheck, 
+      variant: "bg-green-500 text-green-50", 
+      label: "אימות רמה 3" 
+    }
   };
   
-  const labels = {
-    1: "אימות בסיסי",
-    2: "אימות קהילתי", 
-    3: "אימות מלא"
-  };
+  const { icon: IconComponent, variant, label } = config[level];
   
   return (
-    <Badge className={cn("border-0", variants[level])}>
-      <Shield className="w-3 h-3 ml-1" />
-      {labels[level]}
+    <Badge className={cn("border-0", variant)}>
+      <IconComponent className="w-3 h-3 ml-1" />
+      {label}
     </Badge>
   );
 };

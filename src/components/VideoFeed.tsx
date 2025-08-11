@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Heart, Eye, MessageCircle, Share, User, CheckCircle } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -25,15 +25,17 @@ interface VideoFeedProps {
 }
 
 const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
-  const colors = {
-    1: "bg-yellow-500",
-    2: "bg-blue-500", 
-    3: "bg-green-500"
+  const config = {
+    1: { icon: Shield, color: "text-gray-400", bg: "bg-gray-400/20" },
+    2: { icon: ShieldAlert, color: "text-blue-500", bg: "bg-blue-500/20" },
+    3: { icon: ShieldCheck, color: "text-green-500", bg: "bg-green-500/20" }
   };
   
+  const { icon: IconComponent, color, bg } = config[level];
+  
   return (
-    <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white", colors[level])}>
-      {level}
+    <div className={cn("absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center", bg)}>
+      <IconComponent className={cn("w-4 h-4", color)} />
     </div>
   );
 };
@@ -114,7 +116,6 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
         >
           <div className="flex items-center justify-end gap-1">
             <span className="text-white font-semibold text-sm">{post.username}</span>
-            {post.isVerified && <CheckCircle className="w-4 h-4 text-blue-400" />}
           </div>
           <span className="text-white/70 text-xs block">@{post.handle}</span>
         </div>
