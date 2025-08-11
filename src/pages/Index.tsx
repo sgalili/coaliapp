@@ -144,9 +144,12 @@ const Index = () => {
   };
 
   const handleCreateContent = () => {
+    console.log("+ button clicked!", { isKYCVerified, showKYC });
     if (!isKYCVerified) {
+      console.log("Setting showKYC to true");
       setShowKYC(true);
     } else {
+      console.log("Showing create content toast");
       toast({
         title: "Create Content",
         description: "Opening content creation...",
