@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Heart, Eye, MessageCircle, Share, User, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface VideoPost {
@@ -40,6 +41,7 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
 const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: string) => void; onWatch: (id: string) => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -91,8 +93,22 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       
       {/* Profile section */}
-      <div className="absolute top-4 left-4 flex items-center gap-3">
-        <div className="relative">
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <div 
+          className="cursor-pointer" 
+          onClick={() => navigate(`/user/${post.id}`)}
+        >
+          <div className="flex items-center gap-1">
+            <span className="text-white font-semibold text-sm">{post.username}</span>
+            {post.isVerified && <CheckCircle className="w-4 h-4 text-blue-400" />}
+          </div>
+          <span className="text-white/70 text-xs">@{post.handle}</span>
+        </div>
+        
+        <div 
+          className="relative cursor-pointer" 
+          onClick={() => navigate(`/user/${post.id}`)}
+        >
           {post.profileImage ? (
             <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover" />
           ) : (
@@ -102,18 +118,10 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
           )}
           <KYCBadge level={post.kycLevel} />
         </div>
-        
-        <div>
-          <div className="flex items-center gap-1">
-            <span className="text-white font-semibold text-sm">{post.username}</span>
-            {post.isVerified && <CheckCircle className="w-4 h-4 text-blue-400" />}
-          </div>
-          <span className="text-white/70 text-xs">@{post.handle}</span>
-        </div>
       </div>
 
       {/* Action buttons */}
-      <div className="absolute right-4 bottom-20 flex flex-col gap-6">
+      <div className="absolute left-4 bottom-20 flex flex-col gap-6">
         {/* Trust button */}
         <button
           onClick={() => onTrust(post.id)}
@@ -154,8 +162,8 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       </div>
 
       {/* Caption */}
-      <div className="absolute bottom-4 left-4 right-20">
-        <p className="text-white text-sm leading-relaxed">{post.caption}</p>
+      <div className="absolute bottom-4 right-4 left-20">
+        <p className="text-white text-sm leading-relaxed text-right">{post.caption}</p>
       </div>
     </div>
   );

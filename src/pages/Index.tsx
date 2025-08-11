@@ -135,8 +135,8 @@ const Index = () => {
         return (
           <div className="h-screen bg-background flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Trending Content</h2>
-              <p className="text-muted-foreground">Most trusted content this week</p>
+              <h2 className="text-2xl font-bold mb-2">תוכן פופולרי</h2>
+              <p className="text-muted-foreground">התוכן הכי מהימן השבוע</p>
             </div>
           </div>
         );
@@ -144,8 +144,8 @@ const Index = () => {
         return (
           <div className="h-screen bg-background flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Messages</h2>
-              <p className="text-muted-foreground">Connect with trusted members</p>
+              <h2 className="text-2xl font-bold mb-2">הודעות</h2>
+              <p className="text-muted-foreground">התחבר עם חברים מהימנים</p>
             </div>
           </div>
         );
@@ -153,9 +153,9 @@ const Index = () => {
         return (
           <div className="h-screen bg-background flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">ZOOZ Wallet</h2>
+              <h2 className="text-2xl font-bold mb-4">ארנק ZOOZ</h2>
               <div className="text-4xl font-bold text-zooz mb-2">{zoozBalance}</div>
-              <p className="text-muted-foreground">ZOOZ Tokens</p>
+              <p className="text-muted-foreground">אסימוני ZOOZ</p>
             </div>
           </div>
         );
@@ -163,8 +163,8 @@ const Index = () => {
         return (
           <div className="h-screen bg-background flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Your Profile</h2>
-              <p className="text-muted-foreground">Manage your trust network</p>
+              <h2 className="text-2xl font-bold mb-2">הפרופיל שלך</h2>
+              <p className="text-muted-foreground">נהל את רשת האמון שלך</p>
             </div>
           </div>
         );

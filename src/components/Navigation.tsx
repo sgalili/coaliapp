@@ -8,11 +8,11 @@ interface NavigationProps {
 }
 
 const tabs = [
-  { id: 'home', icon: Home, label: 'Home' },
-  { id: 'trending', icon: TrendingUp, label: 'Trending' },
-  { id: 'messages', icon: MessageCircle, label: 'Messages' },
-  { id: 'wallet', icon: Wallet, label: 'Wallet' },
-  { id: 'profile', icon: User, label: 'Profile' },
+  { id: 'home', icon: Home, label: 'בית' },
+  { id: 'trending', icon: TrendingUp, label: 'פופולרי' },
+  { id: 'messages', icon: MessageCircle, label: 'הודעות' },
+  { id: 'wallet', icon: Wallet, label: 'ארנק' },
+  { id: 'profile', icon: User, label: 'פרופיל' },
 ];
 
 export const Navigation = ({ activeTab, onTabChange, zoozBalance = 0 }: NavigationProps) => {
