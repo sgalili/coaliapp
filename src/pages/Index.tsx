@@ -183,7 +183,7 @@ const Index = () => {
       {activeTab === "home" && (
         <button
           onClick={handleCreateContent}
-          className="absolute top-4 right-4 z-50 w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
+          className="absolute top-4 left-4 z-50 w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
         >
           <Plus className="w-6 h-6 text-primary" />
         </button>

@@ -95,28 +95,28 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       {/* Profile section */}
       <div className="absolute top-4 right-4 flex items-center gap-3">
         <div 
-          className="cursor-pointer" 
-          onClick={() => navigate(`/user/${post.id}`)}
-        >
-          <div className="flex items-center gap-1">
-            <span className="text-white font-semibold text-sm">{post.username}</span>
-            {post.isVerified && <CheckCircle className="w-4 h-4 text-blue-400" />}
-          </div>
-          <span className="text-white/70 text-xs">@{post.handle}</span>
-        </div>
-        
-        <div 
           className="relative cursor-pointer" 
           onClick={() => navigate(`/user/${post.id}`)}
         >
           {post.profileImage ? (
-            <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover" />
+            <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
               <User className="w-6 h-6 text-muted-foreground" />
             </div>
           )}
           <KYCBadge level={post.kycLevel} />
+        </div>
+        
+        <div 
+          className="cursor-pointer text-right" 
+          onClick={() => navigate(`/user/${post.id}`)}
+        >
+          <div className="flex items-center justify-end gap-1">
+            <span className="text-white font-semibold text-sm">{post.username}</span>
+            {post.isVerified && <CheckCircle className="w-4 h-4 text-blue-400" />}
+          </div>
+          <span className="text-white/70 text-xs block">@{post.handle}</span>
         </div>
       </div>
 
