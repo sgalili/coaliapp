@@ -38,10 +38,10 @@ const mockUserData = {
 };
 
 const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
-  const colors = {
-    1: "bg-yellow-500",
-    2: "bg-blue-500", 
-    3: "bg-green-500"
+  const variants = {
+    1: "bg-amber-500 text-amber-50",
+    2: "bg-blue-500 text-blue-50", 
+    3: "bg-emerald-500 text-emerald-50"
   };
   
   const labels = {
@@ -51,7 +51,7 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
   };
   
   return (
-    <Badge className={cn("text-white", colors[level])}>
+    <Badge className={cn("border-0", variants[level])}>
       <Shield className="w-3 h-3 ml-1" />
       {labels[level]}
     </Badge>
