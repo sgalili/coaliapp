@@ -18,7 +18,7 @@ import noaProfile from "@/assets/noa-profile.jpg";
 const mockPosts = [
   {
     id: "1",
-    username: "שרה_פוליטיקה",
+    username: "שרה כהן",
     handle: "sarah_politics",
     profileImage: sarahProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
@@ -29,10 +29,12 @@ const mockPosts = [
     shareCount: 89,
     isVerified: true,
     kycLevel: 3 as const,
+    expertise: "פוליטיקה",
+    category: "politics" as const,
   },
   {
     id: "2", 
-    username: "דוד_טק",
+    username: "דוד לוי",
     handle: "david_tech",
     profileImage: davidProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
@@ -43,10 +45,12 @@ const mockPosts = [
     shareCount: 45,
     isVerified: true,
     kycLevel: 2 as const,
+    expertise: "טכנולוגיה",
+    category: "technology" as const,
   },
   {
     id: "3",
-    username: "מיה_חינוך",
+    username: "מיה רוזן",
     handle: "maya_edu",
     profileImage: mayaProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
@@ -57,10 +61,12 @@ const mockPosts = [
     shareCount: 23,
     isVerified: false,
     kycLevel: 2 as const,
+    expertise: "חינוך",
+    category: "education" as const,
   },
   {
     id: "4",
-    username: "עמית_יזמות",
+    username: "עמית שטיין",
     handle: "amit_startup",
     profileImage: amitProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
@@ -71,10 +77,12 @@ const mockPosts = [
     shareCount: 12,
     isVerified: false,
     kycLevel: 1 as const,
+    expertise: "יזמות",
+    category: "startup" as const,
   },
   {
     id: "5",
-    username: "רחל_אקדמיה",
+    username: "רחל גולד",
     handle: "rachel_academic",
     profileImage: rachelProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
@@ -85,10 +93,12 @@ const mockPosts = [
     shareCount: 34,
     isVerified: true,
     kycLevel: 3 as const,
+    expertise: "אקדמיה",
+    category: "academia" as const,
   },
   {
     id: "6",
-    username: "נועה_אמנות",
+    username: "נועה ברק",
     handle: "noa_art",
     profileImage: noaProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
@@ -99,6 +109,8 @@ const mockPosts = [
     shareCount: 8,
     isVerified: false,
     kycLevel: 1 as const,
+    expertise: "אמנות",
+    category: "art" as const,
   }
 ];
 

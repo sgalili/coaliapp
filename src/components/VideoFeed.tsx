@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Heart, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Handshake, Crown, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,8 @@ interface VideoPost {
   shareCount: number;
   isVerified?: boolean;
   kycLevel: 1 | 2 | 3;
+  expertise: string;
+  category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer';
 }
 
 interface VideoFeedProps {
@@ -23,6 +25,41 @@ interface VideoFeedProps {
   onTrust: (postId: string) => void;
   onWatch: (postId: string) => void;
 }
+
+const TrustIcon = () => {
+  return (
+    <div className="relative">
+      <Handshake className="w-6 h-6 text-trust" />
+      <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
+    </div>
+  );
+};
+
+const ExpertiseBadge = ({ expertise, category }: { expertise: string; category: string }) => {
+  const categoryConfig = {
+    politics: { bg: "bg-red-500/20", text: "text-red-400", border: "border-red-500/30" },
+    technology: { bg: "bg-blue-500/20", text: "text-blue-400", border: "border-blue-500/30" },
+    education: { bg: "bg-green-500/20", text: "text-green-400", border: "border-green-500/30" },
+    academia: { bg: "bg-purple-500/20", text: "text-purple-400", border: "border-purple-500/30" },
+    startup: { bg: "bg-orange-500/20", text: "text-orange-400", border: "border-orange-500/30" },
+    art: { bg: "bg-pink-500/20", text: "text-pink-400", border: "border-pink-500/30" },
+    expert: { bg: "bg-yellow-500/20", text: "text-yellow-400", border: "border-yellow-500/30" },
+    influencer: { bg: "bg-cyan-500/20", text: "text-cyan-400", border: "border-cyan-500/30" }
+  };
+  
+  const config = categoryConfig[category as keyof typeof categoryConfig] || categoryConfig.expert;
+  
+  return (
+    <span className={cn(
+      "px-2 py-0.5 rounded-full text-xs font-medium border backdrop-blur-sm",
+      config.bg,
+      config.text,
+      config.border
+    )}>
+      {expertise}
+    </span>
+  );
+};
 
 const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
   const config = {
@@ -117,7 +154,9 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
           <div className="flex items-center justify-end gap-1">
             <span className="text-white font-semibold text-sm">{post.username}</span>
           </div>
-          <span className="text-white/70 text-xs block">@{post.handle}</span>
+          <div className="mt-1">
+            <ExpertiseBadge expertise={post.expertise} category={post.category} />
+          </div>
         </div>
       </div>
 
@@ -129,7 +168,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
           className="flex flex-col items-center gap-1 group"
         >
           <div className="w-12 h-12 rounded-full bg-trust/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <Heart className="w-6 h-6 text-trust fill-trust" />
+            <TrustIcon />
           </div>
           <span className="text-white text-xs font-medium">{post.trustCount}</span>
         </button>
