@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { VideoFeed } from "@/components/VideoFeed";
 import { Navigation } from "@/components/Navigation";
 import { SwipeHandler } from "@/components/SwipeHandler";
+import { KYCForm } from "@/components/KYCForm";
 import { useToast } from "@/hooks/use-toast";
+import { Plus } from "lucide-react";
 
 // Mock data for development
 const mockPosts = [
@@ -52,7 +54,19 @@ const mockPosts = [
 const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
   const [zoozBalance] = useState(125);
+  const [showKYC, setShowKYC] = useState(false);
+  const [isKYCVerified] = useState(false); // Mock KYC status
   const { toast } = useToast();
+
+  // Set RTL direction for Hebrew
+  useEffect(() => {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'he');
+    return () => {
+      document.documentElement.setAttribute('dir', 'ltr');
+      document.documentElement.setAttribute('lang', 'en');
+    };
+  }, []);
 
   const handleTrust = (postId: string) => {
     const post = mockPosts.find(p => p.id === postId);
@@ -68,6 +82,25 @@ const Index = () => {
       title: "Now Watching 👁️",
       description: `You're now watching @${post?.handle}. You'll see their content more often.`,
     });
+  };
+
+  const handleCreateContent = () => {
+    if (!isKYCVerified) {
+      setShowKYC(true);
+    } else {
+      toast({
+        title: "Create Content",
+        description: "Opening content creation...",
+      });
+    }
+  };
+
+  const handleKYCSubmit = (data: any) => {
+    toast({
+      title: "KYC Submitted",
+      description: "Your verification is being processed...",
+    });
+    setShowKYC(false);
   };
 
   const renderContent = () => {
@@ -140,8 +173,22 @@ const Index = () => {
     }
   };
 
+  if (showKYC) {
+    return <KYCForm onSubmit={handleKYCSubmit} onBack={() => setShowKYC(false)} />;
+  }
+
   return (
     <div className="h-screen bg-background relative overflow-hidden">
+      {/* Add Content Button */}
+      {activeTab === "home" && (
+        <button
+          onClick={handleCreateContent}
+          className="absolute top-4 right-4 z-50 w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
+        >
+          <Plus className="w-6 h-6 text-primary" />
+        </button>
+      )}
+      
       {renderContent()}
       <Navigation 
         activeTab={activeTab} 

@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* RTL Support */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="rtl"] .rtl\:text-right {
+  text-align: right;
+}
+
+html[dir="rtl"] .rtl\:float-right {
+  float: right;
+}
+
+html[dir="rtl"] .rtl\:ml-auto {
+  margin-left: auto;
+}
+
+html[dir="rtl"] .rtl\:mr-auto {
+  margin-right: auto;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
