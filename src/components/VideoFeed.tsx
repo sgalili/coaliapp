@@ -209,7 +209,7 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
   };
 
   const renderZoozReaction = (reaction: LiveZoozReaction) => {
-    const animationType = reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-heart';
+    const animationType = reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-float';
     const basePosition = reaction.x_position && reaction.y_position ? 
       { left: `${reaction.x_position}px`, top: `${reaction.y_position}px` } : 
       { left: '50%', top: '50%' };
@@ -221,9 +221,15 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
         style={basePosition}
       >
         <div className={cn(
-          "transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center",
+          "transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1",
           animationType
         )}>
+          <span className={cn(
+            "font-bold text-lg drop-shadow-lg",
+            reaction.isOwn ? "text-zooz-glow" : "text-white"
+          )}>
+            +{reaction.amount}
+          </span>
           <div className={cn(
             "font-black text-2xl leading-none drop-shadow-lg",
             reaction.isOwn ? "text-zooz-glow" : "text-zooz"
