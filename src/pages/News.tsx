@@ -151,24 +151,14 @@ const News = () => {
     return mockNews.filter(news => news.category === filterMap[activeFilter]);
   };
 
-  const handleCommentClick = (newsId: string) => {
-    // Check if user has enough trust to comment
-    if (userTrustLevel < 10) {
-      toast({
-        title: "נדרשת רמת אמון גבוהה יותר",
-        description: "כדי להגיב בוידאו, נדרשים לפחות 10 נקודות אמון בקטגוריה זו.",
-        variant: "destructive"
-      });
-      return;
-    }
-
+  const handleNewsClick = (newsId: string) => {
     toast({
-      title: "הקלטת תגובה",
-      description: "פותח מצלמה להקלטת תגובה של עד 30 שניות...",
+      title: "פותח כתבה",
+      description: "מעבר לעמוד הכתבה המלא...",
     });
   };
 
-  const handleVideoComment = (comment: any) => {
+  const handleProfileClick = (newsId: string, comment: any) => {
     toast({
       title: "מפעיל תגובת וידאו",
       description: `מפעיל את התגובה של ${comment.username}`,
@@ -191,8 +181,8 @@ const News = () => {
             <NewsItemComponent
               key={newsItem.id}
               item={newsItem}
-              onCommentClick={handleCommentClick}
-              onVideoComment={handleVideoComment}
+              onNewsClick={handleNewsClick}
+              onProfileClick={handleProfileClick}
             />
           ))}
         </div>

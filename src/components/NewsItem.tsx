@@ -29,8 +29,8 @@ interface NewsComment {
 
 interface NewsItemProps {
   item: NewsItem;
-  onCommentClick: (newsId: string) => void;
-  onVideoComment: (comment: NewsComment) => void;
+  onNewsClick: (newsId: string) => void;
+  onProfileClick: (newsId: string, comment: NewsComment) => void;
 }
 
 const formatTimeAgo = (timestamp: string) => {
@@ -113,8 +113,8 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
   );
 };
 
-export const NewsItemComponent = ({ item, onCommentClick, onVideoComment }: NewsItemProps) => {
-  const [showComments, setShowComments] = useState(false);
+export const NewsItemComponent = ({ item, onNewsClick, onProfileClick }: NewsItemProps) => {
+  const [activeComment, setActiveComment] = useState<string | null>(null);
 
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
 
@@ -135,70 +135,82 @@ export const NewsItemComponent = ({ item, onCommentClick, onVideoComment }: News
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div 
+          className="flex gap-3 cursor-pointer" 
+          onClick={() => onNewsClick(item.id)}
+        >
           <img 
             src={item.thumbnail} 
             alt={item.title}
             className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground leading-tight mb-2 line-clamp-2">
+            <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-2">
               {item.title}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-slate-600 line-clamp-2">
               {item.description}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Action Bar */}
-      <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => {
-              setShowComments(!showComments);
-              if (!showComments) onCommentClick(item.id);
-            }}
-            className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>{item.comments.length} תגובות</span>
-          </button>
-          
-          <div className="flex items-center gap-4 text-sm text-slate-500">
-            <div className="flex items-center gap-1">
-              <Eye className="w-4 h-4" />
-              <span>קרא עוד</span>
+      {/* Trusted Users Profiles */}
+      {item.comments.length > 0 && (
+        <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-600">תגובות מומחים:</span>
+            <div className="flex -space-x-2">
+              {item.comments.slice(0, 6).map((comment) => (
+                <button
+                  key={comment.id}
+                  onClick={() => {
+                    if (activeComment === comment.id) {
+                      setActiveComment(null);
+                    } else {
+                      setActiveComment(comment.id);
+                      onProfileClick(item.id, comment);
+                    }
+                  }}
+                  className="relative"
+                >
+                  {comment.userImage ? (
+                    <img 
+                      src={comment.userImage} 
+                      alt={comment.username}
+                      className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                      <User className="w-4 h-4 text-slate-500" />
+                    </div>
+                  )}
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-white"></div>
+                </button>
+              ))}
+              {item.comments.length > 6 && (
+                <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
+                  <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Comments Section */}
-      {showComments && (
+      {/* Active Comment Video */}
+      {activeComment && (
         <div className="px-4 pb-4 border-t border-slate-100">
           <div className="mt-3">
-            {item.comments.length > 0 ? (
-              <div className="space-y-2">
-                {item.comments.slice(0, 3).map((comment) => (
-                  <VideoCommentPreview
-                    key={comment.id}
-                    comment={comment}
-                    onPlay={() => onVideoComment(comment)}
-                  />
-                ))}
-                {item.comments.length > 3 && (
-                  <button className="text-sm text-primary hover:underline mt-2">
-                    הצג עוד {item.comments.length - 3} תגובות
-                  </button>
-                )}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                אין תגובות עדיין. היה הראשון להגיב!
-              </p>
-            )}
+            {(() => {
+              const comment = item.comments.find(c => c.id === activeComment);
+              return comment ? (
+                <VideoCommentPreview
+                  comment={comment}
+                  onPlay={() => onProfileClick(item.id, comment)}
+                />
+              ) : null;
+            })()}
           </div>
         </div>
       )}
