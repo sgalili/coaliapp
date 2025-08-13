@@ -155,7 +155,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
 
           {/* Comment content */}
           <p className="text-sm text-slate-700 leading-relaxed mb-3">
-            "הניתוח שלי על חדשות היום: {comment.category === 'פוליטיקה' ? 'המגמה הכללית מוכיחה שוב שהכלכלה מושפעת מהמדיניות...' : 
+            "Mon analyse sur cette actualité: {comment.category === 'פוליטיקה' ? 'Les implications politiques sont importantes à considérer...' : 
              comment.category === 'טכנולוגיה' ? 'Cette innovation pourrait transformer le secteur...' :
              comment.category === 'כלכלה' ? 'Les données économiques montrent une tendance...' :
              'Voici mon point de vue d\'expert sur le sujet...'}"
