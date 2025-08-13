@@ -132,11 +132,11 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       
-      {/* Profile section - positioned above caption */}
+      {/* Profile section - positioned just above caption */}
       <div 
-        className="absolute right-4 flex items-center gap-3"
+        className="absolute right-4 flex items-center gap-3 mb-2"
         style={{ 
-          bottom: `calc(${isTextExpanded ? '60vh' : '30vh'} + env(safe-area-inset-bottom))`,
+          bottom: isTextExpanded ? 'calc(40vh + 2rem + env(safe-area-inset-bottom))' : 'calc(20vh + 2rem + env(safe-area-inset-bottom))',
           transition: 'bottom 0.3s ease'
         }}
       >
