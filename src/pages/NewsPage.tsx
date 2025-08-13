@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { NewsItemComponent } from "@/components/NewsItem";
 import { NewsFilters } from "@/components/NewsFilters";
+import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +13,7 @@ import mayaProfile from "@/assets/maya-profile.jpg";
 import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
 
-// Mock news data
+// Mock news data with real video URLs
 const mockNews = [
   {
     id: "news-1",
@@ -28,28 +29,32 @@ const mockNews = [
         userId: "1",
         username: "שרה כהן",
         userImage: sarahProfile,
-        videoUrl: "mock-video-1",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         duration: 25,
         likes: 45,
         replies: 8,
         trustLevel: 1247,
         timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         category: "פוליטיקה",
-        kycLevel: 3 as const
+        kycLevel: 3 as const,
+        watchCount: 156,
+        shareCount: 12
       },
       {
         id: "comment-2",
         userId: "2",
         username: "דוד לוי",
         userImage: davidProfile,
-        videoUrl: "mock-video-2",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
         duration: 18,
         likes: 23,
         replies: 3,
         trustLevel: 892,
         timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
         category: "פוליטיקה",
-        kycLevel: 2 as const
+        kycLevel: 2 as const,
+        watchCount: 89,
+        shareCount: 7
       }
     ]
   },
@@ -67,14 +72,16 @@ const mockNews = [
         userId: "3",
         username: "מיה רוזן",
         userImage: mayaProfile,
-        videoUrl: "mock-video-3",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
         duration: 30,
         likes: 67,
         replies: 12,
         trustLevel: 456,
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         category: "טכנולוגיה",
-        kycLevel: 1 as const
+        kycLevel: 1 as const,
+        watchCount: 234,
+        shareCount: 18
       }
     ]
   },
@@ -92,28 +99,32 @@ const mockNews = [
         userId: "4",
         username: "עמית שטיין",
         userImage: amitProfile,
-        videoUrl: "mock-video-4",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
         duration: 22,
         likes: 34,
         replies: 5,
         trustLevel: 234,
         timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
         category: "כלכלה",
-        kycLevel: 2 as const
+        kycLevel: 2 as const,
+        watchCount: 98,
+        shareCount: 5
       },
       {
         id: "comment-5",
         userId: "5",
         username: "רחל גולד",
         userImage: rachelProfile,
-        videoUrl: "mock-video-5",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
         duration: 28,
         likes: 89,
         replies: 15,
         trustLevel: 678,
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
         category: "כלכלה",
-        kycLevel: 3 as const
+        kycLevel: 3 as const,
+        watchCount: 167,
+        shareCount: 23
       }
     ]
   },
@@ -132,6 +143,10 @@ const mockNews = [
 const NewsPage = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [zoozBalance] = useState(1250);
+  const [fullscreenVideo, setFullscreenVideo] = useState<{
+    comments: any[];
+    commentIndex: number;
+  } | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -162,7 +177,22 @@ const NewsPage = () => {
   };
 
   const handleProfileClick = (newsId: string, comment: any) => {
-    navigate(`/news/${newsId}/comment/${comment.id}`);
+    // Find the news item and get all its comments for fullscreen navigation
+    const newsItem = mockNews.find(news => news.id === newsId);
+    if (newsItem && newsItem.comments.length > 0) {
+      const commentIndex = newsItem.comments.findIndex(c => c.id === comment.id);
+      setFullscreenVideo({
+        comments: newsItem.comments,
+        commentIndex: commentIndex >= 0 ? commentIndex : 0
+      });
+    }
+  };
+
+  const handleVideoInteraction = (commentId: string, action: string) => {
+    toast({
+      title: `${action} ajouté!`,
+      description: `Action ${action} pour le commentaire.`,
+    });
   };
 
   return (
@@ -186,6 +216,19 @@ const NewsPage = () => {
       </div>
 
       <Navigation zoozBalance={zoozBalance} />
+
+      {/* Fullscreen Video Player */}
+      {fullscreenVideo && (
+        <FullscreenVideoPlayer
+          comments={fullscreenVideo.comments}
+          initialCommentIndex={fullscreenVideo.commentIndex}
+          onClose={() => setFullscreenVideo(null)}
+          onTrust={(commentId) => handleVideoInteraction(commentId, "Trust")}
+          onWatch={(commentId) => handleVideoInteraction(commentId, "Watch")}
+          onComment={(commentId) => handleVideoInteraction(commentId, "Comment")}
+          onShare={(commentId) => handleVideoInteraction(commentId, "Share")}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -72,9 +72,20 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
 
 const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay: () => void }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handlePlay = () => {
-    setIsPlaying(!isPlaying);
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleFullscreen = () => {
     onPlay();
   };
 
@@ -82,34 +93,38 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
     <div className="bg-white rounded-lg p-4 mt-2 border border-slate-200 shadow-sm">
       {/* Video Player Section */}
       <div className="relative w-full h-48 bg-slate-900 rounded-lg mb-3 overflow-hidden">
-        {!isPlaying ? (
-          // Thumbnail with play button
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+        <video
+          ref={videoRef}
+          src={comment.videoUrl}
+          className="w-full h-full object-cover"
+          onClick={handlePlay}
+          muted
+          playsInline
+          poster={`https://images.unsplash.com/photo-1611605698335-8b1569810432?w=400&h=300&fit=crop`}
+        />
+        
+        {/* Play/Pause overlay */}
+        {!isPlaying && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
             <button 
               onClick={handlePlay}
               className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
             >
               <Play className="w-8 h-8 text-white ml-1" />
             </button>
-            <div className="absolute bottom-3 right-3 bg-black/50 px-2 py-1 rounded text-white text-xs">
-              {comment.duration}s
-            </div>
-          </div>
-        ) : (
-          // Mock video playing state
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-            <div className="text-center text-white">
-              <div className="animate-pulse mb-2">🎥</div>
-              <p className="text-sm">En train de lire la vidéo de {comment.username}</p>
-              <button 
-                onClick={handlePlay}
-                className="mt-2 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
-              >
-                <Pause className="w-6 h-6 text-white" />
-              </button>
-            </div>
           </div>
         )}
+        
+        {/* Duration and fullscreen button */}
+        <div className="absolute bottom-3 left-3 bg-black/50 px-2 py-1 rounded text-white text-xs">
+          {comment.duration}s
+        </div>
+        <button 
+          onClick={handleFullscreen}
+          className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 px-2 py-1 rounded text-white text-xs transition-colors"
+        >
+          ⛶ Plein écran
+        </button>
       </div>
 
       {/* User Info and Stats */}
