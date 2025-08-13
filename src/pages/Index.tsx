@@ -189,7 +189,7 @@ const Index = () => {
     switch (activeTab) {
       case "home":
         return (
-          <div className="h-screen relative overflow-hidden">
+          <div className="h-screen relative">
             <SwipeHandler
               onSwipeLeft={() => {
                 // Handle watch action for current video
@@ -254,7 +254,7 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen bg-background relative overflow-hidden">
+    <div className="h-screen bg-background relative">
       {/* Add Content Button */}
       {activeTab === "home" && (
         <button

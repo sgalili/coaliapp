@@ -16,20 +16,32 @@ export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }:
   const [isDragging, setIsDragging] = useState(false);
   
   const startX = useRef(0);
+  const startY = useRef(0);
   const currentX = useRef(0);
   const threshold = 100;
 
-  const handleStart = (clientX: number) => {
+  const handleStart = (clientX: number, clientY: number) => {
     setIsDragging(true);
     startX.current = clientX;
     currentX.current = clientX;
+    startY.current = clientY;
   };
 
-  const handleMove = (clientX: number) => {
+  const handleMove = (clientX: number, clientY: number) => {
     if (!isDragging) return;
     
     currentX.current = clientX;
     const deltaX = currentX.current - startX.current;
+    const deltaY = Math.abs(clientY - startY.current);
+    
+    // Only consider horizontal swipe if vertical movement is minimal
+    if (deltaY > 30) {
+      setIsDragging(false);
+      setSwipeDirection(null);
+      setSwipeDistance(0);
+      return;
+    }
+    
     setSwipeDistance(Math.abs(deltaX));
     
     if (Math.abs(deltaX) > 20) {
@@ -59,11 +71,11 @@ export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }:
 
   // Mouse events
   const handleMouseDown = (e: React.MouseEvent) => {
-    handleStart(e.clientX);
+    handleStart(e.clientX, e.clientY);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    handleMove(e.clientX);
+    handleMove(e.clientX, e.clientY);
   };
 
   const handleMouseUp = () => {
@@ -72,11 +84,11 @@ export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }:
 
   // Touch events
   const handleTouchStart = (e: React.TouchEvent) => {
-    handleStart(e.touches[0].clientX);
+    handleStart(e.touches[0].clientX, e.touches[0].clientY);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    handleMove(e.touches[0].clientX);
+    handleMove(e.touches[0].clientX, e.touches[0].clientY);
   };
 
   const handleTouchEnd = () => {
@@ -86,7 +98,7 @@ export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }:
   useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent) => {
       if (isDragging) {
-        handleMove(e.clientX);
+        handleMove(e.clientX, e.clientY);
       }
     };
 
