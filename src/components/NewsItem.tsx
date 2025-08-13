@@ -100,7 +100,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
             <div className="text-center text-white">
               <div className="animate-pulse mb-2">🎥</div>
-              <p className="text-sm">מקליט וידאו של {comment.username}</p>
+              <p className="text-sm">En train de lire la vidéo de {comment.username}</p>
               <button 
                 onClick={handlePlay}
                 className="mt-2 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
@@ -149,16 +149,16 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
             </div>
             <div className="flex items-center gap-1">
               <Eye className="w-3 h-3" />
-              <span>נצפה</span>
+              <span>Regardé</span>
             </div>
           </div>
 
           {/* Comment content */}
           <p className="text-sm text-slate-700 leading-relaxed mb-3">
-            "הניתוח שלי על החדשה הזו: {comment.category === 'פוליטיקה' ? 'ההשלכות הפוליטיות חשובות לבחינה...' : 
-             comment.category === 'טכנולוגיה' ? 'החדשנות הזו יכולה לשנות את התחום...' :
-             comment.category === 'כלכלה' ? 'הנתונים הכלכליים מציגים מגמה...' :
-             'הנה נקודת המבט המקצועית שלי על הנושא...'}"
+            "הדעה שלי על החדשות האלה {comment.category === 'פוליטיקה' ? 'Les implications politiques sont importantes à considérer...' : 
+             comment.category === 'טכנולוגיה' ? 'הטכנולוגיה הזאת עלולה לשנות את פני העולם תוך 5 עד 10 שנים...' :
+             comment.category === 'כלכלה' ? 'הנתונים הכלכליים מראים על מגמה חשובה...' :
+             'הדעה שלי בהתאם לניסיון שצברתי בתחום...'}"
           </p>
         </div>
       </div>
@@ -168,16 +168,16 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
         <div className="flex items-center gap-3">
           <button className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
             <ThumbsUp className="w-4 h-4" />
-            <span>אוהב ({comment.likes})</span>
+            <span>J'aime ({comment.likes})</span>
           </button>
           <button className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
             <MessageCircle className="w-4 h-4" />
-            <span>תגובה</span>
+            <span>Répondre</span>
           </button>
         </div>
         <button className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium">
           <span>🤝</span>
-          <span>בטוח בו</span>
+          <span>Faire confiance</span>
         </button>
       </div>
     </div>
