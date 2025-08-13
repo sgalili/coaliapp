@@ -134,7 +134,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       
       {/* Caption */}
       <div 
-        className="absolute right-0 pr-4" 
+        className="absolute left-0 pl-4" 
         style={{ 
           bottom: `calc(5rem + env(safe-area-inset-bottom))`,
           maxHeight: `calc(40vh - env(safe-area-inset-bottom))`,
