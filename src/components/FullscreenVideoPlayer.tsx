@@ -173,7 +173,7 @@ export const FullscreenVideoPlayer = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="absolute bottom-4 right-4 flex flex-col gap-4">
+        <div className="absolute bottom-4 left-4 flex flex-col gap-4">
           {/* Trust Button */}
           <button
             onClick={() => onTrust(currentComment.id)}
