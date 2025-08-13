@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      zooz_reactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string | null
+          x_position: number | null
+          y_position: number | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id?: string | null
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string | null
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

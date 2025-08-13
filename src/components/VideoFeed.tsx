@@ -3,6 +3,7 @@ import { Handshake, Crown, Eye, MessageCircle, Share, User, Shield, ShieldAlert,
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useZoozReactions, LiveZoozReaction } from "@/hooks/useZoozReactions";
 
 interface VideoPost {
   id: string;
@@ -81,10 +82,10 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
   );
 };
 
-const ZoozIcon = () => {
+const ZoozIcon = ({ className = "w-6 h-6 text-zooz" }: { className?: string }) => {
   return (
     <div className="relative flex items-center justify-center">
-      <div className="text-zooz font-black text-lg leading-none">Z</div>
+      <div className={cn("font-black text-lg leading-none", className.includes('text-') ? className.split(' ').filter(c => c.startsWith('text-')).join(' ') : "text-zooz")}>Z</div>
     </div>
   );
 };
@@ -97,11 +98,12 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
   userBalance: number;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
-  const [zoozAnimation, setZoozAnimation] = useState<{ id: number; x: number; y: number } | null>(null);
   const [lastClick, setLastClick] = useState(0);
   const navigate = useNavigate();
+  const { liveReactions, addZoozReaction } = useZoozReactions(post.id);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -154,34 +156,54 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
     }, 300);
   };
 
-  const handleZoozSend = (e?: React.MouseEvent) => {
+  const handleZoozSend = async (e?: React.MouseEvent) => {
     if (userBalance < 1) {
       toast.error("אין לך מספיק ZOOZ בארנק");
       return;
     }
 
-    // Create animation
-    const rect = videoRef.current?.getBoundingClientRect();
+    const rect = containerRef.current?.getBoundingClientRect();
     if (rect && e) {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      const animationId = Date.now();
-      setZoozAnimation({ id: animationId, x, y });
-      
-      setTimeout(() => setZoozAnimation(null), 2000);
+      await addZoozReaction(x, y, 1);
     }
 
     onZooz(post.id);
-    toast.success("נשלח 1 ZOOZ למפיק התוכן! 🚀");
+    toast.success("נשלח 1 ZOOZ למפיק התוכן! 🚀", { position: "bottom-center" });
   };
 
   const handlePostClick = () => {
     navigate(`/post/${post.id}`);
   };
 
+  const renderZoozReaction = (reaction: LiveZoozReaction) => {
+    const animationType = reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-heart';
+    const basePosition = reaction.x_position && reaction.y_position ? 
+      { left: reaction.x_position, top: reaction.y_position } : 
+      { left: '50%', top: '50%' };
+    
+    return (
+      <div
+        key={reaction.animationId}
+        className="absolute pointer-events-none z-20"
+        style={basePosition}
+      >
+        <div className={cn("transform -translate-x-1/2 -translate-y-1/2", animationType)}>
+          <ZoozIcon 
+            className={cn(
+              "w-8 h-8 drop-shadow-lg",
+              reaction.isOwn ? "text-zooz-glow" : "text-zooz"
+            )} 
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="relative h-screen w-full snap-start snap-always">
+    <div ref={containerRef} className="relative h-screen w-full snap-start snap-always">
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
@@ -194,6 +216,9 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+      {/* Live ZOOZ Reactions */}
+      {liveReactions.map(renderZoozReaction)}
       
       {/* Profile section */}
       <div className="absolute top-4 right-4 flex items-center gap-3">
@@ -300,26 +325,6 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
         </div>
       </div>
 
-      {/* ZOOZ Animation */}
-      {zoozAnimation && (
-        <div 
-          className="absolute pointer-events-none z-50"
-          style={{
-            left: zoozAnimation.x,
-            top: zoozAnimation.y,
-            transform: 'translate(-50%, -50%)'
-          }}
-        >
-          <div className="animate-[zooz-float_2s_ease-out_forwards] flex flex-col items-center">
-            <div className="text-zooz font-black text-2xl animate-[scale-in_0.3s_ease-out]">
-              +1 Z
-            </div>
-            <div className="text-zooz text-xs mt-1 animate-[fade-in_0.5s_ease-out]">
-              ZOOZ
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
