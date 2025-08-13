@@ -117,7 +117,6 @@ const mockPosts = [
 ];
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState("home");
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
   const [zoozBalance] = useState(1250);
@@ -185,92 +184,45 @@ const Index = () => {
     }
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "home":
-        return (
-          <div className="h-screen relative">
-            <SwipeHandler
-              onSwipeLeft={() => {
-                // Handle watch action for current video
-                toast({
-                  title: "Watch Added! 👁️",
-                  description: "You're now watching this creator.",
-                });
-              }}
-              onSwipeRight={() => {
-                // Handle trust action for current video  
-                toast({
-                  title: "Trust Given! ❤️",
-                  description: "Your trust helps build a better network.",
-                });
-              }}
-            >
-              <VideoFeed
-                posts={getFilteredPosts()}
-                onTrust={handleTrust}
-                onWatch={handleWatch}
-              />
-            </SwipeHandler>
-            <FeedFilters 
-              activeFilter={feedFilter}
-              onFilterChange={setFeedFilter}
-            />
-          </div>
-        );
-      case "trending":
-        return <News />;
-      case "messages":
-        return (
-          <div className="h-screen bg-background flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">הודעות</h2>
-              <p className="text-muted-foreground">התחבר עם חברים מהימנים</p>
-            </div>
-          </div>
-        );
-      case "wallet":
-        return (
-          <div className="h-screen bg-background flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">ארנק ZOOZ</h2>
-              <div className="text-4xl font-bold text-zooz mb-2">{zoozBalance}</div>
-              <p className="text-muted-foreground">אסימוני ZOOZ</p>
-            </div>
-          </div>
-        );
-      case "profile":
-        return (
-          <div className="h-screen bg-background flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">הפרופיל שלך</h2>
-              <p className="text-muted-foreground">נהל את רשת האמון שלך</p>
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className="h-screen bg-background relative">
       {/* Add Content Button */}
-      {activeTab === "home" && (
-        <button
-          onClick={handleCreateContent}
-          className="absolute top-4 left-4 z-50 w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
-        >
-          <Plus className="w-6 h-6 text-primary" />
-        </button>
-      )}
+      <button
+        onClick={handleCreateContent}
+        className="absolute top-4 left-4 z-50 w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
+      >
+        <Plus className="w-6 h-6 text-primary" />
+      </button>
       
-      {renderContent()}
-      <Navigation 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab}
-        zoozBalance={zoozBalance}
-      />
+      <div className="h-screen relative">
+        <SwipeHandler
+          onSwipeLeft={() => {
+            toast({
+              title: "Watch Added! 👁️",
+              description: "You're now watching this creator.",
+            });
+          }}
+          onSwipeRight={() => {
+            toast({
+              title: "Trust Given! ❤️",
+              description: "Your trust helps build a better network.",
+            });
+          }}
+        >
+          <VideoFeed
+            posts={getFilteredPosts()}
+            onTrust={handleTrust}
+            onWatch={handleWatch}
+          />
+        </SwipeHandler>
+        <FeedFilters 
+          activeFilter={feedFilter}
+          onFilterChange={setFeedFilter}
+        />
+      </div>
+
+      <Navigation zoozBalance={zoozBalance} />
 
       {showKYC && (
         <div className="fixed inset-0 z-50">

@@ -117,6 +117,10 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
     }
   };
 
+  const handlePostClick = () => {
+    navigate(`/post/${post.id}`);
+  };
+
   return (
     <div className="relative h-screen w-full snap-start snap-always">
       <video
@@ -194,7 +198,10 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
         </button>
 
         {/* Share button */}
-        <button className="flex flex-col items-center gap-1 group">
+        <button 
+          onClick={handlePostClick}
+          className="flex flex-col items-center gap-1 group"
+        >
           <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
             <Share className="w-6 h-6 text-white" />
           </div>
