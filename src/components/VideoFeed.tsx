@@ -126,14 +126,36 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
     return () => observer.disconnect();
   }, []);
 
-  const handleVideoClick = (e: React.MouseEvent) => {
+  const handleVideoClick = async (e: React.MouseEvent) => {
     const now = Date.now();
     const timeDiff = now - lastClick;
     
-    if (timeDiff < 300) {
-      // Double click - send ZOOZ
+    if (timeDiff < 300 && timeDiff > 0) {
+      // Double click - send ZOOZ with burst animation
       e.preventDefault();
-      handleZoozSend(e);
+      e.stopPropagation();
+      
+      if (userBalance >= 1) {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (rect) {
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          await addZoozReaction(x, y, 1);
+          onZooz(post.id);
+          
+          // Bottom toast only
+          toast.success("💥 Double ZOOZ envoyé!", { 
+            position: "bottom-center",
+            duration: 1500
+          });
+        }
+      } else {
+        toast.error("Solde ZOOZ insuffisant", { 
+          position: "bottom-center",
+          duration: 2000 
+        });
+      }
       return;
     }
     
@@ -158,7 +180,10 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
 
   const handleZoozSend = async (e?: React.MouseEvent) => {
     if (userBalance < 1) {
-      toast.error("אין לך מספיק ZOOZ בארנק");
+      toast.error("Solde ZOOZ insuffisant", { 
+        position: "bottom-center",
+        duration: 2000 
+      });
       return;
     }
 
@@ -171,7 +196,12 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
     }
 
     onZooz(post.id);
-    toast.success("נשלח 1 ZOOZ למפיק התוכן! 🚀", { position: "bottom-center" });
+    
+    // Bottom toast only - no top popup
+    toast.success("1 ZOOZ envoyé! 🚀", { 
+      position: "bottom-center",
+      duration: 1500
+    });
   };
 
   const handlePostClick = () => {
@@ -181,22 +211,25 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
   const renderZoozReaction = (reaction: LiveZoozReaction) => {
     const animationType = reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-heart';
     const basePosition = reaction.x_position && reaction.y_position ? 
-      { left: reaction.x_position, top: reaction.y_position } : 
+      { left: `${reaction.x_position}px`, top: `${reaction.y_position}px` } : 
       { left: '50%', top: '50%' };
     
     return (
       <div
         key={reaction.animationId}
-        className="absolute pointer-events-none z-20"
+        className="absolute pointer-events-none z-50"
         style={basePosition}
       >
-        <div className={cn("transform -translate-x-1/2 -translate-y-1/2", animationType)}>
-          <ZoozIcon 
-            className={cn(
-              "w-8 h-8 drop-shadow-lg",
-              reaction.isOwn ? "text-zooz-glow" : "text-zooz"
-            )} 
-          />
+        <div className={cn(
+          "transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center",
+          animationType
+        )}>
+          <div className={cn(
+            "font-black text-2xl leading-none drop-shadow-lg",
+            reaction.isOwn ? "text-zooz-glow" : "text-zooz"
+          )}>
+            Z
+          </div>
         </div>
       </div>
     );
