@@ -240,7 +240,6 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick }: NewsIte
                       setActiveComment(null);
                     } else {
                       setActiveComment(comment.id);
-                      onProfileClick(item.id, comment);
                     }
                   }}
                   className="relative"
