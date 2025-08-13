@@ -176,7 +176,7 @@ const News = () => {
   };
 
   return (
-    <div className="h-screen bg-background overflow-hidden">
+    <div className="h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 overflow-hidden">
 
       {/* Filters */}
       <NewsFilters 

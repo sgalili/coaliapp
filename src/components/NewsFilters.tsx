@@ -18,7 +18,7 @@ const filters = [
 
 export const NewsFilters = ({ activeFilter, onFilterChange }: NewsFiltersProps) => {
   return (
-    <div className="sticky top-0 bg-background/80 backdrop-blur-lg border-b border-border z-40">
+    <div className="sticky top-0 bg-white/90 backdrop-blur-lg border-b border-slate-200/50 z-40">
       <div className="px-4 py-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           {filters.map((filter) => (
@@ -27,10 +27,10 @@ export const NewsFilters = ({ activeFilter, onFilterChange }: NewsFiltersProps) 
               onClick={() => onFilterChange(filter.id)}
               className={cn(
                 "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200",
-                "border border-border backdrop-blur-sm flex-shrink-0",
+                "border border-slate-200/50 backdrop-blur-sm flex-shrink-0",
                 activeFilter === filter.id
-                  ? "bg-primary text-primary-foreground border-primary shadow-lg"
-                  : "bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground"
+                  ? "bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/25"
+                  : "bg-white/70 text-slate-600 hover:bg-white hover:text-slate-800 hover:shadow-sm"
               )}
             >
               {filter.label}

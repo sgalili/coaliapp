@@ -119,7 +119,7 @@ export const NewsItemComponent = ({ item, onCommentClick, onVideoComment }: News
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
 
   return (
-    <article className="bg-card rounded-lg border border-border overflow-hidden mb-4">
+    <article className="bg-white rounded-xl border border-slate-200/60 overflow-hidden mb-4 shadow-sm hover:shadow-md transition-shadow">
       {/* News Header */}
       <div className="p-4">
         <div className="flex items-center gap-2 mb-3">
@@ -153,20 +153,20 @@ export const NewsItemComponent = ({ item, onCommentClick, onVideoComment }: News
       </div>
 
       {/* Action Bar */}
-      <div className="px-4 py-3 border-t border-border bg-card/50">
+      <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
         <div className="flex items-center justify-between">
           <button
             onClick={() => {
               setShowComments(!showComments);
               if (!showComments) onCommentClick(item.id);
             }}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
             <span>{item.comments.length} תגובות</span>
           </button>
           
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm text-slate-500">
             <div className="flex items-center gap-1">
               <Eye className="w-4 h-4" />
               <span>קרא עוד</span>
@@ -177,7 +177,7 @@ export const NewsItemComponent = ({ item, onCommentClick, onVideoComment }: News
 
       {/* Comments Section */}
       {showComments && (
-        <div className="px-4 pb-4 border-t border-border">
+        <div className="px-4 pb-4 border-t border-slate-100">
           <div className="mt-3">
             {item.comments.length > 0 ? (
               <div className="space-y-2">
