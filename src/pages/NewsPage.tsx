@@ -166,7 +166,7 @@ const NewsPage = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col">
+    <div className="h-screen bg-white flex flex-col">
       <NewsFilters 
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
