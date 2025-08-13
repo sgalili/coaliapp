@@ -132,38 +132,59 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       
-      {/* Profile section - positioned just above caption */}
+      {/* Caption */}
       <div 
-        className="absolute right-4 flex items-center gap-3 mb-2"
+        className="absolute left-20 right-4" 
         style={{ 
-          bottom: isTextExpanded ? 'calc(40vh + 2rem + env(safe-area-inset-bottom))' : 'calc(20vh + 2rem + env(safe-area-inset-bottom))',
-          transition: 'bottom 0.3s ease'
+          bottom: `calc(5rem + env(safe-area-inset-bottom))`,
+          maxHeight: `calc(40vh - env(safe-area-inset-bottom))`,
+          overflowY: 'auto'
         }}
       >
-        <div 
-          className="cursor-pointer text-right" 
-          onClick={() => navigate(`/user/${post.id}`)}
-        >
-          <div className="flex items-center justify-end gap-1">
-            <span className="text-white font-semibold text-sm">{post.username}</span>
+        {/* Profile section - positioned directly above caption text */}
+        <div className="flex items-center gap-3 justify-end mb-2">
+          <div 
+            className="cursor-pointer text-right" 
+            onClick={() => navigate(`/user/${post.id}`)}
+          >
+            <div className="flex items-center justify-end gap-1">
+              <span className="text-white font-semibold text-sm">{post.username}</span>
+            </div>
+            <div className="mt-1">
+              <ExpertiseBadge expertise={post.expertise} category={post.category} />
+            </div>
           </div>
-          <div className="mt-1">
-            <ExpertiseBadge expertise={post.expertise} category={post.category} />
+          
+          <div 
+            className="relative cursor-pointer" 
+            onClick={() => navigate(`/user/${post.id}`)}
+          >
+            {post.profileImage ? (
+              <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
+                <User className="w-6 h-6 text-muted-foreground" />
+              </div>
+            )}
+            <KYCBadge level={post.kycLevel} />
           </div>
         </div>
         
         <div 
-          className="relative cursor-pointer" 
-          onClick={() => navigate(`/user/${post.id}`)}
+          className="cursor-pointer"
+          onClick={() => setIsTextExpanded(!isTextExpanded)}
         >
-          {post.profileImage ? (
-            <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" />
-          ) : (
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
-              <User className="w-6 h-6 text-muted-foreground" />
-            </div>
+          <p className={cn(
+            "text-white text-sm leading-relaxed text-right",
+            !isTextExpanded && "line-clamp-3"
+          )}>
+            {post.caption}
+          </p>
+          {post.caption.split('\n').length > 3 && !isTextExpanded && (
+            <span className="text-white/70 text-xs text-right block mt-1">
+              more...
+            </span>
           )}
-          <KYCBadge level={post.kycLevel} />
         </div>
       </div>
 
@@ -211,32 +232,6 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
         </button>
       </div>
 
-      {/* Caption */}
-      <div 
-        className="absolute left-20 right-4 p-4" 
-        style={{ 
-          bottom: `calc(5rem + env(safe-area-inset-bottom))`,
-          maxHeight: `calc(40vh - env(safe-area-inset-bottom))`,
-          overflowY: 'auto'
-        }}
-      >
-        <div 
-          className="cursor-pointer"
-          onClick={() => setIsTextExpanded(!isTextExpanded)}
-        >
-          <p className={cn(
-            "text-white text-sm leading-relaxed text-right",
-            !isTextExpanded && "line-clamp-3"
-          )}>
-            {post.caption}
-          </p>
-          {post.caption.split('\n').length > 3 && !isTextExpanded && (
-            <span className="text-white/70 text-xs text-right block mt-1">
-              more...
-            </span>
-          )}
-        </div>
-      </div>
     </div>
   );
 };
