@@ -79,7 +79,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
   };
 
   return (
-    <div className="bg-card/50 backdrop-blur-sm rounded-lg p-3 mt-2 border border-border/30">
+    <div className="bg-white rounded-lg p-4 mt-2 border border-slate-200 shadow-sm">
       {/* Video Player Section */}
       <div className="relative w-full h-48 bg-slate-900 rounded-lg mb-3 overflow-hidden">
         {!isPlaying ? (
@@ -113,7 +113,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
       </div>
 
       {/* User Info and Stats */}
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 mb-3">
         <div className="relative">
           {comment.userImage ? (
             <img 
@@ -122,8 +122,8 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-              <User className="w-5 h-5 text-muted-foreground" />
+            <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
+              <User className="w-5 h-5 text-slate-500" />
             </div>
           )}
           <KYCBadge level={comment.kycLevel} />
@@ -131,14 +131,14 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
         
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-medium text-sm text-foreground">{comment.username}</span>
-            <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs text-muted-foreground">{formatTimeAgo(comment.timestamp)}</span>
-            <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs text-trust font-medium">{comment.trustLevel} Trust</span>
+            <span className="font-medium text-sm text-slate-800">{comment.username}</span>
+            <span className="text-xs text-slate-500">•</span>
+            <span className="text-xs text-slate-500">{formatTimeAgo(comment.timestamp)}</span>
+            <span className="text-xs text-slate-500">•</span>
+            <span className="text-xs text-blue-600 font-medium">{comment.trustLevel} Trust</span>
           </div>
           
-          <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
+          <div className="flex items-center gap-4 text-xs text-slate-600 mb-2">
             <div className="flex items-center gap-1">
               <ThumbsUp className="w-3 h-3" />
               <span>{comment.likes}</span>
@@ -154,13 +154,31 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
           </div>
 
           {/* Comment content */}
-          <p className="text-sm text-foreground leading-relaxed">
+          <p className="text-sm text-slate-700 leading-relaxed mb-3">
             "Mon analyse sur cette actualité: {comment.category === 'פוליטיקה' ? 'Les implications politiques sont importantes à considérer...' : 
              comment.category === 'טכנולוגיה' ? 'Cette innovation pourrait transformer le secteur...' :
              comment.category === 'כלכלה' ? 'Les données économiques montrent une tendance...' :
              'Voici mon point de vue d\'expert sur le sujet...'}"
           </p>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            <ThumbsUp className="w-4 h-4" />
+            <span>J'aime ({comment.likes})</span>
+          </button>
+          <button className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            <MessageCircle className="w-4 h-4" />
+            <span>Répondre</span>
+          </button>
+        </div>
+        <button className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium">
+          <span>🤝</span>
+          <span>Faire confiance</span>
+        </button>
       </div>
     </div>
   );
