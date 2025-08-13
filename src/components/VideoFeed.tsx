@@ -132,8 +132,26 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       
-      {/* Profile section */}
-      <div className="absolute top-4 right-4 flex items-center gap-3">
+      {/* Profile section - positioned above caption */}
+      <div 
+        className="absolute right-4 flex items-center gap-3"
+        style={{ 
+          bottom: `calc(${isTextExpanded ? '60vh' : '30vh'} + env(safe-area-inset-bottom))`,
+          transition: 'bottom 0.3s ease'
+        }}
+      >
+        <div 
+          className="cursor-pointer text-right" 
+          onClick={() => navigate(`/user/${post.id}`)}
+        >
+          <div className="flex items-center justify-end gap-1">
+            <span className="text-white font-semibold text-sm">{post.username}</span>
+          </div>
+          <div className="mt-1">
+            <ExpertiseBadge expertise={post.expertise} category={post.category} />
+          </div>
+        </div>
+        
         <div 
           className="relative cursor-pointer" 
           onClick={() => navigate(`/user/${post.id}`)}
@@ -146,18 +164,6 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
             </div>
           )}
           <KYCBadge level={post.kycLevel} />
-        </div>
-        
-        <div 
-          className="cursor-pointer text-right" 
-          onClick={() => navigate(`/user/${post.id}`)}
-        >
-          <div className="flex items-center justify-end gap-1">
-            <span className="text-white font-semibold text-sm">{post.username}</span>
-          </div>
-          <div className="mt-1">
-            <ExpertiseBadge expertise={post.expertise} category={post.category} />
-          </div>
         </div>
       </div>
 
