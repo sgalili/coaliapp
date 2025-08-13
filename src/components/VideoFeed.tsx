@@ -142,7 +142,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
         }}
       >
         {/* Profile section - positioned directly above caption text */}
-        <div className="flex items-start gap-3 justify-end mb-2">
+        <div className="flex items-start gap-3 justify-start mb-2">
           <div 
             className="cursor-pointer text-right" 
             onClick={() => navigate(`/user/${post.id}`)}
