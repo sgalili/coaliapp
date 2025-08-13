@@ -178,18 +178,18 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick }: NewsIte
                     <img 
                       src={comment.userImage} 
                       alt={comment.username}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                      <User className="w-4 h-4 text-slate-500" />
+                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                      <User className="w-6 h-6 text-slate-500" />
                     </div>
                   )}
-                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-white"></div>
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border border-white"></div>
                 </button>
               ))}
               {item.comments.length > 6 && (
-                <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
                   <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
                 </div>
               )}
