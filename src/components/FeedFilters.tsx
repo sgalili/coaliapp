@@ -63,7 +63,7 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
         size="sm"
         onClick={() => handleFilterClick('trusted')}
         className={`text-sm font-medium text-white hover:bg-white/20 border-none ${
-          activeFilter.type === 'trusted' ? 'bg-white/30 font-bold' : ''
+          activeFilter.type === 'trusted' ? 'font-bold' : ''
         }`}
       >
         מובילים
@@ -76,7 +76,7 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
             variant="ghost"
             size="sm"
             className={`text-sm font-medium flex items-center gap-1 text-white hover:bg-white/20 border-none ${
-              activeFilter.type === 'category' ? 'bg-white/30 font-bold' : ''
+              activeFilter.type === 'category' ? 'font-bold' : ''
             }`}
           >
             {activeFilter.type === 'category' && activeFilter.category 
