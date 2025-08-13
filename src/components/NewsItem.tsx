@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2 } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NewsItem {
@@ -32,6 +32,7 @@ interface NewsItemProps {
   item: NewsItem;
   onNewsClick: (newsId: string) => void;
   onProfileClick: (newsId: string, comment: NewsComment) => void;
+  onExpertReply?: (newsId: string) => void;
 }
 
 const formatTimeAgo = (timestamp: string) => {
@@ -231,7 +232,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
   );
 };
 
-export const NewsItemComponent = ({ item, onNewsClick, onProfileClick }: NewsItemProps) => {
+export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertReply }: NewsItemProps) => {
   const [activeComment, setActiveComment] = useState<string | null>(null);
 
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
@@ -273,47 +274,58 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick }: NewsIte
         </div>
       </div>
 
-      {/* Trusted Users Profiles */}
-      {item.comments.length > 0 && (
-        <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
+      {/* Trusted Users Profiles and Expert Reply */}
+      <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-600">תגובות מומחים:</span>
-            <div className="flex -space-x-2">
-              {item.comments.slice(0, 6).map((comment) => (
-                <button
-                  key={comment.id}
-                  onClick={() => {
-                    if (activeComment === comment.id) {
-                      setActiveComment(null);
-                    } else {
-                      setActiveComment(comment.id);
-                    }
-                  }}
-                  className="relative"
-                >
-                  {comment.userImage ? (
-                    <img 
-                      src={comment.userImage} 
-                      alt={comment.username}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                      <User className="w-6 h-6 text-slate-500" />
-                    </div>
-                  )}
-                  <KYCBadge level={comment.kycLevel} />
-                </button>
-              ))}
-              {item.comments.length > 6 && (
-                <div className="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
-                  <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
-                </div>
-              )}
-            </div>
+            {item.comments.length > 0 && (
+              <div className="flex -space-x-2">
+                {item.comments.slice(0, 6).map((comment) => (
+                  <button
+                    key={comment.id}
+                    onClick={() => {
+                      if (activeComment === comment.id) {
+                        setActiveComment(null);
+                      } else {
+                        setActiveComment(comment.id);
+                      }
+                    }}
+                    className="relative"
+                  >
+                    {comment.userImage ? (
+                      <img 
+                        src={comment.userImage} 
+                        alt={comment.username}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                        <User className="w-6 h-6 text-slate-500" />
+                      </div>
+                    )}
+                    <KYCBadge level={comment.kycLevel} />
+                  </button>
+                ))}
+                {item.comments.length > 6 && (
+                  <div className="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
+                    <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+          
+          {/* Expert Reply Button */}
+          <button
+            onClick={() => onExpertReply?.(item.id)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          >
+            <VideoIcon className="w-4 h-4" />
+            הגב
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Active Comment Video */}
       {activeComment && (

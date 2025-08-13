@@ -3,6 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { NewsItemComponent } from "@/components/NewsItem";
 import { NewsFilters } from "@/components/NewsFilters";
 import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
+import { ExpertVideoCreator } from "@/components/ExpertVideoCreator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -147,6 +148,10 @@ const NewsPage = () => {
     comments: any[];
     commentIndex: number;
   } | null>(null);
+  const [expertVideoCreator, setExpertVideoCreator] = useState<{
+    newsId: string;
+    newsTitle: string;
+  } | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -204,6 +209,40 @@ const NewsPage = () => {
     });
   };
 
+  const handleExpertReply = (newsId: string) => {
+    // Simulate TRUST validation based on news ID
+    const hasEnoughTrust = newsId === "news-1" || newsId === "news-3";
+    
+    if (!hasEnoughTrust) {
+      toast({
+        title: "אין מספיק אמון",
+        description: "דרוש רמת אמון גבוהה יותר כדי להגיב על חדשה זו.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Find the news item to get the title
+    const newsItem = mockNews.find(news => news.id === newsId);
+    if (newsItem) {
+      setExpertVideoCreator({
+        newsId,
+        newsTitle: newsItem.title
+      });
+    }
+  };
+
+  const handleExpertVideoPublish = (videoData: any) => {
+    console.log("Publishing expert video:", videoData);
+    
+    toast({
+      title: "תגובה פורסמה!",
+      description: "תגובת המומחה שלך פורסמה בהצלחה.",
+    });
+    
+    setExpertVideoCreator(null);
+  };
+
   return (
     <div className="h-screen bg-white flex flex-col">
       <NewsFilters 
@@ -219,6 +258,7 @@ const NewsPage = () => {
               item={newsItem}
               onNewsClick={handleNewsClick}
               onProfileClick={handleProfileClick}
+              onExpertReply={handleExpertReply}
             />
           ))}
         </div>
@@ -236,6 +276,16 @@ const NewsPage = () => {
           onWatch={(commentId) => handleVideoInteraction(commentId, "Watch")}
           onComment={(commentId) => handleVideoInteraction(commentId, "Comment")}
           onShare={(commentId) => handleVideoInteraction(commentId, "Share")}
+        />
+      )}
+
+      {/* Expert Video Creator */}
+      {expertVideoCreator && (
+        <ExpertVideoCreator
+          newsId={expertVideoCreator.newsId}
+          newsTitle={expertVideoCreator.newsTitle}
+          onClose={() => setExpertVideoCreator(null)}
+          onPublish={handleExpertVideoPublish}
         />
       )}
     </div>
