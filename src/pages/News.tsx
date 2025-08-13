@@ -177,23 +177,6 @@ const News = () => {
 
   return (
     <div className="h-screen bg-background overflow-hidden">
-      {/* Header */}
-      <div className="bg-card border-b border-border px-4 py-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-foreground">חדשות</h1>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">
-              רמת אמון: {userTrustLevel}
-            </span>
-            <button 
-              onClick={() => handleCommentClick("new")}
-              className="w-8 h-8 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
-            >
-              <Video className="w-4 h-4 text-primary" />
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Filters */}
       <NewsFilters 
