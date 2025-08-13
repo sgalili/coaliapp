@@ -51,7 +51,7 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
         size="sm"
         onClick={() => handleFilterClick('all')}
         className={`text-sm font-medium text-white hover:bg-white/20 border-none ${
-          activeFilter.type === 'all' ? 'bg-white/30 font-bold' : ''
+          activeFilter.type === 'all' ? 'font-bold' : ''
         }`}
       >
         עכשיו
