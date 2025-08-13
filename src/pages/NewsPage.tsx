@@ -203,7 +203,7 @@ const NewsPage = () => {
       />
 
       <div className="flex-1 overflow-y-auto pb-20">
-        <div className="max-w-md ml-auto p-4">
+        <div className="p-4">
           {getFilteredNews().map((newsItem) => (
             <NewsItemComponent
               key={newsItem.id}
