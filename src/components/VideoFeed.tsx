@@ -142,21 +142,21 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
         }}
       >
         {/* Profile section - positioned directly above caption text */}
-        <div className="flex items-center gap-3 justify-end mb-2">
+        <div className="flex items-start gap-3 justify-end mb-2">
           <div 
             className="cursor-pointer text-right" 
             onClick={() => navigate(`/user/${post.id}`)}
           >
-            <div className="flex items-center justify-end gap-1">
+            <div className="flex items-center justify-end">
               <span className="text-white font-semibold text-sm">{post.username}</span>
             </div>
-            <div className="mt-1">
+            <div className="mt-1 flex justify-end">
               <ExpertiseBadge expertise={post.expertise} category={post.category} />
             </div>
           </div>
           
           <div 
-            className="relative cursor-pointer" 
+            className="relative cursor-pointer flex-shrink-0" 
             onClick={() => navigate(`/user/${post.id}`)}
           >
             {post.profileImage ? (
