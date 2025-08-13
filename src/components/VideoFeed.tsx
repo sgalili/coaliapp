@@ -80,6 +80,7 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
 const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: string) => void; onWatch: (id: string) => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isTextExpanded, setIsTextExpanded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -202,8 +203,23 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       </div>
 
       {/* Caption */}
-      <div className="absolute bottom-4 right-4 left-20">
-        <p className="text-white text-sm leading-relaxed text-right">{post.caption}</p>
+      <div className="absolute bottom-20 right-4 left-20">
+        <div 
+          className="cursor-pointer"
+          onClick={() => setIsTextExpanded(!isTextExpanded)}
+        >
+          <p className={cn(
+            "text-white text-sm leading-relaxed text-right",
+            !isTextExpanded && "line-clamp-3"
+          )}>
+            {post.caption}
+          </p>
+          {post.caption.split('\n').length > 3 && !isTextExpanded && (
+            <span className="text-white/70 text-xs text-right block mt-1">
+              more...
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
