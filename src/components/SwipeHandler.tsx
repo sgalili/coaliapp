@@ -124,16 +124,12 @@ export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }:
   return (
     <div
       ref={containerRef}
-      className={cn("relative", className)}
+      className={cn("relative select-none touch-pan-y", className)}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={{ 
-        touchAction: 'pan-y',
-        userSelect: 'none',
-        WebkitUserSelect: 'none'
-      }}
+      style={{ touchAction: 'pan-y' }}
     >
       {children}
       
