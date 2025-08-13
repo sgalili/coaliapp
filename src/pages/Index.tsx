@@ -6,6 +6,7 @@ import { KYCForm } from "@/components/KYCForm";
 import { FeedFilters, FilterState } from "@/components/FeedFilters";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
+import News from "./News";
 
 // Import profile images
 import sarahProfile from "@/assets/sarah-profile.jpg";
@@ -218,14 +219,7 @@ const Index = () => {
           </div>
         );
       case "trending":
-        return (
-          <div className="h-screen bg-background flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">תוכן פופולרי</h2>
-              <p className="text-muted-foreground">התוכן הכי מהימן השבוע</p>
-            </div>
-          </div>
-        );
+        return <News />;
       case "messages":
         return (
           <div className="h-screen bg-background flex items-center justify-center">
