@@ -3,6 +3,7 @@ import { VideoFeed } from "@/components/VideoFeed";
 import { Navigation } from "@/components/Navigation";
 import { SwipeHandler } from "@/components/SwipeHandler";
 import { KYCForm } from "@/components/KYCForm";
+import { FeedFilters, FilterState } from "@/components/FeedFilters";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 
@@ -119,6 +120,7 @@ const Index = () => {
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
   const [zoozBalance] = useState(1250);
+  const [feedFilter, setFeedFilter] = useState<FilterState>({ type: 'all' });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -165,32 +167,57 @@ const Index = () => {
     setShowKYC(false);
   };
 
+  const getFilteredPosts = () => {
+    switch (feedFilter.type) {
+      case 'trusted':
+        // Sort by trust count descending to show top trusted users
+        return [...mockPosts].sort((a, b) => b.trustCount - a.trustCount);
+      case 'category':
+        if (feedFilter.category) {
+          return mockPosts.filter(post => post.category === feedFilter.category);
+        }
+        return mockPosts;
+      case 'all':
+      default:
+        // Show all posts, newest first (assuming ID order represents recency)
+        return mockPosts;
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "home":
         return (
-          <SwipeHandler
-            onSwipeLeft={() => {
-              // Handle watch action for current video
-              toast({
-                title: "Watch Added! 👁️",
-                description: "You're now watching this creator.",
-              });
-            }}
-            onSwipeRight={() => {
-              // Handle trust action for current video  
-              toast({
-                title: "Trust Given! ❤️",
-                description: "Your trust helps build a better network.",
-              });
-            }}
-          >
-            <VideoFeed
-              posts={mockPosts}
-              onTrust={handleTrust}
-              onWatch={handleWatch}
+          <div className="h-screen flex flex-col">
+            <FeedFilters 
+              activeFilter={feedFilter}
+              onFilterChange={setFeedFilter}
             />
-          </SwipeHandler>
+            <div className="flex-1 overflow-hidden">
+              <SwipeHandler
+                onSwipeLeft={() => {
+                  // Handle watch action for current video
+                  toast({
+                    title: "Watch Added! 👁️",
+                    description: "You're now watching this creator.",
+                  });
+                }}
+                onSwipeRight={() => {
+                  // Handle trust action for current video  
+                  toast({
+                    title: "Trust Given! ❤️",
+                    description: "Your trust helps build a better network.",
+                  });
+                }}
+              >
+                <VideoFeed
+                  posts={getFilteredPosts()}
+                  onTrust={handleTrust}
+                  onWatch={handleWatch}
+                />
+              </SwipeHandler>
+            </div>
+          </div>
         );
       case "trending":
         return (
