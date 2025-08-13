@@ -203,7 +203,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       </div>
 
       {/* Caption */}
-      <div className="absolute right-4 left-20" style={{ bottom: `calc(5rem + env(safe-area-inset-bottom))` }}>
+      <div className="absolute right-4 left-20" style={{ bottom: `calc(6rem + env(safe-area-inset-bottom))` }}>
         <div 
           className="cursor-pointer"
           onClick={() => setIsTextExpanded(!isTextExpanded)}
