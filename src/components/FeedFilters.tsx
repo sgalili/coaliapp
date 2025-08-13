@@ -44,7 +44,7 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
   };
 
   return (
-    <div className="absolute top-14 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-2 px-3 py-2 backdrop-blur-sm rounded-full">
+    <div className="absolute top-14 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-2 px-3 py-2 rounded-full">
       {/* Default Filter - עכשיו */}
       <Button
         variant="ghost"
