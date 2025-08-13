@@ -118,7 +118,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
   };
 
   return (
-    <div className="relative h-screen w-full snap-start snap-always">
+    <div className="relative snap-start snap-always" style={{ height: `calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))` }}>
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
@@ -203,7 +203,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       </div>
 
       {/* Caption */}
-      <div className="absolute right-4 left-20" style={{ bottom: `calc(6rem + env(safe-area-inset-bottom))` }}>
+      <div className="absolute right-4 left-20 bottom-20">
         <div 
           className="cursor-pointer"
           onClick={() => setIsTextExpanded(!isTextExpanded)}
