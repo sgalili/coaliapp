@@ -189,9 +189,18 @@ const NewsPage = () => {
   };
 
   const handleVideoInteraction = (commentId: string, action: string) => {
+    const actionTexts: { [key: string]: { title: string; description: string } } = {
+      Trust: { title: "אמון נוסף!", description: "הוספת אמון לתגובה זו." },
+      Watch: { title: "נצפה!", description: "התגובה נוספה לרשימת הצפייה שלך." },
+      Comment: { title: "תגובה!", description: "פתח חלון תגובה חדשה." },
+      Share: { title: "שותף!", description: "התגובה שותפה בהצלחה." }
+    };
+    
+    const actionText = actionTexts[action] || { title: action, description: `פעולה ${action} בוצעה.` };
+    
     toast({
-      title: `${action} ajouté!`,
-      description: `Action ${action} pour le commentaire.`,
+      title: actionText.title,
+      description: actionText.description,
     });
   };
 
