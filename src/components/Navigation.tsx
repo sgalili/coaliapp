@@ -9,7 +9,7 @@ interface NavigationProps {
 
 const tabs = [
   { id: 'home', icon: Home, label: 'בית' },
-  { id: 'trending', icon: TrendingUp, label: 'פופולרי' },
+  { id: 'trending', icon: TrendingUp, label: 'חדשות' },
   { id: 'messages', icon: MessageCircle, label: 'הודעות' },
   { id: 'wallet', icon: Wallet, label: 'ארנק' },
   { id: 'profile', icon: User, label: 'פרופיל' },
