@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Handshake, Crown, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface VideoPost {
   id: string;
@@ -14,6 +15,7 @@ interface VideoPost {
   watchCount: number;
   commentCount: number;
   shareCount: number;
+  zoozCount: number;
   isVerified?: boolean;
   kycLevel: 1 | 2 | 3;
   expertise: string;
@@ -24,6 +26,8 @@ interface VideoFeedProps {
   posts: VideoPost[];
   onTrust: (postId: string) => void;
   onWatch: (postId: string) => void;
+  onZooz: (postId: string) => void;
+  userBalance: number;
 }
 
 const TrustIcon = () => {
@@ -77,10 +81,26 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
   );
 };
 
-const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: string) => void; onWatch: (id: string) => void }) => {
+const ZoozIcon = () => {
+  return (
+    <div className="relative flex items-center justify-center">
+      <div className="text-zooz font-black text-lg leading-none">Z</div>
+    </div>
+  );
+};
+
+const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: { 
+  post: VideoPost; 
+  onTrust: (id: string) => void; 
+  onWatch: (id: string) => void; 
+  onZooz: (id: string) => void;
+  userBalance: number;
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
+  const [zoozAnimation, setZoozAnimation] = useState<{ id: number; x: number; y: number } | null>(null);
+  const [lastClick, setLastClick] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -104,17 +124,56 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
     return () => observer.disconnect();
   }, []);
 
-  const handleVideoClick = () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isPlaying) {
-      video.pause();
-      setIsPlaying(false);
-    } else {
-      video.play();
-      setIsPlaying(true);
+  const handleVideoClick = (e: React.MouseEvent) => {
+    const now = Date.now();
+    const timeDiff = now - lastClick;
+    
+    if (timeDiff < 300) {
+      // Double click - send ZOOZ
+      e.preventDefault();
+      handleZoozSend(e);
+      return;
     }
+    
+    setLastClick(now);
+    
+    // Single click - toggle play/pause (with delay to detect double click)
+    setTimeout(() => {
+      if (Date.now() - lastClick >= 300) {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (isPlaying) {
+          video.pause();
+          setIsPlaying(false);
+        } else {
+          video.play();
+          setIsPlaying(true);
+        }
+      }
+    }, 300);
+  };
+
+  const handleZoozSend = (e?: React.MouseEvent) => {
+    if (userBalance < 1) {
+      toast.error("אין לך מספיק ZOOZ בארנק");
+      return;
+    }
+
+    // Create animation
+    const rect = videoRef.current?.getBoundingClientRect();
+    if (rect && e) {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const animationId = Date.now();
+      setZoozAnimation({ id: animationId, x, y });
+      
+      setTimeout(() => setZoozAnimation(null), 2000);
+    }
+
+    onZooz(post.id);
+    toast.success("נשלח 1 ZOOZ למפיק התוכן! 🚀");
   };
 
   const handlePostClick = () => {
@@ -167,6 +226,18 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
 
       {/* Action buttons */}
       <div className="absolute left-4 bottom-20 flex flex-col gap-6">
+        {/* ZOOZ button */}
+        <button
+          onClick={handleZoozSend}
+          className="flex flex-col items-center gap-1 group"
+        >
+          <div className="w-12 h-12 rounded-full bg-zooz/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden">
+            <ZoozIcon />
+            <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
+          </div>
+          <span className="text-white text-xs font-medium">{post.zoozCount}</span>
+        </button>
+
         {/* Trust button */}
         <button
           onClick={() => onTrust(post.id)}
@@ -228,11 +299,32 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
           )}
         </div>
       </div>
+
+      {/* ZOOZ Animation */}
+      {zoozAnimation && (
+        <div 
+          className="absolute pointer-events-none z-50"
+          style={{
+            left: zoozAnimation.x,
+            top: zoozAnimation.y,
+            transform: 'translate(-50%, -50%)'
+          }}
+        >
+          <div className="animate-[zooz-float_2s_ease-out_forwards] flex flex-col items-center">
+            <div className="text-zooz font-black text-2xl animate-[scale-in_0.3s_ease-out]">
+              +1 Z
+            </div>
+            <div className="text-zooz text-xs mt-1 animate-[fade-in_0.5s_ease-out]">
+              ZOOZ
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export const VideoFeed = ({ posts, onTrust, onWatch }: VideoFeedProps) => {
+export const VideoFeed = ({ posts, onTrust, onWatch, onZooz, userBalance }: VideoFeedProps) => {
   return (
     <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
       {posts.map((post) => (
@@ -241,6 +333,8 @@ export const VideoFeed = ({ posts, onTrust, onWatch }: VideoFeedProps) => {
           post={post} 
           onTrust={onTrust} 
           onWatch={onWatch} 
+          onZooz={onZooz}
+          userBalance={userBalance}
         />
       ))}
     </div>

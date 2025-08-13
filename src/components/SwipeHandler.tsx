@@ -6,10 +6,11 @@ interface SwipeHandlerProps {
   children: React.ReactNode;
   onSwipeLeft: () => void;
   onSwipeRight: () => void;
+  onDoubleClick?: () => void;
   className?: string;
 }
 
-export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, className }: SwipeHandlerProps) => {
+export const SwipeHandler = ({ children, onSwipeLeft, onSwipeRight, onDoubleClick, className }: SwipeHandlerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const [swipeDistance, setSwipeDistance] = useState(0);

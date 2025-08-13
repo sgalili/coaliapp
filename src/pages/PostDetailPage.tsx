@@ -87,9 +87,11 @@ const PostDetailPage = () => {
       {/* Video Content */}
       <div className="flex-1">
         <VideoFeed 
-          posts={[post]} 
+          posts={[{...post, zoozCount: 0}]} 
           onTrust={handleTrust}
           onWatch={handleWatch}
+          onZooz={() => {}}
+          userBalance={0}
         />
       </div>
 

@@ -29,6 +29,7 @@ const mockPosts = [
     watchCount: 856,
     commentCount: 234,
     shareCount: 89,
+    zoozCount: 3420,
     isVerified: true,
     kycLevel: 3 as const,
     expertise: "פוליטיקה",
@@ -45,6 +46,7 @@ const mockPosts = [
     watchCount: 1203,
     commentCount: 167,
     shareCount: 45,
+    zoozCount: 2156,
     isVerified: true,
     kycLevel: 2 as const,
     expertise: "טכנולוגיה",
@@ -61,6 +63,7 @@ const mockPosts = [
     watchCount: 621,
     commentCount: 89,
     shareCount: 23,
+    zoozCount: 887,
     isVerified: false,
     kycLevel: 2 as const,
     expertise: "חינוך",
@@ -77,6 +80,7 @@ const mockPosts = [
     watchCount: 389,
     commentCount: 56,
     shareCount: 12,
+    zoozCount: 543,
     isVerified: false,
     kycLevel: 1 as const,
     expertise: "יזמות",
@@ -93,6 +97,7 @@ const mockPosts = [
     watchCount: 934,
     commentCount: 123,
     shareCount: 34,
+    zoozCount: 1789,
     isVerified: true,
     kycLevel: 3 as const,
     expertise: "אקדמיה",
@@ -109,6 +114,7 @@ const mockPosts = [
     watchCount: 267,
     commentCount: 45,
     shareCount: 8,
+    zoozCount: 298,
     isVerified: false,
     kycLevel: 1 as const,
     expertise: "אמנות",
@@ -119,7 +125,7 @@ const mockPosts = [
 const Index = () => {
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
-  const [zoozBalance] = useState(1250);
+  const [zoozBalance, setZoozBalance] = useState(1250);
   const [feedFilter, setFeedFilter] = useState<FilterState>({ type: 'all' });
   const { toast } = useToast();
 
@@ -142,6 +148,30 @@ const Index = () => {
     toast({
       title: "Now Watching 👁️",
       description: `You're now watching @${post?.handle}. You'll see their content more often.`,
+    });
+  };
+
+  const handleZooz = (postId: string) => {
+    if (zoozBalance < 1) {
+      toast({
+        title: "Insufficient ZOOZ",
+        description: "You don't have enough ZOOZ to support this creator.",
+      });
+      return;
+    }
+
+    const post = mockPosts.find(p => p.id === postId);
+    setZoozBalance(prev => prev - 1);
+    
+    // Update the post's zooz count
+    const postIndex = mockPosts.findIndex(p => p.id === postId);
+    if (postIndex !== -1) {
+      mockPosts[postIndex].zoozCount += 1;
+    }
+
+    toast({
+      title: "ZOOZ Sent! 🚀",
+      description: `You sent 1 ZOOZ to @${post?.handle}. Supporting amazing creators!`,
     });
   };
 
@@ -214,6 +244,8 @@ const Index = () => {
             posts={getFilteredPosts()}
             onTrust={handleTrust}
             onWatch={handleWatch}
+            onZooz={handleZooz}
+            userBalance={zoozBalance}
           />
         </SwipeHandler>
         <FeedFilters 

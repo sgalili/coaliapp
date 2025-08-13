@@ -140,3 +140,24 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes zooz-float {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -70px) scale(1.2);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(-50%, -120px) scale(0.8);
+      opacity: 0;
+    }
+  }
+  
+  .animate-zooz-float {
+    animation: zooz-float 2s ease-out forwards;
+  }
+}
