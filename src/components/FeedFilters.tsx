@@ -44,23 +44,27 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
   };
 
   return (
-    <div className="flex items-center justify-center gap-4 px-4 py-3 bg-background/90 backdrop-blur-sm border-b border-border/50">
+    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-2 px-3 py-2 bg-black/20 backdrop-blur-sm rounded-full">
       {/* Default Filter - עכשיו */}
       <Button
-        variant={activeFilter.type === 'all' ? 'default' : 'ghost'}
+        variant="ghost"
         size="sm"
         onClick={() => handleFilterClick('all')}
-        className="text-sm font-medium"
+        className={`text-sm font-medium text-white hover:bg-white/20 border-none ${
+          activeFilter.type === 'all' ? 'bg-white/30 font-bold' : ''
+        }`}
       >
         עכשיו
       </Button>
 
       {/* Top Trusted Users Filter - מובילים */}
       <Button
-        variant={activeFilter.type === 'trusted' ? 'default' : 'ghost'}
+        variant="ghost"
         size="sm"
         onClick={() => handleFilterClick('trusted')}
-        className="text-sm font-medium"
+        className={`text-sm font-medium text-white hover:bg-white/20 border-none ${
+          activeFilter.type === 'trusted' ? 'bg-white/30 font-bold' : ''
+        }`}
       >
         מובילים
       </Button>
@@ -69,9 +73,11 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
       <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
         <DropdownMenuTrigger asChild>
           <Button
-            variant={activeFilter.type === 'category' ? 'default' : 'ghost'}
+            variant="ghost"
             size="sm"
-            className="text-sm font-medium flex items-center gap-1"
+            className={`text-sm font-medium flex items-center gap-1 text-white hover:bg-white/20 border-none ${
+              activeFilter.type === 'category' ? 'bg-white/30 font-bold' : ''
+            }`}
           >
             {activeFilter.type === 'category' && activeFilter.category 
               ? getCategoryLabel(activeFilter.category)
@@ -80,7 +86,7 @@ export const FeedFilters = ({ activeFilter, onFilterChange }: FeedFiltersProps) 
             <ChevronDown className="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="w-48 bg-background border border-border">
+        <DropdownMenuContent align="center" className="w-48 bg-background border border-border z-50">
           {categories.map((category) => (
             <DropdownMenuItem
               key={category.key}

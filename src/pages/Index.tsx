@@ -188,35 +188,33 @@ const Index = () => {
     switch (activeTab) {
       case "home":
         return (
-          <div className="h-screen flex flex-col">
+          <div className="h-screen relative overflow-hidden">
+            <SwipeHandler
+              onSwipeLeft={() => {
+                // Handle watch action for current video
+                toast({
+                  title: "Watch Added! 👁️",
+                  description: "You're now watching this creator.",
+                });
+              }}
+              onSwipeRight={() => {
+                // Handle trust action for current video  
+                toast({
+                  title: "Trust Given! ❤️",
+                  description: "Your trust helps build a better network.",
+                });
+              }}
+            >
+              <VideoFeed
+                posts={getFilteredPosts()}
+                onTrust={handleTrust}
+                onWatch={handleWatch}
+              />
+            </SwipeHandler>
             <FeedFilters 
               activeFilter={feedFilter}
               onFilterChange={setFeedFilter}
             />
-            <div className="flex-1 overflow-hidden">
-              <SwipeHandler
-                onSwipeLeft={() => {
-                  // Handle watch action for current video
-                  toast({
-                    title: "Watch Added! 👁️",
-                    description: "You're now watching this creator.",
-                  });
-                }}
-                onSwipeRight={() => {
-                  // Handle trust action for current video  
-                  toast({
-                    title: "Trust Given! ❤️",
-                    description: "Your trust helps build a better network.",
-                  });
-                }}
-              >
-                <VideoFeed
-                  posts={getFilteredPosts()}
-                  onTrust={handleTrust}
-                  onWatch={handleWatch}
-                />
-              </SwipeHandler>
-            </div>
           </div>
         );
       case "trending":
