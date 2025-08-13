@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NewsItem {
@@ -25,6 +25,7 @@ interface NewsComment {
   trustLevel: number;
   timestamp: string;
   category: string;
+  kycLevel: 1 | 2 | 3;
 }
 
 interface NewsItemProps {
@@ -51,6 +52,22 @@ const categoryColors = {
   "ספורט": "bg-orange-500/20 text-orange-400 border-orange-500/30",
   "תרבות": "bg-purple-500/20 text-purple-400 border-purple-500/30",
   "חדשות": "bg-gray-500/20 text-gray-400 border-gray-500/30"
+};
+
+const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
+  const config = {
+    1: { icon: Shield, color: "text-gray-400", bg: "bg-gray-400/20" },
+    2: { icon: ShieldAlert, color: "text-blue-500", bg: "bg-blue-500/20" },
+    3: { icon: ShieldCheck, color: "text-green-500", bg: "bg-green-500/20" }
+  };
+  
+  const { icon: IconComponent, color, bg } = config[level];
+  
+  return (
+    <div className={cn("absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center", bg)}>
+      <IconComponent className={cn("w-4 h-4", color)} />
+    </div>
+  );
 };
 
 const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay: () => void }) => {
@@ -185,7 +202,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick }: NewsIte
                       <User className="w-6 h-6 text-slate-500" />
                     </div>
                   )}
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border border-white"></div>
+                  <KYCBadge level={comment.kycLevel} />
                 </button>
               ))}
               {item.comments.length > 6 && (

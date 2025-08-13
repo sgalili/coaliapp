@@ -33,7 +33,8 @@ const mockNews = [
         replies: 8,
         trustLevel: 1247,
         timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-        category: "פוליטיקה"
+        category: "פוליטיקה",
+        kycLevel: 3 as const
       },
       {
         id: "comment-2",
@@ -46,7 +47,8 @@ const mockNews = [
         replies: 3,
         trustLevel: 892,
         timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-        category: "פוליטיקה"
+        category: "פוליטיקה",
+        kycLevel: 2 as const
       }
     ]
   },
@@ -70,7 +72,8 @@ const mockNews = [
         replies: 12,
         trustLevel: 456,
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        category: "טכנולוגיה"
+        category: "טכנולוגיה",
+        kycLevel: 1 as const
       }
     ]
   },
@@ -94,7 +97,8 @@ const mockNews = [
         replies: 5,
         trustLevel: 234,
         timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה"
+        category: "כלכלה",
+        kycLevel: 2 as const
       },
       {
         id: "comment-5",
@@ -107,7 +111,8 @@ const mockNews = [
         replies: 15,
         trustLevel: 678,
         timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה"
+        category: "כלכלה",
+        kycLevel: 3 as const
       }
     ]
   },
