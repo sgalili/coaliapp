@@ -246,6 +246,7 @@ const Index = () => {
             onWatch={handleWatch}
             onZooz={handleZooz}
             userBalance={zoozBalance}
+            currentUserId="user-123" // Mock user ID for testing
           />
         </SwipeHandler>
         <FeedFilters 

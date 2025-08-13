@@ -29,6 +29,7 @@ interface VideoFeedProps {
   onWatch: (postId: string) => void;
   onZooz: (postId: string) => void;
   userBalance: number;
+  currentUserId?: string;
 }
 
 const TrustIcon = () => {
@@ -90,12 +91,13 @@ const ZoozIcon = ({ className = "w-6 h-6 text-zooz" }: { className?: string }) =
   );
 };
 
-const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: { 
+const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance, currentUserId }: { 
   post: VideoPost; 
   onTrust: (id: string) => void; 
   onWatch: (id: string) => void; 
   onZooz: (id: string) => void;
   userBalance: number;
+  currentUserId?: string;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -103,7 +105,7 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const [lastClick, setLastClick] = useState(0);
   const navigate = useNavigate();
-  const { liveReactions, addZoozReaction } = useZoozReactions(post.id);
+  const { liveReactions, addZoozReaction } = useZoozReactions(post.id, currentUserId);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -368,7 +370,7 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance }: {
   );
 };
 
-export const VideoFeed = ({ posts, onTrust, onWatch, onZooz, userBalance }: VideoFeedProps) => {
+export const VideoFeed = ({ posts, onTrust, onWatch, onZooz, userBalance, currentUserId }: VideoFeedProps) => {
   return (
     <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
       {posts.map((post) => (
@@ -379,6 +381,7 @@ export const VideoFeed = ({ posts, onTrust, onWatch, onZooz, userBalance }: Vide
           onWatch={onWatch} 
           onZooz={onZooz}
           userBalance={userBalance}
+          currentUserId={currentUserId}
         />
       ))}
     </div>
