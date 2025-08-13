@@ -80,6 +80,39 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
 
   return (
     <div className="bg-card/50 backdrop-blur-sm rounded-lg p-3 mt-2 border border-border/30">
+      {/* Video Player Section */}
+      <div className="relative w-full h-48 bg-slate-900 rounded-lg mb-3 overflow-hidden">
+        {!isPlaying ? (
+          // Thumbnail with play button
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+            <button 
+              onClick={handlePlay}
+              className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+            >
+              <Play className="w-8 h-8 text-white ml-1" />
+            </button>
+            <div className="absolute bottom-3 right-3 bg-black/50 px-2 py-1 rounded text-white text-xs">
+              {comment.duration}s
+            </div>
+          </div>
+        ) : (
+          // Mock video playing state
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+            <div className="text-center text-white">
+              <div className="animate-pulse mb-2">🎥</div>
+              <p className="text-sm">En train de lire la vidéo de {comment.username}</p>
+              <button 
+                onClick={handlePlay}
+                className="mt-2 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+              >
+                <Pause className="w-6 h-6 text-white" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* User Info and Stats */}
       <div className="flex items-start gap-3">
         <div className="relative">
           {comment.userImage ? (
@@ -93,15 +126,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
               <User className="w-5 h-5 text-muted-foreground" />
             </div>
           )}
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-            <button onClick={handlePlay} className="w-full h-full flex items-center justify-center">
-              {isPlaying ? (
-                <Pause className="w-3 h-3 text-primary-foreground" />
-              ) : (
-                <Play className="w-3 h-3 text-primary-foreground" />
-              )}
-            </button>
-          </div>
+          <KYCBadge level={comment.kycLevel} />
         </div>
         
         <div className="flex-1 min-w-0">
@@ -113,7 +138,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
             <span className="text-xs text-trust font-medium">{comment.trustLevel} Trust</span>
           </div>
           
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
             <div className="flex items-center gap-1">
               <ThumbsUp className="w-3 h-3" />
               <span>{comment.likes}</span>
@@ -122,8 +147,19 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
               <MessageCircle className="w-3 h-3" />
               <span>{comment.replies}</span>
             </div>
-            <span>{comment.duration}s</span>
+            <div className="flex items-center gap-1">
+              <Eye className="w-3 h-3" />
+              <span>Regardé</span>
+            </div>
           </div>
+
+          {/* Comment content */}
+          <p className="text-sm text-foreground leading-relaxed">
+            "Mon analyse sur cette actualité: {comment.category === 'פוליטיקה' ? 'Les implications politiques sont importantes à considérer...' : 
+             comment.category === 'טכנולוגיה' ? 'Cette innovation pourrait transformer le secteur...' :
+             comment.category === 'כלכלה' ? 'Les données économiques montrent une tendance...' :
+             'Voici mon point de vue d\'expert sur le sujet...'}"
+          </p>
         </div>
       </div>
     </div>
