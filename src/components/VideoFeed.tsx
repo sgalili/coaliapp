@@ -118,7 +118,7 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
   };
 
   return (
-    <div className="relative snap-start snap-always" style={{ height: `calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))` }}>
+    <div className="relative h-screen w-full snap-start snap-always">
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
@@ -162,7 +162,10 @@ const VideoCard = ({ post, onTrust, onWatch }: { post: VideoPost; onTrust: (id: 
       </div>
 
       {/* Action buttons */}
-      <div className="absolute left-4 bottom-20 flex flex-col gap-6">
+      <div 
+        className="absolute left-4 flex flex-col gap-6" 
+        style={{ bottom: `calc(5rem + env(safe-area-inset-bottom))` }}
+      >
         {/* Trust button */}
         <button
           onClick={() => onTrust(post.id)}
