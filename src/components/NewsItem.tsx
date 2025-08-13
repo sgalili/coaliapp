@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NewsItem {
@@ -69,6 +69,13 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
     </div>
   );
 };
+
+const TrustIcon = () => (
+  <div className="relative">
+    <Handshake className="w-5 h-5" />
+    <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+  </div>
+);
 
 const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay: () => void }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -179,20 +186,45 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-            <ThumbsUp className="w-4 h-4" />
-            <span>J'aime ({comment.likes})</span>
-          </button>
-          <button className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-            <MessageCircle className="w-4 h-4" />
-            <span>Répondre</span>
-          </button>
-        </div>
-        <button className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium">
-          <span>🤝</span>
-          <span>Faire confiance</span>
+      <div className="flex items-center justify-center gap-6 pt-3 border-t border-slate-100">
+        {/* Trust Button */}
+        <button className="flex flex-col items-center gap-1 group">
+          <div className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+            <TrustIcon />
+          </div>
+          <span className="text-slate-600 text-xs font-medium">
+            {comment.trustLevel > 1000 ? `${(comment.trustLevel / 1000).toFixed(1)}k` : comment.trustLevel}
+          </span>
+        </button>
+
+        {/* Watch Button */}
+        <button className="flex flex-col items-center gap-1 group">
+          <div className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+            <Eye className="w-5 h-5 text-slate-600" />
+          </div>
+          <span className="text-slate-600 text-xs font-medium">
+            {comment.likes}
+          </span>
+        </button>
+
+        {/* Comment Button */}
+        <button className="flex flex-col items-center gap-1 group">
+          <div className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+            <MessageCircle className="w-5 h-5 text-slate-600" />
+          </div>
+          <span className="text-slate-600 text-xs font-medium">
+            {comment.replies}
+          </span>
+        </button>
+
+        {/* Share Button */}
+        <button className="flex flex-col items-center gap-1 group">
+          <div className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+            <Share2 className="w-5 h-5 text-slate-600" />
+          </div>
+          <span className="text-slate-600 text-xs font-medium">
+            12
+          </span>
         </button>
       </div>
     </div>
