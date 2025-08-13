@@ -130,7 +130,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
           onClick={handleFullscreen}
           className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 px-2 py-1 rounded text-white text-xs transition-colors"
         >
-          ⛶ Full screen
+          ⛶ Plein écran
         </button>
       </div>
 
