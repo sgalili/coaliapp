@@ -1,11 +1,7 @@
-import { useState } from "react";
+import { DomainSection } from "@/components/DomainSection";
 import { Navigation } from "@/components/Navigation";
-import { DomainFilter } from "@/components/DomainFilter";
-import { ExpertStoriesSection } from "@/components/ExpertStoriesSection";
-import { ExpertDiscoveryStack } from "@/components/ExpertDiscoveryStack";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Award } from "lucide-react";
+import { Users } from "lucide-react";
 
 export type ExpertDomain = 'economy' | 'tech' | 'education' | 'health' | 'security' | 'culture';
 
@@ -90,98 +86,35 @@ const mockExperts: Expert[] = [
 
 const TopTrustedPage = () => {
   const zoozBalance = 1250;
-  const [selectedDomain, setSelectedDomain] = useState<ExpertDomain | 'all'>('all');
-  const [activeTab, setActiveTab] = useState<'trusted' | 'discovery'>('trusted');
-
-  const filteredExperts = mockExperts.filter(expert => 
-    selectedDomain === 'all' || expert.expertise.includes(selectedDomain as ExpertDomain)
-  );
-
-  const trustedExperts = filteredExperts.filter(expert => expert.trustedByUser);
-  const discoveryExperts = filteredExperts.filter(expert => !expert.trustedByUser);
+  
+  const domains: ExpertDomain[] = ['economy', 'security', 'education', 'health', 'tech', 'culture'];
 
   return (
     <div className="h-screen bg-background flex flex-col">
-      {/* Header */}
+      {/* Simplified Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-foreground">מובילים בקהילה</h1>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Users className="w-3 h-3" />
-                <span className="text-xs">{mockExperts.length}</span>
-              </Badge>
-            </div>
-          </div>
-          
-          {/* Domain Filter */}
-          <DomainFilter 
-            selectedDomain={selectedDomain} 
-            onDomainChange={setSelectedDomain}
-          />
-          
-          {/* Tabs */}
-          <div className="flex gap-1 mt-4 bg-muted rounded-lg p-1">
-            <button
-              onClick={() => setActiveTab('trusted')}
-              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'trusted' 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              האמונים שלי ({trustedExperts.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('discovery')}
-              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'discovery' 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              מומלצים לגילוי ({discoveryExperts.length})
-            </button>
+            <Badge variant="secondary" className="flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              <span className="text-xs">{mockExperts.length}</span>
+            </Badge>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden">
-        {activeTab === 'trusted' ? (
-          <div className="p-4">
-            {trustedExperts.length > 0 ? (
-              <ExpertStoriesSection experts={trustedExperts} />
-            ) : (
-              <Card className="text-center py-8">
-                <CardContent>
-                  <Award className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">
-                    עדיין לא בחרת אנשי אמון בתחום זה
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        ) : (
-          <div className="h-full">
-            {discoveryExperts.length > 0 ? (
-              <ExpertDiscoveryStack experts={discoveryExperts} />
-            ) : (
-              <div className="p-4">
-                <Card className="text-center py-8">
-                  <CardContent>
-                    <TrendingUp className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">
-                      אין המלצות חדשות בתחום זה כרגע
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </div>
-        )}
+      {/* Domain Sections Feed */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="pt-4">
+          {domains.map((domain) => (
+            <DomainSection
+              key={domain}
+              domain={domain}
+              experts={mockExperts}
+            />
+          ))}
+        </div>
       </div>
 
       <Navigation zoozBalance={zoozBalance} />
