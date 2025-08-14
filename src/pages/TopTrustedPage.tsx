@@ -81,6 +81,67 @@ const mockExperts: Expert[] = [
     trustedByUser: false,
     trending: true,
     verified: true
+  },
+  // Additional tech experts for testing horizontal scroll
+  {
+    id: '7',
+    name: 'יוסי טכנולוגיה',
+    avatar: '/src/assets/amit-profile.jpg',
+    expertise: ['tech'],
+    stats: { trustCount: 1543, views: 22100, trustRate: 7.2, kycLevel: 2 },
+    trustedByUser: true,
+    trending: false,
+    verified: true
+  },
+  {
+    id: '8',
+    name: 'ליאת קוד',
+    avatar: '/src/assets/sarah-profile.jpg',
+    expertise: ['tech'],
+    stats: { trustCount: 892, views: 13400, trustRate: 8.5, kycLevel: 3 },
+    trustedByUser: false,
+    trending: true,
+    verified: true
+  },
+  {
+    id: '9',
+    name: 'אלון AI',
+    avatar: '/src/assets/david-profile.jpg',
+    expertise: ['tech'],
+    stats: { trustCount: 2156, views: 34800, trustRate: 9.1, kycLevel: 3 },
+    trustedByUser: false,
+    trending: true,
+    verified: true
+  },
+  {
+    id: '10',
+    name: 'תמר סייבר',
+    avatar: '/src/assets/maya-profile.jpg',
+    expertise: ['tech', 'security'],
+    stats: { trustCount: 1789, views: 27600, trustRate: 7.8, kycLevel: 2 },
+    trustedByUser: true,
+    trending: false,
+    verified: true
+  },
+  {
+    id: '11',
+    name: 'רועי בלוקצ\'יין',
+    avatar: '/src/assets/rachel-profile.jpg',
+    expertise: ['tech', 'economy'],
+    stats: { trustCount: 945, views: 16200, trustRate: 6.7, kycLevel: 2 },
+    trustedByUser: false,
+    trending: true,
+    verified: true
+  },
+  {
+    id: '12',
+    name: 'ענת דטה',
+    avatar: '/src/assets/noa-profile.jpg',
+    expertise: ['tech'],
+    stats: { trustCount: 1334, views: 19800, trustRate: 8.3, kycLevel: 3 },
+    trustedByUser: false,
+    trending: false,
+    verified: true
   }
 ];
 
