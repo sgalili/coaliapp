@@ -21,6 +21,7 @@ interface VideoPost {
   kycLevel: 1 | 2 | 3;
   expertise: string;
   category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer';
+  isLive?: boolean;
 }
 
 interface VideoFeedProps {
@@ -87,6 +88,16 @@ const ZoozIcon = ({ className = "w-6 h-6 text-zooz" }: { className?: string }) =
   return (
     <div className="relative flex items-center justify-center">
       <div className={cn("font-black text-lg leading-none", className.includes('text-') ? className.split(' ').filter(c => c.startsWith('text-')).join(' ') : "text-zooz")}>Z</div>
+    </div>
+  );
+};
+
+const LiveBadge = () => {
+  return (
+    <div className="absolute top-3 left-3 z-10">
+      <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold animate-pulse shadow-lg">
+        LIVE
+      </div>
     </div>
   );
 };
@@ -211,7 +222,11 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance, currentUserId 
   };
 
   const renderZoozReaction = (reaction: LiveZoozReaction) => {
-    const animationType = reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-float';
+    // Enhanced animation for live videos
+    const animationType = post.isLive 
+      ? (reaction.isOwn ? 'animate-zooz-burst' : 'animate-[zooz-float_2s_ease-out_forwards,pulse_1s_ease-in-out_infinite]') 
+      : (reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-float');
+    
     const basePosition = reaction.x_position && reaction.y_position ? 
       { left: `${reaction.x_position}px`, top: `${reaction.y_position}px` } : 
       { left: '50%', top: '50%' };
@@ -224,17 +239,18 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance, currentUserId 
       >
         <div className={cn(
           "transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1",
-          animationType
+          animationType,
+          post.isLive && "drop-shadow-[0_0_8px_rgba(255,69,69,0.8)]" // Red glow for live
         )}>
           <span className={cn(
             "font-bold text-lg drop-shadow-lg",
-            reaction.isOwn ? "text-zooz-glow" : "text-white"
+            reaction.isOwn ? "text-zooz-glow" : post.isLive ? "text-red-400" : "text-white"
           )}>
             +{reaction.amount}
           </span>
           <div className={cn(
             "font-black text-2xl leading-none drop-shadow-lg",
-            reaction.isOwn ? "text-zooz-glow" : "text-zooz"
+            reaction.isOwn ? "text-zooz-glow" : post.isLive ? "text-red-500" : "text-zooz"
           )}>
             Z
           </div>
@@ -257,6 +273,9 @@ const VideoCard = ({ post, onTrust, onWatch, onZooz, userBalance, currentUserId 
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+      {/* Live Badge */}
+      {post.isLive && <LiveBadge />}
 
       {/* Live ZOOZ Reactions */}
       {liveReactions.map(renderZoozReaction)}

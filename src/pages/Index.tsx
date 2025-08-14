@@ -35,6 +35,7 @@ const mockPosts = [
     kycLevel: 3 as const,
     expertise: "פוליטיקה",
     category: "politics" as const,
+    isLive: true,
   },
   {
     id: "2", 
@@ -69,6 +70,7 @@ const mockPosts = [
     kycLevel: 2 as const,
     expertise: "חינוך",
     category: "education" as const,
+    isLive: true,
   },
   {
     id: "4",
@@ -103,6 +105,7 @@ const mockPosts = [
     kycLevel: 3 as const,
     expertise: "אקדמיה",
     category: "academia" as const,
+    isLive: true,
   },
   {
     id: "6",
