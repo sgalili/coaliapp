@@ -60,8 +60,9 @@ export const usePoll = (newsId: string) => {
   const calculateResults = (): PollResults => {
     if (!poll) return {};
     
+    const currentVotes = mockVotes[poll.id] || [];
     const results: PollResults = {};
-    const totalVotes = votes.length;
+    const totalVotes = currentVotes.length;
     
     // Initialize all options
     poll.options.forEach(option => {
@@ -73,7 +74,7 @@ export const usePoll = (newsId: string) => {
     });
     
     // Count votes
-    votes.forEach(vote => {
+    currentVotes.forEach(vote => {
       if (results[vote.optionSelected]) {
         results[vote.optionSelected].count++;
         results[vote.optionSelected].voters.push(vote);
@@ -116,7 +117,7 @@ export const usePoll = (newsId: string) => {
     hasUserVoted,
     userVote: poll ? userVotes[poll.id] : undefined,
     results: calculateResults(),
-    totalVotes: votes.length,
+    totalVotes: poll ? (mockVotes[poll.id] || []).length : 0,
     submitVote
   };
 };
