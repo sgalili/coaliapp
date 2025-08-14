@@ -28,44 +28,24 @@ export interface PollResults {
 
 // Mock poll data
 const mockPolls: { [newsId: string]: Poll } = {
-  '1': {
-    id: 'poll-1',
-    newsId: '1',
-    question: 'מה דעתך על הצעת החוק החדשה?',
-    pollType: 'yes_no',
-    options: ['בעד', 'נגד'],
-    isActive: true
-  },
-  '2': {
-    id: 'poll-2',
-    newsId: '2',
-    question: 'איך אתה מדרג את הביצועים הכלכליים?',
-    pollType: 'rating_1_5',
-    options: ['1', '2', '3', '4', '5'],
-    isActive: true
-  },
-  '3': {
-    id: 'poll-3',
-    newsId: '3',
-    question: 'איזה פתרון הכי טוב לבעיית התחבורה?',
+  'news-4': {
+    id: 'poll-4',
+    newsId: 'news-4',
+    question: 'מה דעתך על התפתחויות הטכנולוגיה בחינוך?',
     pollType: 'multiple_choice',
-    options: ['תחבורה ציבורית', 'אופניים חשמליים', 'מכוניות חשמליות', 'הליכה רגלית'],
+    options: ['מהפכני', 'חיובי', 'צריך שיפורים', 'לא רלוונטי'],
     isActive: true
   }
 };
 
 // Mock votes with avatars
 const mockVotes: { [pollId: string]: PollVote[] } = {
-  'poll-1': [
-    { id: '1', pollId: 'poll-1', userId: '1', optionSelected: 'בעד', userImage: '/src/assets/sarah-profile.jpg', userName: 'שרה' },
-    { id: '2', pollId: 'poll-1', userId: '2', optionSelected: 'בעד', userImage: '/src/assets/david-profile.jpg', userName: 'דוד' },
-    { id: '3', pollId: 'poll-1', userId: '3', optionSelected: 'נגד', userImage: '/src/assets/maya-profile.jpg', userName: 'מיה' },
-    { id: '4', pollId: 'poll-1', userId: '4', optionSelected: 'בעד', userImage: '/src/assets/amit-profile.jpg', userName: 'עמית' },
-  ],
-  'poll-2': [
-    { id: '5', pollId: 'poll-2', userId: '1', optionSelected: '4', userImage: '/src/assets/rachel-profile.jpg', userName: 'רחל' },
-    { id: '6', pollId: 'poll-2', userId: '2', optionSelected: '3', userImage: '/src/assets/noa-profile.jpg', userName: 'נועה' },
-    { id: '7', pollId: 'poll-2', userId: '3', optionSelected: '4', userImage: '/src/assets/sarah-profile.jpg', userName: 'שרה' },
+  'poll-4': [
+    { id: '1', pollId: 'poll-4', userId: '1', optionSelected: 'מהפכני', userImage: '/src/assets/sarah-profile.jpg', userName: 'שרה' },
+    { id: '2', pollId: 'poll-4', userId: '2', optionSelected: 'חיובי', userImage: '/src/assets/david-profile.jpg', userName: 'דוד' },
+    { id: '3', pollId: 'poll-4', userId: '3', optionSelected: 'מהפכני', userImage: '/src/assets/maya-profile.jpg', userName: 'מיה' },
+    { id: '4', pollId: 'poll-4', userId: '4', optionSelected: 'צריך שיפורים', userImage: '/src/assets/amit-profile.jpg', userName: 'עמית' },
+    { id: '5', pollId: 'poll-4', userId: '5', optionSelected: 'חיובי', userImage: '/src/assets/rachel-profile.jpg', userName: 'רחל' },
   ]
 };
 
