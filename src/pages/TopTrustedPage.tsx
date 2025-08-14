@@ -2,6 +2,12 @@ import { DomainSection } from "@/components/DomainSection";
 import { Navigation } from "@/components/Navigation";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
+import amitProfile from "@/assets/amit-profile.jpg";
+import sarahProfile from "@/assets/sarah-profile.jpg";
+import davidProfile from "@/assets/david-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
+import rachelProfile from "@/assets/rachel-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
 
 export type ExpertDomain = 'economy' | 'tech' | 'education' | 'health' | 'security' | 'culture';
 
@@ -25,7 +31,7 @@ const mockExperts: Expert[] = [
   {
     id: '1',
     name: 'אמית כהן',
-    avatar: '/src/assets/amit-profile.jpg',
+    avatar: amitProfile,
     expertise: ['economy', 'tech'],
     stats: { trustCount: 2847, views: 45200, trustRate: 6.3, kycLevel: 3 },
     trustedByUser: true,
@@ -35,7 +41,7 @@ const mockExperts: Expert[] = [
   {
     id: '2', 
     name: 'שרה לוי',
-    avatar: '/src/assets/sarah-profile.jpg',
+    avatar: sarahProfile,
     expertise: ['education', 'culture'],
     stats: { trustCount: 1523, views: 18900, trustRate: 8.1, kycLevel: 2 },
     trustedByUser: true,
@@ -45,7 +51,7 @@ const mockExperts: Expert[] = [
   {
     id: '3',
     name: 'דוד מושקוביץ',
-    avatar: '/src/assets/david-profile.jpg', 
+    avatar: davidProfile, 
     expertise: ['security', 'tech'],
     stats: { trustCount: 856, views: 12400, trustRate: 6.9, kycLevel: 2 },
     trustedByUser: false,
@@ -55,7 +61,7 @@ const mockExperts: Expert[] = [
   {
     id: '4',
     name: 'מאיה רוזן',
-    avatar: '/src/assets/maya-profile.jpg',
+    avatar: mayaProfile,
     expertise: ['health', 'education'],
     stats: { trustCount: 1234, views: 15600, trustRate: 7.9, kycLevel: 3 },
     trustedByUser: false,
@@ -65,7 +71,7 @@ const mockExperts: Expert[] = [
   {
     id: '5',
     name: 'רחל אברהם',
-    avatar: '/src/assets/rachel-profile.jpg',
+    avatar: rachelProfile,
     expertise: ['economy', 'culture'],
     stats: { trustCount: 3421, views: 58300, trustRate: 5.9, kycLevel: 2 },
     trustedByUser: true,
@@ -75,7 +81,7 @@ const mockExperts: Expert[] = [
   {
     id: '6',
     name: 'נועה שמואל',
-    avatar: '/src/assets/noa-profile.jpg',
+    avatar: noaProfile,
     expertise: ['tech', 'education'],
     stats: { trustCount: 987, views: 11200, trustRate: 8.8, kycLevel: 3 },
     trustedByUser: false,
@@ -86,7 +92,7 @@ const mockExperts: Expert[] = [
   {
     id: '7',
     name: 'יוסי טכנולוגיה',
-    avatar: '/src/assets/amit-profile.jpg',
+    avatar: amitProfile,
     expertise: ['tech'],
     stats: { trustCount: 1543, views: 22100, trustRate: 7.2, kycLevel: 2 },
     trustedByUser: true,
@@ -96,7 +102,7 @@ const mockExperts: Expert[] = [
   {
     id: '8',
     name: 'ליאת קוד',
-    avatar: '/src/assets/sarah-profile.jpg',
+    avatar: sarahProfile,
     expertise: ['tech'],
     stats: { trustCount: 892, views: 13400, trustRate: 8.5, kycLevel: 3 },
     trustedByUser: false,
@@ -106,7 +112,7 @@ const mockExperts: Expert[] = [
   {
     id: '9',
     name: 'אלון AI',
-    avatar: '/src/assets/david-profile.jpg',
+    avatar: davidProfile,
     expertise: ['tech'],
     stats: { trustCount: 2156, views: 34800, trustRate: 9.1, kycLevel: 3 },
     trustedByUser: false,
@@ -116,7 +122,7 @@ const mockExperts: Expert[] = [
   {
     id: '10',
     name: 'תמר סייבר',
-    avatar: '/src/assets/maya-profile.jpg',
+    avatar: mayaProfile,
     expertise: ['tech', 'security'],
     stats: { trustCount: 1789, views: 27600, trustRate: 7.8, kycLevel: 2 },
     trustedByUser: true,
@@ -126,7 +132,7 @@ const mockExperts: Expert[] = [
   {
     id: '11',
     name: 'רועי בלוקצ\'יין',
-    avatar: '/src/assets/rachel-profile.jpg',
+    avatar: rachelProfile,
     expertise: ['tech', 'economy'],
     stats: { trustCount: 945, views: 16200, trustRate: 6.7, kycLevel: 2 },
     trustedByUser: false,
@@ -136,7 +142,7 @@ const mockExperts: Expert[] = [
   {
     id: '12',
     name: 'ענת דטה',
-    avatar: '/src/assets/noa-profile.jpg',
+    avatar: noaProfile,
     expertise: ['tech'],
     stats: { trustCount: 1334, views: 19800, trustRate: 8.3, kycLevel: 3 },
     trustedByUser: false,
