@@ -32,10 +32,10 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
                 onClick={() => handleVote(option)}
                 variant="outline"
                 className={cn(
-                  "h-12 text-lg font-medium transition-all duration-200",
+                  "h-12 text-lg font-medium transition-all duration-200 border-2",
                   option === 'בעד' 
-                    ? "hover:bg-green-50 hover:border-green-200 hover:text-green-700"
-                    : "hover:bg-red-50 hover:border-red-200 hover:text-red-700"
+                    ? "border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 hover:border-emerald-300 text-emerald-700 hover:text-emerald-800"
+                    : "border-rose-200 bg-rose-50/50 hover:bg-rose-100 hover:border-rose-300 text-rose-700 hover:text-rose-800"
                 )}
               >
                 {option}
@@ -47,7 +47,7 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
       case 'rating_1_5':
         return (
           <div className="space-y-3">
-            <div className="text-sm text-muted-foreground text-right mb-2">
+            <div className="text-sm text-gray-600 text-right mb-3">
               דרג מ-1 (גרוע) עד 5 (מעולה)
             </div>
             <div className="grid grid-cols-5 gap-2">
@@ -56,7 +56,7 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
                   key={option}
                   onClick={() => handleVote(option)}
                   variant="outline"
-                  className="h-12 text-lg font-bold hover:bg-primary/10 hover:border-primary hover:text-primary"
+                  className="h-12 text-lg font-bold border-2 border-blue-200 bg-blue-50/30 hover:bg-blue-100 hover:border-blue-300 text-blue-700 hover:text-blue-800 transition-all duration-200"
                 >
                   {option}
                 </Button>
@@ -73,7 +73,7 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
                 key={option}
                 onClick={() => handleVote(option)}
                 variant="outline"
-                className="w-full h-12 text-right justify-start px-4 hover:bg-primary/5 hover:border-primary/50"
+                className="w-full h-12 text-right justify-start px-4 border-2 border-blue-200 bg-blue-50/20 hover:bg-blue-100/60 hover:border-blue-300 text-blue-800 hover:text-blue-900 transition-all duration-200"
               >
                 {option}
               </Button>
@@ -90,7 +90,7 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
     <div className="space-y-4">
       {renderVotingInterface()}
       
-      <div className="text-xs text-muted-foreground text-center pt-2 border-t border-border/30">
+      <div className="text-xs text-blue-600/70 text-center pt-3 border-t border-blue-100/60">
         הצבעה פתוחה למשתמשים מאומתים בלבד
       </div>
     </div>

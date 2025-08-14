@@ -31,38 +31,38 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
 
   return (
     <>
-      <div className="border-t border-border/60 bg-muted/30">
+      <div className="border-t border-blue-100/80 bg-gradient-to-r from-blue-50/40 to-indigo-50/40">
         <Button
           variant="ghost"
           onClick={handleTogglePoll}
-          className="w-full justify-between p-4 h-auto text-foreground hover:bg-muted/50 transition-colors"
+          className="w-full justify-between p-4 h-auto text-foreground hover:bg-blue-50/60 transition-all duration-200"
         >
           <div className="flex items-center gap-3">
-            <BarChart3 className="h-5 w-5 text-primary" />
+            <BarChart3 className="h-5 w-5 text-blue-600" />
             <div className="text-right">
-              <div className="font-medium">דעת הקהילה</div>
+              <div className="font-medium text-gray-800">דעת הקהילה</div>
               {totalVotes > 0 && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-blue-600/80">
                   {totalVotes} משתתפים
                 </div>
               )}
             </div>
           </div>
           {isExpanded ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-blue-500" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-blue-500" />
           )}
         </Button>
 
         <div className={cn(
           "overflow-hidden transition-all duration-300 ease-in-out",
-          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         )}>
           {isExpanded && isKYCVerified && (
-            <div className="p-4 pt-0 border-t border-border/30">
-              <div className="bg-background/50 rounded-lg p-4 backdrop-blur-sm">
-                <h3 className="text-lg font-semibold mb-4 text-right text-foreground">
+            <div className="p-4 pt-2 border-t border-blue-100/60">
+              <div className="bg-white/80 rounded-xl p-5 backdrop-blur-sm border border-blue-100/50 shadow-sm">
+                <h3 className="text-lg font-semibold mb-5 text-right text-gray-800 leading-relaxed">
                   {poll.question}
                 </h3>
                 
