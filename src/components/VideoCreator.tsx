@@ -60,7 +60,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("none");
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [comment, setComment] = useState("");
-  const [recordingTime, setRecordingTime] = useState(0);
+  const [recordingTime, setRecordingTime] = useState(60);
   const [isCameraFacingUser, setIsCameraFacingUser] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -80,7 +80,14 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   useEffect(() => {
     if (isRecording) {
       intervalRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1);
+        setRecordingTime(prev => {
+          if (prev <= 1) {
+            // Auto-stop recording when countdown reaches 0
+            stopRecording();
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
     } else {
       if (intervalRef.current) {
@@ -151,7 +158,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
       mediaRecorder.start();
       mediaRecorderRef.current = mediaRecorder;
       setIsRecording(true);
-      setRecordingTime(0);
+      setRecordingTime(60);
     } catch (error) {
       console.error("Error starting recording:", error);
       toast({
@@ -192,7 +199,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
         comment: comment.trim(),
         filter: selectedFilter,
         mode: "record",
-        duration: recordingTime,
+        duration: 60 - recordingTime,
         timestamp: new Date().toISOString()
       });
     } else if (mode === "live" && comment.trim()) {
@@ -207,7 +214,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
   const resetRecording = () => {
     setRecordedBlob(null);
-    setRecordingTime(0);
+    setRecordingTime(60);
     startCamera();
   };
 
@@ -315,7 +322,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
             <div className="text-center text-white">
               <Play className="w-16 h-16 mx-auto mb-4" />
               <p className="text-lg">Video Recorded!</p>
-              <p className="text-sm text-gray-300">Duration: {formatTime(recordingTime)}</p>
+              <p className="text-sm text-gray-300">Duration: {formatTime(60 - recordingTime)}</p>
             </div>
           </div>
         )}
