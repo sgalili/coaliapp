@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { usePoll } from '@/hooks/usePoll';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 interface PollVotingProps {
@@ -8,12 +9,16 @@ interface PollVotingProps {
 
 export const PollVoting = ({ newsId }: PollVotingProps) => {
   const { poll, submitVote } = usePoll(newsId);
+  const { toast } = useToast();
 
   if (!poll) return null;
 
   const handleVote = (option: string) => {
     submitVote(option);
-    // Plus de toast, les résultats s'affichent automatiquement
+    toast({
+      title: "הקול נשלח בהצלחה!",
+      description: "תוכל לראות את התוצאות כעת",
+    });
   };
 
   const renderVotingInterface = () => {

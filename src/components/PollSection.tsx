@@ -15,7 +15,7 @@ interface PollSectionProps {
 export const PollSection = ({ newsId }: PollSectionProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { isKYCVerified, showKYC, triggerKYCCheck, handleKYCSuccess, handleKYCClose } = useKYC();
-  const { poll, hasUserVoted, showResults, totalVotes } = usePoll(newsId);
+  const { poll, hasUserVoted, totalVotes } = usePoll(newsId);
 
   if (!poll) return null;
 
@@ -61,12 +61,12 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
         )}>
           {isExpanded && isKYCVerified && (
             <div className="p-4 pt-2 border-t border-blue-100/60">
-              <div className="bg-background/95 rounded-xl p-5 backdrop-blur-sm border border-border shadow-sm">
-                <h3 className="text-lg font-semibold mb-5 text-right text-foreground leading-relaxed">
+              <div className="bg-white/80 rounded-xl p-5 backdrop-blur-sm border border-blue-100/50 shadow-sm">
+                <h3 className="text-lg font-semibold mb-5 text-right text-gray-800 leading-relaxed">
                   {poll.question}
                 </h3>
                 
-                {showResults ? (
+                {hasUserVoted ? (
                   <PollResults newsId={newsId} />
                 ) : (
                   <PollVoting newsId={newsId} />
