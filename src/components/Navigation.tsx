@@ -1,4 +1,4 @@
-import { Home, TrendingUp, MessageCircle, User, Wallet } from "lucide-react";
+import { Home, TrendingUp, Crown, User, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -9,7 +9,7 @@ interface NavigationProps {
 const tabs = [
   { id: 'home', icon: Home, label: 'בית', path: '/' },
   { id: 'news', icon: TrendingUp, label: 'חדשות', path: '/news' },
-  { id: 'messages', icon: MessageCircle, label: 'הודעות', path: '/messages' },
+  { id: 'toptrusted', icon: Crown, label: 'מובילים', path: '/toptrusted' },
   { id: 'wallet', icon: Wallet, label: 'ארנק', path: '/wallet' },
   { id: 'profile', icon: User, label: 'פרופיל', path: '/profile' },
 ];
@@ -22,7 +22,7 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
     const path = location.pathname;
     if (path === '/') return 'home';
     if (path.startsWith('/news')) return 'news';
-    if (path.startsWith('/messages')) return 'messages';
+    if (path.startsWith('/toptrusted')) return 'toptrusted';
     if (path.startsWith('/wallet')) return 'wallet';
     if (path.startsWith('/profile')) return 'profile';
     return 'home';
