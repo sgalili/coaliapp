@@ -51,6 +51,7 @@ const mockVotes: { [pollId: string]: PollVote[] } = {
 
 export const usePoll = (newsId: string) => {
   const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({});
+  const [, forceUpdate] = useState(0);
   
   const poll = mockPolls[newsId];
   const votes = poll ? mockVotes[poll.id] || [] : [];
@@ -110,6 +111,9 @@ export const usePoll = (newsId: string) => {
     };
     
     mockVotes[poll.id] = [...(mockVotes[poll.id] || []), newVote];
+    
+    // Force re-render pour mettre à jour les résultats
+    forceUpdate(prev => prev + 1);
   };
 
   return {
