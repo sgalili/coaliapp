@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { EnhancedExpertCircle } from "@/components/EnhancedExpertCircle";
-import { ExpertFullScreen } from "@/components/ExpertFullScreen";
+import { ExpertFullScreenRevamped } from "@/components/ExpertFullScreenRevamped";
 import type { Expert, ExpertDomain } from "@/pages/TopTrustedPage";
 
 interface MixedExpertCarouselProps {
@@ -48,7 +48,7 @@ export const MixedExpertCarousel = ({ experts, domain }: MixedExpertCarouselProp
       </div>
 
       {selectedExpert && (
-        <ExpertFullScreen
+        <ExpertFullScreenRevamped
           expert={selectedExpert}
           experts={displayedExperts}
           onClose={() => setSelectedExpert(null)}

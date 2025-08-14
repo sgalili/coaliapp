@@ -4,11 +4,11 @@ import type { Expert, ExpertDomain } from "@/pages/TopTrustedPage";
 
 const domainConfig = {
   economy: { name: 'כלכלה', icon: TrendingUp, color: 'text-trust' },
-  security: { name: 'ביטחון', icon: Shield, color: 'text-watch' },
+  security: { name: 'ביטחון', icon: Shield, color: 'text-primary' },
   education: { name: 'חינוך', icon: GraduationCap, color: 'text-primary' },
   health: { name: 'רפואה', icon: Heart, color: 'text-destructive' },
   tech: { name: 'טכנולוגיה', icon: Smartphone, color: 'text-primary' },
-  culture: { name: 'תרבות', icon: Palette, color: 'text-accent-foreground' }
+  culture: { name: 'תרבות', icon: Palette, color: 'text-trust' }
 };
 
 interface DomainSectionProps {

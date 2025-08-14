@@ -90,12 +90,12 @@ const TopTrustedPage = () => {
   const domains: ExpertDomain[] = ['economy', 'security', 'education', 'health', 'tech', 'culture'];
 
   return (
-    <div className="h-screen bg-background flex flex-col">
+    <div className="h-screen bg-gradient-to-br from-background via-muted/30 to-primary/5 flex flex-col">
       {/* Simplified Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="p-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-foreground">מובילים בקהילה</h1>
+            <h1 className="text-2xl font-bold text-foreground">אנשי אמון מובילים</h1>
             <Badge variant="secondary" className="flex items-center gap-1">
               <Users className="w-3 h-3" />
               <span className="text-xs">{mockExperts.length}</span>

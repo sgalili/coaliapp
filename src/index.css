@@ -29,59 +29,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    /* Fresh white/blue design like news page */
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
 
-    --primary: 39 100% 50%;
-    --primary-foreground: 0 0% 8%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 84% 5%;
 
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 0 0% 14%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 210 40% 98%;
+    --accent-foreground: 222 84% 5%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14%;
-    --input: 0 0% 14%;
-    --ring: 39 100% 50%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
 
-    /* Trust network colors */
-    --trust: 120 100% 40%;
+    /* Trust network colors - fresh blue theme */
+    --trust: 142 71% 45%;
     --trust-foreground: 0 0% 98%;
-    --watch: 210 100% 50%;
+    --watch: 221 83% 53%;
     --watch-foreground: 0 0% 98%;
-    --zooz: 39 100% 50%;
-    --zooz-foreground: 0 0% 8%;
+    --zooz: 47 96% 53%;
+    --zooz-foreground: 224 71% 4%;
     --zooz-glow: 45 100% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -250,5 +244,33 @@ All colors MUST be HSL.
 
   .animate-zooz-particles {
     animation: zooz-particles 1.8s ease-out forwards;
+  }
+
+  /* Gentle trust pulse animation */
+  @keyframes gentle-pulse {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 transparent;
+    }
+    50% { 
+      box-shadow: 0 0 0 3px hsl(var(--trust) / 0.2);
+    }
+  }
+
+  .animate-gentle-pulse {
+    animation: gentle-pulse 3s ease-in-out infinite;
+  }
+
+  /* Subtle primary glow */
+  @keyframes primary-glow {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 transparent;
+    }
+    50% { 
+      box-shadow: 0 0 0 2px hsl(var(--primary) / 0.1);
+    }
+  }
+
+  .animate-primary-glow {
+    animation: primary-glow 4s ease-in-out infinite;
   }
 }

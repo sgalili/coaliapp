@@ -8,16 +8,16 @@ interface EnhancedExpertCircleProps {
 }
 
 export const EnhancedExpertCircle = ({ expert, onClick, isTopCommunity = false }: EnhancedExpertCircleProps) => {
-  // Determine border color based on trust rate
+  // Determine border color and animation based on trust rate and user trust
   const getBorderColor = (trustRate: number) => {
     if (trustRate >= 8) return "border-trust";
     if (trustRate >= 6) return "border-primary";
-    return "border-muted";
+    return "border-border";
   };
 
-  const getBorderGlow = (trustRate: number) => {
-    if (trustRate >= 8) return "shadow-lg shadow-trust/20";
-    if (trustRate >= 6) return "shadow-lg shadow-primary/20";
+  const getAnimation = () => {
+    if (expert.trustedByUser) return "animate-gentle-pulse";
+    if (expert.stats.trustRate >= 8) return "animate-primary-glow";
     return "";
   };
 
@@ -29,10 +29,9 @@ export const EnhancedExpertCircle = ({ expert, onClick, isTopCommunity = false }
       <div className="relative">
         {/* Main avatar with colored border */}
         <div className={`
-          relative w-20 h-20 rounded-full border-2 transition-all duration-300 
+          relative w-20 h-20 rounded-full border-2 transition-all duration-500 
           ${getBorderColor(expert.stats.trustRate)}
-          ${getBorderGlow(expert.stats.trustRate)}
-          ${expert.trustedByUser ? 'animate-pulse' : ''}
+          ${getAnimation()}
           group-hover:scale-105 group-hover:shadow-xl
         `}>
           <img
