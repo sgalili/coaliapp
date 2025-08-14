@@ -94,7 +94,7 @@ const ZoozIcon = ({ className = "w-6 h-6 text-zooz" }: { className?: string }) =
 
 const LiveBadge = () => {
   return (
-    <div className="absolute top-17 right-5 z-10">
+    <div className="absolute top-16 right-4 z-10">
       <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold animate-pulse shadow-lg">
         LIVE
       </div>
