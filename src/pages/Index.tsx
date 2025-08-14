@@ -3,6 +3,7 @@ import { VideoFeed } from "@/components/VideoFeed";
 import { Navigation } from "@/components/Navigation";
 import { SwipeHandler } from "@/components/SwipeHandler";
 import { KYCForm } from "@/components/KYCForm";
+import { VideoCreator } from "@/components/VideoCreator";
 import { FeedFilters, FilterState } from "@/components/FeedFilters";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
@@ -125,6 +126,7 @@ const mockPosts = [
 const Index = () => {
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
+  const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [zoozBalance, setZoozBalance] = useState(1250);
   const [feedFilter, setFeedFilter] = useState<FilterState>({ type: 'all' });
   const { toast } = useToast();
@@ -181,20 +183,28 @@ const Index = () => {
       console.log("Setting showKYC to true");
       setShowKYC(true);
     } else {
-      console.log("Showing create content toast");
-      toast({
-        title: "Create Content",
-        description: "Opening content creation...",
-      });
+      console.log("Opening video creator");
+      setShowVideoCreator(true);
     }
   };
 
   const handleKYCSubmit = (data: any) => {
     toast({
-      title: "KYC Submitted",
-      description: "Your verification is being processed...",
+      title: "KYC Verified!",
+      description: "Your verification is complete. You can now create content!",
     });
+    setIsKYCVerified(true);
     setShowKYC(false);
+    setShowVideoCreator(true);
+  };
+
+  const handleVideoPublish = (videoData: any) => {
+    toast({
+      title: "Video Published!",
+      description: `Your ${videoData.mode} content has been published successfully.`,
+    });
+    setShowVideoCreator(false);
+    console.log("Published video data:", videoData);
   };
 
   const getFilteredPosts = () => {
@@ -264,6 +274,13 @@ const Index = () => {
             onBack={() => setShowKYC(false)}
           />
         </div>
+      )}
+
+      {showVideoCreator && (
+        <VideoCreator
+          onClose={() => setShowVideoCreator(false)}
+          onPublish={handleVideoPublish}
+        />
       )}
     </div>
   );
