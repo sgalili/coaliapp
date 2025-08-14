@@ -51,11 +51,13 @@ const mockVotes: { [pollId: string]: PollVote[] } = {
 
 export const usePoll = (newsId: string) => {
   const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({});
+  const [showResults, setShowResults] = useState<{ [pollId: string]: boolean }>({});
   
   const poll = mockPolls[newsId];
   const votes = poll ? mockVotes[poll.id] || [] : [];
   
   const hasUserVoted = poll ? !!userVotes[poll.id] : false;
+  const shouldShowResults = poll ? showResults[poll.id] || false : false;
 
   const calculateResults = (): PollResults => {
     if (!poll) return {};
@@ -99,6 +101,12 @@ export const usePoll = (newsId: string) => {
       [poll.id]: option
     }));
     
+    // Show results immediately after voting
+    setShowResults(prev => ({
+      ...prev,
+      [poll.id]: true
+    }));
+    
     // Add mock vote to results
     const newVote: PollVote = {
       id: `vote-${Date.now()}`,
@@ -115,6 +123,7 @@ export const usePoll = (newsId: string) => {
   return {
     poll,
     hasUserVoted,
+    showResults: shouldShowResults,
     userVote: poll ? userVotes[poll.id] : undefined,
     results: calculateResults(),
     totalVotes: poll ? (mockVotes[poll.id] || []).length : 0,
