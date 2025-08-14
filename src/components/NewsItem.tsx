@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PollSection } from "./PollSection";
 
 interface NewsItem {
   id: string;
@@ -343,6 +344,9 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
           </div>
         </div>
       )}
+
+      {/* Community Poll Section */}
+      <PollSection newsId={item.id} />
     </article>
   );
 };
