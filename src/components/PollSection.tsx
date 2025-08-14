@@ -61,8 +61,8 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
         )}>
           {isExpanded && isKYCVerified && (
             <div className="p-4 pt-2 border-t border-blue-100/60">
-              <div className="bg-white/80 rounded-xl p-5 backdrop-blur-sm border border-blue-100/50 shadow-sm">
-                <h3 className="text-lg font-semibold mb-5 text-right text-gray-800 leading-relaxed">
+              <div className="bg-background/95 rounded-xl p-5 backdrop-blur-sm border border-border shadow-sm">
+                <h3 className="text-lg font-semibold mb-5 text-right text-foreground leading-relaxed">
                   {poll.question}
                 </h3>
                 
