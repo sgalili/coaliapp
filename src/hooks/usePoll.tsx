@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export interface Poll {
   id: string;
@@ -50,17 +50,18 @@ const mockVotes: { [pollId: string]: PollVote[] } = {
 };
 
 export const usePoll = (newsId: string) => {
-  const [userVote, setUserVote] = useState<string | undefined>(undefined);
-  const [allVotes, setAllVotes] = useState(mockVotes);
+  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({});
+  const [, forceUpdate] = useState(0);
   
   const poll = mockPolls[newsId];
+  const votes = poll ? mockVotes[poll.id] || [] : [];
   
-  const hasUserVoted = !!userVote;
+  const hasUserVoted = poll ? !!userVotes[poll.id] : false;
 
   const calculateResults = (): PollResults => {
     if (!poll) return {};
     
-    const currentVotes = allVotes[poll.id] || [];
+    const currentVotes = mockVotes[poll.id] || [];
     const results: PollResults = {};
     const totalVotes = currentVotes.length;
     
@@ -94,10 +95,10 @@ export const usePoll = (newsId: string) => {
   const submitVote = (option: string) => {
     if (!poll || hasUserVoted) return;
     
-    console.log('Submitting vote:', option); // Debug
-    
-    // Set user vote
-    setUserVote(option);
+    setUserVotes(prev => ({
+      ...prev,
+      [poll.id]: option
+    }));
     
     // Add mock vote to results
     const newVote: PollVote = {
@@ -109,24 +110,18 @@ export const usePoll = (newsId: string) => {
       userName: 'את/ה'
     };
     
-    // Update votes state
-    setAllVotes(prev => ({
-      ...prev,
-      [poll.id]: [...(prev[poll.id] || []), newVote]
-    }));
+    mockVotes[poll.id] = [...(mockVotes[poll.id] || []), newVote];
+    
+    // Force re-render pour mettre à jour les résultats
+    forceUpdate(prev => prev + 1);
   };
-
-  const results = calculateResults();
-  const totalVotes = poll ? (allVotes[poll.id] || []).length : 0;
-
-  console.log('Poll state:', { hasUserVoted, userVote, totalVotes, results }); // Debug
 
   return {
     poll,
     hasUserVoted,
-    userVote,
-    results,
-    totalVotes,
+    userVote: poll ? userVotes[poll.id] : undefined,
+    results: calculateResults(),
+    totalVotes: poll ? (mockVotes[poll.id] || []).length : 0,
     submitVote
   };
 };
