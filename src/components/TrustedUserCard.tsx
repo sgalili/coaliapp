@@ -5,7 +5,7 @@ import { Eye, Crown, TrendingUp, Handshake } from "lucide-react";
 import type { Expert } from "@/pages/TopTrustedPage";
 const TrustIcon = () => (
   <div className="relative">
-    <Handshake className="w-5 h-5" />
+    <Handshake className="w-5 h-5 text-trust" />
     <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-400" />
   </div>
 );
@@ -81,20 +81,16 @@ export const TrustedUserCard = ({
         <div className="flex items-center gap-3">
           <button 
             onClick={onTrustClick} 
-            className={`p-2 rounded-full transition-colors ${
-              expert.trustedByUser 
-                ? "bg-trust text-trust-foreground" 
-                : "bg-muted hover:bg-accent text-muted-foreground hover:text-foreground"
-            }`}
+            className="p-2 transition-colors hover:opacity-80"
           >
             <TrustIcon />
           </button>
           
           <button 
             onClick={onWatchClick} 
-            className="p-2 rounded-full bg-muted hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 transition-colors hover:opacity-80"
           >
-            <Eye className="w-5 h-5" />
+            <Eye className="w-6 h-6 text-watch" />
           </button>
         </div>
       </div>
