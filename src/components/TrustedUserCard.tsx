@@ -90,9 +90,13 @@ export const TrustedUserCard = ({
 
         {/* Main Trust CTA */}
         <div className="flex items-start pt-2">
-          <Button onClick={onTrustClick} variant={expert.trustedByUser ? "default" : "outline"} size="sm" className="gap-1">
+          <Button 
+            onClick={onTrustClick} 
+            variant={expert.trustedByUser ? "default" : "outline"} 
+            size="icon"
+            className="w-10 h-10 rounded-full"
+          >
             <TrustIcon />
-            {expert.trustedByUser ? "Trusted" : "Trust"}
           </Button>
         </div>
       </div>
