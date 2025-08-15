@@ -2,7 +2,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { X, MessageCircle, Heart, Eye, Users, TrendingUp, Crown } from "lucide-react";
+import { X, MessageCircle, Handshake, Eye, Users, TrendingUp, Crown } from "lucide-react";
 import type { Expert } from "@/pages/TopTrustedPage";
 
 interface ProfileOverlayProps {
@@ -94,7 +94,7 @@ export const ProfileOverlay = ({
           <div className="grid grid-cols-3 gap-4 py-4 border-y border-border">
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Heart className="w-4 h-4 text-trust" />
+                <Handshake className="w-4 h-4 text-trust" />
                 <span className="font-semibold text-foreground">
                   {expert.stats.trustCount.toLocaleString()}
                 </span>
