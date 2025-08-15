@@ -1,4 +1,5 @@
 import { Shield, ShieldAlert, ShieldCheck, Flame } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface TrustStatusIndicatorProps {
   trending: boolean;
@@ -11,6 +12,13 @@ export const TrustStatusIndicator = ({
   kycLevel, 
   className = "" 
 }: TrustStatusIndicatorProps) => {
+  // KYC Configuration - exact same as VideoFeed
+  const kycConfig = {
+    1: { icon: Shield, color: "text-gray-400", bg: "bg-gray-400/20" },
+    2: { icon: ShieldAlert, color: "text-blue-500", bg: "bg-blue-500/20" },
+    3: { icon: ShieldCheck, color: "text-green-500", bg: "bg-green-500/20" }
+  };
+
   return (
     <div className={`relative ${className}`}>
       {/* Trending indicator - top right */}
@@ -21,13 +29,16 @@ export const TrustStatusIndicator = ({
       )}
       
       {/* KYC Badge - exact same as VideoFeed */}
-      {kycLevel > 0 && (
-        <div className="absolute -top-1 -right-1 bg-background rounded-full p-1 border w-6 h-6 flex items-center justify-center">
-          {kycLevel === 1 && <Shield className="w-4 h-4 text-gray-400" />}
-          {kycLevel === 2 && <ShieldAlert className="w-4 h-4 text-blue-500" />}
-          {kycLevel === 3 && <ShieldCheck className="w-4 h-4 text-green-500" />}
-        </div>
-      )}
+      {kycLevel > 0 && (() => {
+        const kyc = kycConfig[kycLevel as keyof typeof kycConfig];
+        const IconComponent = kyc.icon;
+        
+        return (
+          <div className={cn("absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center", kyc.bg)}>
+            <IconComponent className={cn("w-4 h-4", kyc.color)} />
+          </div>
+        );
+      })()}
     </div>
   );
 };
