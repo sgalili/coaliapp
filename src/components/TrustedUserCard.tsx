@@ -8,8 +8,8 @@ import { getDomainConfig, getDomainBadgeClasses } from "@/lib/domainConfig";
 import type { Expert } from "@/pages/TopTrustedPage";
 const TrustIcon = () => {
   return <div className="relative">
-      <Handshake className="w-3 h-3 text-trust" />
-      <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
+      <Handshake className="w-6 h-6 text-trust" />
+      <Crown className="w-1 h-1 text-yellow-400 absolute -top-1 -right-1" />
     </div>;
 };
 interface TrustedUserCardProps {
