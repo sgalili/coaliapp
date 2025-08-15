@@ -1,8 +1,15 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Eye, Crown, TrendingUp } from "lucide-react";
+import { Eye, Crown, TrendingUp, Handshake } from "lucide-react";
 import type { Expert } from "@/pages/TopTrustedPage";
+const TrustIcon = () => (
+  <div className="relative">
+    <Handshake className="w-5 h-5" />
+    <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-400" />
+  </div>
+);
+
 interface TrustedUserCardProps {
   expert: Expert;
   onProfileClick: () => void;
@@ -80,7 +87,7 @@ export const TrustedUserCard = ({
                 : "bg-muted hover:bg-accent text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Crown className="w-5 h-5" />
+            <TrustIcon />
           </button>
           
           <button 
