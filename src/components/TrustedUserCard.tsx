@@ -1,5 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Eye, Crown, Handshake } from "lucide-react";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
@@ -35,10 +36,8 @@ export const TrustedUserCard = ({
               <AvatarFallback>{expert.name.substring(0, 2)}</AvatarFallback>
             </Avatar>
             <TrustStatusIndicator
-              trustedByUser={expert.trustedByUser}
               trending={expert.trending}
               kycLevel={expert.stats.kycLevel}
-              isTopCommunity={expert.verified}
             />
           </div>
           
@@ -112,12 +111,15 @@ export const TrustedUserCard = ({
 
         {/* Main Trust CTA */}
         <div className="flex items-start pt-2">
-          <button 
+          <Button 
             onClick={onTrustClick} 
-            className="p-2 transition-colors hover:opacity-80"
+            variant={expert.trustedByUser ? "default" : "outline"}
+            size="sm"
+            className="gap-1"
           >
             <TrustIcon />
-          </button>
+            {expert.trustedByUser ? "Trusted" : "Trust"}
+          </Button>
         </div>
       </div>
       <Separator />
