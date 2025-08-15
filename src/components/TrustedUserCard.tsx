@@ -75,7 +75,10 @@ export const TrustedUserCard = ({
           {/* Trust Score */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
-              <Crown className="w-3 h-3 text-trust" />
+              <div className="relative">
+                <Handshake className="w-3 h-3 text-trust" />
+                <Crown className="w-1 h-1 text-yellow-400 absolute -top-0.5 -right-0.5" />
+              </div>
               <span className="text-xs font-medium text-trust">
                 {expert.stats.trustCount.toLocaleString()}
               </span>
