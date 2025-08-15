@@ -42,8 +42,10 @@ export const EnhancedExpertCircle = ({ expert, onClick, isTopCommunity = false }
           
           {/* Trust Status Indicators */}
           <TrustStatusIndicator
+            trustedByUser={expert.trustedByUser}
             trending={expert.trending}
             kycLevel={expert.stats.kycLevel}
+            isTopCommunity={isTopCommunity}
           />
         </div>
       </div>
