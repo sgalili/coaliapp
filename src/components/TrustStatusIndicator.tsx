@@ -20,18 +20,12 @@ export const TrustStatusIndicator = ({
         </div>
       )}
       
-      {/* KYC Badge - bottom right */}
+      {/* KYC Badge - exact same as VideoFeed */}
       {kycLevel > 0 && (
         <div className="absolute -top-1 -right-1 bg-background rounded-full p-1 border w-6 h-6 flex items-center justify-center">
-          {kycLevel === 1 && (
-            <Shield className="w-4 h-4 text-gray-400" />
-          )}
-          {kycLevel === 2 && (
-            <ShieldAlert className="w-4 h-4 text-blue-500" />
-          )}
-          {kycLevel === 3 && (
-            <ShieldCheck className="w-4 h-4 text-green-500" />
-          )}
+          {kycLevel === 1 && <Shield className="w-4 h-4 text-gray-400" />}
+          {kycLevel === 2 && <ShieldAlert className="w-4 h-4 text-blue-500" />}
+          {kycLevel === 3 && <ShieldCheck className="w-4 h-4 text-green-500" />}
         </div>
       )}
     </div>
