@@ -31,7 +31,7 @@ export const TrustedUserCard = ({
               <AvatarImage src={expert.avatar} alt={expert.name} />
               <AvatarFallback>{expert.name.substring(0, 2)}</AvatarFallback>
             </Avatar>
-            <TrustStatusIndicator trending={expert.trending} kycLevel={expert.stats.kycLevel} />
+            <TrustStatusIndicator kycLevel={expert.stats.kycLevel} />
           </div>
           
           {/* Watch button under avatar */}
