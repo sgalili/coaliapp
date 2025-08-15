@@ -7,7 +7,7 @@ import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { getDomainConfig, getDomainBadgeClasses } from "@/lib/domainConfig";
 import type { Expert } from "@/pages/TopTrustedPage";
 const TrustIcon = () => <div className="relative">
-    <Handshake className="w-5 h-5 text-trust" />
+    <Handshake className="w-6 h-6 text-trust" />
     <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-400" />
   </div>;
 interface TrustedUserCardProps {
