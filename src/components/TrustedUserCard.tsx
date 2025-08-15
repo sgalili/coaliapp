@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Eye, Handshake, TrendingUp, Play } from "lucide-react";
+import { Eye, Crown, TrendingUp } from "lucide-react";
 import type { Expert } from "@/pages/TopTrustedPage";
 interface TrustedUserCardProps {
   expert: Expert;
@@ -55,7 +55,7 @@ export const TrustedUserCard = ({
           {/* Trust Score */}
           <div className="flex items-center gap-3 mt-2">
             <div className="flex items-center gap-1">
-              <Handshake className="w-3 h-3 text-trust" />
+              <Crown className="w-3 h-3 text-trust" />
               <span className="text-xs font-medium text-trust">
                 {expert.stats.trustCount.toLocaleString()}
               </span>
@@ -80,14 +80,14 @@ export const TrustedUserCard = ({
                 : "bg-muted hover:bg-accent text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Handshake className="w-5 h-5" />
+            <Crown className="w-5 h-5" />
           </button>
           
           <button 
             onClick={onWatchClick} 
             className="p-2 rounded-full bg-muted hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
           >
-            <Play className="w-5 h-5" />
+            <Eye className="w-5 h-5" />
           </button>
         </div>
       </div>
