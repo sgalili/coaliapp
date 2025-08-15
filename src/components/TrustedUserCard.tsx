@@ -96,7 +96,7 @@ export const TrustedUserCard = ({
             onClick={onTrustClick} 
             variant={expert.trustedByUser ? "default" : "outline"} 
             size="icon"
-            className="w-10 h-10 rounded-full"
+            className="w-12 h-12 rounded-full"
           >
             <TrustIcon />
           </Button>
