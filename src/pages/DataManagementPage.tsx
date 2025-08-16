@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowRight, Database, Shield, AlertTriangle, Info } from "lucide-react";
+import { ArrowRight, Database, Shield, AlertTriangle, Info, X } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 
 interface DataPermission {
@@ -16,6 +16,8 @@ interface DataPermission {
 }
 
 export const DataManagementPage = () => {
+  const [showBVIMessage, setShowBVIMessage] = useState(true);
+  
   useEffect(() => {
     document.documentElement.dir = 'rtl';
   }, []);
@@ -156,6 +158,25 @@ export const DataManagementPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="max-w-md mx-auto p-4 space-y-4">
+        {/* BVI Message */}
+        {showBVIMessage && (
+          <Alert className="border-blue-200 bg-blue-50 relative">
+            <Info className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800 pr-6">
+              <strong>עדכון קרוב:</strong> בקרוב נעבור למערכת בלוקצ'יין המבוססת על איי בי וי (BVI) 
+              שתאפשר שליטה מלאה בנתונים שלך ושקיפות מוחלטת.
+            </AlertDescription>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute left-2 top-2 h-auto p-1 text-blue-600 hover:text-blue-800"
+              onClick={() => setShowBVIMessage(false)}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </Alert>
+        )}
+
         {/* Header */}
         <div className="text-center py-4">
           <h1 className="text-2xl font-bold">הנתונים שלי</h1>
@@ -196,11 +217,14 @@ export const DataManagementPage = () => {
                         </div>
                         <p className="text-xs text-muted-foreground">{permission.description}</p>
                       </div>
-                      <Switch
-                        checked={permission.enabled}
-                        onCheckedChange={() => togglePermission(permission.id)}
-                        disabled={permission.critical}
-                      />
+                      <div className="flex items-center">
+                        <Switch
+                          checked={permission.enabled}
+                          onCheckedChange={() => togglePermission(permission.id)}
+                          disabled={permission.critical}
+                          className="data-[state=checked]:bg-primary"
+                        />
+                      </div>
                     </div>
                     
                     {permission.critical && !permission.enabled && (
