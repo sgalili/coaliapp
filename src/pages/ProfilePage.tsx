@@ -71,14 +71,7 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-background" dir="rtl">
       {/* Header */}
       <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border z-10">
-        <div className="flex items-center justify-between p-4">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowRight className="w-5 h-5" />
-          </Button>
+        <div className="flex items-center justify-end p-4">
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon">
               <Share className="w-4 h-4" />
