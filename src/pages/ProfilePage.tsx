@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, Camera, Vote } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,7 +11,6 @@ import { EditableField } from "@/components/EditableField";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { KYCManagement } from "@/components/KYCManagement";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
-import { getDomainConfig } from "@/lib/domainConfig";
 import { cn } from "@/lib/utils";
 import sarahProfile from "@/assets/sarah-profile.jpg";
 
@@ -31,9 +30,9 @@ const mockCurrentUser = {
   postsCount: 89,
   zoozEarned: 12750,
   expertise: [
-    { domain: 'economy', trustCount: 234 },
-    { domain: 'security', trustCount: 167 },
-    { domain: 'education', trustCount: 89 }
+    { domain: 'economy', name: 'כלכלה', trustCount: 234, icon: TrendingUp },
+    { domain: 'security', name: 'ביטחון', trustCount: 167, icon: Shield },
+    { domain: 'education', name: 'חינוך', trustCount: 89, icon: GraduationCap }
   ],
   posts: [
     {
@@ -70,42 +69,69 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
-      {/* Header - TikTok Style */}
-      <div className="flex items-center justify-between p-4">
-        <div className="text-sm text-muted-foreground">@{user.handle}</div>
-        <button className="p-2 hover:bg-accent rounded-full transition-colors">
-          <Share className="w-5 h-5" />
-        </button>
+      {/* Header */}
+      <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border z-10">
+        <div className="flex items-center justify-between p-4">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowRight className="w-5 h-5" />
+          </Button>
+          <div className="text-center">
+            <h1 className="font-bold text-lg">{user.username}</h1>
+            <p className="text-sm text-muted-foreground">@{user.handle}</p>
+          </div>
+          <ProfileMenu />
+        </div>
       </div>
 
       {/* Profile Info */}
       <div className="p-6 space-y-4">
-        {/* Profile Photo with Watchers Count */}
-        <div className="flex flex-col items-center mb-4">
+        {/* Avatar and Basic Info */}
+        <div className="flex items-start gap-4">
           <div className="relative">
             <img 
               src={user.profileImage} 
               alt={user.username}
-              className="w-24 h-24 rounded-full object-cover border-4 border-primary/20"
+              className="w-20 h-20 rounded-full object-cover"
             />
             <TrustStatusIndicator kycLevel={user.kycLevel} />
-            <button className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90 transition-colors">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute -bottom-1 -right-1 w-6 h-6 bg-background border border-border rounded-full shadow-sm hover:bg-accent"
+            >
               <Camera className="w-3 h-3" />
-            </button>
+            </Button>
           </div>
-          <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
-            <Eye className="w-4 h-4" />
-            <span>{user.watchersCount.toLocaleString()} צופים</span>
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <EditableField
+                value={user.username}
+                onSave={(value) => handleUpdateField('username', value)}
+                className="text-xl font-bold"
+              />
+              {user.isVerified && <UserCheck className="w-5 h-5 text-blue-500" />}
+              <TrustBadge trustCount={user.trustersCount} />
+            </div>
+            
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <MapPin className="w-4 h-4" />
+                <EditableField
+                  value={user.location}
+                  onSave={(value) => handleUpdateField('location', value)}
+                  placeholder="הוסף מיקום"
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <Calendar className="w-4 h-4" />
+                נרשם {user.joinDate}
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* User Name - Bigger and Editable */}
-        <div className="text-center mb-4">
-          <EditableField
-            value={user.username}
-            onSave={(value) => handleUpdateField('username', value)}
-            className="text-2xl font-bold mb-2"
-          />
         </div>
 
         {/* Bio */}
@@ -118,46 +144,63 @@ const ProfilePage = () => {
           maxLength={280}
         />
 
-        {/* Expertise Badges - Exactly like DomainFilter */}
-        <div className="flex gap-2 flex-wrap justify-center mb-4">
-          {user.expertise.map((expertiseItem) => {
-            const domainConfig = getDomainConfig(expertiseItem.domain as any);
-            const IconComponent = domainConfig.icon;
+        {/* Expertise Badges */}
+        <div className="flex gap-2 flex-wrap">
+          {user.expertise.map((domain) => {
+            const IconComponent = domain.icon;
             return (
               <Badge 
-                key={expertiseItem.domain}
+                key={domain.domain}
                 variant="secondary"
                 className="flex items-center gap-1 px-3 py-1.5"
               >
                 <IconComponent className="w-3 h-3" />
-                <span className="text-xs font-medium">{domainConfig.hebrewName} ({expertiseItem.trustCount})</span>
+                <span className="text-xs font-medium">{domain.name} ({domain.trustCount})</span>
               </Badge>
             );
           })}
         </div>
 
-        {/* Simplified Stats - Trust and ZOOZ Only */}
-        <div className="flex justify-around py-6 border-y border-border">
+        {/* Enhanced Stats with ZOOZ Priority */}
+        <div className="flex justify-around py-4 border-y border-border">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary">{user.trustersCount}</div>
-            <div className="text-sm text-muted-foreground">אמון כולל</div>
+            <div className="text-2xl font-bold text-trust">{user.trustersCount}</div>
+            <div className="text-sm text-muted-foreground">אמון</div>
+          </div>
+          <ZoozEarnedDisplay zoozEarned={user.zoozEarned} showAnimation />
+          <div className="text-center">
+            <div className="text-lg font-semibold">{user.postsCount}</div>
+            <div className="text-sm text-muted-foreground">פוסטים</div>
           </div>
           <div className="text-center">
-            <ZoozEarnedDisplay zoozEarned={user.zoozEarned} />
+            <div className="text-lg font-medium text-watch">{user.watchersCount}</div>
+            <div className="text-sm text-muted-foreground">צופים</div>
           </div>
         </div>
 
-        {/* Simplified Action Button */}
-        <div className="flex justify-center py-4">
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
-            <Vote className="w-4 h-4" />
-            הצבעה
+        {/* Action Buttons with Vote Button */}
+        <div className="flex gap-3">
+          {canVote && (
+            <Button className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+              <Vote className="w-4 h-4 ml-2" />
+              הצבעה
+            </Button>
+          )}
+          <Button variant="outline" className="flex-1">
+            <Eye className="w-4 h-4 ml-2" />
+            עריכת פרופיל
+          </Button>
+          <Button variant="outline" size="icon">
+            <MessageCircle className="w-4 h-4" />
+          </Button>
+          <Button variant="outline" size="icon">
+            <Share className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
-      {/* Compact KYC Section */}
-      <div className="px-6 pb-2">
+      {/* KYC Management Section */}
+      <div className="px-6 pb-6">
         <KYCManagement />
       </div>
 
