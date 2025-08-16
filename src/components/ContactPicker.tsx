@@ -6,6 +6,7 @@ interface Contact {
   id: string;
   name: string;
   username: string;
+  phone?: string;
   avatar?: string;
   isFrequent?: boolean;
 }
@@ -99,6 +100,9 @@ const ContactItem = ({ contact, isSelected, onSelect }: ContactItemProps) => {
         <div className="text-right flex-1">
           <div className="font-medium">{contact.name}</div>
           <div className="text-sm text-muted-foreground">{contact.username}</div>
+          {contact.phone && (
+            <div className="text-xs text-muted-foreground">{contact.phone}</div>
+          )}
         </div>
         {contact.isFrequent && (
           <Star className="w-4 h-4 text-primary" fill="currentColor" />

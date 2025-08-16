@@ -17,16 +17,17 @@ interface Contact {
   id: string;
   name: string;
   username: string;
+  phone?: string;
   avatar?: string;
   isFrequent?: boolean;
 }
 
 const mockContacts: Contact[] = [
-  { id: "1", name: "דוד כהן", username: "@david_cohen", isFrequent: true },
-  { id: "2", name: "שרה לוי", username: "@sarah_levi", isFrequent: true },
-  { id: "3", name: "אמית רוזן", username: "@amit_rosen" },
-  { id: "4", name: "נועה כץ", username: "@noa_katz" },
-  { id: "5", name: "רחל גולן", username: "@rachel_golan" },
+  { id: "1", name: "דוד כהן", username: "@david_cohen", phone: "050-1234567", isFrequent: true },
+  { id: "2", name: "שרה לוי", username: "@sarah_levi", phone: "052-9876543", isFrequent: true },
+  { id: "3", name: "אמית רוזן", username: "@amit_rosen", phone: "053-5555555" },
+  { id: "4", name: "נועה כץ", username: "@noa_katz", phone: "054-1111111" },
+  { id: "5", name: "רחל גולן", username: "@rachel_golan", phone: "058-2222222" },
 ];
 
 export const SendZoozModal = ({ isOpen, onClose, currentBalance }: SendZoozModalProps) => {
@@ -41,7 +42,9 @@ export const SendZoozModal = ({ isOpen, onClose, currentBalance }: SendZoozModal
   const isValidAmount = zoozAmount > 0 && zoozAmount <= currentBalance;
 
   const filteredContacts = mockContacts.filter(contact =>
-    contact.name.includes(searchQuery) || contact.username.includes(searchQuery)
+    contact.name.includes(searchQuery) || 
+    contact.username.includes(searchQuery) ||
+    (contact.phone && contact.phone.includes(searchQuery))
   );
 
   const handleRecipientSelect = (contact: Contact) => {
@@ -111,7 +114,7 @@ export const SendZoozModal = ({ isOpen, onClose, currentBalance }: SendZoozModal
             <div className="relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="חפש איש קשר או הכנס שם משתמש"
+                placeholder="חפש לפי שם, שם משתמש או מספר טלפון"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pr-10"
