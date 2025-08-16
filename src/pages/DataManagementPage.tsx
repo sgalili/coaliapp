@@ -166,7 +166,7 @@ export const DataManagementPage = () => {
             variant="ghost"
             size="sm"
             className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/profile")}
           >
             <X className="h-5 w-5" />
           </Button>
