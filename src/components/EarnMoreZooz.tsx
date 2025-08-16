@@ -1,4 +1,5 @@
-import { ChevronLeft, Users, MessageCircle, FileText, Shield } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Users, MessageCircle, FileText, Shield } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
@@ -42,34 +43,40 @@ const rewardItems = [
 ];
 
 export const EarnMoreZooz = ({ onRewardClick }: EarnMoreZoozProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">גלה איך להרוויח יותר Zooz</h3>
-        <ChevronLeft className="w-5 h-5 text-muted-foreground" />
-      </div>
+    <div className="px-4">
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between py-4 text-right"
+      >
+        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+        <h3 className="text-lg font-semibold">גלה איך להרוויח יותר זוז</h3>
+      </button>
       
-      <div className="space-y-3">
-        {rewardItems.map((item) => (
-          <Button
-            key={item.id}
-            variant="ghost"
-            onClick={() => onRewardClick(item.id)}
-            className="w-full justify-between p-3 h-auto text-right"
-          >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg bg-background ${item.color}`}>
-                <item.icon className="w-4 h-4" />
+      {isExpanded && (
+        <div className="pb-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+          {rewardItems.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => onRewardClick(item.id)}
+              className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg bg-background ${item.color}`}>
+                  <item.icon className="w-4 h-4" />
+                </div>
+                <div className="text-right">
+                  <div className="font-medium text-sm">{item.title}</div>
+                  <div className="text-xs text-muted-foreground">{item.description}</div>
+                </div>
               </div>
-              <div className="text-right">
-                <div className="font-medium text-sm">{item.title}</div>
-                <div className="text-xs text-muted-foreground">{item.description}</div>
-              </div>
+              <div className="text-primary font-bold text-sm">{item.reward}</div>
             </div>
-            <div className="text-primary font-bold text-sm">{item.reward}</div>
-          </Button>
-        ))}
-      </div>
-    </Card>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
