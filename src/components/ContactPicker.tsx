@@ -86,9 +86,9 @@ interface ContactItemProps {
 const ContactItem = ({ contact, isSelected, onSelect }: ContactItemProps) => {
   return (
     <Button
-      variant={isSelected ? "default" : "ghost"}
+      variant={isSelected ? "secondary" : "ghost"}
       onClick={onSelect}
-      className="w-full justify-start h-auto p-3"
+      className={`w-full justify-start h-auto p-3 ${isSelected ? 'bg-primary/10 border border-primary/20' : ''}`}
     >
       <div className="flex items-center gap-3 flex-1">
         <Avatar className="w-8 h-8">
