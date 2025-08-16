@@ -1,4 +1,4 @@
-import { CreditCard, ArrowDown, ArrowUp, ArrowDownToLine } from "lucide-react";
+import { CreditCard, ArrowDown, ArrowUp, Wallet } from "lucide-react";
 
 interface WalletActionsProps {
   onBuyClick: () => void;
@@ -55,7 +55,7 @@ export const WalletActions = ({
           className="flex flex-col items-center gap-2 group opacity-60"
         >
           <div className="w-16 h-16 bg-gray-500/10 hover:bg-gray-500/20 rounded-full flex items-center justify-center transition-colors">
-            <ArrowDownToLine className="w-6 h-6 text-gray-600" />
+            <Wallet className="w-6 h-6 text-gray-600" />
           </div>
           <span className="text-xs font-medium text-center">משיכה</span>
         </button>
