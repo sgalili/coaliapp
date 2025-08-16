@@ -4,41 +4,29 @@ import { WalletBalance } from "@/components/WalletBalance";
 import { WalletActions } from "@/components/WalletActions";
 import { EarnMoreZooz } from "@/components/EarnMoreZooz";
 import { TransactionHistory } from "@/components/TransactionHistory";
+import { BuyZoozModal } from "@/components/BuyZoozModal";
+import { SendZoozModal } from "@/components/SendZoozModal";
+import { RequestZoozModal } from "@/components/RequestZoozModal";
+import { WithdrawModal } from "@/components/WithdrawModal";
+import { WalletSettings } from "@/components/WalletSettings";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
 import { useWalletData } from "@/hooks/useWalletData";
 import { useToast } from "@/hooks/use-toast";
 
 const WalletPage = () => {
   const { zoozBalance, usdValue, percentageChange, transactions } = useWalletData();
   const { toast } = useToast();
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-  const handleBuyClick = () => {
-    toast({
-      title: "קניית ZOOZ",
-      description: "פתיחת ממשק קנייה...",
-    });
-  };
-
-  const handleRequestClick = () => {
-    toast({
-      title: "בקשת ZOOZ",
-      description: "יצירת קישור בקשה...",
-    });
-  };
-
-  const handleSendClick = () => {
-    toast({
-      title: "שליחת ZOOZ",
-      description: "פתיחת ממשק שליחה...",
-    });
-  };
-
-  const handleWithdrawClick = () => {
-    toast({
-      title: "משיכה",
-      description: "זמין בקרוב!",
-      variant: "destructive",
-    });
-  };
+  const handleBuyClick = () => setShowBuyModal(true);
+  const handleRequestClick = () => setShowRequestModal(true);
+  const handleSendClick = () => setShowSendModal(true);
+  const handleWithdrawClick = () => setShowWithdrawModal(true);
 
   const handleRewardClick = (type: string) => {
     const rewardTitles: Record<string, string> = {
@@ -58,7 +46,17 @@ const WalletPage = () => {
     <div className="h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="sticky top-0 bg-background z-10 border-b px-4 py-4">
-        <h1 className="text-xl font-bold text-center">ארנק ZOOZ</h1>
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowSettingsModal(true)}
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
+          <h1 className="text-xl font-bold">ארנק ZOOZ</h1>
+          <div className="w-10" />
+        </div>
       </div>
 
       {/* Main Content */}
@@ -89,6 +87,17 @@ const WalletPage = () => {
 
       {/* Navigation */}
       <Navigation zoozBalance={Math.floor(zoozBalance)} />
+
+      {/* Modals */}
+      <BuyZoozModal isOpen={showBuyModal} onClose={() => setShowBuyModal(false)} />
+      <SendZoozModal 
+        isOpen={showSendModal} 
+        onClose={() => setShowSendModal(false)} 
+        currentBalance={zoozBalance}
+      />
+      <RequestZoozModal isOpen={showRequestModal} onClose={() => setShowRequestModal(false)} />
+      <WithdrawModal isOpen={showWithdrawModal} onClose={() => setShowWithdrawModal(false)} />
+      <WalletSettings isOpen={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
     </div>
   );
 };
