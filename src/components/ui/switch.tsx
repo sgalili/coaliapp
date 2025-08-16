@@ -21,6 +21,7 @@ const Switch = React.forwardRef<
       className={cn(
         "pointer-events-none block h-6 w-6 rounded-full bg-white shadow-lg ring-0 transition-all duration-200 ease-in-out",
         "data-[state=checked]:translate-x-6 data-[state=unchecked]:translate-x-0",
+        "rtl:data-[state=checked]:-translate-x-6 rtl:data-[state=unchecked]:translate-x-0",
         "data-[state=checked]:shadow-xl"
       )}
     />
