@@ -100,26 +100,6 @@ export const KYCManagement = ({ className }: KYCManagementProps) => {
         )}
       </Card>
 
-      {/* Future BVI Message */}
-      <Card className="border-primary/20 bg-primary/5">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Crown className="w-5 h-5 text-primary" />
-            <CardTitle className="text-lg">העתיד: BVI Blockchain</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            בקרוב נשחרר את האפליקציה הנייטיב שלנו עם טכנולוגיית הבלוקצ'יין. 
-            תוכל לחתום על ה-KYC שלך ישירות על הבלוקצ'יין ולקבל זהות מאומתת (BVI - Blockchain Verified Identity). 
-            כל הנתונים יישמרו מקומית אצלך, ואנחנו לא נצטרך לשמור דבר!
-          </p>
-          <div className="mt-3 flex items-center gap-2 text-xs text-primary">
-            <Trophy className="w-4 h-4" />
-            <span>המהפכה הבאה בזהות דיגיטלית</span>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* KYC Upgrade Dialog */}
       <Dialog open={showUpgrade} onOpenChange={setShowUpgrade}>
