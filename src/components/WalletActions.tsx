@@ -1,4 +1,4 @@
-import { ShoppingCart, MessageSquare, Send, ArrowDownToLine } from "lucide-react";
+import { CreditCard, MessageSquare, Send, ArrowDownToLine } from "lucide-react";
 
 interface WalletActionsProps {
   onBuyClick: () => void;
@@ -22,7 +22,7 @@ export const WalletActions = ({
           className="flex flex-col items-center gap-2 group"
         >
           <div className="w-16 h-16 bg-green-500/10 hover:bg-green-500/20 rounded-full flex items-center justify-center transition-colors">
-            <ShoppingCart className="w-6 h-6 text-green-600" />
+            <CreditCard className="w-6 h-6 text-green-600" />
           </div>
           <span className="text-xs font-medium text-center">קניה</span>
         </button>
