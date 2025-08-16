@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Sparkles } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ZoozEarnedDisplayProps {
   zoozEarned: number;
@@ -24,21 +25,26 @@ export const ZoozEarnedDisplay = ({
 
   return (
     <div className={cn("text-center", className)}>
-      <div className="relative flex items-center justify-center">
-        <div 
-          className={cn(
-            "text-2xl font-bold text-zooz transition-all duration-300",
-            showAnimation && "animate-gentle-pulse"
-          )}
-        >
-          {formatZooz(zoozEarned)}
-        </div>
-        <Sparkles className="w-4 h-4 text-zooz mr-1 animate-pulse" />
-      </div>
-      <div className="text-sm text-muted-foreground">ZOOZ הרוויחו</div>
-      <div className="text-xs text-muted-foreground mt-1">
-        מתמיכה ישירה בלייבים
-      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="cursor-pointer">
+              <Sparkles className="w-6 h-6 text-zooz mx-auto mb-1 animate-pulse" />
+              <div 
+                className={cn(
+                  "text-2xl font-bold text-zooz transition-all duration-300",
+                  showAnimation && "animate-gentle-pulse"
+                )}
+              >
+                {formatZooz(zoozEarned)}
+              </div>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>מספר המטבעות זוז מתמיכה ישירה בלייבים וסרטונים</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserChe
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Navigation } from "@/components/Navigation";
 import { TrustBadge } from "@/components/TrustBadge";
 import { ZoozEarnedDisplay } from "@/components/ZoozEarnedDisplay";
@@ -156,10 +157,19 @@ const ProfilePage = () => {
 
         {/* Simplified Stats */}
         <div className="flex justify-around py-4 border-y border-border">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-trust">{user.trustersCount}</div>
-            <div className="text-sm text-muted-foreground">אמון</div>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-center cursor-pointer">
+                  <Heart className="w-6 h-6 text-trust mx-auto mb-1" />
+                  <div className="text-2xl font-bold text-trust">{user.trustersCount}</div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>מספר האנשים שהביעו אמון</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <ZoozEarnedDisplay zoozEarned={user.zoozEarned} showAnimation />
         </div>
 
