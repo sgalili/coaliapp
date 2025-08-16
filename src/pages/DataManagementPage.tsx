@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowRight, Database, Shield, AlertTriangle, Info, X, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 
 interface DataPermission {
@@ -16,6 +17,7 @@ interface DataPermission {
 }
 
 export const DataManagementPage = () => {
+  const navigate = useNavigate();
   const [showBVIMessage, setShowBVIMessage] = useState(true);
   
   useEffect(() => {
@@ -158,6 +160,18 @@ export const DataManagementPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="max-w-md mx-auto p-4 space-y-4">
+        {/* Close Button */}
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+            onClick={() => navigate(-1)}
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="text-center py-4">
           <h1 className="text-2xl font-bold">הנתונים שלי</h1>
