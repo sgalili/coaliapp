@@ -1,4 +1,4 @@
-import { CreditCard, MessageSquare, Send, ArrowDownToLine } from "lucide-react";
+import { CreditCard, ArrowDown, ArrowUp, ArrowDownToLine } from "lucide-react";
 
 interface WalletActionsProps {
   onBuyClick: () => void;
@@ -33,9 +33,9 @@ export const WalletActions = ({
           className="flex flex-col items-center gap-2 group"
         >
           <div className="w-16 h-16 bg-blue-500/10 hover:bg-blue-500/20 rounded-full flex items-center justify-center transition-colors">
-            <MessageSquare className="w-6 h-6 text-blue-600" />
+            <ArrowDown className="w-6 h-6 text-blue-600" />
           </div>
-          <span className="text-xs font-medium text-center">בקש</span>
+          <span className="text-xs font-medium text-center">בקשה</span>
         </button>
 
         {/* Send Button */}
@@ -44,9 +44,9 @@ export const WalletActions = ({
           className="flex flex-col items-center gap-2 group"
         >
           <div className="w-16 h-16 bg-purple-500/10 hover:bg-purple-500/20 rounded-full flex items-center justify-center transition-colors">
-            <Send className="w-6 h-6 text-purple-600" />
+            <ArrowUp className="w-6 h-6 text-purple-600" />
           </div>
-          <span className="text-xs font-medium text-center">שלח</span>
+          <span className="text-xs font-medium text-center">העברה</span>
         </button>
 
         {/* Withdraw Button */}
