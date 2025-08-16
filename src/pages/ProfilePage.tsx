@@ -125,10 +125,6 @@ const ProfilePage = () => {
                   placeholder="הוסף מיקום"
                 />
               </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                נרשם {user.joinDate}
-              </div>
             </div>
           </div>
         </div>
