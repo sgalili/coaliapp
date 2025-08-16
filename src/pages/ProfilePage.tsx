@@ -80,8 +80,7 @@ const ProfilePage = () => {
             <ArrowRight className="w-5 h-5" />
           </Button>
           <div className="text-center">
-            <h1 className="font-bold text-lg">{user.username}</h1>
-            <p className="text-sm text-muted-foreground">@{user.handle}</p>
+            <h1 className="font-bold text-lg">@{user.handle}</h1>
           </div>
           <ProfileMenu />
         </div>
@@ -113,7 +112,7 @@ const ProfilePage = () => {
                 onSave={(value) => handleUpdateField('username', value)}
                 className="text-xl font-bold"
               />
-              {user.isVerified && <UserCheck className="w-5 h-5 text-blue-500" />}
+              
               <TrustBadge trustCount={user.trustersCount} />
             </div>
             
@@ -162,32 +161,17 @@ const ProfilePage = () => {
           })}
         </div>
 
-        {/* Enhanced Stats with ZOOZ Priority */}
+        {/* Simplified Stats */}
         <div className="flex justify-around py-4 border-y border-border">
           <div className="text-center">
             <div className="text-2xl font-bold text-trust">{user.trustersCount}</div>
             <div className="text-sm text-muted-foreground">אמון</div>
           </div>
           <ZoozEarnedDisplay zoozEarned={user.zoozEarned} showAnimation />
-          <div className="text-center">
-            <div className="text-lg font-semibold">{user.postsCount}</div>
-            <div className="text-sm text-muted-foreground">פוסטים</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-medium text-watch">{user.watchersCount}</div>
-            <div className="text-sm text-muted-foreground">צופים</div>
-          </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          <Button variant="outline" className="flex-1">
-            <Eye className="w-4 h-4 ml-2" />
-            עריכת פרופיל
-          </Button>
-          <Button variant="outline" size="icon">
-            <MessageCircle className="w-4 h-4" />
-          </Button>
+        {/* Action Button */}
+        <div className="flex justify-center">
           <Button variant="outline" size="icon">
             <Share className="w-4 h-4" />
           </Button>
@@ -195,8 +179,8 @@ const ProfilePage = () => {
       </div>
 
       {/* KYC Management Section */}
-      <div className="px-6 pb-6">
-        <KYCManagement />
+      <div className="px-6 pb-4">
+        <KYCManagement className="bg-card/50 rounded-lg p-3" />
       </div>
 
       {/* Tabs */}
