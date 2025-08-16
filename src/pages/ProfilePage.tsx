@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,7 +29,11 @@ const mockCurrentUser = {
   watchersCount: 423,
   postsCount: 89,
   zoozEarned: 12750,
-  expertise: ["מדיניות ציבורית", "דמוקרטיה דיגיטלית", "רשתות אמון"],
+  expertise: [
+    { domain: 'economy', name: 'כלכלה', trustCount: 234, icon: TrendingUp },
+    { domain: 'security', name: 'ביטחון', trustCount: 167, icon: Shield },
+    { domain: 'education', name: 'חינוך', trustCount: 89, icon: GraduationCap }
+  ],
   posts: [
     {
       id: "post1",
@@ -140,12 +144,22 @@ const ProfilePage = () => {
           maxLength={280}
         />
 
-        {/* Expertise Tags */}
-        <EditableField
-          value={user.expertise}
-          onSave={(value) => handleUpdateField('expertise', value)}
-          type="tags"
-        />
+        {/* Expertise Badges */}
+        <div className="flex gap-2 flex-wrap">
+          {user.expertise.map((domain) => {
+            const IconComponent = domain.icon;
+            return (
+              <Badge 
+                key={domain.domain}
+                variant="secondary"
+                className="flex items-center gap-1 px-3 py-1.5"
+              >
+                <IconComponent className="w-3 h-3" />
+                <span className="text-xs font-medium">{domain.name} ({domain.trustCount})</span>
+              </Badge>
+            );
+          })}
+        </div>
 
         {/* Enhanced Stats with ZOOZ Priority */}
         <div className="flex justify-around py-4 border-y border-border">
