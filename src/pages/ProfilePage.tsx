@@ -79,9 +79,6 @@ const ProfilePage = () => {
           >
             <ArrowRight className="w-5 h-5" />
           </Button>
-          <div className="text-center">
-            <h1 className="font-bold text-lg">Profil</h1>
-          </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon">
               <Share className="w-4 h-4" />
