@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Sparkles } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ZoozEarnedDisplayProps {
@@ -23,13 +22,19 @@ export const ZoozEarnedDisplay = ({
     return amount.toString();
   };
 
+  const ZoozIcon = () => (
+    <div className="w-6 h-6 bg-zooz text-white rounded-full flex items-center justify-center font-bold text-sm mb-1 mx-auto">
+      Z
+    </div>
+  );
+
   return (
     <div className={cn("text-center", className)}>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="cursor-pointer">
-              <Sparkles className="w-6 h-6 text-zooz mx-auto mb-1 animate-pulse" />
+              <ZoozIcon />
               <div 
                 className={cn(
                   "text-2xl font-bold text-zooz transition-all duration-300",

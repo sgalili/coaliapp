@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap, Handshake, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -67,6 +67,19 @@ const ProfilePage = () => {
   };
 
   const canVote = user.trustersCount >= 1000; // Level 5 requirement
+
+  const TrustIcon = () => (
+    <div className="relative">
+      <Handshake className="w-6 h-6 text-trust" />
+      <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+    </div>
+  );
+
+  const ZoozIcon = () => (
+    <div className="w-6 h-6 bg-zooz text-white rounded-full flex items-center justify-center font-bold text-sm">
+      Z
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
@@ -161,8 +174,8 @@ const ProfilePage = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="text-center cursor-pointer">
-                  <Heart className="w-6 h-6 text-trust mx-auto mb-1" />
-                  <div className="text-2xl font-bold text-trust">{user.trustersCount}</div>
+                  <TrustIcon />
+                  <div className="text-2xl font-bold text-trust mt-1">{user.trustersCount}</div>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
