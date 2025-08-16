@@ -70,8 +70,10 @@ const ProfilePage = () => {
 
   const TrustIcon = () => (
     <div className="relative flex justify-center mb-1">
-      <Handshake className="w-6 h-6 text-trust" />
-      <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+      <div className="relative">
+        <Handshake className="w-6 h-6 text-trust" />
+        <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+      </div>
     </div>
   );
 
