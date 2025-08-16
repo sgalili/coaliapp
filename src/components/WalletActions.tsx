@@ -14,7 +14,7 @@ export const WalletActions = ({
   onWithdrawClick
 }: WalletActionsProps) => {
   return (
-    <div className="px-4 py-6">
+    <div className="px-4 py-4">
       <div className="grid grid-cols-4 gap-4">
         {/* Buy Button */}
         <button 
