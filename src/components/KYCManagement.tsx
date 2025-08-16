@@ -62,37 +62,37 @@ export const KYCManagement = ({ className }: KYCManagementProps) => {
   };
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("space-y-2", className)}>
       {/* Current KYC Status */}
-      <Card>
-        <CardHeader>
+      <Card className="border-red-200 bg-red-50/50">
+        <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={cn("p-2 rounded-full", currentLevel.bg)}>
-                <IconComponent className={cn("w-5 h-5", currentLevel.color)} />
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-full bg-red-100">
+                <IconComponent className="w-4 h-4 text-red-600" />
               </div>
               <div>
-                <CardTitle className="text-lg">{currentLevel.title}</CardTitle>
-                <CardDescription>{currentLevel.description}</CardDescription>
+                <CardTitle className="text-base">{currentLevel.title}</CardTitle>
+                <CardDescription className="text-xs">{currentLevel.description}</CardDescription>
               </div>
             </div>
-            <Badge variant="secondary">רמה {user.kycLevel}</Badge>
+            <Badge variant="secondary" className="text-xs">רמה {user.kycLevel}</Badge>
           </div>
         </CardHeader>
         
         {nextLevel && (
-          <CardContent>
-            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+          <CardContent className="pt-0 pb-3">
+            <div className="bg-red-100/50 rounded-lg p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold text-sm">שדרג לרמה {user.kycLevel + 1}</h4>
-                <div className="flex items-center gap-1 text-zooz font-bold">
-                  <Sparkles className="w-4 h-4" />
+                <div className="flex items-center gap-1 text-zooz font-bold text-xs">
+                  <Sparkles className="w-3 h-3" />
                   +{nextLevel.reward} ZOOZ
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">{nextLevel.description}</p>
-              <Button onClick={handleUpgrade} className="w-full">
-                <ArrowUp className="w-4 h-4 ml-2" />
+              <p className="text-xs text-muted-foreground">{nextLevel.description}</p>
+              <Button onClick={handleUpgrade} className="w-full h-8 text-xs bg-red-600 hover:bg-red-700 text-white">
+                <ArrowUp className="w-3 h-3 ml-1" />
                 שדרג עכשיו
               </Button>
             </div>
