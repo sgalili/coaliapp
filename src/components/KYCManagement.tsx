@@ -90,7 +90,7 @@ export const KYCManagement = ({ className }: KYCManagementProps) => {
                   +{nextLevel.reward} ZOOZ
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">{nextLevel.description}</p>
+              <p className="text-xs text-muted-foreground">עיר, תאריך לידה, מספר זהות</p>
               <Button onClick={handleUpgrade} className="w-full h-8 text-xs bg-red-600 hover:bg-red-700 text-white">
                 <ArrowUp className="w-3 h-3 ml-1" />
                 שדרג עכשיו
