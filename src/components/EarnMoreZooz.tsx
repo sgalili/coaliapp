@@ -51,8 +51,8 @@ export const EarnMoreZooz = ({ onRewardClick }: EarnMoreZoozProps) => {
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between py-4 text-right"
       >
-        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
         <h3 className="text-lg font-semibold">גלה איך להרוויח יותר זוז</h3>
+        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
       </button>
       
       {isExpanded && (
