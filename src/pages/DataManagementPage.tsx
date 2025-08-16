@@ -188,19 +188,19 @@ export const DataManagementPage = () => {
                   <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
                     <Shield className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="font-bold text-lg">העתיד כאן - BVI Blockchain</h3>
+                  <h3 className="font-bold text-lg">העתיד כאן - VBI Blockchain</h3>
                 </div>
                 
                 <p className="text-white/90 text-sm leading-relaxed">
                   <strong className="text-yellow-300">עדכון מהפכני:</strong> בקרוב נעבור למערכת בלוקצ'יין מתקדמת המבוססת על 
-                  <strong className="text-yellow-300"> איי הבתולה הבריטיות (BVI)</strong> - 
-                  שליטה מוחלטת בזהות הדיגיטלית שלך, אנונימיות מלאה ושקיפות בינלאומית.
+                  <strong className="text-yellow-300"> VBI (Verifier Blockchain Identity)</strong> - 
+                  שליטה מוחלטת בזהות הדיגיטלית שלך, אנונימיות מלאה ושקיפות מוחלטת.
                 </p>
                 
                 <div className="flex items-center gap-2 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
                   <Sparkles className="h-4 w-4 text-yellow-300" />
                   <span className="text-xs text-white/90">
-                    הפלטפורמה היחידה עם רגולציה BVI לפרטיות מקסימלית
+                    הפלטפורמה היחידה עם טכנולוגיית VBI לאימות זהות מבוזר
                   </span>
                 </div>
               </div>
