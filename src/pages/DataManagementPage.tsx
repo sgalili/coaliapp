@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowRight, Database, Shield, AlertTriangle, Info, X } from "lucide-react";
+import { ArrowRight, Database, Shield, AlertTriangle, Info, X, Sparkles } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 
 interface DataPermission {
@@ -158,25 +158,6 @@ export const DataManagementPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="max-w-md mx-auto p-4 space-y-4">
-        {/* BVI Message */}
-        {showBVIMessage && (
-          <Alert className="border-blue-200 bg-blue-50 relative">
-            <Info className="h-4 w-4 text-blue-600" />
-            <AlertDescription className="text-blue-800 pr-6">
-              <strong>עדכון קרוב:</strong> בקרוב נעבור למערכת בלוקצ'יין המבוססת על איי בי וי (BVI) 
-              שתאפשר שליטה מלאה בנתונים שלך ושקיפות מוחלטת.
-            </AlertDescription>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute left-2 top-2 h-auto p-1 text-blue-600 hover:text-blue-800"
-              onClick={() => setShowBVIMessage(false)}
-            >
-              <X className="h-3 w-3" />
-            </Button>
-          </Alert>
-        )}
-
         {/* Header */}
         <div className="text-center py-4">
           <h1 className="text-2xl font-bold">הנתונים שלי</h1>
@@ -184,6 +165,48 @@ export const DataManagementPage = () => {
             בחר אילו נתונים Coali רשאית לשמור ולעבד
           </p>
         </div>
+
+        {/* Luxurious BVI Message */}
+        {showBVIMessage && (
+          <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+            
+            <CardContent className="relative p-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute left-3 top-3 h-auto p-1 text-white/70 hover:text-white hover:bg-white/10 rounded-full"
+                onClick={() => setShowBVIMessage(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                    <Shield className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-lg">העתיד כאן - BVI Blockchain</h3>
+                </div>
+                
+                <p className="text-white/90 text-sm leading-relaxed">
+                  <strong className="text-yellow-300">עדכון מהפכני:</strong> בקרוב נעבור למערכת בלוקצ'יין מתקדמת המבוססת על 
+                  <strong className="text-yellow-300"> איי הבתולה הבריטיות (BVI)</strong> - 
+                  שליטה מוחלטת בזהות הדיגיטלית שלך, אנונימיות מלאה ושקיפות בינלאומית.
+                </p>
+                
+                <div className="flex items-center gap-2 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+                  <Sparkles className="h-4 w-4 text-yellow-300" />
+                  <span className="text-xs text-white/90">
+                    הפלטפורמה היחידה עם רגולציה BVI לפרטיות מקסימלית
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Warning Alert */}
         <Alert className="border-amber-200 bg-amber-50">
