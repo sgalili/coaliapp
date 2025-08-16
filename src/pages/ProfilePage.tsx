@@ -80,7 +80,7 @@ const ProfilePage = () => {
             <ArrowRight className="w-5 h-5" />
           </Button>
           <div className="text-center">
-            <h1 className="font-bold text-lg">@{user.handle}</h1>
+            <h1 className="font-bold text-lg">Profil</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon">
@@ -112,12 +112,14 @@ const ProfilePage = () => {
           </div>
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
-              <EditableField
-                value={user.username}
-                onSave={(value) => handleUpdateField('username', value)}
-                className="text-xl font-bold"
-              />
-              
+              <div>
+                <EditableField
+                  value={user.username}
+                  onSave={(value) => handleUpdateField('username', value)}
+                  className="text-xl font-bold"
+                />
+                <p className="text-sm text-muted-foreground">@{user.handle}</p>
+              </div>
               <TrustBadge trustCount={user.trustersCount} />
             </div>
             
