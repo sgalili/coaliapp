@@ -121,19 +121,6 @@ export const SendZoozModal = ({ isOpen, onClose, currentBalance }: SendZoozModal
               />
             </div>
 
-            {/* Manual Input */}
-            <div className="space-y-2">
-              <Label>או הכנס שם משתמש ידנית</Label>
-              <div className="relative">
-                <User className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="@username"
-                  value={customRecipient}
-                  onChange={(e) => handleCustomRecipient(e.target.value)}
-                  className="pr-10"
-                />
-              </div>
-            </div>
 
             {/* Contacts List */}
             <ContactPicker
