@@ -82,7 +82,12 @@ const ProfilePage = () => {
           <div className="text-center">
             <h1 className="font-bold text-lg">@{user.handle}</h1>
           </div>
-          <ProfileMenu />
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon">
+              <Share className="w-4 h-4" />
+            </Button>
+            <ProfileMenu />
+          </div>
         </div>
       </div>
 
@@ -166,12 +171,6 @@ const ProfilePage = () => {
           <ZoozEarnedDisplay zoozEarned={user.zoozEarned} showAnimation />
         </div>
 
-        {/* Action Button */}
-        <div className="flex justify-center">
-          <Button variant="outline" size="icon">
-            <Share className="w-4 h-4" />
-          </Button>
-        </div>
       </div>
 
       {/* KYC Management Section */}
