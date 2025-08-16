@@ -49,7 +49,7 @@ export const EarnMoreZooz = ({ onRewardClick }: EarnMoreZoozProps) => {
     <div className="px-4">
       <button 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between py-4 text-right"
+        className="w-full flex items-center justify-between py-4 px-4 text-right bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-lg transition-colors"
       >
         <h3 className="text-lg font-semibold">גלה איך להרוויח יותר זוז</h3>
         <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
