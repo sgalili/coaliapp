@@ -145,18 +145,19 @@ const ProfilePage = () => {
         />
 
         {/* Expertise Badges */}
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
           {user.expertise.map((domain) => {
             const IconComponent = domain.icon;
             return (
-              <Badge 
-                key={domain.domain}
-                variant="secondary"
-                className="flex items-center gap-1 px-3 py-1.5"
-              >
-                <IconComponent className="w-3 h-3" />
-                <span className="text-xs font-medium">{domain.name} ({domain.trustCount})</span>
-              </Badge>
+              <div key={domain.domain} className="shrink-0">
+                <Badge 
+                  variant="secondary"
+                  className="flex items-center gap-1 px-3 py-1.5 transition-colors hover:bg-accent"
+                >
+                  <IconComponent className="w-3 h-3" />
+                  <span className="text-xs font-medium">{domain.name} ({domain.trustCount})</span>
+                </Badge>
+              </div>
             );
           })}
         </div>
@@ -178,14 +179,8 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Action Buttons with Vote Button */}
+        {/* Action Buttons */}
         <div className="flex gap-3">
-          {canVote && (
-            <Button className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-              <Vote className="w-4 h-4 ml-2" />
-              הצבעה
-            </Button>
-          )}
           <Button variant="outline" className="flex-1">
             <Eye className="w-4 h-4 ml-2" />
             עריכת פרופיל
