@@ -10,11 +10,11 @@ export const WalletBalance = ({ zoozBalance, usdValue, percentageChange }: Walle
   const isPositive = percentageChange >= 0;
 
   return (
-    <div className="bg-card rounded-xl p-6 shadow-sm border">
+    <div className="py-6 px-4">
       <div className="text-center">
         <div className="mb-2">
-          <span className="text-2xl font-bold">{zoozBalance.toLocaleString()}</span>
-          <span className="text-lg text-muted-foreground mr-2">Z</span>
+          <span className="text-3xl font-bold">{zoozBalance.toLocaleString()}</span>
+          <span className="text-xl text-muted-foreground mr-2">Z</span>
         </div>
         
         <div className="flex items-center justify-center gap-2 text-sm">

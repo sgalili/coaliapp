@@ -1,5 +1,5 @@
 import { ArrowUpRight, ArrowDownLeft, Users, MessageCircle } from "lucide-react";
-import { Card } from "./ui/card";
+import { Separator } from "./ui/separator";
 
 interface Transaction {
   id: string;
@@ -51,28 +51,31 @@ export const TransactionHistory = ({ transactions }: TransactionHistoryProps) =>
   };
 
   return (
-    <Card className="p-4">
+    <div className="px-4">
       <h3 className="text-lg font-semibold mb-4 text-right">היסטוריית עסקאות</h3>
       
-      <div className="space-y-3">
-        {transactions.map((transaction) => (
-          <div key={transaction.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
-            <div className="flex items-center gap-3">
-              {getTransactionIcon(transaction.type)}
-              <div className="text-right">
-                <div className="font-medium text-sm">{transaction.description}</div>
-                {transaction.fromTo && (
-                  <div className="text-xs text-muted-foreground">{transaction.fromTo}</div>
-                )}
-                <div className="text-xs text-muted-foreground">
-                  {formatDate(transaction.timestamp)}
+      <div>
+        {transactions.map((transaction, index) => (
+          <div key={transaction.id}>
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-3">
+                {getTransactionIcon(transaction.type)}
+                <div className="text-right">
+                  <div className="font-medium text-sm">{transaction.description}</div>
+                  {transaction.fromTo && (
+                    <div className="text-xs text-muted-foreground">{transaction.fromTo}</div>
+                  )}
+                  <div className="text-xs text-muted-foreground">
+                    {formatDate(transaction.timestamp)}
+                  </div>
                 </div>
               </div>
+              
+              <div className="text-right">
+                {getAmountDisplay(transaction)}
+              </div>
             </div>
-            
-            <div className="text-right">
-              {getAmountDisplay(transaction)}
-            </div>
+            {index < transactions.length - 1 && <Separator />}
           </div>
         ))}
       </div>
@@ -83,6 +86,6 @@ export const TransactionHistory = ({ transactions }: TransactionHistoryProps) =>
           <p className="text-sm">אין עסקאות להציג</p>
         </div>
       )}
-    </Card>
+    </div>
   );
 };
