@@ -207,7 +207,7 @@ export const DataManagementPage = () => {
                 
                 <p className="text-white/90 text-sm leading-relaxed">
                   <strong className="text-yellow-300">עדכון מהפכני:</strong> בקרוב נעבור למערכת בלוקצ'יין מתקדמת המבוססת על 
-                  <strong className="text-yellow-300"> VBI (Verifier Blockchain Identity)</strong> - 
+                  <strong className="text-yellow-300"> VBI (Verified Blockchain Identity)</strong> - 
                   שליטה מוחלטת בזהות הדיגיטלית שלך, אנונימיות מלאה ושקיפות מוחלטת.
                 </p>
                 
