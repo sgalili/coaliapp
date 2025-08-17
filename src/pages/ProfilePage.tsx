@@ -181,16 +181,18 @@ const ProfilePage = () => {
             </Button>
           </div>
           <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2">
-              <div>
-                <EditableField
-                  value={user.username}
-                  onSave={(value) => handleUpdateField('username', value)}
-                  className="text-xl font-bold"
-                />
+            <div className="flex items-start gap-2">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <EditableField
+                    value={user.username}
+                    onSave={(value) => handleUpdateField('username', value)}
+                    className="text-xl font-bold"
+                  />
+                  <TrustBadge trustCount={user.trustersCount} />
+                </div>
                 <p className="text-sm text-muted-foreground">@{user.handle}</p>
               </div>
-              <TrustBadge trustCount={user.trustersCount} />
             </div>
             
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
