@@ -32,6 +32,12 @@ const mockCurrentUser = {
   watchersCount: 423,
   postsCount: 89,
   zoozEarned: 12750,
+  professionalExperience: "מנהלת מחקר במכון למדיניות ציבורית (2020-2024) • יועצת לוועדת הכנסת לחינוך (2018-2020) • חוקרת בכירה במכון הישראלי לדמוקרטיה (2015-2018)",
+  education: "דוקטורט במדעי המדינה, האוניברסיטה העברית (2015) • מוסמך במדיניות ציבורית, אוניברסיטת תל אביב (2010) • תואר ראשון בפילוסופיה ומדעי המדינה, האוניברסיטה הפתוחה (2008)",
+  communityService: "מייסדת שותפה של 'דמוקרטיה דיגיטלית ישראל' • חברת מועצת המנהלים ב'שקיפות ישראל' • מתנדבת במרכז לזכויות אדם • מרצה אורחת באוניברסיטאות שונות",
+  publications: "מחברת של 15 מאמרים מחקריים בכתבי עת מובילים • כותבת טור שבועי בהארץ • מרואיינת קבועה ברדיו וטלוויזיה בנושאי דמוקרטיה • הרצאות TEDx על עתיד הפוליטיקה",
+  awards: "זוכת פרס רוטשילד למדעי החברה (2022) • נבחרת לרשימת 40 תחת 40 של גלובס (2021) • מקבלת מלגת פולברייט לחקר דמוקרטיה דיגיטלית בארה״ב",
+  skills: "עברית (שפת אם) • אנגלית (ברמת דובר יליד) • ערבית (שיחה) • מומחיות בניתוח נתונים, מחקר איכותני, מדיניות ציבורית, ניהול פרויקטים",
   expertise: [
     { domain: 'economy', name: 'כלכלה', trustCount: 234, icon: TrendingUp },
     { domain: 'security', name: 'ביטחון', trustCount: 167, icon: Shield },
@@ -272,9 +278,143 @@ const ProfilePage = () => {
           />
         </TabsContent>
         
-        <TabsContent value="info" className="mt-6 px-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">מידע אישי ופרטי הפרופיל</p>
+        <TabsContent value="info" className="mt-0 space-y-6" dir="rtl">
+          <div className="bg-card border-b border-border">
+            {/* Professional Experience */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <GraduationCap className="w-5 h-5" />
+                ניסיון מקצועי
+              </h3>
+              <EditableField
+                value="מנהלת מחקר במכון למדיניות ציבורית (2020-2024) • יועצת לוועדת הכנסת לחינוך (2018-2020) • חוקרת בכירה במכון הישראלי לדמוקרטיה (2015-2018)"
+                onSave={(value) => handleUpdateField('professionalExperience', value)}
+                type="textarea"
+                placeholder="תאר את הניסיון המקצועי שלך..."
+                className="text-sm leading-relaxed"
+                maxLength={500}
+              />
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Education */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <GraduationCap className="w-5 h-5" />
+                השכלה
+              </h3>
+              <EditableField
+                value="דוקטורט במדעי המדינה, האוניברסיטה העברית (2015) • מוסמך במדיניות ציבורית, אוניברסיטת תל אביב (2010) • תואר ראשון בפילוסופיה ומדעי המדינה, האוניברסיטה הפתוחה (2008)"
+                onSave={(value) => handleUpdateField('education', value)}
+                type="textarea"
+                placeholder="פרט על ההשכלה שלך..."
+                className="text-sm leading-relaxed"
+                maxLength={400}
+              />
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Community & Public Service */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <UserCheck className="w-5 h-5" />
+                פעילות ציבורית וקהילתית
+              </h3>
+              <EditableField
+                value="מייסדת שותפה של 'דמוקרטיה דיגיטלית ישראל' • חברת מועצת המנהלים ב'שקיפות ישראל' • מתנדבת במרכז לזכויות אדם • מרצה אורחת באוניברסיטאות שונות"
+                onSave={(value) => handleUpdateField('communityService', value)}
+                type="textarea"
+                placeholder="תאר את הפעילות הציבורית והקהילתית שלך..."
+                className="text-sm leading-relaxed"
+                maxLength={400}
+              />
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Publications & Media */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                פרסומים והשפעה
+              </h3>
+              <EditableField
+                value="מחברת של 15 מאמרים מחקריים בכתבי עת מובילים • כותבת טור שבועי בהארץ • מרואיינת קבועה ברדיו וטלוויזיה בנושאי דמוקרטיה • הרצאות TEDx על עתיד הפוליטיקה"
+                onSave={(value) => handleUpdateField('publications', value)}
+                type="textarea"
+                placeholder="פרט על פרסומים, הרצאות והשפעתך..."
+                className="text-sm leading-relaxed"
+                maxLength={400}
+              />
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Awards & Recognition */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Crown className="w-5 h-5" />
+                הכרה וביקורת עמיתים
+              </h3>
+              <EditableField
+                value="זוכת פרס רוטשילד למדעי החברה (2022) • נבחרת לרשימת 40 תחת 40 של גלובס (2021) • מקבלת מלגת פולברייט לחקר דמוקרטיה דיגיטלית בארה״ב"
+                onSave={(value) => handleUpdateField('awards', value)}
+                type="textarea"
+                placeholder="פרט על פרסים, הכרה והישגים..."
+                className="text-sm leading-relaxed"
+                maxLength={300}
+              />
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Languages & Skills */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                כישורים ושפות
+              </h3>
+              <EditableField
+                value="עברית (שפת אם) • אנגלית (ברמת דובר יליד) • ערבית (שיחה) • מומחיות בניתוח נתונים, מחקר איכותני, מדיניות ציבורית, ניהול פרויקטים"
+                onSave={(value) => handleUpdateField('skills', value)}
+                type="textarea"
+                placeholder="פרט על שפות, כישורים טכניים ומקצועיים..."
+                className="text-sm leading-relaxed"
+                maxLength={300}
+              />
+            </div>
+          </div>
+
+          <div className="bg-card">
+            {/* Contact & Verification */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <MapPin className="w-5 h-5" />
+                פרטי קשר ואימות
+              </h3>
+              <div className="grid grid-cols-1 gap-4 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">דוא״ל מאומת</span>
+                  <span className="flex items-center gap-1 text-green-600">
+                    <UserCheck className="w-4 h-4" />
+                    sarah.politics@gmail.com
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">LinkedIn</span>
+                  <span className="text-primary">@sarahpolitics</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">רמת KYC</span>
+                  <div className="flex items-center gap-1">
+                    <Shield className="w-4 h-4 text-green-600" />
+                    <span>רמה {user.kycLevel} - מאומת</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </TabsContent>
         
