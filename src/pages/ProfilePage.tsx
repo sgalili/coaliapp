@@ -505,9 +505,19 @@ const ProfilePage = () => {
         </TabsContent>
         
         <TabsContent value="trusters" className="mt-0" dir="rtl">
-          {/* Small discrete title */}
+          {/* Small discrete title with filter */}
           <div className="px-6 py-3 border-b border-border">
-            <h3 className="text-sm text-muted-foreground">אנשים שנותנים לי אמון</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm text-muted-foreground">אנשים שנותנים לי אמון</h3>
+              <select className="text-xs bg-transparent border border-border rounded px-2 py-1 text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary">
+                <option value="all">כל התחומים</option>
+                <option value="economy">כלכלה</option>
+                <option value="security">ביטחון</option>
+                <option value="education">חינוך</option>
+                <option value="health">בריאות</option>
+                <option value="technology">טכנולוגיה</option>
+              </select>
+            </div>
           </div>
           
           {/* List of people who gave trust */}
