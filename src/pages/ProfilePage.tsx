@@ -244,49 +244,47 @@ const ProfilePage = () => {
         <KYCManagement className="bg-card/50 rounded-lg p-3" />
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6 pb-20">
-        <TabsList className="grid w-full grid-cols-4" dir="rtl">
+      {/* Tabs - Full width */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="pb-20">
+        <TabsList className="grid w-full grid-cols-4 rounded-none border-b border-border" dir="rtl">
           <TabsTrigger value="posts">פוסטים</TabsTrigger>
           <TabsTrigger value="info">מידע</TabsTrigger>
           <TabsTrigger value="trusters">אמון</TabsTrigger>
           <TabsTrigger value="trusted">נתתי אמון</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="posts" className="space-y-4 mt-6" dir="rtl">
+        <TabsContent value="posts" className="mt-0" dir="rtl">
           <VideoGrid 
             posts={user.posts.map(post => ({
               id: post.id,
-              thumbnail: `/api/placeholder/300/400`, // Placeholder pour les thumbnails
+              thumbnail: `/api/placeholder/300/400`,
               caption: post.caption,
               trustCount: post.trustCount,
               watchCount: post.watchCount,
               commentCount: post.commentCount,
               shareCount: post.shareCount,
-              duration: "0:15", // Durée par défaut
+              duration: "0:15",
             }))}
             onVideoClick={(postId, index) => {
-              // Ouvrir le fullscreen player
               setSelectedPostIndex(index);
               setIsFullscreenOpen(true);
             }}
-            className="px-0 -mx-6" // Full width
           />
         </TabsContent>
         
-        <TabsContent value="info" className="mt-6">
+        <TabsContent value="info" className="mt-6 px-6">
           <div className="text-center py-8">
             <p className="text-muted-foreground">מידע אישי ופרטי הפרופיל</p>
           </div>
         </TabsContent>
         
-        <TabsContent value="trusters" className="mt-6">
+        <TabsContent value="trusters" className="mt-6 px-6">
           <div className="text-center py-8">
             <p className="text-muted-foreground">אנשים שנותנים לי אמון</p>
           </div>
         </TabsContent>
         
-        <TabsContent value="trusted" className="mt-6">
+        <TabsContent value="trusted" className="mt-6 px-6">
           <div className="text-center py-8">
             <p className="text-muted-foreground">אנשים שאני נותן להם אמון</p>
           </div>

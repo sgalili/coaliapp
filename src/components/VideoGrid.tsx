@@ -29,12 +29,12 @@ export const VideoGrid = ({ posts, onVideoClick, className }: VideoGridProps) =>
 
   return (
     <div className={cn("w-full", className)} dir="rtl">
-      {/* Grid container - 3 columns like Instagram */}
+      {/* Grid container - 3 columns like Instagram, full width */}
       <div className="grid grid-cols-3 gap-0.5 w-full">
         {posts.map((post, index) => (
           <div
             key={post.id}
-            className="relative aspect-[9/16] bg-muted cursor-pointer group overflow-hidden"
+            className="relative aspect-[3/4] bg-muted cursor-pointer group overflow-hidden"
             onClick={() => onVideoClick(post.id, index)}
           >
             {/* Thumbnail or placeholder */}
