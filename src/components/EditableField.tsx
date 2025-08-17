@@ -139,7 +139,7 @@ export const EditableField = ({
           maxLength={maxLength}
         />
       )}
-      <div className="flex gap-1">
+      <div className="flex flex-col gap-1">
         <Button variant="ghost" size="icon" onClick={handleSave}>
           <Check className="w-4 h-4 text-green-600" />
         </Button>
