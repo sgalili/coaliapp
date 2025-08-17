@@ -639,9 +639,131 @@ const ProfilePage = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="trusted" className="mt-6 px-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">אנשים שאני נותן להם אמון</p>
+        <TabsContent value="trusted" className="mt-0" dir="rtl">
+          {/* Small discrete title with filter */}
+          <div className="px-6 py-3 border-b border-border">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm text-muted-foreground">אנשים שאני נותן להם אמון</h3>
+              <select className="text-xs bg-transparent border border-border rounded px-2 py-1 text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary">
+                <option value="all">כל התחומים</option>
+                <option value="economy">כלכלה</option>
+                <option value="security">ביטחון</option>
+                <option value="education">חינוך</option>
+                <option value="health">בריאות</option>
+                <option value="technology">טכנולוגיה</option>
+              </select>
+            </div>
+          </div>
+          
+          {/* List of people I gave trust to */}
+          <div className="space-y-0">
+            {/* Mock data for people I gave trust to */}
+            {[
+              {
+                id: '1',
+                name: 'דן אבידן',
+                avatar: amitProfile,
+                username: 'dan_crypto',
+                bio: 'מומחה קריפטו ובלוקצ\'יין, יועץ השקעות דיגיטליות',
+                trustCount: 8500, // רמה 5 - מנהיג
+                kycLevel: 3,
+                trustDate: 'לפני שעה',
+                verified: true
+              },
+              {
+                id: '2',
+                name: 'מיכל רוזן',
+                avatar: mayaProfile,
+                username: 'michal_health',
+                bio: 'רופאה מתמחה, חוקרת בתחום הבריאות הציבורית',
+                trustCount: 2100, // רמה 4 - מומחה
+                kycLevel: 2,
+                trustDate: 'לפני 2 ימים',
+                verified: true
+              },
+              {
+                id: '3',
+                name: 'יוסי כהן',
+                avatar: davidProfile,
+                username: 'yossi_tech',
+                bio: 'מהנדס תוכנה בכיר, מומחה בינה מלאכותית',
+                trustCount: 750, // רמה 3 - מהימן
+                kycLevel: 2,
+                trustDate: 'לפני שבוע',
+                verified: true
+              },
+              {
+                id: '4',
+                name: 'ליאת שמואל',
+                avatar: rachelProfile,
+                username: 'liat_law',
+                bio: 'עורכת דין מומחית, מתמחה בדיני טכנולוגיה',
+                trustCount: 320, // רמה 3 - מהימן
+                kycLevel: 3,
+                trustDate: 'לפני שבועיים',
+                verified: true
+              },
+              {
+                id: '5',
+                name: 'רון פרידמן',
+                avatar: sarahProfile,
+                username: 'ron_business',
+                bio: 'יזם סדרתי, מומחה בפיתוח עסקי ויועץ סטארטאפים',
+                trustCount: 95, // רמה 2 - חבר
+                kycLevel: 2,
+                trustDate: 'לפני חודש',
+                verified: true
+              }
+            ].map((trusted) => (
+              <div key={trusted.id}>
+                <div 
+                  className="flex items-start gap-3 p-4 hover:bg-accent/30 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/profile/${trusted.id}`)}
+                >
+                  {/* Profile Avatar with KYC */}
+                  <div className="relative shrink-0">
+                    <img 
+                      src={trusted.avatar} 
+                      alt={trusted.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <TrustStatusIndicator kycLevel={trusted.kycLevel} />
+                  </div>
+
+                  {/* User Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-foreground truncate">{trusted.name}</h4>
+                      <TrustBadge trustCount={trusted.trustCount} className="shrink-0" />
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground mb-1">@{trusted.username}</p>
+                    
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                      {trusted.bio}
+                    </p>
+                    
+                    {/* Trust stats and date */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <div className="relative">
+                          <Handshake className="w-3 h-3 text-trust" />
+                          <Crown className="w-1 h-1 text-yellow-400 absolute -top-0.5 -right-0.5" />
+                        </div>
+                        <span className="text-xs font-medium text-trust">
+                          {trusted.trustCount.toLocaleString()}
+                        </span>
+                      </div>
+                      
+                      <span className="text-xs text-muted-foreground">
+                        נתתי אמון {trusted.trustDate}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-px bg-border mx-4" />
+              </div>
+            ))}
           </div>
         </TabsContent>
       </Tabs>
