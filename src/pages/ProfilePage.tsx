@@ -12,6 +12,8 @@ import { EditableField } from "@/components/EditableField";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { KYCManagement } from "@/components/KYCManagement";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
+import { VideoGrid } from "@/components/VideoGrid";
+import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
 import { cn } from "@/lib/utils";
 import sarahProfile from "@/assets/sarah-profile.jpg";
 
@@ -44,6 +46,51 @@ const mockCurrentUser = {
       commentCount: 45,
       shareCount: 23,
       timestamp: "לפני 2 שעות"
+    },
+    {
+      id: "post2",
+      caption: "מה שלמדתי מהבחירות האחרונות על השפעת הרשתות החברתיות על דעת הקהל",
+      trustCount: 187,
+      watchCount: 423,
+      commentCount: 32,
+      shareCount: 18,
+      timestamp: "לפני יום"
+    },
+    {
+      id: "post3",
+      caption: "איך אפשר לזהות מידע מוטעה ברשתות החברתיות? מדריך מעשי",
+      trustCount: 312,
+      watchCount: 501,
+      commentCount: 67,
+      shareCount: 41,
+      timestamp: "לפני 3 ימים"
+    },
+    {
+      id: "post4",
+      caption: "שקיפות בממשל - מה אפשר לעשות כאזרחים?",
+      trustCount: 156,
+      watchCount: 289,
+      commentCount: 28,
+      shareCount: 15,
+      timestamp: "לפני שבוע"
+    },
+    {
+      id: "post5",
+      caption: "הצעת חוק חדשה שיכולה לשנות את עתיד הדמוקרטיה הדיגיטלית",
+      trustCount: 401,
+      watchCount: 672,
+      commentCount: 89,
+      shareCount: 53,
+      timestamp: "לפני שבועיים"
+    },
+    {
+      id: "post6",
+      caption: "למה חשוב שהאלגוריתמים יהיו שקופים יותר?",
+      trustCount: 223,
+      watchCount: 334,
+      commentCount: 41,
+      shareCount: 27,
+      timestamp: "לפני שלושה שבועות"
     }
   ]
 };
@@ -52,6 +99,8 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(mockCurrentUser);
   const [activeTab, setActiveTab] = useState("posts");
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(0);
   const zoozBalance = 1250;
 
   useEffect(() => {
@@ -204,35 +253,25 @@ const ProfilePage = () => {
           <TabsTrigger value="trusted">נתתי אמון</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="posts" className="space-y-4 mt-6">
-          {user.posts.map((post: any) => (
-            <div key={post.id} className="bg-card rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">{post.timestamp}</span>
-              </div>
-              <p className="text-sm text-right">{post.caption}</p>
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4 text-trust" />
-                    {post.trustCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4 text-watch" />
-                    {post.watchCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
-                    {post.commentCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Share className="w-4 h-4" />
-                    {post.shareCount}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+        <TabsContent value="posts" className="space-y-4 mt-6" dir="rtl">
+          <VideoGrid 
+            posts={user.posts.map(post => ({
+              id: post.id,
+              thumbnail: `/api/placeholder/300/400`, // Placeholder pour les thumbnails
+              caption: post.caption,
+              trustCount: post.trustCount,
+              watchCount: post.watchCount,
+              commentCount: post.commentCount,
+              shareCount: post.shareCount,
+              duration: "0:15", // Durée par défaut
+            }))}
+            onVideoClick={(postId, index) => {
+              // Ouvrir le fullscreen player
+              setSelectedPostIndex(index);
+              setIsFullscreenOpen(true);
+            }}
+            className="px-0 -mx-6" // Full width
+          />
         </TabsContent>
         
         <TabsContent value="info" className="mt-6">
@@ -253,6 +292,34 @@ const ProfilePage = () => {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Fullscreen Video Player */}
+      {isFullscreenOpen && (
+        <FullscreenVideoPlayer
+          comments={user.posts.map(post => ({
+            id: post.id,
+            userId: user.id,
+            username: user.username,
+            userImage: user.profileImage,
+            videoUrl: `/api/placeholder/video/${post.id}`, // Placeholder pour les vidéos
+            duration: 15,
+            likes: post.trustCount,
+            replies: post.commentCount,
+            trustLevel: post.trustCount,
+            timestamp: post.timestamp,
+            category: "פוליטיקה",
+            kycLevel: user.kycLevel as 1 | 2 | 3,
+            watchCount: post.watchCount,
+            shareCount: post.shareCount,
+          }))}
+          initialCommentIndex={selectedPostIndex}
+          onClose={() => setIsFullscreenOpen(false)}
+          onTrust={(postId) => console.log('Trust post:', postId)}
+          onWatch={(postId) => console.log('Watch post:', postId)}
+          onComment={(postId) => console.log('Comment on post:', postId)}
+          onShare={(postId) => console.log('Share post:', postId)}
+        />
+      )}
 
       <Navigation zoozBalance={zoozBalance} />
     </div>
