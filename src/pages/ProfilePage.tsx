@@ -16,6 +16,10 @@ import { VideoGrid } from "@/components/VideoGrid";
 import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
 import { cn } from "@/lib/utils";
 import sarahProfile from "@/assets/sarah-profile.jpg";
+import amitProfile from "@/assets/amit-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
+import davidProfile from "@/assets/david-profile.jpg";
+import rachelProfile from "@/assets/rachel-profile.jpg";
 
 // Mock current user data - in real app this would come from auth
 const mockCurrentUser = {
@@ -511,7 +515,7 @@ const ProfilePage = () => {
               {
                 id: '1',
                 name: 'אמית כהן',
-                avatar: '/api/placeholder/64/64',
+                avatar: amitProfile,
                 username: 'amit_cohen',
                 bio: 'מומחה כלכלה וטכנולוגיה, יועץ השקעות ומרצה בכיר',
                 trustCount: 2847,
@@ -522,7 +526,7 @@ const ProfilePage = () => {
               {
                 id: '2',
                 name: 'שרה לוי',
-                avatar: '/api/placeholder/64/64',
+                avatar: sarahProfile,
                 username: 'sarah_education',
                 bio: 'חוקרת חינוך, מומחית פדגוגיה דיגיטלית ויועצת ארגונית',
                 trustCount: 1523,
@@ -533,7 +537,7 @@ const ProfilePage = () => {
               {
                 id: '3',
                 name: 'דוד מושקוביץ',
-                avatar: '/api/placeholder/64/64',
+                avatar: davidProfile,
                 username: 'david_security',
                 bio: 'מומחה אבטחת מידע, יועץ סייבר וחוקר באקדמיה',
                 trustCount: 856,
@@ -544,7 +548,7 @@ const ProfilePage = () => {
               {
                 id: '4',
                 name: 'מאיה רוזן',
-                avatar: '/api/placeholder/64/64',
+                avatar: mayaProfile,
                 username: 'maya_health',
                 bio: 'רופאה מומחית, חוקרת בתחום הבריאות הדיגיטלית',
                 trustCount: 1234,
@@ -555,7 +559,7 @@ const ProfilePage = () => {
               {
                 id: '5',
                 name: 'רחל אברהם',
-                avatar: '/api/placeholder/64/64',
+                avatar: rachelProfile,
                 username: 'rachel_economy',
                 bio: 'כלכלנית בכירה, יועצת עסקית ומומחית בשווקים פיננסיים',
                 trustCount: 3421,
