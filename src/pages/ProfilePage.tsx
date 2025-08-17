@@ -200,7 +200,7 @@ const ProfilePage = () => {
         <TabsList className="grid w-full grid-cols-4" dir="rtl">
           <TabsTrigger value="posts">פוסטים</TabsTrigger>
           <TabsTrigger value="info">מידע</TabsTrigger>
-          <TabsTrigger value="trusters">אמון ({user.trustersCount})</TabsTrigger>
+          <TabsTrigger value="trusters">אמון</TabsTrigger>
           <TabsTrigger value="trusted">נתתי אמון</TabsTrigger>
         </TabsList>
         
