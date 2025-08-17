@@ -88,10 +88,51 @@ export const FullscreenVideoPlayer = ({
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' && currentIndex < comments.length - 1) {
+        setCurrentIndex(prev => prev + 1);
+      } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+        setCurrentIndex(prev => prev - 1);
+      }
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      const startY = e.touches[0].clientY;
+      
+      const handleTouchMove = (e: TouchEvent) => {
+        const deltaY = startY - e.touches[0].clientY;
+        
+        if (Math.abs(deltaY) > 50) { // Minimum swipe distance
+          if (deltaY > 0 && currentIndex < comments.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+          } else if (deltaY < 0 && currentIndex > 0) {
+            setCurrentIndex(prev => prev - 1);
+          }
+          document.removeEventListener('touchmove', handleTouchMove);
+          document.removeEventListener('touchend', handleTouchEnd);
+        }
+      };
+      
+      const handleTouchEnd = () => {
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+      
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', handleTouchEnd);
+    };
+
     const container = containerRef.current;
     if (container) {
       container.addEventListener('wheel', handleWheel, { passive: false });
-      return () => container.removeEventListener('wheel', handleWheel);
+      container.addEventListener('touchstart', handleTouchStart);
+      document.addEventListener('keydown', handleKeyDown);
+      
+      return () => {
+        container.removeEventListener('wheel', handleWheel);
+        container.removeEventListener('touchstart', handleTouchStart);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
     }
   }, [currentIndex, comments.length]);
 

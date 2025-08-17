@@ -22,6 +22,7 @@ interface VideoGridProps {
 
 export const VideoGrid = ({ posts, onVideoClick, className }: VideoGridProps) => {
   const [loadedThumbnails, setLoadedThumbnails] = useState<Set<string>>(new Set());
+  const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
 
   const handleThumbnailLoad = (postId: string) => {
     setLoadedThumbnails(prev => new Set(prev).add(postId));
@@ -31,14 +32,16 @@ export const VideoGrid = ({ posts, onVideoClick, className }: VideoGridProps) =>
     <div className={cn("w-full", className)} dir="rtl">
       {/* Grid container - 3 columns like Instagram, full width */}
       <div className="grid grid-cols-3 gap-0.5 w-full">
-        {posts.map((post, index) => (
-          <div
-            key={post.id}
-            className="relative aspect-[3/4] bg-muted cursor-pointer group overflow-hidden"
-            onClick={() => onVideoClick(post.id, index)}
-          >
+         {posts.map((post, index) => (
+           <div
+             key={post.id}
+             className="relative aspect-[3/4] bg-muted cursor-pointer group overflow-hidden"
+             onClick={() => onVideoClick(post.id, index)}
+             onMouseEnter={() => setHoveredVideo(post.id)}
+             onMouseLeave={() => setHoveredVideo(null)}
+           >
             {/* Thumbnail or placeholder */}
-            <div className="w-full h-full bg-gradient-to-br from-muted to-muted/60 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center relative">
               {post.thumbnail ? (
                 <>
                   <img
@@ -55,10 +58,10 @@ export const VideoGrid = ({ posts, onVideoClick, className }: VideoGridProps) =>
                   )}
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center text-muted-foreground">
-                  <Play className="w-8 h-8 mb-2" />
-                  <span className="text-xs text-center px-2 leading-tight">
-                    {post.caption.slice(0, 30)}...
+                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/10 flex flex-col items-center justify-center text-foreground p-3">
+                  <Play className="w-8 h-8 mb-2 text-primary" />
+                  <span className="text-xs text-center leading-tight font-medium">
+                    {post.caption.slice(0, 50)}...
                   </span>
                 </div>
               )}
@@ -76,7 +79,29 @@ export const VideoGrid = ({ posts, onVideoClick, className }: VideoGridProps) =>
               </div>
             )}
 
-            {/* Stats overlay on hover */}
+            {/* Permanent stats overlay - bottom */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+              <div className="flex items-center justify-between text-white text-xs">
+                {/* Trust count */}
+                <div className="flex items-center gap-1">
+                  <div className="relative flex items-center">
+                    <Handshake className="w-3 h-3 text-trust" />
+                    <Crown className="w-1 h-1 absolute -top-0.5 -right-0.5 text-yellow-400" />
+                  </div>
+                  <span className="font-medium">{post.trustCount}</span>
+                </div>
+                
+                {/* ZOOZ count */}
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-zooz text-white rounded-full flex items-center justify-center font-bold text-[8px]">
+                    Z
+                  </div>
+                  <span className="font-medium">{Math.floor(post.trustCount * 0.8)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Enhanced stats overlay on hover */}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
               <div className="flex items-center justify-center gap-6 text-white text-sm">
                 {/* Trust icon with count */}
