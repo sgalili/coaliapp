@@ -60,18 +60,15 @@ export const TrustBadge = ({ trustCount, className }: TrustBadgeProps) => {
   const IconComponent = config.icon;
 
   return (
-    <Badge 
-      className={cn(
-        "inline-flex items-center gap-1 text-xs font-semibold border-0",
-        config.bg,
-        config.color,
-        className
-      )}
-      title={`רמת אמון ${level}: ${config.label} (${trustCount} נקודות אמון)`}
-    >
-      <IconComponent className="w-3 h-3" />
-      {config.label}
-    </Badge>
+    <div title={`רמת אמון ${level}: ${config.label} (${trustCount} נקודות אמון)`}>
+      <IconComponent 
+        className={cn(
+          "w-4 h-4",
+          config.color,
+          className
+        )}
+      />
+    </div>
   );
 };
 
