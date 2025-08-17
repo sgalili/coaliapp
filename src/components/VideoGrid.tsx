@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Eye, MessageCircle, Share, Play } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share, Play, Handshake, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface VideoPost {
@@ -78,18 +78,22 @@ export const VideoGrid = ({ posts, onVideoClick, className }: VideoGridProps) =>
 
             {/* Stats overlay on hover */}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-              <div className="flex items-center gap-4 text-white text-sm">
-                <div className="flex items-center gap-1">
-                  <Heart className="w-4 h-4 fill-current" />
-                  <span>{post.trustCount}</span>
+              <div className="flex items-center justify-center gap-6 text-white text-sm">
+                {/* Trust icon with count */}
+                <div className="flex flex-col items-center gap-1">
+                  <div className="relative flex items-center justify-center">
+                    <Handshake className="w-5 h-5 text-trust" />
+                    <Crown className="w-2 h-2 absolute -top-0.5 -right-0.5 text-yellow-400" />
+                  </div>
+                  <span className="text-xs font-medium">{post.trustCount}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Eye className="w-4 h-4" />
-                  <span>{post.watchCount}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MessageCircle className="w-4 h-4" />
-                  <span>{post.commentCount}</span>
+                
+                {/* ZOOZ icon with count */}
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-5 h-5 bg-zooz text-white rounded-full flex items-center justify-center font-bold text-xs">
+                    Z
+                  </div>
+                  <span className="text-xs font-medium">{Math.floor(post.trustCount * 0.8)}</span>
                 </div>
               </div>
             </div>
