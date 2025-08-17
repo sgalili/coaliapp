@@ -498,9 +498,130 @@ const ProfilePage = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="trusters" className="mt-6 px-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">אנשים שנותנים לי אמון</p>
+        <TabsContent value="trusters" className="mt-0" dir="rtl">
+          {/* Small discrete title */}
+          <div className="px-6 py-3 border-b border-border">
+            <h3 className="text-sm text-muted-foreground">אנשים שנותנים לי אמון</h3>
+          </div>
+          
+          {/* List of people who gave trust */}
+          <div className="space-y-0">
+            {/* Mock data for people who gave trust */}
+            {[
+              {
+                id: '1',
+                name: 'אמית כהן',
+                avatar: '/api/placeholder/64/64',
+                username: 'amit_cohen',
+                bio: 'מומחה כלכלה וטכנולוגיה, יועץ השקעות ומרצה בכיר',
+                trustCount: 2847,
+                kycLevel: 3,
+                trustDate: 'לפני שעתיים',
+                verified: true
+              },
+              {
+                id: '2',
+                name: 'שרה לוי',
+                avatar: '/api/placeholder/64/64',
+                username: 'sarah_education',
+                bio: 'חוקרת חינוך, מומחית פדגוגיה דיגיטלית ויועצת ארגונית',
+                trustCount: 1523,
+                kycLevel: 2,
+                trustDate: 'לפני יום',
+                verified: true
+              },
+              {
+                id: '3',
+                name: 'דוד מושקוביץ',
+                avatar: '/api/placeholder/64/64',
+                username: 'david_security',
+                bio: 'מומחה אבטחת מידע, יועץ סייבר וחוקר באקדמיה',
+                trustCount: 856,
+                kycLevel: 2,
+                trustDate: 'לפני 3 ימים',
+                verified: true
+              },
+              {
+                id: '4',
+                name: 'מאיה רוזן',
+                avatar: '/api/placeholder/64/64',
+                username: 'maya_health',
+                bio: 'רופאה מומחית, חוקרת בתחום הבריאות הדיגיטלית',
+                trustCount: 1234,
+                kycLevel: 3,
+                trustDate: 'לפני שבוע',
+                verified: true
+              },
+              {
+                id: '5',
+                name: 'רחל אברהם',
+                avatar: '/api/placeholder/64/64',
+                username: 'rachel_economy',
+                bio: 'כלכלנית בכירה, יועצת עסקית ומומחית בשווקים פיננסיים',
+                trustCount: 3421,
+                kycLevel: 2,
+                trustDate: 'לפני שבועיים',
+                verified: true
+              }
+            ].map((truster) => (
+              <div key={truster.id}>
+                <div 
+                  className="flex items-start gap-3 p-4 hover:bg-accent/30 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/profile/${truster.id}`)}
+                >
+                  {/* Profile Avatar with KYC */}
+                  <div className="relative shrink-0">
+                    <img 
+                      src={truster.avatar} 
+                      alt={truster.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <TrustStatusIndicator kycLevel={truster.kycLevel} />
+                  </div>
+
+                  {/* User Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-foreground truncate">{truster.name}</h4>
+                      {truster.verified && (
+                        <UserCheck className="w-4 h-4 text-blue-500 shrink-0" />
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground mb-1">@{truster.username}</p>
+                    
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                      {truster.bio}
+                    </p>
+                    
+                    {/* Trust stats and date */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <div className="relative">
+                          <Handshake className="w-3 h-3 text-trust" />
+                          <Crown className="w-1 h-1 text-yellow-400 absolute -top-0.5 -right-0.5" />
+                        </div>
+                        <span className="text-xs font-medium text-trust">
+                          {truster.trustCount.toLocaleString()}
+                        </span>
+                      </div>
+                      
+                      <span className="text-xs text-muted-foreground">
+                        {truster.trustDate}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-px bg-border mx-4" />
+              </div>
+            ))}
+            
+            {/* Empty state if no trusters */}
+            {false && (
+              <div className="flex items-center justify-center py-12 text-muted-foreground">
+                <p className="text-sm">עדיין אין אנשים שנתנו אמון</p>
+              </div>
+            )}
           </div>
         </TabsContent>
         
