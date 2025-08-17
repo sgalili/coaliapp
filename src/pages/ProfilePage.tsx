@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap, Handshake, Crown } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap, Handshake, Crown, Globe, Twitter, Facebook, Youtube, Linkedin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -427,36 +427,71 @@ const ProfilePage = () => {
                   קישורים ורשתות חברתיות
                 </h4>
                 <div className="space-y-3">
-                  <EditableField
-                    value="https://sarahpolitics.com"
-                    onSave={(value) => handleUpdateField('website', value)}
-                    placeholder="אתר אינטרנט אישי..."
-                    className="text-sm"
-                  />
-                  <EditableField
-                    value="https://twitter.com/sarahpolitics"
-                    onSave={(value) => handleUpdateField('twitter', value)}
-                    placeholder="Twitter/X..."
-                    className="text-sm"
-                  />
-                  <EditableField
-                    value="https://www.facebook.com/sarah.politics.israel"
-                    onSave={(value) => handleUpdateField('facebook', value)}
-                    placeholder="Facebook..."
-                    className="text-sm"
-                  />
-                  <EditableField
-                    value="https://www.youtube.com/@sarahpolitics"
-                    onSave={(value) => handleUpdateField('youtube', value)}
-                    placeholder="YouTube..."
-                    className="text-sm"
-                  />
-                  <EditableField
-                    value="https://scholar.google.com/citations?user=sarahp"
-                    onSave={(value) => handleUpdateField('scholar', value)}
-                    placeholder="Google Scholar..."
-                    className="text-sm"
-                  />
+                  {/* Website */}
+                  <div className="flex items-center gap-3">
+                    <Globe className="w-5 h-5 text-muted-foreground" />
+                    <EditableField
+                      value={user.website}
+                      onSave={(value) => handleUpdateField('website', value)}
+                      placeholder="אתר אינטרנט אישי..."
+                      className="text-sm flex-1"
+                    />
+                  </div>
+                  
+                  {/* Social Media Icons */}
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground">רשתות חברתיות:</span>
+                    <div className="flex gap-3">
+                      {user.twitter && (
+                        <button
+                          onClick={() => window.open(user.twitter, '_blank')}
+                          className="p-2 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors"
+                          title="Twitter/X"
+                        >
+                          <Twitter className="w-4 h-4 text-white" />
+                        </button>
+                      )}
+                      {user.facebook && (
+                        <button
+                          onClick={() => window.open(user.facebook, '_blank')}
+                          className="p-2 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors"
+                          title="Facebook"
+                        >
+                          <Facebook className="w-4 h-4 text-white" />
+                        </button>
+                      )}
+                      {user.youtube && (
+                        <button
+                          onClick={() => window.open(user.youtube, '_blank')}
+                          className="p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors"
+                          title="YouTube"
+                        >
+                          <Youtube className="w-4 h-4 text-white" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => window.open('https://linkedin.com/in/sarahpolitics', '_blank')}
+                        className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors"
+                        title="LinkedIn"
+                      >
+                        <Linkedin className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Google Scholar */}
+                  {user.scholar && (
+                    <div className="flex items-center gap-3">
+                      <GraduationCap className="w-5 h-5 text-muted-foreground" />
+                      <button
+                        onClick={() => window.open(user.scholar, '_blank')}
+                        className="text-sm text-primary hover:underline flex items-center gap-1"
+                      >
+                        Google Scholar
+                        <ExternalLink className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
