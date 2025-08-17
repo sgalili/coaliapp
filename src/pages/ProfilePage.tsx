@@ -197,10 +197,11 @@ const ProfilePage = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6 pb-20">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="posts">פוסטים ({user.postsCount})</TabsTrigger>
-          <TabsTrigger value="trusted">נותן אמון</TabsTrigger>
-          <TabsTrigger value="trusters">מקבל אמון ({user.trustersCount})</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4" dir="rtl">
+          <TabsTrigger value="posts">({user.postsCount}) פוסטים</TabsTrigger>
+          <TabsTrigger value="info">מידע</TabsTrigger>
+          <TabsTrigger value="trusters">אמון ({user.trustersCount})</TabsTrigger>
+          <TabsTrigger value="trusted">נתתי אמון</TabsTrigger>
         </TabsList>
         
         <TabsContent value="posts" className="space-y-4 mt-6">
@@ -234,15 +235,21 @@ const ProfilePage = () => {
           ))}
         </TabsContent>
         
-        <TabsContent value="trusted" className="mt-6">
+        <TabsContent value="info" className="mt-6">
           <div className="text-center py-8">
-            <p className="text-muted-foreground">אנשים שאני נותן להם אמון</p>
+            <p className="text-muted-foreground">מידע אישי ופרטי הפרופיל</p>
           </div>
         </TabsContent>
         
         <TabsContent value="trusters" className="mt-6">
           <div className="text-center py-8">
             <p className="text-muted-foreground">אנשים שנותנים לי אמון</p>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="trusted" className="mt-6">
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">אנשים שאני נותן להם אמון</p>
           </div>
         </TabsContent>
       </Tabs>
