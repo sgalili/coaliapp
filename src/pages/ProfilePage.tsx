@@ -12,8 +12,15 @@ import { EditableField } from "@/components/EditableField";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { KYCManagement } from "@/components/KYCManagement";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
+import { ProfilePostsGrid } from "@/components/ProfilePostsGrid";
+import { ProfileBioSection } from "@/components/ProfileBioSection";
+import { ProfileTrustersTab } from "@/components/ProfileTrustersTab";
+import { ProfileTrustedTab } from "@/components/ProfileTrustedTab";
 import { cn } from "@/lib/utils";
 import sarahProfile from "@/assets/sarah-profile.jpg";
+import davidProfile from "@/assets/david-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
 
 // Mock current user data - in real app this would come from auth
 const mockCurrentUser = {
@@ -44,6 +51,92 @@ const mockCurrentUser = {
       commentCount: 45,
       shareCount: 23,
       timestamp: "לפני 2 שעות"
+    },
+    {
+      id: "post2",
+      caption: "הטכנולוגיה הפיננסית המתקדמת של ישראל מציבה אותנו כמובילים בעולם...",
+      trustCount: 189,
+      watchCount: 234,
+      commentCount: 67,
+      shareCount: 34,
+      timestamp: "לפני יום"
+    },
+    {
+      id: "post3",
+      caption: "חינוך דיגיטלי - איך אנחנו מכינים את הדור הבא למציאות חדשה?",
+      trustCount: 156,
+      watchCount: 198,
+      commentCount: 42,
+      shareCount: 28,
+      timestamp: "לפני 3 ימים"
+    }
+  ],
+  bioData: {
+    professionalBackground: "בעלת 15 שנות ניסיון במגזר הציבורי והטכנולוגי. עבדתי כיועצת מדיניות במשרד האוצר וכמובילה טכנולוגית בסטארט-אפים מובילים.",
+    education: "תואר ראשון במדעי המדינה, אוניברסיטת תל אביב. תואר שני במדיניות ציבורית, הרווארד קנדי סקול.",
+    experience: "מנהלת מוצר בפייסבוק ישראל (2018-2021), יועצת מדיניות דיגיטלית במשרד האוצר (2015-2018), מובילה טכנולוגית ב-Waze (2012-2015).",
+    achievements: "זוכת פרס 'נשים מובילות בטכנולוגיה' 2020, מרצה מוזמנת בכנסים בינלאומיים, מחברת ספר 'דמוקרטיה דיגיטלית' (2019).",
+    expertise: ["מדיניות ציבורית", "טכנולוגיה פיננסית", "דמוקרטיה דיגיטלית", "חדשנות ממשלתית", "אתיקה טכנולוגית"],
+    socialLinks: [
+      { platform: "LinkedIn", url: "https://linkedin.com/in/sarah-politics" },
+      { platform: "Twitter", url: "https://twitter.com/sarah_politics" },
+      { platform: "Medium", url: "https://medium.com/@sarah_politics" }
+    ],
+    communityInvolvement: "מייסדת ויו\"ר ארגון 'טכנולוגיה לשינוי חברתי', מתנדבת בתוכנית 'קוד לקהילה', חברת מועצת מנהלים ב-3 עמותות טכנולוגיות.",
+    publicInfluence: "מרצה מוזמנת בכנסי TED ו-DLD, כותבת קבועה בעיתון הארץ, מובילת דעת קהל ברשתות החברתיות עם 50K עוקבים."
+  },
+  trusters: [
+    {
+      id: "user1",
+      username: "דוד_טכנולוגיה",
+      profileImage: davidProfile,
+      kycLevel: 3,
+      trustersCount: 1234,
+      domain: "tech" as const,
+      trustDate: "לפני יום",
+      bio: "מפתח תוכנה בכיר, מומחה בבינה מלאכותית ולמידת מכונה"
+    },
+    {
+      id: "user2", 
+      username: "מאיה_כלכלה",
+      profileImage: mayaProfile,
+      kycLevel: 2,
+      trustersCount: 892,
+      domain: "economy" as const,
+      trustDate: "לפני 3 ימים",
+      bio: "כלכלנית ראשית בבנק הפועלים, מומחית בשווקים פיננסיים"
+    },
+    {
+      id: "user3",
+      username: "נועה_חינוך",
+      profileImage: noaProfile,
+      kycLevel: 2,
+      trustersCount: 567,
+      domain: "education" as const,
+      trustDate: "לפני שבוע",
+      bio: "מנהלת מערכת חינוך דיגיטלי, חלוצה בחדשנות פדגוגית"
+    }
+  ],
+  trustedUsers: [
+    {
+      id: "user4",
+      username: "אמית_ביטחון",
+      profileImage: "/src/assets/amit-profile.jpg",
+      kycLevel: 3,
+      trustersCount: 2156,
+      domain: "security" as const,
+      trustDate: "לפני 2 ימים",
+      bio: "אנליסט ביטחון סייבר, יועץ לממשלה בנושאי אבטחת מידע"
+    },
+    {
+      id: "user5",
+      username: "רחל_מדיניות",
+      profileImage: "/src/assets/rachel-profile.jpg",
+      kycLevel: 2,
+      trustersCount: 1543,
+      domain: "politics" as const,
+      trustDate: "לפני 4 ימים",
+      bio: "חוקרת מדיניות ציבורית, מובילה דעת קהל בנושאי משטר וחברה"
     }
   ]
 };
@@ -197,53 +290,39 @@ const ProfilePage = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6 pb-20">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="posts">פוסטים ({user.postsCount})</TabsTrigger>
-          <TabsTrigger value="trusted">נותן אמון</TabsTrigger>
-          <TabsTrigger value="trusters">מקבל אמון ({user.trustersCount})</TabsTrigger>
+          <TabsTrigger value="bio">מידע</TabsTrigger>
+          <TabsTrigger value="trusters">נותני אמון ({user.trustersCount})</TabsTrigger>
+          <TabsTrigger value="trusted">נתתי אמון</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="posts" className="space-y-4 mt-6">
-          {user.posts.map((post: any) => (
-            <div key={post.id} className="bg-card rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">{post.timestamp}</span>
-              </div>
-              <p className="text-sm text-right">{post.caption}</p>
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4 text-trust" />
-                    {post.trustCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4 text-watch" />
-                    {post.watchCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
-                    {post.commentCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Share className="w-4 h-4" />
-                    {post.shareCount}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+        <TabsContent value="posts" className="mt-6">
+          <ProfilePostsGrid posts={user.posts} />
         </TabsContent>
         
-        <TabsContent value="trusted" className="mt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">אנשים שאני נותן להם אמון</p>
-          </div>
+        <TabsContent value="bio" className="mt-6">
+          <ProfileBioSection 
+            bioData={user.bioData}
+            isOwnProfile={true}
+            onUpdate={(field, value) => {
+              setUser(prev => ({
+                ...prev,
+                bioData: {
+                  ...prev.bioData,
+                  [field]: value
+                }
+              }));
+            }}
+          />
         </TabsContent>
         
         <TabsContent value="trusters" className="mt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">אנשים שנותנים לי אמון</p>
-          </div>
+          <ProfileTrustersTab trusters={user.trusters} />
+        </TabsContent>
+        
+        <TabsContent value="trusted" className="mt-6">
+          <ProfileTrustedTab trustedUsers={user.trustedUsers} />
         </TabsContent>
       </Tabs>
 
