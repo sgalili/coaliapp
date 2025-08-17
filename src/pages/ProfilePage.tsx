@@ -756,7 +756,7 @@ const ProfilePage = () => {
                       </div>
                       
                       <span className="text-xs text-muted-foreground">
-                        נתתי אמון {trusted.trustDate}
+                        {trusted.trustDate}
                       </span>
                     </div>
                   </div>
