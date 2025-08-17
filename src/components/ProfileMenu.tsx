@@ -71,7 +71,7 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
           <div className="space-y-4 pr-4">
             {menuItems.map((category, categoryIndex) => (
               <div key={categoryIndex}>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2 text-right">
                   {category.category}
                 </h3>
                 <div className="space-y-1">
