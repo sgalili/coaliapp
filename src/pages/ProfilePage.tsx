@@ -26,6 +26,11 @@ const mockCurrentUser = {
   bio: "מומחית למדיניות ציבורית ודמוקרטיה דיגיטלית. פועלת למען שקיפות ואמון ברשתות חברתיות.",
   location: "תל אביב, ישראל",
   joinDate: "מאי 2023",
+  website: "https://sarahpolitics.com",
+  twitter: "https://twitter.com/sarahpolitics",
+  facebook: "https://www.facebook.com/sarah.politics.israel",
+  youtube: "https://www.youtube.com/@sarahpolitics",
+  scholar: "https://scholar.google.com/citations?user=sarahp",
   kycLevel: 2,
   isVerified: true,
   trustersCount: 847,
@@ -412,6 +417,46 @@ const ProfilePage = () => {
                     <Shield className="w-4 h-4 text-green-600" />
                     <span>רמה {user.kycLevel} - מאומת</span>
                   </div>
+                </div>
+              </div>
+              
+              {/* Social Links & Websites */}
+              <div className="pt-4 border-t border-border">
+                <h4 className="text-md font-medium mb-3 flex items-center gap-2">
+                  <Share className="w-4 h-4" />
+                  קישורים ורשתות חברתיות
+                </h4>
+                <div className="space-y-3">
+                  <EditableField
+                    value="https://sarahpolitics.com"
+                    onSave={(value) => handleUpdateField('website', value)}
+                    placeholder="אתר אינטרנט אישי..."
+                    className="text-sm"
+                  />
+                  <EditableField
+                    value="https://twitter.com/sarahpolitics"
+                    onSave={(value) => handleUpdateField('twitter', value)}
+                    placeholder="Twitter/X..."
+                    className="text-sm"
+                  />
+                  <EditableField
+                    value="https://www.facebook.com/sarah.politics.israel"
+                    onSave={(value) => handleUpdateField('facebook', value)}
+                    placeholder="Facebook..."
+                    className="text-sm"
+                  />
+                  <EditableField
+                    value="https://www.youtube.com/@sarahpolitics"
+                    onSave={(value) => handleUpdateField('youtube', value)}
+                    placeholder="YouTube..."
+                    className="text-sm"
+                  />
+                  <EditableField
+                    value="https://scholar.google.com/citations?user=sarahp"
+                    onSave={(value) => handleUpdateField('scholar', value)}
+                    placeholder="Google Scholar..."
+                    className="text-sm"
+                  />
                 </div>
               </div>
             </div>
