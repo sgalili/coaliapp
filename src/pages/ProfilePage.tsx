@@ -518,7 +518,7 @@ const ProfilePage = () => {
                 avatar: amitProfile,
                 username: 'amit_cohen',
                 bio: 'מומחה כלכלה וטכנולוגיה, יועץ השקעות ומרצה בכיר',
-                trustCount: 2847,
+                trustCount: 15000, // רמה 5 - מנהיג (יש לו קורונה)
                 kycLevel: 3,
                 trustDate: 'לפני שעתיים',
                 verified: true
@@ -529,7 +529,7 @@ const ProfilePage = () => {
                 avatar: sarahProfile,
                 username: 'sarah_education',
                 bio: 'חוקרת חינוך, מומחית פדגוגיה דיגיטלית ויועצת ארגונית',
-                trustCount: 1523,
+                trustCount: 1523, // רמה 4 - מומחה (יש לו יהלום)
                 kycLevel: 2,
                 trustDate: 'לפני יום',
                 verified: true
@@ -540,7 +540,7 @@ const ProfilePage = () => {
                 avatar: davidProfile,
                 username: 'david_security',
                 bio: 'מומחה אבטחת מידע, יועץ סייבר וחוקר באקדמיה',
-                trustCount: 856,
+                trustCount: 156, // רמה 3 - מהימן (יש לו כוכב מלא)
                 kycLevel: 2,
                 trustDate: 'לפני 3 ימים',
                 verified: true
@@ -551,7 +551,7 @@ const ProfilePage = () => {
                 avatar: mayaProfile,
                 username: 'maya_health',
                 bio: 'רופאה מומחית, חוקרת בתחום הבריאות הדיגיטלית',
-                trustCount: 1234,
+                trustCount: 45, // רמה 2 - חבר (יש לו כוכב)
                 kycLevel: 3,
                 trustDate: 'לפני שבוע',
                 verified: true
@@ -562,7 +562,7 @@ const ProfilePage = () => {
                 avatar: rachelProfile,
                 username: 'rachel_economy',
                 bio: 'כלכלנית בכירה, יועצת עסקית ומומחית בשווקים פיננסיים',
-                trustCount: 3421,
+                trustCount: 5, // רמה 1 - חדש (יש לו סמל משתמש)
                 kycLevel: 2,
                 trustDate: 'לפני שבועיים',
                 verified: true
@@ -587,9 +587,7 @@ const ProfilePage = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-semibold text-foreground truncate">{truster.name}</h4>
-                      {truster.verified && (
-                        <UserCheck className="w-4 h-4 text-blue-500 shrink-0" />
-                      )}
+                      <TrustBadge trustCount={truster.trustCount} className="shrink-0" />
                     </div>
                     
                     <p className="text-xs text-muted-foreground mb-1">@{truster.username}</p>
