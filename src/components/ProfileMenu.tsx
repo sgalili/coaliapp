@@ -84,7 +84,9 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="w-5 h-5" />
-                        <div className="font-medium">{item.label}</div>
+                        <div className="text-right">
+                          <div className="font-medium">{item.label}</div>
+                        </div>
                       </div>
                       <ChevronRight className="w-4 h-4" />
                     </Button>
@@ -105,7 +107,9 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
               onClick={() => handleItemClick(() => navigate("/"))}
             >
               <LogOut className="w-5 h-5 ml-3" />
-              <div className="font-medium">התנתק</div>
+              <div className="text-right">
+                <div className="font-medium">התנתק</div>
+              </div>
             </Button>
           </div>
         </ScrollArea>
