@@ -290,23 +290,23 @@ const ProfilePage = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="px-0 pb-20">
-        <TabsList className="w-full h-auto bg-transparent p-0 border-b border-border">
-          <div className="grid w-full grid-cols-4 gap-0">
+        <TabsList className="w-full h-auto bg-transparent p-0 border-b border-border" dir="rtl">
+          <div className="grid w-full grid-cols-4 gap-0" dir="rtl">
             <TabsTrigger 
               value="posts" 
-              className="flex-1 px-2 py-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary bg-transparent rounded-none relative after:absolute after:left-0 after:top-2 after:bottom-2 after:w-px after:bg-border last:after:hidden"
+              className="flex-1 px-2 py-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary bg-transparent rounded-none relative after:absolute after:right-0 after:top-2 after:bottom-2 after:w-px after:bg-border last:after:hidden"
             >
               פוסטים ({user.postsCount})
             </TabsTrigger>
             <TabsTrigger 
               value="bio"
-              className="flex-1 px-2 py-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary bg-transparent rounded-none relative after:absolute after:left-0 after:top-2 after:bottom-2 after:w-px after:bg-border last:after:hidden"
+              className="flex-1 px-2 py-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary bg-transparent rounded-none relative after:absolute after:right-0 after:top-2 after:bottom-2 after:w-px after:bg-border last:after:hidden"
             >
               מידע
             </TabsTrigger>
             <TabsTrigger 
               value="trusters"
-              className="flex-1 px-2 py-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary bg-transparent rounded-none relative after:absolute after:left-0 after:top-2 after:bottom-2 after:w-px after:bg-border last:after:hidden"
+              className="flex-1 px-2 py-4 text-sm font-medium border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 data-[state=active]:text-primary bg-transparent rounded-none relative after:absolute after:right-0 after:top-2 after:bottom-2 after:w-px after:bg-border last:after:hidden"
             >
               נותני אמון ({user.trustersCount})
             </TabsTrigger>

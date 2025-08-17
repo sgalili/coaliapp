@@ -67,7 +67,7 @@ export const ProfilePostsGrid = ({ posts, className = "" }: ProfilePostsGridProp
   });
 
   return (
-    <div className={`${className}`}>
+    <div className={`${className}`} dir="rtl">
       {/* Grid de posts style Instagram */}
       <div className="grid grid-cols-3 gap-1">
         {posts.map((post, index) => (
@@ -83,14 +83,14 @@ export const ProfilePostsGrid = ({ posts, className = "" }: ProfilePostsGridProp
             
             {/* Overlay avec stats au hover */}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <div className="flex items-center gap-4 text-white text-sm">
+              <div className="flex items-center gap-4 text-white text-sm" dir="rtl">
                 <div className="flex items-center gap-1">
-                  <Heart className="w-4 h-4 fill-current" />
                   {post.trustCount}
+                  <Heart className="w-4 h-4 fill-current" />
                 </div>
                 <div className="flex items-center gap-1">
-                  <MessageCircle className="w-4 h-4 fill-current" />
                   {post.commentCount}
+                  <MessageCircle className="w-4 h-4 fill-current" />
                 </div>
               </div>
             </div>

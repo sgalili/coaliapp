@@ -46,9 +46,9 @@ export const ProfileBioSection = ({
     type?: "text" | "textarea";
   }) => (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <Icon className="w-4 h-4" />
+      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-row-reverse">
         <span>{title}</span>
+        <Icon className="w-4 h-4" />
       </div>
       {isOwnProfile ? (
         <EditableField
@@ -68,19 +68,19 @@ export const ProfileBioSection = ({
   );
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-6 ${className}`} dir="rtl">
       {isOwnProfile && (
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">מידע מקצועי ואישי</h3>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setIsEditing(!isEditing)}
             className="flex items-center gap-2"
           >
-            <Edit3 className="w-4 h-4" />
             {isEditing ? "סיום עריכה" : "עריכה"}
+            <Edit3 className="w-4 h-4" />
           </Button>
+          <h3 className="text-lg font-semibold">מידע מקצועי ואישי</h3>
         </div>
       )}
 
@@ -141,16 +141,11 @@ export const ProfileBioSection = ({
 
         {/* Expertise Tags */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <GraduationCap className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-row-reverse">
             <span>תחומי מומחיות</span>
+            <GraduationCap className="w-4 h-4" />
           </div>
-          <div className="flex flex-wrap gap-2">
-            {bioData.expertise.map((skill, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                {skill}
-              </Badge>
-            ))}
+          <div className="flex flex-wrap gap-2 flex-row-reverse">
             {isOwnProfile && (
               <Button
                 variant="outline"
@@ -163,22 +158,26 @@ export const ProfileBioSection = ({
                   }
                 }}
               >
-                + הוסף
+                הוסף +
               </Button>
             )}
+            {bioData.expertise.map((skill, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {skill}
+              </Badge>
+            ))}
           </div>
         </div>
 
         {/* Social Links */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <ExternalLink className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground flex-row-reverse">
             <span>קישורים חברתיים ומקצועיים</span>
+            <ExternalLink className="w-4 h-4" />
           </div>
           <div className="space-y-2">
             {bioData.socialLinks.map((link, index) => (
-              <div key={index} className="flex items-center gap-2 text-sm">
-                <ExternalLink className="w-3 h-3 text-muted-foreground" />
+              <div key={index} className="flex items-center gap-2 text-sm flex-row-reverse">
                 <a 
                   href={link.url} 
                   target="_blank" 
@@ -187,23 +186,26 @@ export const ProfileBioSection = ({
                 >
                   {link.platform}
                 </a>
+                <ExternalLink className="w-3 h-3 text-muted-foreground" />
               </div>
             ))}
             {isOwnProfile && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-6 px-2 text-xs"
-                onClick={() => {
-                  const platform = prompt("שם הפלטפורמה:");
-                  const url = prompt("קישור:");
-                  if (platform && url) {
-                    onUpdate("socialLinks", [...bioData.socialLinks, { platform, url }]);
-                  }
-                }}
-              >
-                + הוסף קישור
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-6 px-2 text-xs"
+                  onClick={() => {
+                    const platform = prompt("שם הפלטפורמה:");
+                    const url = prompt("קישור:");
+                    if (platform && url) {
+                      onUpdate("socialLinks", [...bioData.socialLinks, { platform, url }]);
+                    }
+                  }}
+                >
+                  הוסף קישור +
+                </Button>
+              </div>
             )}
           </div>
         </div>
