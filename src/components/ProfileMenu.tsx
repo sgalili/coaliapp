@@ -20,7 +20,7 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
       category: "הגדרות אישיות",
       items: [
         { icon: Bell, label: "התראות", action: () => navigate("/notifications-settings") },
-        { icon: Globe, label: "שפה", action: () => console.log("Language") },
+        { icon: Globe, label: "שפה", action: () => navigate("/language-settings") },
         { icon: Shield, label: "הנתונים שלי", action: () => navigate("/data-management") },
       ]
     },
