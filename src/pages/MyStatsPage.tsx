@@ -123,8 +123,9 @@ const MyStatsPage = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(-1)}
+              onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/profile")}
               className="h-10 w-10"
+              aria-label="חזור"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
