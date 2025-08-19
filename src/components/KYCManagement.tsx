@@ -70,51 +70,53 @@ export const KYCManagement = ({ className }: KYCManagementProps) => {
   return (
     <div className={cn("space-y-2", className)}>
       {/* Current KYC Status */}
-      <Card className="border-red-200 bg-red-50/50 relative">
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-full bg-red-100">
-                <IconComponent className="w-4 h-4 text-red-600" />
-              </div>
-              <div>
-                <CardTitle className="text-base">{currentLevel.title}</CardTitle>
-                <CardDescription className="text-xs">{currentLevel.description}</CardDescription>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs">רמה {user.kycLevel}</Badge>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 text-gray-400 hover:text-gray-600"
-                onClick={() => setIsKYCHidden(true)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        
-        {nextLevel && (
-          <CardContent className="pt-0 pb-3">
-            <div className="bg-red-100/50 rounded-lg p-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-sm">שדרג לרמה {user.kycLevel + 1}</h4>
-                <div className="flex items-center gap-1 text-zooz font-bold text-xs">
-                  <Sparkles className="w-3 h-3" />
-                  +{nextLevel.reward} ZOOZ
+      <div className="relative">
+        <Card className="border-red-200 bg-red-50/50">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-full bg-red-100">
+                  <IconComponent className="w-4 h-4 text-red-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-base">{currentLevel.title}</CardTitle>
+                  <CardDescription className="text-xs">{currentLevel.description}</CardDescription>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">עיר, תאריך לידה, מספר זהות</p>
-              <Button onClick={handleUpgrade} className="w-full h-8 text-xs bg-red-600 hover:bg-red-700 text-white">
-                <ArrowUp className="w-3 h-3 ml-1" />
-                שדרג עכשיו
-              </Button>
+              <Badge variant="secondary" className="text-xs">רמה {user.kycLevel}</Badge>
             </div>
-          </CardContent>
-        )}
-      </Card>
+          </CardHeader>
+        
+          {nextLevel && (
+            <CardContent className="pt-0 pb-3">
+              <div className="bg-red-100/50 rounded-lg p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-sm">שדרג לרמה {user.kycLevel + 1}</h4>
+                  <div className="flex items-center gap-1 text-zooz font-bold text-xs">
+                    <Sparkles className="w-3 h-3" />
+                    +{nextLevel.reward} ZOOZ
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">עיר, תאריך לידה, מספר זהות</p>
+                <Button onClick={handleUpgrade} className="w-full h-8 text-xs bg-red-600 hover:bg-red-700 text-white">
+                  <ArrowUp className="w-3 h-3 ml-1" />
+                  שדרג עכשיו
+                </Button>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+        
+        {/* Close button positioned outside the card */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white border border-gray-200 text-gray-400 hover:text-gray-600 hover:bg-gray-50 shadow-sm"
+          onClick={() => setIsKYCHidden(true)}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
 
 
       {/* KYC Upgrade Dialog */}
