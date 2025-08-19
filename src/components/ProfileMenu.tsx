@@ -34,10 +34,9 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
     {
       category: "תמיכה ועזרה",
       items: [
-        { icon: MessageCircle, label: "יצירת קשר ומשוב", action: () => window.open("https://wa.me/972123456789", "_blank") },
-        { icon: Heart, label: "תרומות ותמיכה", action: () => window.open("https://israel3.org.il", "_blank") },
+        { icon: MessageCircle, label: "יצירת קשר ומשוב", action: () => window.open("https://wa.me/972586136130", "_blank") },
         { icon: ShoppingBag, label: "Marketplace", action: () => window.open("https://lazooz.co", "_blank") },
-        { icon: HelpCircle, label: "מרכז עזרה", action: () => console.log("Help Center") },
+        { icon: HelpCircle, label: "עוזר AI", action: () => window.open("https://bit.ly/israel3GPT", "_blank") },
       ]
     },
     {
