@@ -21,7 +21,6 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
       items: [
         { icon: Bell, label: "התראות", action: () => navigate("/notifications-settings") },
         { icon: Globe, label: "שפה", action: () => console.log("Language") },
-        { icon: Lock, label: "הגדרות פרטיות", action: () => console.log("Privacy") },
         { icon: Shield, label: "הנתונים שלי", action: () => navigate("/data-management") },
       ]
     },
