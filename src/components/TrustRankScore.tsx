@@ -57,7 +57,7 @@ export const TrustRankScore: React.FC<TrustRankScoreProps> = ({
   };
 
   return (
-    <Card className="mb-6">
+    <Card className="mb-6" dir="rtl">
       <CardContent className="text-center p-8">
         <div className="space-y-4">
           {/* Main Score */}

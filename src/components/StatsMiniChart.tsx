@@ -31,8 +31,8 @@ export const StatsMiniChart: React.FC<StatsMiniChartProps> = ({ title, data, typ
     }).join(' ');
 
     return (
-      <Card>
-        <CardHeader>
+      <Card dir="rtl">
+        <CardHeader className="text-right">
           <CardTitle className="text-lg">{title}</CardTitle>
         </CardHeader>
         <CardContent>
@@ -85,7 +85,7 @@ export const StatsMiniChart: React.FC<StatsMiniChartProps> = ({ title, data, typ
                         />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <div className="text-center">
+                        <div className="text-center text-right">
                           <div className="font-medium">{point.date}</div>
                           <div className="text-sm text-muted-foreground">
                             {point.value} אמונות
@@ -119,8 +119,8 @@ export const StatsMiniChart: React.FC<StatsMiniChartProps> = ({ title, data, typ
     };
 
     return (
-      <Card>
-        <CardHeader>
+      <Card dir="rtl">
+        <CardHeader className="text-right">
           <CardTitle className="text-lg">{title}</CardTitle>
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>00:00</span>
@@ -147,7 +147,7 @@ export const StatsMiniChart: React.FC<StatsMiniChartProps> = ({ title, data, typ
                             />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <div className="text-center">
+                            <div className="text-center text-right">
                               <div className="font-medium">יום {day}, {hour.toString().padStart(2, '0')}:00</div>
                               <div className="text-sm text-muted-foreground">
                                 {value} אמונות

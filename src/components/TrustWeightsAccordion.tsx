@@ -59,14 +59,14 @@ export const TrustWeightsAccordion: React.FC<TrustWeightsAccordionProps> = ({ we
   ];
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
+    <Card className="mb-6" dir="rtl">
+      <CardHeader className="text-right">
         <CardTitle className="flex items-center gap-2">
           <Info className="h-5 w-5" />
           שקיפות משקלי הציון
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="text-right">
         <div className="space-y-4">
           {weightItems.map((item, index) => (
             <Collapsible key={index}>

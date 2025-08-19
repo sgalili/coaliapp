@@ -142,9 +142,9 @@ const MyStatsPage = () => {
           </div>
 
           {/* General Data Tab */}
-          <TabsContent value="general" className="p-4 space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-6">הביצועים שלך ב־30 הימים האחרונים</h2>
+          <TabsContent value="general" className="p-4 space-y-6" dir="rtl">
+            <div className="text-right">
+              <h2 className="text-2xl font-bold mb-6 text-right">הביצועים שלך ב־30 הימים האחרונים</h2>
               
               {/* KPI Cards Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
@@ -201,15 +201,15 @@ const MyStatsPage = () => {
               </div>
 
               {/* AI Insights */}
-              <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <Card className="bg-gradient-to-l from-primary/5 to-primary/10 border-primary/20">
+                <CardHeader className="text-right">
+                  <CardTitle className="flex items-center gap-2 justify-end">
                     <Zap className="h-5 w-5 text-primary" />
                     תובנות AI
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm">
+                <CardContent className="space-y-3 text-right">
+                  <p className="text-sm text-right">
                     את/ה בטופ <strong>{mockStatsData.trustRank.ai.percentileWeekTop}%</strong> בשבוע האחרון
                   </p>
                   <p className="text-sm">
@@ -219,7 +219,7 @@ const MyStatsPage = () => {
               </Card>
 
               {/* Dynamic Badges */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 justify-end">
                 {badges.map((badge) => (
                   <Badge key={badge} variant="secondary" className="text-sm">
                     {badge}
@@ -230,9 +230,9 @@ const MyStatsPage = () => {
           </TabsContent>
 
           {/* TrustRank Tab */}
-          <TabsContent value="trustrank" className="p-4 space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-6">דירוג־האמון שלך</h2>
+          <TabsContent value="trustrank" className="p-4 space-y-6" dir="rtl">
+            <div className="text-right">
+              <h2 className="text-2xl font-bold mb-6 text-right">דירוג־האמון שלך</h2>
               
               {/* Big Score */}
               <TrustRankScore
@@ -249,7 +249,7 @@ const MyStatsPage = () => {
                 <CardHeader>
                   <CardTitle className="text-lg">איכות נגד כמות</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="text-right">
                   <div className="flex items-center justify-center p-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-2">5</div>
@@ -268,13 +268,13 @@ const MyStatsPage = () => {
 
               {/* Trust Network */}
               <Card>
-                <CardHeader>
+                <CardHeader className="text-right">
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
                     נתמך ע״י {mockStatsData.trustRank.supporters.length} מובילי־קהילה
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="text-right">
                   <div className="grid grid-cols-1 gap-3">
                     {mockStatsData.trustRank.supporters.map((supporter) => (
                       <div key={supporter.name} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
@@ -298,14 +298,14 @@ const MyStatsPage = () => {
               {/* Explainer */}
               <Collapsible>
                 <CollapsibleTrigger asChild>
-                  <Button variant="ghost" className="w-full justify-between">
+                  <Button variant="ghost" className="w-full justify-between text-right">
                     <span>איך הציון מחושב?</span>
                     <Info className="h-4 w-4" />
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <Card className="mt-2">
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 text-right">
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         הציון מחושב בדומה ל־PageRank של גוגל, כאשר איכות נותני האמון חשובה יותר מכמות. 
                         הציון מתעדכן יומית לפי איכות, כמות ויציבות האמון שקיבלת. 
@@ -317,19 +317,19 @@ const MyStatsPage = () => {
               </Collapsible>
 
               {/* AI Forecasts */}
-              <Card className="bg-gradient-to-r from-trust/5 to-trust/10 border-trust/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <Card className="bg-gradient-to-l from-trust/5 to-trust/10 border-trust/20">
+                <CardHeader className="text-right">
+                  <CardTitle className="flex items-center gap-2 justify-end">
                     <Award className="h-5 w-5 text-trust" />
                     תחזיות AI
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm">
+                  <p className="text-sm text-right">
                     אם תשיג עוד <strong>{mockStatsData.trustRank.ai.top50Needed}</strong> אמונות מה־Top 10% → 
                     תגיע לטופ 50 הארצי
                   </p>
-                  <p className="text-sm">
+                  <p className="text-sm text-right">
                     קצב הצמיחה שלך מהיר ב־<strong>{mockStatsData.trustRank.ai.growthFasterThanPct}%</strong> מהממוצע
                   </p>
                 </CardContent>

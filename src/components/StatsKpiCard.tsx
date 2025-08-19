@@ -45,22 +45,23 @@ export const StatsKpiCard: React.FC<StatsKpiCardProps> = ({
     <Card 
       className={`hover:shadow-md transition-all duration-200 ${onClick ? 'cursor-pointer hover:scale-105' : ''}`}
       onClick={onClick}
+      dir="rtl"
     >
-      <CardContent className="p-4">
+      <CardContent className="p-4 text-right">
         <div className="flex items-start justify-between mb-3">
-          <div className="text-sm font-medium text-muted-foreground">{title}</div>
+          <div className="text-sm font-medium text-muted-foreground text-right flex-1">{title}</div>
           {icon && (
             <div className="text-primary">{icon}</div>
           )}
         </div>
         
-        <div className="space-y-2">
-          <div className="text-2xl font-bold tabular-nums">
+        <div className="space-y-2 text-right">
+          <div className="text-2xl font-bold tabular-nums text-right">
             {formatValue(value)}
           </div>
           
           {subtitle && (
-            <div className="text-xs text-muted-foreground">{subtitle}</div>
+            <div className="text-xs text-muted-foreground text-right">{subtitle}</div>
           )}
           
           {delta !== undefined && (
