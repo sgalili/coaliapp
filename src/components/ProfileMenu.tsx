@@ -28,7 +28,7 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
       category: "קהילה ושיתוף",
       items: [
         { icon: UserPlus, label: "הזמן חברים", action: () => navigate("/invite-friends") },
-        { icon: BarChart3, label: "הסטטיסטיקות שלי", action: () => console.log("Personal Stats") },
+        { icon: BarChart3, label: "הסטטיסטיקות שלי", action: () => navigate("/my-stats") },
       ]
     },
     {
