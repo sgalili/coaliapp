@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Shield, ShieldAlert, ShieldCheck, ArrowUp, Sparkles, Trophy, Crown } from "lucide-react";
+import { Shield, ShieldAlert, ShieldCheck, ArrowUp, Sparkles, Trophy, Crown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useKYC } from "@/hooks/useKYC";
 import { KYCForm } from "@/components/KYCForm";
@@ -15,6 +15,7 @@ interface KYCManagementProps {
 export const KYCManagement = ({ className }: KYCManagementProps) => {
   const { user, isKYCVerified, showKYC, triggerKYCCheck, handleKYCSuccess, handleKYCClose } = useKYC();
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [isKYCHidden, setIsKYCHidden] = useState(false);
 
   const kycLevels = {
     0: {
@@ -61,10 +62,15 @@ export const KYCManagement = ({ className }: KYCManagementProps) => {
     }
   };
 
+  // Don't render if hidden
+  if (isKYCHidden) {
+    return null;
+  }
+
   return (
     <div className={cn("space-y-2", className)}>
       {/* Current KYC Status */}
-      <Card className="border-red-200 bg-red-50/50">
+      <Card className="border-red-200 bg-red-50/50 relative">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -76,7 +82,17 @@ export const KYCManagement = ({ className }: KYCManagementProps) => {
                 <CardDescription className="text-xs">{currentLevel.description}</CardDescription>
               </div>
             </div>
-            <Badge variant="secondary" className="text-xs">רמה {user.kycLevel}</Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="text-xs">רמה {user.kycLevel}</Badge>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 text-gray-400 hover:text-gray-600"
+                onClick={() => setIsKYCHidden(true)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </CardHeader>
         
