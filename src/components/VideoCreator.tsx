@@ -288,6 +288,35 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
             <X className="w-6 h-6" />
           </Button>
 
+          {/* Category Selection */}
+          {userDomains.length > 0 && (
+            <div className="flex-1 max-w-[200px] mx-4">
+              <Select value={selectedCategory} onValueChange={(value: ExpertDomain) => setSelectedCategory(value)}>
+                <SelectTrigger className="bg-black/50 border-white/20 text-white text-sm h-8">
+                  <SelectValue placeholder="Catégorie" />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-900 border-gray-700">
+                  {userDomains.map((domain) => {
+                    const config = getDomainConfig(domain);
+                    const IconComponent = config.icon;
+                    return (
+                      <SelectItem 
+                        key={domain} 
+                        value={domain}
+                        className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                      >
+                        <div className="flex items-center gap-2">
+                          <IconComponent className="w-4 h-4" />
+                          <span>{config.hebrewName}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           {/* Mode Toggle */}
           <div className="flex bg-black/30 rounded-full p-1">
             <Button
@@ -368,35 +397,6 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
-        {/* Category Selection */}
-        {userDomains.length > 0 && (
-          <div className="mb-4">
-            <Select value={selectedCategory} onValueChange={(value: ExpertDomain) => setSelectedCategory(value)}>
-              <SelectTrigger className="bg-black/50 border-white/20 text-white">
-                <SelectValue placeholder="Sélectionnez une catégorie" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
-                {userDomains.map((domain) => {
-                  const config = getDomainConfig(domain);
-                  const IconComponent = config.icon;
-                  return (
-                    <SelectItem 
-                      key={domain} 
-                      value={domain}
-                      className="text-white hover:bg-gray-700 focus:bg-gray-700"
-                    >
-                      <div className="flex items-center gap-2">
-                        <IconComponent className="w-4 h-4" />
-                        <span>{config.hebrewName}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
         {/* Filters Row */}
         <div className="flex justify-center gap-3 mb-6">
           {filters.map((filter) => (
