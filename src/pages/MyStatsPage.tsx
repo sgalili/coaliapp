@@ -319,7 +319,7 @@ const MyStatsPage = () => {
               {/* AI Forecasts */}
               <Card className="bg-gradient-to-l from-trust/5 to-trust/10 border-trust/20">
                 <CardHeader className="text-right">
-                  <CardTitle className="flex items-center gap-2 justify-end">
+                  <CardTitle className="flex items-center gap-2 justify-end text-right" dir="rtl">
                     <Award className="h-5 w-5 text-trust" />
                     תחזיות AI
                   </CardTitle>
