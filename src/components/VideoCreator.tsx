@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { getDomainConfig, type ExpertDomain } from "@/lib/domainConfig";
 
 interface VideoCreatorProps {
   onClose: () => void;
@@ -58,10 +60,14 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isLive, setIsLive] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("none");
+  const [selectedCategory, setSelectedCategory] = useState<ExpertDomain | "">("");
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [comment, setComment] = useState("");
   const [recordingTime, setRecordingTime] = useState(60);
   const [isCameraFacingUser, setIsCameraFacingUser] = useState(true);
+
+  // Mock user profile domains - in real app, this would come from user context/API
+  const userDomains: ExpertDomain[] = ['tech', 'politics', 'culture']; // Max 3 domains from user profile
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -193,11 +199,32 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   };
 
   const handlePublish = () => {
+    // Check if user has domains in profile
+    if (userDomains.length === 0) {
+      toast({
+        title: "Profil incomplet",
+        description: "Veuillez compléter votre profil avec vos domaines d'expertise avant de publier.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if category is selected
+    if (!selectedCategory) {
+      toast({
+        title: "Catégorie requise",
+        description: "Veuillez sélectionner une catégorie pour votre contenu.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (mode === "record" && recordedBlob && comment.trim()) {
       onPublish({
         videoBlob: recordedBlob,
         comment: comment.trim(),
         filter: selectedFilter,
+        category: selectedCategory,
         mode: "record",
         duration: 60 - recordingTime,
         timestamp: new Date().toISOString()
@@ -206,6 +233,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
       onPublish({
         comment: comment.trim(),
         filter: selectedFilter,
+        category: selectedCategory,
         mode: "live",
         timestamp: new Date().toISOString()
       });
@@ -238,6 +266,8 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   };
 
   const isFormValid = () => {
+    if (userDomains.length === 0) return false;
+    if (!selectedCategory) return false;
     if (mode === "record") {
       return recordedBlob && comment.trim();
     }
@@ -291,6 +321,14 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
             </div>
           )}
         </div>
+
+        {/* Profile Warning */}
+        {userDomains.length === 0 && (
+          <div className="mt-3 bg-red-500/90 text-white p-3 rounded-lg text-sm flex items-center gap-2">
+            <User className="w-4 h-4" />
+            <span>Complétez votre profil pour publier du contenu</span>
+          </div>
+        )}
       </div>
 
       {/* Main Video Area */}
@@ -330,6 +368,35 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
+        {/* Category Selection */}
+        {userDomains.length > 0 && (
+          <div className="mb-4">
+            <Select value={selectedCategory} onValueChange={(value: ExpertDomain) => setSelectedCategory(value)}>
+              <SelectTrigger className="bg-black/50 border-white/20 text-white">
+                <SelectValue placeholder="Sélectionnez une catégorie" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-900 border-gray-700">
+                {userDomains.map((domain) => {
+                  const config = getDomainConfig(domain);
+                  const IconComponent = config.icon;
+                  return (
+                    <SelectItem 
+                      key={domain} 
+                      value={domain}
+                      className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                    >
+                      <div className="flex items-center gap-2">
+                        <IconComponent className="w-4 h-4" />
+                        <span>{config.hebrewName}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         {/* Filters Row */}
         <div className="flex justify-center gap-3 mb-6">
           {filters.map((filter) => (
@@ -407,7 +474,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
                     <Button
                       onClick={handlePublish}
                       disabled={!isFormValid()}
-                      className="bg-primary hover:bg-primary/90"
+                      className="bg-primary hover:bg-primary/90 disabled:bg-gray-500 disabled:cursor-not-allowed"
                     >
                       Publish
                     </Button>
@@ -418,7 +485,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
               <Button
                 size="lg"
                 onClick={isLive ? stopLive : startLive}
-                disabled={!comment.trim()}
+                disabled={!comment.trim() || userDomains.length === 0}
                 className={cn(
                   "rounded-full w-20 h-20 p-0",
                   isLive 
@@ -440,7 +507,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
             <Button
               onClick={handlePublish}
               disabled={!isFormValid()}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 disabled:bg-gray-500 disabled:cursor-not-allowed"
             >
               End & Publish
             </Button>
