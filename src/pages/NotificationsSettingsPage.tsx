@@ -7,8 +7,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, ChevronUp, ArrowRight, Bell, Heart, Eye, MessageCircle, Users, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getAllDomains, type ExpertDomain } from "@/lib/domainConfig";
+import { useNavigate } from "react-router-dom";
 
 const NotificationsSettingsPage = () => {
+  const navigate = useNavigate();
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
   const [domainsOpen, setDomainsOpen] = useState(false);
   const [selectedDomains, setSelectedDomains] = useState<Set<ExpertDomain>>(new Set());
@@ -87,7 +89,7 @@ const NotificationsSettingsPage = () => {
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-50">
         <div className="flex items-center justify-between p-4">
-          <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
             <ArrowRight className="w-5 h-5" />
           </Button>
           <h1 className="text-lg font-semibold">הגדרות התראות</h1>
