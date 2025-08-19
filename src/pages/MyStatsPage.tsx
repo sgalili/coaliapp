@@ -212,7 +212,7 @@ const MyStatsPage = () => {
                   <p className="text-sm text-right">
                     את/ה בטופ <strong>{mockStatsData.trustRank.ai.percentileWeekTop}%</strong> בשבוע האחרון
                   </p>
-                  <p className="text-sm">
+                  <p className="text-sm text-right">
                     אם תשמור/י על הקצב → תחזית: <strong>{mockStatsData.trustRank.ai.forecastTarget7d}</strong> בעוד 7 ימים
                   </p>
                 </CardContent>
@@ -324,7 +324,7 @@ const MyStatsPage = () => {
                     תחזיות AI
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 text-right">
                   <p className="text-sm text-right">
                     אם תשיג עוד <strong>{mockStatsData.trustRank.ai.top50Needed}</strong> אמונות מה־Top 10% → 
                     תגיע לטופ 50 הארצי
