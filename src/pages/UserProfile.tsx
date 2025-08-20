@@ -191,14 +191,14 @@ const UserProfile = () => {
           })}
         </div>
 
-        {/* Stats - RTL Order: Watch, Trust, ZOOZ */}
+        {/* Stats - RTL Order: Watch, Trust, ZOOZ with unified text color */}
         <div className="flex justify-around py-4 border-y border-border">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="text-center cursor-pointer">
                   <Eye className="w-6 h-6 text-watch mx-auto mb-1" />
-                  <div className="text-2xl font-bold text-watch mt-1">{user.watchersCount}</div>
+                  <div className="text-2xl font-bold text-foreground mt-1">{user.watchersCount}</div>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -212,7 +212,7 @@ const UserProfile = () => {
               <TooltipTrigger asChild>
                 <div className="text-center cursor-pointer">
                   <TrustIcon />
-                  <div className="text-2xl font-bold text-trust mt-1">{user.trustersCount}</div>
+                  <div className="text-2xl font-bold text-foreground mt-1">{user.trustersCount}</div>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -221,7 +221,7 @@ const UserProfile = () => {
             </Tooltip>
           </TooltipProvider>
           
-          <ZoozEarnedDisplay zoozEarned={user.zoozEarned || 0} showAnimation />
+          <ZoozEarnedDisplay zoozEarned={user.zoozEarned || 0} showAnimation textColorClass="text-foreground" />
         </div>
 
         {/* Action Buttons */}

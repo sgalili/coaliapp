@@ -5,12 +5,14 @@ interface ZoozEarnedDisplayProps {
   zoozEarned: number;
   showAnimation?: boolean;
   className?: string;
+  textColorClass?: string;
 }
 
 export const ZoozEarnedDisplay = ({ 
   zoozEarned, 
   showAnimation = false,
-  className 
+  className,
+  textColorClass = "text-zooz"
 }: ZoozEarnedDisplayProps) => {
   const formatZooz = (amount: number) => {
     if (amount >= 1000000) {
@@ -37,7 +39,8 @@ export const ZoozEarnedDisplay = ({
               <ZoozIcon />
               <div 
                 className={cn(
-                  "text-2xl font-bold text-zooz transition-all duration-300",
+                  "text-2xl font-bold transition-all duration-300",
+                  textColorClass,
                   showAnimation && "animate-gentle-pulse"
                 )}
               >
