@@ -160,10 +160,6 @@ const UserProfile = () => {
                 <MapPin className="w-4 h-4" />
                 {user.location}
               </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                נרשם {user.joinDate}
-              </div>
             </div>
           </div>
         </div>
