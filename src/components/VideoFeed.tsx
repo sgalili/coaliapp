@@ -278,14 +278,24 @@ const VideoCard = ({
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-      {/* Live Badge */}
-      {post.isLive && <LiveBadge />}
-
       {/* Live ZOOZ Reactions */}
       {liveReactions.map(renderZoozReaction)}
-      
-      {/* Profile section */}
-      <div className="absolute top-4 right-4 flex items-center gap-3">
+
+      {/* Action buttons */}
+      <div className="absolute left-4 bottom-20 flex flex-col gap-6">
+...
+      </div>
+
+      {/* Live Badge and Profile section - positioned above caption */}
+      {post.isLive && (
+        <div className="absolute bottom-40 right-4 z-10">
+          <div className="bg-red-500 text-white py-1 rounded text-xs font-bold animate-pulse shadow-lg px-[10px]">
+            LIVE
+          </div>
+        </div>
+      )}
+
+      <div className="absolute bottom-32 right-4 flex items-center gap-3">
         <div className="relative cursor-pointer" onClick={() => navigate(`/user/${post.id}`)}>
           {post.profileImage ? <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" /> : <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
               <User className="w-6 h-6 text-muted-foreground" />
@@ -301,50 +311,6 @@ const VideoCard = ({
             <ExpertiseBadge expertise={post.expertise} category={post.category} />
           </div>
         </div>
-      </div>
-
-      {/* Action buttons */}
-      <div className="absolute left-4 bottom-20 flex flex-col gap-6">
-        {/* ZOOZ button */}
-        <button onClick={handleZoozSend} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-zooz/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden">
-            <ZoozIcon />
-            <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.zoozCount}</span>
-        </button>
-
-        {/* Trust button */}
-        <button onClick={() => onTrust(post.id)} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-trust/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <TrustIcon />
-          </div>
-          <span className="text-white text-xs font-medium">{post.trustCount}</span>
-        </button>
-
-        {/* Watch button */}
-        <button onClick={() => onWatch(post.id)} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-watch/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <Eye className="w-6 h-6 text-watch" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.watchCount}</span>
-        </button>
-
-        {/* Comment button */}
-        <button className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <MessageCircle className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.commentCount}</span>
-        </button>
-
-        {/* Share button */}
-        <button onClick={handlePostClick} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <Share className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.shareCount}</span>
-        </button>
       </div>
 
       {/* Caption */}
