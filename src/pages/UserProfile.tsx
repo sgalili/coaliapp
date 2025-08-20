@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, Settings, UserCheck, MapPin, Calendar, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, UserCheck, MapPin, Calendar, Shield, GraduationCap, Handshake, Crown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TrustBadge } from "@/components/TrustBadge";
+import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
+import { VideoGrid } from "@/components/VideoGrid";
+import { getDomainConfig, getAllDomains } from "@/lib/domainConfig";
 import { cn } from "@/lib/utils";
 
 // Import profile images
@@ -24,50 +29,49 @@ const mockUserData = {
     trustersCount: 1247,
     watchersCount: 856,
     postsCount: 89,
-    expertise: ["מדיניות ציבורית", "דמוקרטיה דיגיטלית", "רשתות אמון"],
+    professionalExperience: "מנהלת מחקר במכון למדיניות ציבורית (2020-2024) • יועצת לוועדת הכנסת לחינוך (2018-2020) • חוקרת בכירה במכון הישראלי לדמוקרטיה (2015-2018)",
+    education: "דוקטורט במדעי המדינה, האוניברסיטה העברית (2015) • מוסמך במדיניות ציבורית, אוניברסיטת תל אביב (2010) • תואר ראשון בפילוסופיה ומדעי המדינה, האוניברסיטה הפתוחה (2008)",
+    communityService: "מייסדת שותפה של 'דמוקרטיה דיגיטלית ישראל' • חברת מועצת המנהלים ב'שקיפות ישראל' • מתנדבת במרכז לזכויות אדם • מרצה אורחת באוניברסיטאות שונות",
+    publications: "מחברת של 15 מאמרים מחקריים בכתבי עת מובילים • כותבת טור שבועי בהארץ • מרואיינת קבועה ברדיו וטלוויזיה בנושאי דמוקרטיה • הרצאות TEDx על עתיד הפוליטיקה",
+    awards: "זוכת פרס רוטשילד למדעי החברה (2022) • נבחרת לרשימת 40 תחת 40 של גלובס (2021) • מקבלת מלגת פולברייט לחקר דמוקרטיה דיגיטלית בארה״ב",
+    skills: "עברית (שפת אם) • אנגלית (ברמת דובר יליד) • ערבית (שיחה) • מומחיות בניתוח נתונים, מחקר איכותני, מדיניות ציבורית, ניהול פרויקטים",
+    expertise: [
+      { domain: 'politics', name: 'פוליטיקה', trustCount: 234 },
+      { domain: 'education', name: 'חינוך', trustCount: 167 },
+      { domain: 'tech', name: 'טכנולוgia', trustCount: 89 }
+    ],
     posts: [
       {
         id: "post1",
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         caption: "העתיד של הדמוקרטיה תלוי ברשתות אמון. הנה למה אנחנו צריכים לחשוב מחדש על איך אנחנו בוחרים את הנציגים שלנו...",
         trustCount: 234,
         watchCount: 167,
         commentCount: 45,
         shareCount: 23,
         timestamp: "לפני 2 שעות"
+      },
+      {
+        id: "post2",
+        caption: "מה שלמדתי מהבחירות האחרונות על השפעת הרשתות החברתיות על דעת הקהל",
+        trustCount: 187,
+        watchCount: 423,
+        commentCount: 32,
+        shareCount: 18,
+        timestamp: "לפני יום"
+      },
+      {
+        id: "post3",
+        caption: "איך אפשר לזהות מידע מוטעה ברשתות החברתיות? מדריך מעשי",
+        trustCount: 312,
+        watchCount: 501,
+        commentCount: 67,
+        shareCount: 41,
+        timestamp: "לפני 3 ימים"
       }
     ]
   }
 };
 
-const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
-  const config = {
-    1: { 
-      icon: Shield, 
-      variant: "bg-gray-400 text-gray-50", 
-      label: "אימות רמה 1" 
-    },
-    2: { 
-      icon: ShieldAlert, 
-      variant: "bg-blue-500 text-blue-50", 
-      label: "אימות רמה 2" 
-    },
-    3: { 
-      icon: ShieldCheck, 
-      variant: "bg-green-500 text-green-50", 
-      label: "אימות רמה 3" 
-    }
-  };
-  
-  const { icon: IconComponent, variant, label } = config[level];
-  
-  return (
-    <Badge className={cn("border-0", variant)}>
-      <IconComponent className="w-3 h-3 ml-1" />
-      {label}
-    </Badge>
-  );
-};
 
 const UserProfile = () => {
   const { userId } = useParams();
@@ -84,6 +88,15 @@ const UserProfile = () => {
       setUser(mockUserData[userId as keyof typeof mockUserData]);
     }
   }, [userId]);
+
+  const TrustIcon = () => (
+    <div className="relative flex justify-center mb-1">
+      <div className="relative">
+        <Handshake className="w-6 h-6 text-trust" />
+        <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+      </div>
+    </div>
+  );
 
   if (!user) {
     return (
@@ -114,9 +127,7 @@ const UserProfile = () => {
             <h1 className="font-bold text-lg">{user.username}</h1>
             <p className="text-sm text-muted-foreground">@{user.handle}</p>
           </div>
-          <Button variant="ghost" size="icon">
-            <Settings className="w-5 h-5" />
-          </Button>
+          <div className="w-10" /> {/* Empty space instead of settings button */}
         </div>
       </div>
 
@@ -124,18 +135,26 @@ const UserProfile = () => {
       <div className="p-6 space-y-4">
         {/* Avatar and Basic Info */}
         <div className="flex items-start gap-4">
-          <img 
-            src={user.profileImage} 
-            alt={user.username}
-            className="w-20 h-20 rounded-full object-cover"
-          />
+          <div className="relative">
+            <img 
+              src={user.profileImage} 
+              alt={user.username}
+              className="w-20 h-20 rounded-full object-cover"
+            />
+            <TrustStatusIndicator kycLevel={user.kycLevel} />
+          </div>
           <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold">{user.username}</h2>
-              {user.isVerified && <UserCheck className="w-5 h-5 text-blue-500" />}
+            <div className="flex items-start gap-2">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold">{user.username}</h2>
+                  <TrustBadge trustCount={user.trustersCount} />
+                </div>
+                <p className="text-sm text-muted-foreground">@{user.handle}</p>
+              </div>
             </div>
-            <KYCBadge level={user.kycLevel} />
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 {user.location}
@@ -151,34 +170,78 @@ const UserProfile = () => {
         {/* Bio */}
         <p className="text-sm leading-relaxed text-right">{user.bio}</p>
 
-        {/* Expertise Tags */}
-        <div className="flex flex-wrap gap-2">
-          {user.expertise.map((tag: string, index: number) => (
-            <Badge key={index} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
+        {/* Expertise Badges */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+          {user.expertise.map((domain: any) => {
+            const domainConfig = getDomainConfig(domain.domain);
+            const IconComponent = domainConfig.icon;
+            return (
+              <div key={domain.domain} className="shrink-0">
+                <Badge 
+                  variant="secondary"
+                  className={cn(
+                    "flex items-center gap-1 px-3 py-1.5 transition-colors hover:bg-accent",
+                    domainConfig.bgColor,
+                    domainConfig.textColor,
+                    domainConfig.borderColor
+                  )}
+                >
+                  <IconComponent className="w-3 h-3" />
+                  <span className="text-xs font-medium">{domain.name} ({domain.trustCount})</span>
+                </Badge>
+              </div>
+            );
+          })}
         </div>
 
         {/* Stats */}
         <div className="flex justify-around py-4 border-y border-border">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{user.postsCount}</div>
-            <div className="text-sm text-muted-foreground">פוסטים</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-trust">{user.trustersCount}</div>
-            <div className="text-sm text-muted-foreground">אמון</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-watch">{user.watchersCount}</div>
-            <div className="text-sm text-muted-foreground">צופים</div>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-center cursor-pointer">
+                  <div className="text-2xl font-bold">{user.postsCount}</div>
+                  <div className="text-sm text-muted-foreground">פוסטים</div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>מספר הפוסטים שפורסמו</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-center cursor-pointer">
+                  <TrustIcon />
+                  <div className="text-2xl font-bold text-trust mt-1">{user.trustersCount}</div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>מספר האנשים שהביעו אמון</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-center cursor-pointer">
+                  <Eye className="w-6 h-6 text-watch mx-auto mb-1" />
+                  <div className="text-2xl font-bold text-watch mt-1">{user.watchersCount}</div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>מספר הצופים</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Action Buttons */}
         <div className="flex gap-3">
-          <Button className="flex-1 bg-trust hover:bg-trust/90">
+          <Button className="flex-1 bg-trust hover:bg-trust/90 text-white">
             <Heart className="w-4 h-4 ml-2" />
             תן אמון
           </Button>
@@ -195,54 +258,123 @@ const UserProfile = () => {
         </div>
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6">
-        <TabsList className="grid w-full grid-cols-3">
+      {/* Tabs - Full width */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="pb-20">
+        <TabsList className="grid w-full grid-cols-4 rounded-none border-b border-border" dir="rtl">
           <TabsTrigger value="posts">פוסטים</TabsTrigger>
-          <TabsTrigger value="trusted">נותן אמון</TabsTrigger>
-          <TabsTrigger value="trusters">מקבל אמון</TabsTrigger>
+          <TabsTrigger value="info">מידע</TabsTrigger>
+          <TabsTrigger value="trusters">אמון</TabsTrigger>
+          <TabsTrigger value="trusted">נתתי אמון</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="posts" className="space-y-4 mt-6">
-          {user.posts.map((post: any) => (
-            <div key={post.id} className="bg-card rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">{post.timestamp}</span>
-              </div>
-              <p className="text-sm text-right">{post.caption}</p>
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4 text-trust" />
-                    {post.trustCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4 text-watch" />
-                    {post.watchCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
-                    {post.commentCount}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Share className="w-4 h-4" />
-                    {post.shareCount}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+        <TabsContent value="posts" className="mt-0" dir="rtl">
+          <VideoGrid 
+            posts={user.posts.map((post: any) => ({
+              id: post.id,
+              thumbnail: `/api/placeholder/300/400`,
+              caption: post.caption,
+              trustCount: post.trustCount,
+              watchCount: post.watchCount,
+              commentCount: post.commentCount,
+              shareCount: post.shareCount,
+              duration: "0:15",
+            }))}
+            onVideoClick={(postId, index) => {
+              // Handle video click for view-only mode
+              console.log("Video clicked:", postId, index);
+            }}
+          />
         </TabsContent>
         
-        <TabsContent value="trusted" className="mt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">אנשים שהמשתמש נותן להם אמון</p>
+        <TabsContent value="info" className="mt-0 space-y-6" dir="rtl">
+          <div className="bg-card border-b border-border">
+            {/* Professional Experience */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <GraduationCap className="w-5 h-5" />
+                ניסיון מקצועי
+              </h3>
+              <p className="text-sm leading-relaxed text-right">
+                {user.professionalExperience}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Education */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <GraduationCap className="w-5 h-5" />
+                השכלה
+              </h3>
+              <p className="text-sm leading-relaxed text-right">
+                {user.education}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Community & Public Service */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <UserCheck className="w-5 h-5" />
+                פעילות ציבורית וקהילתית
+              </h3>
+              <p className="text-sm leading-relaxed text-right">
+                {user.communityService}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Publications & Media */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                פרסומים והשפעה
+              </h3>
+              <p className="text-sm leading-relaxed text-right">
+                {user.publications}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Awards & Recognition */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Crown className="w-5 h-5" />
+                הכרה וביקורת עמיתים
+              </h3>
+              <p className="text-sm leading-relaxed text-right">
+                {user.awards}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card border-b border-border">
+            {/* Languages & Skills */}
+            <div className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                כישורים ושפות
+              </h3>
+              <p className="text-sm leading-relaxed text-right">
+                {user.skills}
+              </p>
+            </div>
           </div>
         </TabsContent>
         
         <TabsContent value="trusters" className="mt-6">
           <div className="text-center py-8">
             <p className="text-muted-foreground">אנשים שנותנים אמון למשתמש</p>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="trusted" className="mt-6">
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">אנשים שהמשתמש נותן להם אמון</p>
           </div>
         </TabsContent>
       </Tabs>
