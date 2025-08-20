@@ -50,7 +50,8 @@ const resources = {
         logout: "התנתק"
       },
       auth: {
-        welcome: "ברוכים הבאים",
+        welcome: "ברוכים הבאים ל-Coali",
+        subtitle: "הרשת הראשונה של אמון דיגיטלי",
         enterPhone: "הכניסו את מספר הטלפון שלכם כדי להתחיל",
         receiveCode: "קבלו קוד",
         sending: "שולח...",
@@ -123,7 +124,8 @@ const resources = {
         logout: "Logout"
       },
       auth: {
-        welcome: "Welcome",
+        welcome: "Welcome to Coali",
+        subtitle: "The First Trust Network",
         enterPhone: "Enter your phone number to get started",
         receiveCode: "Receive Code",
         sending: "Sending...",
@@ -196,7 +198,8 @@ const resources = {
         logout: "Déconnexion"
       },
       auth: {
-        welcome: "Bienvenue",
+        welcome: "Bienvenue à Coali",
+        subtitle: "Le Premier Réseau de Confiance",
         enterPhone: "Entrez votre numéro de téléphone pour commencer",
         receiveCode: "Recevoir le code",
         sending: "Envoi...",

@@ -55,16 +55,21 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-          <Phone className="w-8 h-8 text-primary" />
+      <div className="text-center space-y-3">
+        <div className="w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
+          <Phone className="w-10 h-10 text-white" />
         </div>
-        <h1 className="text-2xl font-bold text-foreground">
-          {t('auth.welcome')}
-        </h1>
-        <p className="text-muted-foreground">
-          {t('auth.enterPhone')}
-        </p>
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-trust bg-clip-text text-transparent">
+            {t('auth.welcome')}
+          </h1>
+          <p className="text-lg font-medium text-muted-foreground">
+            {t('auth.subtitle')}
+          </p>
+          <p className="text-base text-muted-foreground">
+            {t('auth.enterPhone')}
+          </p>
+        </div>
       </div>
 
       {/* Form */}
