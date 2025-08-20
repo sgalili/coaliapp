@@ -125,10 +125,7 @@ const UserProfile = () => {
           >
             <ArrowRight className="w-5 h-5" />
           </Button>
-          <div className="text-center">
-            <h1 className="font-bold text-lg">{user.username}</h1>
-            <p className="text-sm text-muted-foreground">@{user.handle}</p>
-          </div>
+          <div className="w-10" />
           <Button variant="ghost" size="icon">
             <Share className="w-4 h-4" />
           </Button>
