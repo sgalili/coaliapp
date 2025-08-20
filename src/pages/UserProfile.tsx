@@ -196,8 +196,22 @@ const UserProfile = () => {
           })}
         </div>
 
-        {/* Simplified Stats */}
+        {/* Stats - RTL Order: Watch, Trust, ZOOZ */}
         <div className="flex justify-around py-4 border-y border-border">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="text-center cursor-pointer">
+                  <Eye className="w-6 h-6 text-watch mx-auto mb-1" />
+                  <div className="text-2xl font-bold text-watch mt-1">{user.watchersCount}</div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>מספר הצופים</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -211,6 +225,7 @@ const UserProfile = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          
           <ZoozEarnedDisplay zoozEarned={user.zoozEarned || 0} showAnimation />
         </div>
 
