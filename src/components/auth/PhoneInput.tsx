@@ -72,13 +72,23 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <div className="flex">
+              <div className="flex rtl:flex-row-reverse">
+                {/* Phone Number Input */}
+                <Input
+                  type="tel"
+                  placeholder="6 12 34 56 78"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="text-lg py-3 rounded-r-none rtl:rounded-l-none rtl:rounded-r-md border-r-0 rtl:border-l-0 rtl:border-r flex-1"
+                  disabled={isLoading}
+                />
+
                 {/* Country Selector */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
+                      className="flex items-center gap-2 px-3 rounded-l-none rtl:rounded-r-none rtl:rounded-l-md bg-card"
                       disabled={isLoading}
                       type="button"
                     >
@@ -89,7 +99,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 
                     className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50"
-                    align="start"
+                    align="end"
                   >
                     {countries.map((country) => (
                       <DropdownMenuItem
@@ -104,16 +114,6 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                {/* Phone Number Input */}
-                <Input
-                  type="tel"
-                  placeholder="6 12 34 56 78"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="text-lg py-3 rounded-l-none flex-1"
-                  disabled={isLoading}
-                />
               </div>
               {error && (
                 <p className="text-sm text-destructive">{error}</p>
