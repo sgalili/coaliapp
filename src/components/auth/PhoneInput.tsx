@@ -72,14 +72,14 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <div className="flex rtl:flex-row-reverse">
+              <div className="flex">
                 {/* Phone Number Input */}
                 <Input
                   type="tel"
                   placeholder="6 12 34 56 78"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="text-lg py-3 rounded-r-none rtl:rounded-l-none rtl:rounded-r-md border-r-0 rtl:border-l-0 rtl:border-r flex-1"
+                  className="text-lg py-3 rounded-r-none border-r-0 flex-1"
                   disabled={isLoading}
                 />
 
@@ -88,7 +88,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="flex items-center gap-2 px-3 rounded-l-none rtl:rounded-r-none rtl:rounded-l-md bg-card"
+                      className="flex items-center gap-2 px-3 rounded-l-none bg-card"
                       disabled={isLoading}
                       type="button"
                     >
