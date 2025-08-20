@@ -48,6 +48,31 @@ const resources = {
         helpCenter: "מרכז עזרה",
         darkMode: "מצב לילה",
         logout: "התנתק"
+      },
+      auth: {
+        welcome: "ברוכים הבאים",
+        enterPhone: "הכניסו את מספר הטלפון שלכם כדי להתחיל",
+        receiveCode: "קבלו קוד",
+        sending: "שולח...",
+        verificationCode: "קוד אימות",
+        codeSentWhatsApp: "קוד נשלח דרך WhatsApp ל",
+        resendCode: "שלחו קוד מחדש",
+        resendIn: "שלחו מחדש בעוד",
+        receiveSMS: "קבלו ב-SMS",
+        completeProfile: "השלימו את הפרופיל שלכם",
+        finalizeRegistration: "כמה פרטים כדי לסיים את ההרשמה",
+        firstName: "שם פרטי",
+        lastName: "שם משפחה",
+        start: "התחילו",
+        finalizing: "מסיים...",
+        termsAccept: "בהמשך, אתם מסכימים ל",
+        termsOfService: "תנאי השימוש",
+        and: "ו",
+        privacyPolicy: "מדיניות הפרטיות",
+        phoneRequired: "אנא הכניסו מספר טלפון",
+        invalidPhone: "פורמט מספר טלפון לא תקין",
+        firstNameRequired: "שם פרטי נדרש",
+        lastNameRequired: "שם משפחה נדרש"
       }
     }
   },
@@ -96,6 +121,31 @@ const resources = {
         helpCenter: "Help Center",
         darkMode: "Dark Mode",
         logout: "Logout"
+      },
+      auth: {
+        welcome: "Welcome",
+        enterPhone: "Enter your phone number to get started",
+        receiveCode: "Receive Code",
+        sending: "Sending...",
+        verificationCode: "Verification Code",
+        codeSentWhatsApp: "Code sent via WhatsApp to",
+        resendCode: "Resend Code",
+        resendIn: "Resend in",
+        receiveSMS: "Receive via SMS",
+        completeProfile: "Complete Your Profile",
+        finalizeRegistration: "A few details to finalize your registration",
+        firstName: "First Name",
+        lastName: "Last Name",
+        start: "Get Started",
+        finalizing: "Finalizing...",
+        termsAccept: "By continuing, you agree to our",
+        termsOfService: "Terms of Service",
+        and: "and",
+        privacyPolicy: "Privacy Policy",
+        phoneRequired: "Please enter your phone number",
+        invalidPhone: "Invalid phone number format",
+        firstNameRequired: "First name is required",
+        lastNameRequired: "Last name is required"
       }
     }
   },
@@ -144,6 +194,31 @@ const resources = {
         helpCenter: "Centre d'Aide",
         darkMode: "Mode Sombre",
         logout: "Déconnexion"
+      },
+      auth: {
+        welcome: "Bienvenue",
+        enterPhone: "Entrez votre numéro de téléphone pour commencer",
+        receiveCode: "Recevoir le code",
+        sending: "Envoi...",
+        verificationCode: "Code de vérification",
+        codeSentWhatsApp: "Code envoyé via WhatsApp au",
+        resendCode: "Renvoyer le code",
+        resendIn: "Renvoyer dans",
+        receiveSMS: "Recevoir par SMS",
+        completeProfile: "Complétez votre profil",
+        finalizeRegistration: "Quelques informations pour finaliser votre inscription",
+        firstName: "Prénom",
+        lastName: "Nom",
+        start: "Commencer",
+        finalizing: "Finalisation...",
+        termsAccept: "En continuant, vous acceptez nos",
+        termsOfService: "Conditions d'utilisation",
+        and: "et notre",
+        privacyPolicy: "Politique de confidentialité",
+        phoneRequired: "Veuillez entrer votre numéro de téléphone",
+        invalidPhone: "Format de numéro de téléphone invalide",
+        firstNameRequired: "Le prénom est requis",
+        lastNameRequired: "Le nom est requis"
       }
     }
   }
