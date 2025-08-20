@@ -232,7 +232,7 @@ const UserProfile = () => {
         {/* Action Buttons */}
         <div className="flex gap-3">
           <Button className="flex-1 bg-trust hover:bg-trust/90 text-white">
-            <Heart className="w-4 h-4 ml-2" />
+            <Crown className="w-4 h-4 ml-2" />
             תן אמון
           </Button>
           <Button variant="outline" className="flex-1">
