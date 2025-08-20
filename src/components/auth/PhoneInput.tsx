@@ -72,7 +72,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <div className="flex">
+              <div className="flex" dir="ltr">
                 {/* Phone Number Input */}
                 <Input
                   type="tel"
@@ -81,6 +81,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="text-lg py-3 rounded-r-none border-r-0 flex-1"
                   disabled={isLoading}
+                  dir="ltr"
                 />
 
                 {/* Country Selector */}
@@ -91,6 +92,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                       className="flex items-center gap-2 px-3 rounded-l-none bg-card"
                       disabled={isLoading}
                       type="button"
+                      dir="ltr"
                     >
                       <span className="text-lg">{selectedCountry.flag}</span>
                       <span className="text-sm font-medium">{selectedCountry.dialCode}</span>
@@ -98,7 +100,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 
-                    className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50"
+                    className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50 [direction:ltr]"
                     align="end"
                   >
                     {countries.map((country) => (
@@ -109,7 +111,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                       >
                         <span className="text-lg">{country.flag}</span>
                         <span className="text-sm font-medium w-12">{country.dialCode}</span>
-                        <span className="text-sm flex-1">{country.name}</span>
+                        <span className="text-sm flex-1 text-left">{country.name}</span>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
