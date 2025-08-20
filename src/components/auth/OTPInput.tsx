@@ -79,7 +79,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex justify-center">
+            <div className="flex justify-center" dir="ltr">
               <InputOTP
                 maxLength={4}
                 value={otp}
