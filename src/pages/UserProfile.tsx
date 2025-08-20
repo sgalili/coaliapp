@@ -129,7 +129,9 @@ const UserProfile = () => {
             <h1 className="font-bold text-lg">{user.username}</h1>
             <p className="text-sm text-muted-foreground">@{user.handle}</p>
           </div>
-          <div className="w-10" /> {/* Empty space instead of settings button */}
+          <Button variant="ghost" size="icon">
+            <Share className="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
@@ -241,9 +243,6 @@ const UserProfile = () => {
           </Button>
           <Button variant="outline" size="icon">
             <MessageCircle className="w-4 h-4" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <Share className="w-4 h-4" />
           </Button>
         </div>
       </div>
