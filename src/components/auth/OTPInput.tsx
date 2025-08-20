@@ -39,8 +39,8 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     setOtp(value);
     setError('');
     
-    if (value.length === 6) {
-      // Auto-verify when 6 digits are entered
+    if (value.length === 4) {
+      // Auto-verify when 4 digits are entered
       onVerify(value);
     }
   };
@@ -81,7 +81,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
           <div className="space-y-4">
             <div className="flex justify-center">
               <InputOTP
-                maxLength={6}
+                maxLength={4}
                 value={otp}
                 onChange={handleOTPChange}
                 disabled={isLoading}
@@ -91,8 +91,6 @@ export const OTPInput: React.FC<OTPInputProps> = ({
                   <InputOTPSlot index={1} className="w-12 h-12 text-lg" />
                   <InputOTPSlot index={2} className="w-12 h-12 text-lg" />
                   <InputOTPSlot index={3} className="w-12 h-12 text-lg" />
-                  <InputOTPSlot index={4} className="w-12 h-12 text-lg" />
-                  <InputOTPSlot index={5} className="w-12 h-12 text-lg" />
                 </InputOTPGroup>
               </InputOTP>
             </div>
