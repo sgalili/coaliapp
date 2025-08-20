@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Phone } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Phone, ChevronDown } from 'lucide-react';
+import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
@@ -11,31 +18,38 @@ interface PhoneInputProps {
 }
 
 export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) => {
-  const [phone, setPhone] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<Country>(detectCountryFromTimezone());
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const { t } = useTranslation();
 
   const validatePhone = (phoneNumber: string) => {
     // Basic phone validation - can be enhanced
-    const phoneRegex = /^\+?[\d\s-()]{10,}$/;
+    const phoneRegex = /^[\d\s-()]{7,}$/;
     return phoneRegex.test(phoneNumber);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!phone.trim()) {
+    if (!phoneNumber.trim()) {
       setError(t('auth.phoneRequired'));
       return;
     }
     
-    if (!validatePhone(phone)) {
+    if (!validatePhone(phoneNumber)) {
       setError(t('auth.invalidPhone'));
       return;
     }
     
     setError('');
-    onSubmit(phone);
+    const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
+    onSubmit(fullPhone);
+  };
+
+  const handleCountrySelect = (country: Country) => {
+    setSelectedCountry(country);
+    setError('');
   };
 
   return (
@@ -58,14 +72,49 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Input
-                type="tel"
-                placeholder="+33 6 12 34 56 78"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="text-lg py-3"
-                disabled={isLoading}
-              />
+              <div className="flex">
+                {/* Country Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
+                      disabled={isLoading}
+                      type="button"
+                    >
+                      <span className="text-lg">{selectedCountry.flag}</span>
+                      <span className="text-sm font-medium">{selectedCountry.dialCode}</span>
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent 
+                    className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50"
+                    align="start"
+                  >
+                    {countries.map((country) => (
+                      <DropdownMenuItem
+                        key={country.code}
+                        onClick={() => handleCountrySelect(country)}
+                        className="flex items-center gap-3 cursor-pointer hover:bg-accent"
+                      >
+                        <span className="text-lg">{country.flag}</span>
+                        <span className="text-sm font-medium w-12">{country.dialCode}</span>
+                        <span className="text-sm flex-1">{country.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Phone Number Input */}
+                <Input
+                  type="tel"
+                  placeholder="6 12 34 56 78"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="text-lg py-3 rounded-l-none flex-1"
+                  disabled={isLoading}
+                />
+              </div>
               {error && (
                 <p className="text-sm text-destructive">{error}</p>
               )}
