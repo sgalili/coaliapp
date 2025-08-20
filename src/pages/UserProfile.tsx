@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { TrustBadge } from "@/components/TrustBadge";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { VideoGrid } from "@/components/VideoGrid";
+import { ZoozEarnedDisplay } from "@/components/ZoozEarnedDisplay";
 import { getDomainConfig, getAllDomains } from "@/lib/domainConfig";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ const mockUserData = {
     trustersCount: 1247,
     watchersCount: 856,
     postsCount: 89,
+    zoozEarned: 8430,
     professionalExperience: "מנהלת מחקר במכון למדיניות ציבורית (2020-2024) • יועצת לוועדת הכנסת לחינוך (2018-2020) • חוקרת בכירה במכון הישראלי לדמוקרטיה (2015-2018)",
     education: "דוקטורט במדעי המדינה, האוניברסיטה העברית (2015) • מוסמך במדיניות ציבורית, אוניברסיטת תל אביב (2010) • תואר ראשון בפילוסופיה ומדעי המדינה, האוניברסיטה הפתוחה (2008)",
     communityService: "מייסדת שותפה של 'דמוקרטיה דיגיטלית ישראל' • חברת מועצת המנהלים ב'שקיפות ישראל' • מתנדבת במרכז לזכויות אדם • מרצה אורחת באוניברסיטאות שונות",
@@ -194,22 +196,8 @@ const UserProfile = () => {
           })}
         </div>
 
-        {/* Stats */}
+        {/* Simplified Stats */}
         <div className="flex justify-around py-4 border-y border-border">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="text-center cursor-pointer">
-                  <div className="text-2xl font-bold">{user.postsCount}</div>
-                  <div className="text-sm text-muted-foreground">פוסטים</div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>מספר הפוסטים שפורסמו</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -223,20 +211,7 @@ const UserProfile = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="text-center cursor-pointer">
-                  <Eye className="w-6 h-6 text-watch mx-auto mb-1" />
-                  <div className="text-2xl font-bold text-watch mt-1">{user.watchersCount}</div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>מספר הצופים</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <ZoozEarnedDisplay zoozEarned={user.zoozEarned || 0} showAnimation />
         </div>
 
         {/* Action Buttons */}
