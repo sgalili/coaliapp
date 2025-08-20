@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Phone, ChevronDown } from 'lucide-react';
+import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 
 interface PhoneInputProps {
@@ -53,102 +53,118 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="text-center space-y-3">
+      <div className="text-center space-y-4 pt-4">
         <div className="w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
-          <Phone className="w-10 h-10 text-white" />
+          <Shield className="w-10 h-10 text-white" />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-trust bg-clip-text text-transparent">
             {t('auth.welcome')}
           </h1>
           <p className="text-lg font-medium text-muted-foreground">
             {t('auth.subtitle')}
           </p>
-          <p className="text-base text-muted-foreground">
-            {t('auth.enterPhone')}
-          </p>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-sm text-muted-foreground hover:text-foreground"
+            onClick={() => {
+              // TODO: Open onboarding modal or navigate to info page
+              console.log('Show onboarding');
+            }}
+          >
+            <HelpCircle className="w-4 h-4 mr-1" />
+            {t('auth.whatIsCoali')}
+          </Button>
         </div>
       </div>
 
-      {/* Form */}
-      <Card>
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex" dir="ltr">
-                {/* Country Selector */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
-                      disabled={isLoading}
-                      type="button"
-                    >
-                      <span className="text-lg">{selectedCountry.flag}</span>
-                      <span className="text-sm font-medium">{selectedCountry.dialCode}</span>
-                      <ChevronDown className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50 [direction:ltr]"
-                    align="start"
-                  >
-                    {countries.map((country) => (
-                      <DropdownMenuItem
-                        key={country.code}
-                        onClick={() => handleCountrySelect(country)}
-                        className="flex items-center gap-3 cursor-pointer hover:bg-accent"
-                      >
-                        <span className="text-lg">{country.flag}</span>
-                        <span className="text-sm font-medium w-12">{country.dialCode}</span>
-                        <span className="text-sm flex-1 text-left">{country.name}</span>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Phone Number Input */}
-                <Input
-                  type="tel"
-                  placeholder="6 12 34 56 78"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="text-lg py-3 rounded-l-none flex-1"
-                  disabled={isLoading}
-                  dir="ltr"
-                />
-              </div>
-              {error && (
-                <p className="text-sm text-destructive">{error}</p>
-              )}
-            </div>
-            
-            <Button 
-              type="submit" 
-              className="w-full py-3 text-lg" 
-              disabled={isLoading}
-            >
-              {isLoading ? t('auth.sending') : t('auth.receiveCode')}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Terms */}
-      <div className="text-center space-y-2">
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          {t('auth.termsAccept')}{' '}
-          <a href="/terms" className="text-primary underline">
-            {t('auth.termsOfService')}
-          </a>{' '}
-          {t('auth.and')}{' '}
-          <a href="/privacy" className="text-primary underline">
-            {t('auth.privacyPolicy')}
-          </a>
+      {/* Auth Form */}
+      <div className="space-y-4">
+        <p className="text-center text-muted-foreground">
+          {t('auth.enterPhone')}
         </p>
+        
+        {/* Form */}
+        <Card>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex" dir="ltr">
+                  {/* Country Selector */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
+                        disabled={isLoading}
+                        type="button"
+                      >
+                        <span className="text-lg">{selectedCountry.flag}</span>
+                        <span className="text-sm font-medium">{selectedCountry.dialCode}</span>
+                        <ChevronDown className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                      className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50 [direction:ltr]"
+                      align="start"
+                    >
+                      {countries.map((country) => (
+                        <DropdownMenuItem
+                          key={country.code}
+                          onClick={() => handleCountrySelect(country)}
+                          className="flex items-center gap-3 cursor-pointer hover:bg-accent"
+                        >
+                          <span className="text-lg">{country.flag}</span>
+                          <span className="text-sm font-medium w-12">{country.dialCode}</span>
+                          <span className="text-sm flex-1 text-left">{country.name}</span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Phone Number Input */}
+                  <Input
+                    type="tel"
+                    placeholder="6 12 34 56 78"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="text-lg py-3 rounded-l-none flex-1"
+                    disabled={isLoading}
+                    dir="ltr"
+                  />
+                </div>
+                {error && (
+                  <p className="text-sm text-destructive">{error}</p>
+                )}
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full py-3 text-lg" 
+                disabled={isLoading}
+              >
+                {isLoading ? t('auth.sending') : t('auth.receiveCode')}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Terms */}
+        <div className="text-center space-y-2">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {t('auth.termsAccept')}{' '}
+            <a href="/terms" className="text-primary underline">
+              {t('auth.termsOfService')}
+            </a>{' '}
+            {t('auth.and')}{' '}
+            <a href="/privacy" className="text-primary underline">
+              {t('auth.privacyPolicy')}
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
