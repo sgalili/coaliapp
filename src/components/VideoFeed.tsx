@@ -168,19 +168,27 @@ const VideoCard = ({
     addZoozReaction
   } = useZoozReactions(post.id, currentUserId);
   useEffect(() => {
+    // Auto-play when video comes into view
     const video = videoRef.current;
     if (!video) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        video.play();
-        setIsPlaying(true);
-      } else {
-        video.pause();
-        setIsPlaying(false);
-      }
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {
+            // Fallback if autoplay fails - user needs to interact first
+            console.log("Autoplay prevented by browser");
+          });
+          setIsPlaying(true);
+        } else {
+          video.pause();
+          setIsPlaying(false);
+        }
+      });
     }, {
       threshold: 0.5
     });
+    
     observer.observe(video);
     return () => observer.disconnect();
   }, []);
@@ -252,19 +260,14 @@ const VideoCard = ({
         className="h-full w-full object-cover" 
         loop 
         playsInline 
-        muted
+        autoPlay
+        muted={false}
         onClick={handleVideoClick} 
-        src={post.videoUrl}
-        onError={(e) => {
-          console.error('Video error for post', post.id, post.username, 'URL:', post.videoUrl, e);
-        }}
-        onLoadStart={() => {
-          console.log('Loading video for', post.username, 'URL:', post.videoUrl);
-        }}
+        src={post.videoUrl} 
       />
       
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+      {/* Gradient overlay - darker and more transparent */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
 
       {/* Live Badge */}
       {post.isLive && <LiveBadge />}
