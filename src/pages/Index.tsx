@@ -24,7 +24,7 @@ const mockPosts = [
     username: "בנימין נתניהו",
     handle: "netanyahu_pm",
     profileImage: sarahProfile, // Temporaire - on changera quand on aura sa vraie photo
-    videoUrl: "/videos/netanyahu-debate.mp4",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // Temporaire en attendant ta vidéo
     caption: "על העתיד של ישראל במזרח התיכון החדש. האתגרים הגדולים שלפנינו דורשים מנהיגות חזקה ועמידה בערכי היהדות והדמוקרטיה. נושא הביטחון והכלכלה הולכים יד ביד 🇮🇱",
     trustCount: 15420,
     watchCount: 28560,
@@ -282,6 +282,8 @@ const Index = () => {
   };
 
 
+  console.log("Posts filtrés:", getFilteredPosts().map(p => ({ id: p.id, username: p.username })));
+  
   return (
     <div className="h-screen bg-background relative">
       {/* Add Content Button */}
