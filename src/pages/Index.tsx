@@ -18,6 +18,7 @@ import rachelProfile from "@/assets/rachel-profile.jpg";
 import noaProfile from "@/assets/noa-profile.jpg";
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
 import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
+import warrenBuffettProfile from "@/assets/warren-buffett-profile.jpg";
 
 // Mock data for development
 const mockPosts = [
@@ -61,7 +62,7 @@ const mockPosts = [
     id: "7",
     username: "Warren Buffett",
     handle: "buffett_wisdom",
-    profileImage: mayaProfile,
+    profileImage: warrenBuffettProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     caption: "Investment principles that never change. Why patience and compound interest are still the most powerful forces in finance. The next decade outlook 💰",
     trustCount: 12650,
