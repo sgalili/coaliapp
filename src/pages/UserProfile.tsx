@@ -19,7 +19,7 @@ import sarahProfile from "@/assets/sarah-profile.jpg";
 const mockUserData = {
   "1": {
     id: "1",
-    username: "שרה_פוליטיקה",
+    username: "שרה כהן",
     handle: "sarahp",
     profileImage: sarahProfile,
     bio: "מומחית למדיניות ציבורית ודמוקרטיה דיגיטלית. פועלת למען שקיפות ואמון ברשתות חברתיות.",
