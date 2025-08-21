@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, UserCheck, MapPin, Calendar, Shield, GraduationCap, Handshake, Crown, TrendingUp } from "lucide-react";
+import { ArrowRight, Heart, Eye, Share, UserCheck, MapPin, Calendar, Shield, GraduationCap, Handshake, Crown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -233,9 +233,6 @@ const UserProfile = () => {
           <Button variant="outline" className="flex-1">
             <Eye className="w-4 h-4 ml-2" />
             צפה
-          </Button>
-          <Button variant="outline" size="icon">
-            <MessageCircle className="w-4 h-4" />
           </Button>
         </div>
       </div>
