@@ -24,7 +24,7 @@ import rachelProfile from "@/assets/rachel-profile.jpg";
 // Mock current user data - in real app this would come from auth
 const mockCurrentUser = {
   id: "current",
-  username: "שרה_פוליטיקה", 
+  username: "שרה כהן", 
   handle: "sarahp",
   profileImage: sarahProfile,
   bio: "מומחית למדיניות ציבורית ודמוקרטיה דיגיטלית. פועלת למען שקיפות ואמון ברשתות חברתיות.",
