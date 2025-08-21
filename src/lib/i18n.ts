@@ -175,23 +175,56 @@ const resources = {
           },
           screen2: {
             title: "Coali puts trust back at the center",
-            line1: "Here, you gain trust from those who see, listen and support you live.",
-            line2: "You don't buy your influence. You build it."
+            subtitle: "TrustRank + Anonymous Blockchain KYC",
+            line1: "Your TrustRank builds with every verified interaction",
+            line2: "Blockchain KYC: verified identity but anonymous",
+            line3: "100% real humans, zero bots, zero fake",
+            line4: "You don't buy your influence. You build it."
           },
           screen3: {
-            title: "What you gain with Trust",
-            benefit1: "Intervene live on news, on topics you master",
-            benefit2: "Receive ZOOZ live to go faster in your projects",
-            benefit3: "Access impact and action groups",
-            comingSoon: "Soon: you can win key positions to evolve our society"
+            title: "What you gain concretely",
+            subtitle: "ZOOZ, Influence & Revenue",
+            zoozRewards: {
+              title: "💰 ZOOZ Rewards",
+              comment: "10 ZOOZ per validated expert comment",
+              prediction: "50 ZOOZ when your predictions come true",
+              referral: "100 ZOOZ for each expert you recommend"
+            },
+            affiliation: {
+              title: "🔗 Affiliation Program",
+              line1: "Earn 25% of your referrals' ZOOZ for life",
+              line2: "The bigger your network grows, the more you earn"
+            },
+            newsExpert: {
+              title: "📰 Expert-Commented News",
+              line1: "Your analyses seen by thousands of people",
+              line2: "Direct influence on public opinion"
+            },
+            wallet: {
+              title: "💳 Integrated Wallet",
+              line1: "Convert your ZOOZ to euros instantly",
+              line2: "Secure payments, no traditional banking"
+            }
           },
           screen4: {
-            title: "Join the most trusted",
-            line1: "They didn't wait.",
-            line2: "And you, do you want to stay invisible?",
-            counter: "35,412 people",
-            counterText: "have already started building their TrustRank.\nWhat about you?",
-            cta: "I want my place in the Trust Network"
+            title: "100% Authentic Content",
+            subtitle: "Anti-AI + Most Trusted Rankings",
+            authentic: {
+              title: "✅ Certified Real Content",
+              line1: "100% verified human content",
+              line2: "Automatic deepfake detection",
+              line3: "'Authentic Human' badge on your content"
+            },
+            rankings: {
+              title: "👑 Most Trusted Rankings",
+              line1: "Top 10 per sector earn 500 ZOOZ/month minimum",
+              line2: "Tech 💻 | Finance 📈 | Health 🏥 | Art 🎨"
+            },
+            cta: {
+              counter: "35,412 people",
+              counterText: "have already started building their TrustRank.\nWhat about you?",
+              button: "I want my place in the Trust Network"
+            }
           }
         },
         enterPhone: "Enter your phone number to get started",
@@ -283,23 +316,56 @@ const resources = {
           },
           screen2: {
             title: "Coali remet la confiance au centre",
-            line1: "Ici, tu gagnes de la confiance de ceux qui te voient, t'écoutent et te soutiennent en direct.",
-            line2: "Tu n'achètes pas ton influence. Tu la construis."
+            subtitle: "TrustRank + KYC Blockchain Anonyme",
+            line1: "Ton TrustRank se construit avec chaque interaction vérifiée",
+            line2: "KYC blockchain : identité vérifiée mais anonyme",
+            line3: "100% vrais humains, zéro bots, zéro fake",
+            line4: "Tu n'achètes pas ton influence. Tu la construis."
           },
           screen3: {
-            title: "Ce que tu gagnes avec le Trust",
-            benefit1: "Interviens en direct sur les news, sur les sujets que tu maîtrises",
-            benefit2: "Reçois des ZOOZ en direct pour aller plus vite dans tes projets",
-            benefit3: "Accède à des groupes d'impact et d'action",
-            comingSoon: "Bientôt : tu pourras gagner des postes clés pour faire évoluer notre société"
+            title: "Ce que tu gagnes concrètement",
+            subtitle: "ZOOZ, Influence & Revenus",
+            zoozRewards: {
+              title: "💰 Récompenses ZOOZ",
+              comment: "10 ZOOZ par commentaire d'expert validé",
+              prediction: "50 ZOOZ quand tes prédictions se réalisent",
+              referral: "100 ZOOZ pour chaque expert que tu recommandes"
+            },
+            affiliation: {
+              title: "🔗 Programme d'Affiliation",
+              line1: "Gagne 25% des ZOOZ de tes filleuls à vie",
+              line2: "Plus ton réseau grandit, plus tu gagnes"
+            },
+            newsExpert: {
+              title: "📰 News Commentées par Experts",
+              line1: "Tes analyses vues par des milliers de personnes",
+              line2: "Influence directe sur l'opinion publique"
+            },
+            wallet: {
+              title: "💳 Wallet Intégré",
+              line1: "Convertis tes ZOOZ en euros instantanément",
+              line2: "Paiements sécurisés, pas de banque traditionnelle"
+            }
           },
           screen4: {
-            title: "Rejoins les plus trusted",
-            line1: "Ils n'ont pas attendu.",
-            line2: "Et toi, tu veux rester invisible ?",
-            counter: "35 412 personnes",
-            counterText: "ont déjà commencé à bâtir leur TrustRank.\nEt toi ?",
-            cta: "Je veux ma place dans le Trust Network"
+            title: "Contenus 100% Authentiques",
+            subtitle: "Anti-AI + Most Trusted Rankings",
+            authentic: {
+              title: "✅ Contenu Certifié Réel",
+              line1: "100% de contenu humain vérifié",
+              line2: "Détection automatique des deepfakes",
+              line3: "Badge 'Authentic Human' sur tes contenus"
+            },
+            rankings: {
+              title: "👑 Most Trusted Rankings",
+              line1: "Les top 10 par secteur gagnent 500 ZOOZ/mois minimum",
+              line2: "Tech 💻 | Finance 📈 | Santé 🏥 | Art 🎨"
+            },
+            cta: {
+              counter: "35 412 personnes",
+              counterText: "ont déjà commencé à bâtir leur TrustRank.\nEt toi ?",
+              button: "Je veux ma place dans le Trust Network"
+            }
           }
         },
         enterPhone: "Entrez votre numéro de téléphone pour commencer",
