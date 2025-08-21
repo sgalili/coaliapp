@@ -250,7 +250,7 @@ const VideoCard = ({
       <video ref={videoRef} className="h-full w-full object-cover" loop playsInline onClick={handleVideoClick} src={post.videoUrl} />
       
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
       {/* Live Badge */}
       {post.isLive && <LiveBadge />}
