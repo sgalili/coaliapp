@@ -75,6 +75,31 @@ const resources = {
         invalidPhone: "פורמט מספר טלפון לא תקין",
         firstNameRequired: "שם פרטי נדרש",
         lastNameRequired: "שם משפחה נדרש"
+      },
+      onboarding: {
+        close: "סגור",
+        step1: {
+          title: "העולם הפך מזויף",
+          subtitle: "ב-2027, אף אחד לא יודע מי אמיתי",
+          description: "הסרטונים מורכבים. הפרופילים נקנים.\nההחלטות? מתקבלות על ידי רוחות רפאים."
+        },
+        step2: {
+          title: "Coali מחזיר את האמון למרכז",
+          description: "כאן, אתה זוכה באמון של אלה שרואים אותך, שומעים אותך ותומכים בך בזמן אמת.\nאתה לא קונה את ההשפעה שלך. אתה בונה אותה."
+        },
+        step3: {
+          title: "מה אתה זוכה עם Trust",
+          benefit1: "התערב בזמן אמת בחדשות, בנושאים שאתה שולט בהם",
+          benefit2: "קבל ZOOZ בזמן אמת כדי להתקדם מהר יותר בפרויקטים שלך",
+          benefit3: "גש לקבוצות השפעה ופעולה",
+          future: "בקרוב: תוכל לזכות בתפקידים מפתח כדי לפתח את החברה שלנו"
+        },
+        step4: {
+          title: "הצטרף למהימנים ביותר",
+          description: "הם לא חיכו.\nואתה, אתה רוצה להישאר בלתי נראה?",
+          cta: "אני רוצה את המקום שלי ברשת האמון",
+          counter: "אנשים כבר התחילו לבנות את ה-TrustRank שלהם.\nומה איתך?"
+        }
       }
     }
   },
@@ -150,6 +175,31 @@ const resources = {
         invalidPhone: "Invalid phone number format",
         firstNameRequired: "First name is required",
         lastNameRequired: "Last name is required"
+      },
+      onboarding: {
+        close: "Close",
+        step1: {
+          title: "The world became fake",
+          subtitle: "In 2027, no one knows who is real",
+          description: "Videos are edited. Profiles are bought.\nDecisions? Made by ghosts."
+        },
+        step2: {
+          title: "Coali puts trust back at the center",
+          description: "Here, you gain trust from those who see you, hear you and support you live.\nYou don't buy your influence. You build it."
+        },
+        step3: {
+          title: "What you gain with Trust",
+          benefit1: "Intervene live on news, on topics you master",
+          benefit2: "Receive ZOOZ live to go faster in your projects",
+          benefit3: "Access impact and action groups",
+          future: "Soon: you will be able to win key positions to evolve our society"
+        },
+        step4: {
+          title: "Join the most trusted",
+          description: "They didn't wait.\nAnd you, do you want to stay invisible?",
+          cta: "I want my place in the Trust Network",
+          counter: "people have already started building their TrustRank.\nWhat about you?"
+        }
       }
     }
   },
@@ -225,6 +275,31 @@ const resources = {
         invalidPhone: "Format de numéro de téléphone invalide",
         firstNameRequired: "Le prénom est requis",
         lastNameRequired: "Le nom est requis"
+      },
+      onboarding: {
+        close: "Fermer",
+        step1: {
+          title: "Le monde est devenu fake",
+          subtitle: "En 2027, plus personne ne sait qui est vrai",
+          description: "Les vidéos sont montées. Les profils sont achetés.\nLes décisions ? Prises par des fantômes."
+        },
+        step2: {
+          title: "Coali remet la confiance au centre",
+          description: "Ici, tu gagnes de la confiance de ceux qui te voient, t'écoutent et te soutiennent en direct.\nTu n'achètes pas ton influence. Tu la construis."
+        },
+        step3: {
+          title: "Ce que tu gagnes avec le Trust",
+          benefit1: "Interviens en direct sur les news, sur les sujets que tu maîtrises",
+          benefit2: "Reçois des ZOOZ en direct pour aller plus vite dans tes projets",
+          benefit3: "Accède à des groupes d'impact et d'action",
+          future: "Bientôt: tu pourras gagner des postes clé pour faire évoluer notre société"
+        },
+        step4: {
+          title: "Rejoins les plus trusted",
+          description: "Ils n'ont pas attendu.\nEt toi, tu veux rester invisible ?",
+          cta: "Je veux ma place dans le Trust Network",
+          counter: "personnes ont déjà commencé à bâtir leur TrustRank.\nEt toi ?"
+        }
       }
     }
   }
