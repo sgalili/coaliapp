@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
+import { CoaliOnboarding } from '@/components/CoaliOnboarding';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
@@ -21,6 +22,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
   const [selectedCountry, setSelectedCountry] = useState<Country>(detectCountryFromTimezone());
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const { t } = useTranslation();
 
   const validatePhone = (phoneNumber: string) => {
@@ -52,6 +54,14 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     setError('');
   };
 
+  const handleWhatIsCoali = () => {
+    setShowOnboarding(true);
+  };
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -70,10 +80,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
             variant="ghost" 
             size="sm" 
             className="text-sm text-muted-foreground hover:text-foreground"
-            onClick={() => {
-              // TODO: Open onboarding modal or navigate to info page
-              console.log('Show onboarding');
-            }}
+            onClick={handleWhatIsCoali}
           >
             <HelpCircle className="w-4 h-4 mr-1" />
             {t('auth.whatIsCoali')}
@@ -166,6 +173,12 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
           </p>
         </div>
       </div>
+      
+      <CoaliOnboarding
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete}
+      />
     </div>
   );
 };
