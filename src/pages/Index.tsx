@@ -11,7 +11,7 @@ import News from "./News";
 
 // Import profile images
 import sarahProfile from "@/assets/sarah-profile.jpg";
-import davidProfile from "@/assets/david-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
 import mayaProfile from "@/assets/maya-profile.jpg";
 import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
@@ -97,7 +97,7 @@ const mockPosts = [
     id: "5",
     username: "יעקב אליעזרוב",
     handle: "david_tech",
-    profileImage: davidProfile,
+    profileImage: yaakovProfile,
     videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755819172/Thank_you_Hashem_telaviv_israel_jewellery_diamonds_jeweler_gold_aupgtx.mp4",
     caption: "בלוקצ'יין + רשתות אמון = העתיד של הטכנולוגיה החברתית. מסבירים איך זה עובד! 🚀",
     trustCount: 892,
