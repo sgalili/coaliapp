@@ -17,6 +17,7 @@ import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
 import noaProfile from "@/assets/noa-profile.jpg";
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
 
 // Mock data for development
 const mockPosts = [
@@ -42,7 +43,7 @@ const mockPosts = [
     id: "2",
     username: "ירון זליכה", 
     handle: "yaron_economy",
-    profileImage: davidProfile,
+    profileImage: yaronProfile,
     videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818123/%D7%90%D7%96_%D7%9E%D7%94_%D7%90%D7%AA%D7%94_%D7%91%D7%A2%D7%A6%D7%9D_%D7%9E%D7%A6%D7%99%D7%A2__jb7xb0.mp4",
     caption: "המשבר הכלכלי העולמי ומה שישראל צריכה לעשות עכשיו. האינפלציה, שוק הנדל״ן והטכנולוגיה - אסטרטגיה לעשור הבא 📈",
     trustCount: 2847,
