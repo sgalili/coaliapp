@@ -25,7 +25,7 @@ const mockPosts = [
     username: "בנימין נתניהו",
     handle: "netanyahu_pm",
     profileImage: netanyahuProfile,
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755817615/netanyahu-debate_fitgzh.mp4",
     caption: "על העתיד של ישראל במזרח התיכון החדש. האתגרים הגדולים שלפנינו דורשים מנהיגות חזקה ועמידה בערכי היהדות והדמוקרטיה 🇮🇱",
     trustCount: 89420,
     watchCount: 125560,
