@@ -247,7 +247,21 @@ const VideoCard = ({
       </div>;
   };
   return <div ref={containerRef} className="relative h-screen w-full snap-start snap-always">
-      <video ref={videoRef} className="h-full w-full object-cover" loop playsInline onClick={handleVideoClick} src={post.videoUrl} />
+      <video 
+        ref={videoRef} 
+        className="h-full w-full object-cover" 
+        loop 
+        playsInline 
+        muted
+        onClick={handleVideoClick} 
+        src={post.videoUrl}
+        onError={(e) => {
+          console.error('Video error for post', post.id, post.username, 'URL:', post.videoUrl, e);
+        }}
+        onLoadStart={() => {
+          console.log('Loading video for', post.username, 'URL:', post.videoUrl);
+        }}
+      />
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
