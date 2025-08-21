@@ -25,6 +25,7 @@ import {
   ChefHat,
   Car,
   Home,
+  Gem,
   type LucideIcon
 } from "lucide-react";
 
@@ -54,7 +55,8 @@ export type ExpertDomain =
   | 'tourism'
   | 'gastronomy'
   | 'automotive'
-  | 'realestate';
+  | 'realestate'
+  | 'jewelry';
 
 export interface DomainConfig {
   id: ExpertDomain;
@@ -332,6 +334,16 @@ export const domainConfigs: Record<ExpertDomain, DomainConfig> = {
     textColor: 'text-neutral-400',
     borderColor: 'border-neutral-500/30',
     accentColor: 'text-neutral-500'
+  },
+  jewelry: {
+    id: 'jewelry',
+    name: 'Jewelry',
+    hebrewName: 'תכשיטים',
+    icon: Gem,
+    bgColor: 'bg-gradient-to-br from-pink-400/20 to-purple-500/20',
+    textColor: 'text-pink-300',
+    borderColor: 'border-pink-400/40',
+    accentColor: 'text-pink-400'
   }
 };
 
