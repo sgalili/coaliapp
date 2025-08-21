@@ -16,16 +16,17 @@ import mayaProfile from "@/assets/maya-profile.jpg";
 import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
 import noaProfile from "@/assets/noa-profile.jpg";
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
 
 // Mock data for development
 const mockPosts = [
   {
     id: "1",
-    username: "Steve Jobs",
-    handle: "steve_jobs",
-    profileImage: sarahProfile,
+    username: "בנימין נתניהו",
+    handle: "netanyahu_pm",
+    profileImage: netanyahuProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    caption: "נאום מעורר השראה של סטיב ג'ובס באוניברסיטת סטנפורד - 'Stay Hungry, Stay Foolish' 🍎 אחד הנאומים הכי משפיעים על חדשנות ויזמות",
+    caption: "על העתיד של ישראל במזרח התיכון החדש. האתגרים הגדולים שלפנינו דורשים מנהיגות חזקה ועמידה בערכי היהדות והדמוקרטיה 🇮🇱",
     trustCount: 89420,
     watchCount: 125560,
     commentCount: 28821,
@@ -33,8 +34,8 @@ const mockPosts = [
     zoozCount: 45934,
     isVerified: true,
     kycLevel: 3 as const,
-    expertise: "טכנולוגיה",
-    category: "technology" as const,
+    expertise: "פוליטיקה",
+    category: "politics" as const,
     isLive: false,
   },
   {
