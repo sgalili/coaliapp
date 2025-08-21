@@ -99,7 +99,7 @@ const mockPosts = [
     handle: "david_tech",
     profileImage: yaakovProfile,
     videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755819172/Thank_you_Hashem_telaviv_israel_jewellery_diamonds_jeweler_gold_aupgtx.mp4",
-    caption: "בלוקצ'יין + רשתות אמון = העתיד של הטכנולוגיה החברתית. מסבירים איך זה עובד! 🚀",
+    caption: "תכשיטים שמייצרים עם הלב משפיעים על אנרגיות האדם שנושא אותם - בואו לגלות תכשיטים מלא אנרגיות בלב תל אביב",
     trustCount: 892,
     watchCount: 1203,
     commentCount: 167,
