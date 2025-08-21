@@ -19,7 +19,7 @@ interface VideoPost {
   isVerified?: boolean;
   kycLevel: 1 | 2 | 3;
   expertise: string;
-  category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer';
+  category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer' | 'economy';
   isLive?: boolean;
 }
 interface VideoFeedProps {
@@ -83,6 +83,11 @@ const ExpertiseBadge = ({
       bg: "bg-cyan-500/20",
       text: "text-cyan-400",
       border: "border-cyan-500/30"
+    },
+    economy: {
+      bg: "bg-emerald-500/20",
+      text: "text-emerald-400",
+      border: "border-emerald-500/30"
     }
   };
   const config = categoryConfig[category as keyof typeof categoryConfig] || categoryConfig.expert;
@@ -179,51 +184,20 @@ const VideoCard = ({
     observer.observe(video);
     return () => observer.disconnect();
   }, []);
-  const handleVideoClick = async (e: React.MouseEvent) => {
-    const now = Date.now();
-    const timeDiff = now - lastClick;
-    if (timeDiff < 300 && timeDiff > 0) {
-      // Double click - send ZOOZ with burst animation
-      e.preventDefault();
-      e.stopPropagation();
-      if (userBalance >= 1) {
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (rect) {
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          await addZoozReaction(x, y, 1);
-          onZooz(post.id);
-
-          // Bottom toast only
-          toast.success("💥 Double ZOOZ envoyé!", {
-            position: "bottom-center",
-            duration: 1500
-          });
-        }
-      } else {
-        toast.error("Solde ZOOZ insuffisant", {
-          position: "bottom-center",
-          duration: 2000
-        });
-      }
-      return;
+  const handleVideoClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Single click - toggle play/pause immediately
+    const video = videoRef.current;
+    if (!video) return;
+    
+    if (isPlaying) {
+      video.pause();
+      setIsPlaying(false);
+    } else {
+      video.play();
+      setIsPlaying(true);
     }
-    setLastClick(now);
-
-    // Single click - toggle play/pause (with delay to detect double click)
-    setTimeout(() => {
-      if (Date.now() - lastClick >= 300) {
-        const video = videoRef.current;
-        if (!video) return;
-        if (isPlaying) {
-          video.pause();
-          setIsPlaying(false);
-        } else {
-          video.play();
-          setIsPlaying(true);
-        }
-      }
-    }, 300);
   };
   const handleZoozSend = async (e?: React.MouseEvent) => {
     if (userBalance < 1) {
@@ -273,7 +247,7 @@ const VideoCard = ({
       </div>;
   };
   return <div ref={containerRef} className="relative h-screen w-full snap-start snap-always">
-      <video ref={videoRef} className="h-full w-full object-cover" loop muted playsInline onClick={handleVideoClick} src={post.videoUrl} />
+      <video ref={videoRef} className="h-full w-full object-cover" loop playsInline onClick={handleVideoClick} src={post.videoUrl} />
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
