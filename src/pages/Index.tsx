@@ -21,7 +21,7 @@ import noaProfile from "@/assets/noa-profile.jpg";
 const mockPosts = [
   {
     id: "1",
-    username: "ستيف جوبز",
+    username: "Steve Jobs",
     handle: "steve_jobs",
     profileImage: sarahProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
