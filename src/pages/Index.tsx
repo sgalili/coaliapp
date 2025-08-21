@@ -24,7 +24,7 @@ const mockPosts = [
     username: "ستيف جوبز",
     handle: "steve_jobs",
     profileImage: sarahProfile,
-    videoUrl: "https://archive.org/download/SteveJobsStanfordCommencement/SteveJobsStanfordSpeech2005.mp4",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     caption: "נאום מעורר השראה של סטיב ג'ובס באוניברסיטת סטנפורד - 'Stay Hungry, Stay Foolish' 🍎 אחד הנאומים הכי משפיעים על חדשנות ויזמות",
     trustCount: 89420,
     watchCount: 125560,
