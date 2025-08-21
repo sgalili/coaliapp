@@ -53,39 +53,6 @@ const resources = {
         welcome: "ברוכים הבאים ל-Coali",
         subtitle: "הרשת הראשונה של אמון דיגיטלי",
         whatIsCoali: "מה זה Coali?",
-        onboarding: {
-          next: "הבא",
-          complete: "התחל",
-          screen1: {
-            title: "העולם הפך להיות מזויף",
-            line1: "ב-2027, אף אחד לא יודע מי אמיתי.",
-            line2: "הסרטונים מורכבים. הפרופילים נקנים.",
-            line3: "ההחלטות? מתקבלות על ידי רוחות רפאים.",
-            fakeNews: "חדשות מזויפות",
-            aiGenerated: "נוצר על ידי בינה מלאכותית",
-            deepfake: "דיפפייק"
-          },
-          screen2: {
-            title: "Coali מחזירה את האמון למרכז",
-            line1: "כאן, אתה זוכה באמון של אלה שרואים, שומעים ותומכים בך בזמן אמת.",
-            line2: "אתה לא קונה את ההשפעה שלך. אתה בונה אותה."
-          },
-          screen3: {
-            title: "מה אתה מרויח עם האמון",
-            benefit1: "מתערב בזמן אמת על החדשות, על הנושאים שאתה מבין",
-            benefit2: "מקבל ZOOZ בזמן אמת כדי להתקדם מהר יותר בפרויקטים שלך",
-            benefit3: "נגיש לקבוצות השפעה ופעולה",
-            comingSoon: "בקרוב: תוכל לזכות בתפקידי מפתח לקדם את החברה שלנו"
-          },
-          screen4: {
-            title: "הצטרף למהימנים ביותר",
-            line1: "הם לא חיכו.",
-            line2: "ואתה, אתה רוצה להישאר בלתי נראה?",
-            counter: "35,412 אנשים",
-            counterText: "כבר התחילו לבנות את ה-TrustRank שלהם.\nמה איתך?",
-            cta: "אני רוצה את המקום שלי ברשת האמון"
-          }
-        },
         enterPhone: "הכניסו את מספר הטלפון שלכם כדי להתחיל",
         receiveCode: "קבלו קוד",
         sending: "שולח...",
@@ -161,72 +128,6 @@ const resources = {
         welcome: "Welcome to Coali",
         subtitle: "The First Trust Network",
         whatIsCoali: "What is Coali?",
-        onboarding: {
-          next: "Next",
-          complete: "Get Started",
-          screen1: {
-            title: "The world has become fake",
-            line1: "In 2027, no one knows who is real.",
-            line2: "Videos are edited. Profiles are bought.",
-            line3: "Decisions? Made by ghosts.",
-            fakeNews: "Fake News",
-            aiGenerated: "AI Generated",
-            deepfake: "Deepfake"
-          },
-          screen2: {
-            title: "Coali puts trust back at the center",
-            subtitle: "TrustRank + Anonymous Blockchain KYC",
-            line1: "Your TrustRank builds with every verified interaction",
-            line2: "Blockchain KYC: verified identity but anonymous",
-            line3: "100% real humans, zero bots, zero fake",
-            line4: "You don't buy your influence. You build it."
-          },
-          screen3: {
-            title: "What you gain concretely",
-            subtitle: "ZOOZ, Influence & Revenue",
-            zoozRewards: {
-              title: "💰 ZOOZ Rewards",
-              comment: "10 ZOOZ per validated expert comment",
-              prediction: "50 ZOOZ when your predictions come true",
-              referral: "100 ZOOZ for each expert you recommend"
-            },
-            affiliation: {
-              title: "🔗 Affiliation Program",
-              line1: "Earn 25% of your referrals' ZOOZ for life",
-              line2: "The bigger your network grows, the more you earn"
-            },
-            newsExpert: {
-              title: "📰 Expert-Commented News",
-              line1: "Your analyses seen by thousands of people",
-              line2: "Direct influence on public opinion"
-            },
-            wallet: {
-              title: "💳 Integrated Wallet",
-              line1: "Convert your ZOOZ to euros instantly",
-              line2: "Secure payments, no traditional banking"
-            }
-          },
-          screen4: {
-            title: "100% Authentic Content",
-            subtitle: "Anti-AI + Most Trusted Rankings",
-            authentic: {
-              title: "✅ Certified Real Content",
-              line1: "100% verified human content",
-              line2: "Automatic deepfake detection",
-              line3: "'Authentic Human' badge on your content"
-            },
-            rankings: {
-              title: "👑 Most Trusted Rankings",
-              line1: "Top 10 per sector earn 500 ZOOZ/month minimum",
-              line2: "Tech 💻 | Finance 📈 | Health 🏥 | Art 🎨"
-            },
-            cta: {
-              counter: "35,412 people",
-              counterText: "have already started building their TrustRank.\nWhat about you?",
-              button: "I want my place in the Trust Network"
-            }
-          }
-        },
         enterPhone: "Enter your phone number to get started",
         receiveCode: "Receive Code",
         sending: "Sending...",
@@ -301,73 +202,7 @@ const resources = {
       auth: {
         welcome: "Bienvenue à Coali",
         subtitle: "Le Premier Réseau de Confiance",
-        whatIsCoali: "Découvrir Coali",
-        onboarding: {
-          next: "Suivant",
-          complete: "Commencer",
-          screen1: {
-            title: "Le monde est devenu fake",
-            line1: "En 2027, plus personne ne sait qui est vrai.",
-            line2: "Les vidéos sont montées. Les profils sont achetés.",
-            line3: "Les décisions ? Prises par des fantômes.",
-            fakeNews: "Fake News",
-            aiGenerated: "Généré par IA",
-            deepfake: "Deepfake"
-          },
-          screen2: {
-            title: "Coali remet la confiance au centre",
-            subtitle: "TrustRank + KYC Blockchain Anonyme",
-            line1: "Ton TrustRank se construit avec chaque interaction vérifiée",
-            line2: "KYC blockchain : identité vérifiée mais anonyme",
-            line3: "100% vrais humains, zéro bots, zéro fake",
-            line4: "Tu n'achètes pas ton influence. Tu la construis."
-          },
-          screen3: {
-            title: "Ce que tu gagnes concrètement",
-            subtitle: "ZOOZ, Influence & Revenus",
-            zoozRewards: {
-              title: "💰 Récompenses ZOOZ",
-              comment: "10 ZOOZ par commentaire d'expert validé",
-              prediction: "50 ZOOZ quand tes prédictions se réalisent",
-              referral: "100 ZOOZ pour chaque expert que tu recommandes"
-            },
-            affiliation: {
-              title: "🔗 Programme d'Affiliation",
-              line1: "Gagne 25% des ZOOZ de tes filleuls à vie",
-              line2: "Plus ton réseau grandit, plus tu gagnes"
-            },
-            newsExpert: {
-              title: "📰 News Commentées par Experts",
-              line1: "Tes analyses vues par des milliers de personnes",
-              line2: "Influence directe sur l'opinion publique"
-            },
-            wallet: {
-              title: "💳 Wallet Intégré",
-              line1: "Convertis tes ZOOZ en euros instantanément",
-              line2: "Paiements sécurisés, pas de banque traditionnelle"
-            }
-          },
-          screen4: {
-            title: "Contenus 100% Authentiques",
-            subtitle: "Anti-AI + Most Trusted Rankings",
-            authentic: {
-              title: "✅ Contenu Certifié Réel",
-              line1: "100% de contenu humain vérifié",
-              line2: "Détection automatique des deepfakes",
-              line3: "Badge 'Authentic Human' sur tes contenus"
-            },
-            rankings: {
-              title: "👑 Most Trusted Rankings",
-              line1: "Les top 10 par secteur gagnent 500 ZOOZ/mois minimum",
-              line2: "Tech 💻 | Finance 📈 | Santé 🏥 | Art 🎨"
-            },
-            cta: {
-              counter: "35 412 personnes",
-              counterText: "ont déjà commencé à bâtir leur TrustRank.\nEt toi ?",
-              button: "Je veux ma place dans le Trust Network"
-            }
-          }
-        },
+        whatIsCoali: "Qu'est-ce que Coali ?",
         enterPhone: "Entrez votre numéro de téléphone pour commencer",
         receiveCode: "Recevoir le code",
         sending: "Envoi...",
