@@ -19,7 +19,7 @@ interface VideoPost {
   isVerified?: boolean;
   kycLevel: 1 | 2 | 3;
   expertise: string;
-  category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer' | 'economy';
+  category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer' | 'economy' | 'jewelry';
   isLive?: boolean;
 }
 interface VideoFeedProps {
@@ -73,6 +73,11 @@ const ExpertiseBadge = ({
       bg: "bg-pink-500/20",
       text: "text-pink-400",
       border: "border-pink-500/30"
+    },
+    jewelry: {
+      bg: "bg-fuchsia-500/20",
+      text: "text-fuchsia-400",
+      border: "border-fuchsia-500/30"
     },
     expert: {
       bg: "bg-yellow-500/20",

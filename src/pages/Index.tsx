@@ -107,8 +107,8 @@ const mockPosts = [
     zoozCount: 2156,
     isVerified: true,
     kycLevel: 2 as const,
-    expertise: "טכנולוגיה",
-    category: "technology" as const,
+    expertise: "תכשיטים",
+    category: "jewelry" as const,
   },
   {
     id: "6",
