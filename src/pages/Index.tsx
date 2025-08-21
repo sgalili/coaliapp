@@ -17,6 +17,7 @@ import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
 import noaProfile from "@/assets/noa-profile.jpg";
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import yaronProfile from "@/assets/yaron-profile.jpg";
 
 // Mock data for development
 const mockPosts = [
@@ -42,7 +43,7 @@ const mockPosts = [
     id: "2",
     username: "ירון זליכה", 
     handle: "yaron_economy",
-    profileImage: davidProfile,
+    profileImage: yaronProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     caption: "המשבר הכלכלי העולמי ומה שישראל צריכה לעשות עכשיו. האינפלציה, שוק הנדל״ן והטכנולוגיה - אסטרטגיה לעשור הבא 📈",
     trustCount: 2847,
