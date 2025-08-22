@@ -276,7 +276,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
       </div>
 
       {/* Trusted Users Profiles and Expert Reply */}
-      <div className="w-full px-6 py-4 bg-slate-50/30 border-t border-slate-100/50">
+      <div className="w-full px-4 py-4 bg-slate-50/30 border-t border-slate-100/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-600 mr-2">קול המומחים:</span>
