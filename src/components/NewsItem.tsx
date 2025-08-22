@@ -277,9 +277,14 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
 
       {/* Trusted Users Profiles and Expert Reply */}
       <div className="w-full px-4 py-4 bg-slate-50 shadow-sm border-b border-slate-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="space-y-3">
+          {/* Title centered at top */}
+          <div className="text-center">
             <span className="text-sm text-slate-600">קול המומחים:</span>
+          </div>
+          
+          {/* Expert avatars and reply button */}
+          <div className="flex items-center justify-between">
             {item.comments.length > 0 && (
               <div className="flex -space-x-2">
                 {item.comments.slice(0, 6).map((comment) => (
@@ -315,16 +320,16 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
                 )}
               </div>
             )}
+            
+            {/* Expert Reply Button */}
+            <button
+              onClick={() => onExpertReply?.(item.id)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            >
+              <VideoIcon className="w-4 h-4" />
+              הגב
+            </button>
           </div>
-          
-          {/* Expert Reply Button */}
-          <button
-            onClick={() => onExpertReply?.(item.id)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-          >
-            <VideoIcon className="w-4 h-4" />
-            הגב
-          </button>
         </div>
       </div>
 
