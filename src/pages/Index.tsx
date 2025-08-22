@@ -188,6 +188,7 @@ const Index = () => {
   const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [zoozBalance, setZoozBalance] = useState(1250);
   const [feedFilter, setFeedFilter] = useState<FilterState>({ type: 'all' });
+  const [isMuted, setIsMuted] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -266,6 +267,10 @@ const Index = () => {
     console.log("Published video data:", videoData);
   };
 
+  const handleVolumeToggle = () => {
+    setIsMuted(!isMuted);
+  };
+
   const getFilteredPosts = () => {
     switch (feedFilter.type) {
       case 'trusted':
@@ -318,6 +323,8 @@ const Index = () => {
             onZooz={handleZooz}
             userBalance={zoozBalance}
             currentUserId="550e8400-e29b-41d4-a716-446655440000" // Valid UUID for testing
+            isMuted={isMuted}
+            onVolumeToggle={handleVolumeToggle}
           />
         </SwipeHandler>
         <FeedFilters 

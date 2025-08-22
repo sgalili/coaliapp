@@ -29,6 +29,8 @@ interface VideoFeedProps {
   onZooz: (postId: string) => void;
   userBalance: number;
   currentUserId?: string;
+  isMuted: boolean;
+  onVolumeToggle: () => void;
 }
 const TrustIcon = () => {
   return <div className="relative">
@@ -153,7 +155,9 @@ const VideoCard = ({
   onWatch,
   onZooz,
   userBalance,
-  currentUserId
+  currentUserId,
+  isMuted,
+  onVolumeToggle
 }: {
   post: VideoPost;
   onTrust: (id: string) => void;
@@ -161,13 +165,14 @@ const VideoCard = ({
   onZooz: (id: string) => void;
   userBalance: number;
   currentUserId?: string;
+  isMuted: boolean;
+  onVolumeToggle: () => void;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const [lastClick, setLastClick] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
   const navigate = useNavigate();
   const {
     liveReactions,
@@ -190,6 +195,13 @@ const VideoCard = ({
     observer.observe(video);
     return () => observer.disconnect();
   }, []);
+
+  // Synchronize video muted attribute with global state
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = isMuted;
+  }, [isMuted]);
   const handleVideoClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
@@ -208,11 +220,7 @@ const VideoCard = ({
 
   const handleVolumeToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const video = videoRef.current;
-    if (!video) return;
-    
-    setIsMuted(!isMuted);
-    video.muted = !isMuted;
+    onVolumeToggle();
   };
   const handleZoozSend = async (e?: React.MouseEvent) => {
     if (userBalance < 1) {
@@ -372,9 +380,11 @@ export const VideoFeed = ({
   onWatch,
   onZooz,
   userBalance,
-  currentUserId
+  currentUserId,
+  isMuted,
+  onVolumeToggle
 }: VideoFeedProps) => {
   return <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
-      {posts.map(post => <VideoCard key={post.id} post={post} onTrust={onTrust} onWatch={onWatch} onZooz={onZooz} userBalance={userBalance} currentUserId={currentUserId} />)}
+      {posts.map(post => <VideoCard key={post.id} post={post} onTrust={onTrust} onWatch={onWatch} onZooz={onZooz} userBalance={userBalance} currentUserId={currentUserId} isMuted={isMuted} onVolumeToggle={onVolumeToggle} />)}
     </div>;
 };

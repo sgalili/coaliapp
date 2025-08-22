@@ -92,6 +92,8 @@ const PostDetailPage = () => {
           onWatch={handleWatch}
           onZooz={() => {}}
           userBalance={0}
+          isMuted={true}
+          onVolumeToggle={() => {}}
         />
       </div>
 
