@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Handshake, Crown, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck, Volume2, VolumeX } from "lucide-react";
+import { Handshake, Crown, Eye, Share, User, Shield, ShieldAlert, ShieldCheck, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -341,14 +341,6 @@ const VideoCard = ({
             <Eye className="w-6 h-6 text-watch" />
           </div>
           <span className="text-white text-xs font-medium">{post.watchCount}</span>
-        </button>
-
-        {/* Comment button */}
-        <button className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <MessageCircle className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.commentCount}</span>
         </button>
 
         {/* Share button */}
