@@ -99,7 +99,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 mt-2 border border-slate-200 shadow-sm">
+    <div className="p-4 mt-2">
       {/* Video Player Section */}
       <div className="relative w-full h-48 bg-slate-900 rounded-lg mb-3 overflow-hidden">
         <video
@@ -188,7 +188,7 @@ const VideoCommentPreview = ({ comment, onPlay }: { comment: NewsComment; onPlay
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-center gap-6 pt-3 border-t border-slate-100">
+      <div className="flex items-center justify-center gap-6 pt-4 mt-4 border-t border-slate-100/50">
         {/* Trust Button */}
         <button className="flex flex-col items-center gap-1 group">
           <div className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
@@ -239,9 +239,9 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
 
   return (
-    <article className="overflow-hidden mb-8 transition-shadow">
+    <article className="bg-white shadow-sm rounded-xl overflow-hidden mb-12 transition-shadow">
       {/* News Header */}
-      <div className="px-4 py-4 border-t border-slate-200/50">
+      <div className="px-6 py-5">
         <div className="flex items-center gap-2 mb-3">
           <span className={cn("px-2 py-1 rounded-full text-xs font-medium border", categoryStyle)}>
             {item.category}
@@ -276,7 +276,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
       </div>
 
       {/* Trusted Users Profiles and Expert Reply */}
-      <div className="w-full px-4 py-4 bg-slate-50 shadow-sm">
+      <div className="w-full px-6 py-4 bg-slate-50/30 border-t border-slate-100/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-600">קול המומחים:</span>
@@ -330,7 +330,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
 
       {/* Active Comment Video */}
       {activeComment && (
-        <div className="px-4 pb-4 border-t border-slate-100 bg-white border-b border-slate-100">
+        <div className="px-6 pb-5 border-t border-slate-100/50">
           <div className="mt-3">
             {(() => {
               const comment = item.comments.find(c => c.id === activeComment);
