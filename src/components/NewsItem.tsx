@@ -241,7 +241,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
   return (
     <article className="overflow-hidden mb-8 transition-shadow">
       {/* News Header */}
-      <div className="px-4 py-4">
+      <div className="px-4 py-4 border-t border-slate-200/50">
         <div className="flex items-center gap-2 mb-3">
           <span className={cn("px-2 py-1 rounded-full text-xs font-medium border", categoryStyle)}>
             {item.category}
