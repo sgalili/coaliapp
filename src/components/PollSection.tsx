@@ -40,7 +40,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
 
   return (
     <>
-      <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm">
+      <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm rounded-none">
         <div 
           onClick={handleTogglePoll}
           className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200"
