@@ -244,7 +244,7 @@ const NewsPage = () => {
   };
 
   return (
-    <div className="h-screen bg-white flex flex-col">
+    <div className="h-screen bg-slate-100 flex flex-col">
       <NewsFilters 
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
