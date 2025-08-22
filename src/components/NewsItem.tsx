@@ -239,9 +239,9 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
 
   return (
-    <article className="overflow-hidden mb-4 transition-shadow">
+    <article className="overflow-hidden mb-8 transition-shadow">
       {/* News Header */}
-      <div className="p-4">
+      <div className="px-2 py-4">
         <div className="flex items-center gap-2 mb-3">
           <span className={cn("px-2 py-1 rounded-full text-xs font-medium border", categoryStyle)}>
             {item.category}
@@ -276,7 +276,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
       </div>
 
       {/* Trusted Users Profiles and Expert Reply */}
-      <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
+      <div className="-mx-2 px-4 py-4 border-t border-slate-100 bg-slate-50/70 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-600">תגובות מומחים:</span>
@@ -330,7 +330,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
 
       {/* Active Comment Video */}
       {activeComment && (
-        <div className="px-4 pb-4 border-t border-slate-100">
+        <div className="-mx-2 px-4 pb-4 border-t border-slate-100 bg-white/50">
           <div className="mt-3">
             {(() => {
               const comment = item.comments.find(c => c.id === activeComment);
