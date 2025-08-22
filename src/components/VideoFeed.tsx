@@ -312,8 +312,8 @@ const VideoCard = ({
       {/* Volume button - positioned below + button */}
       <div className="absolute top-16 left-4">
         <button onClick={handleVolumeToggle} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            {isMuted ? <VolumeX className="w-6 h-6 text-white" /> : <Volume2 className="w-6 h-6 text-white" />}
+          <div className="w-12 h-12 rounded-full flex items-center justify-center group-active:scale-95 transition-transform">
+            {isMuted ? <VolumeX className="w-6 h-6 text-white fill-white" /> : <Volume2 className="w-6 h-6 text-white fill-white" />}
           </div>
         </button>
       </div>
