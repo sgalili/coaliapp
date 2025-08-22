@@ -166,8 +166,7 @@ const VideoCard = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [lastClick, setLastClick] = useState(0);
   const navigate = useNavigate();
   const {
     liveReactions,
@@ -176,59 +175,33 @@ const VideoCard = ({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
-    // Add video event listeners
-    const handleLoadedData = () => setIsVideoLoaded(true);
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-
-    video.addEventListener('loadeddata', handleLoadedData);
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('pause', handlePause);
-
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && isVideoLoaded) {
-        // Only auto-play if user has interacted or on desktop
-        if (hasUserInteracted || window.innerWidth > 768) {
-          video.play().catch(() => {
-            // Autoplay failed - this is normal on mobile
-            console.log('Autoplay prevented');
-          });
-        }
+      if (entry.isIntersecting) {
+        video.play();
+        setIsPlaying(true);
       } else {
         video.pause();
+        setIsPlaying(false);
       }
     }, {
       threshold: 0.5
     });
-
-    if (isVideoLoaded) {
-      observer.observe(video);
-    }
-
-    return () => {
-      video.removeEventListener('loadeddata', handleLoadedData);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
-      observer.disconnect();
-    };
-  }, [isVideoLoaded, hasUserInteracted]);
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
   const handleVideoClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    // Mark that user has interacted (enables autoplay on mobile)
-    setHasUserInteracted(true);
-    
+    // Single click - toggle play/pause immediately
     const video = videoRef.current;
     if (!video) return;
     
     if (isPlaying) {
       video.pause();
+      setIsPlaying(false);
     } else {
-      video.play().catch(() => {
-        // Play failed - could be due to browser restrictions
-        console.log('Play failed');
-      });
+      video.play();
+      setIsPlaying(true);
     }
   };
   const handleZoozSend = async (e?: React.MouseEvent) => {
@@ -279,29 +252,7 @@ const VideoCard = ({
       </div>;
   };
   return <div ref={containerRef} className="relative h-screen w-full snap-start snap-always">
-      <video 
-        ref={videoRef} 
-        className="h-full w-full object-cover" 
-        loop 
-        playsInline
-        webkit-playsinline="true"
-        preload="metadata"
-        muted
-        onClick={handleVideoClick} 
-        src={post.videoUrl}
-        style={{ 
-          backgroundColor: '#000',
-          backgroundImage: isVideoLoaded ? 'none' : 'linear-gradient(45deg, #1a1a1a 25%, #2a2a2a 25%, #2a2a2a 50%, #1a1a1a 50%, #1a1a1a 75%, #2a2a2a 75%)',
-          backgroundSize: '20px 20px'
-        }}
-      />
-      
-      {/* Loading overlay for mobile */}
-      {!isVideoLoaded && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <div className="text-white text-lg font-medium">Loading...</div>
-        </div>
-      )}
+      <video ref={videoRef} className="h-full w-full object-cover" loop playsInline onClick={handleVideoClick} src={post.videoUrl} />
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
