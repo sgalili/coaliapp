@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Handshake, Crown, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Handshake, Crown, Eye, MessageCircle, Share, User, Shield, ShieldAlert, ShieldCheck, Volume2, VolumeX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -167,6 +167,7 @@ const VideoCard = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const [lastClick, setLastClick] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
   const navigate = useNavigate();
   const {
     liveReactions,
@@ -203,6 +204,15 @@ const VideoCard = ({
       video.play();
       setIsPlaying(true);
     }
+  };
+
+  const handleVolumeToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    
+    setIsMuted(!isMuted);
+    video.muted = !isMuted;
   };
   const handleZoozSend = async (e?: React.MouseEvent) => {
     if (userBalance < 1) {
@@ -252,7 +262,16 @@ const VideoCard = ({
       </div>;
   };
   return <div ref={containerRef} className="relative h-screen w-full snap-start snap-always">
-      <video ref={videoRef} className="h-full w-full object-cover" loop playsInline onClick={handleVideoClick} src={post.videoUrl} />
+      <video 
+        ref={videoRef} 
+        className="h-full w-full object-cover" 
+        loop 
+        playsInline 
+        muted={isMuted}
+        preload="metadata"
+        onClick={handleVideoClick} 
+        src={post.videoUrl} 
+      />
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -284,6 +303,13 @@ const VideoCard = ({
 
       {/* Action buttons */}
       <div className="absolute left-4 bottom-20 flex flex-col gap-6">
+        {/* Volume button */}
+        <button onClick={handleVolumeToggle} className="flex flex-col items-center gap-1 group">
+          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
+            {isMuted ? <VolumeX className="w-6 h-6 text-white" /> : <Volume2 className="w-6 h-6 text-white" />}
+          </div>
+        </button>
+
         {/* ZOOZ button */}
         <button onClick={handleZoozSend} className="flex flex-col items-center gap-1 group">
           <div className="w-12 h-12 rounded-full bg-zooz/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden">
