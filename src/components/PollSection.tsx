@@ -31,7 +31,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
 
   return (
     <>
-      <div className="-mx-2 border-t border-blue-100/80 bg-gradient-to-r from-blue-50/60 to-indigo-50/60 shadow-sm">
+      <div className="-mx-4 border-t border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm border-b border-blue-100">
         <Button
           variant="ghost"
           onClick={handleTogglePoll}
