@@ -221,7 +221,7 @@ export const NewsItemComponent = ({
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
   return <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 transition-shadow">
       {/* News Header */}
-      <div className="px-1 py-5">
+      <div className="px-2 py-5">
         <div className="flex items-center gap-2 mb-3">
           <span className={cn("px-2 py-1 rounded-full text-xs font-medium border", categoryStyle)}>
             {item.category}
