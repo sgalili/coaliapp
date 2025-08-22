@@ -239,7 +239,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
 
   return (
-    <article className="bg-white rounded-xl border border-slate-200/60 overflow-hidden mb-4 shadow-sm hover:shadow-md transition-shadow">
+    <article className="overflow-hidden mb-4 transition-shadow">
       {/* News Header */}
       <div className="p-4">
         <div className="flex items-center gap-2 mb-3">
