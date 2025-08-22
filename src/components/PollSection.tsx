@@ -105,7 +105,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
               </div>
               
               {/* Participant count */}
-              <div className="text-xs text-muted-foreground text-right">
+              <div className="text-xs text-muted-foreground text-right mr-2">
                 {totalVotes.toLocaleString()} הצבעות
               </div>
             </div>
