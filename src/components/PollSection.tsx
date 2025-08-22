@@ -43,7 +43,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
       <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm !rounded-none">
         <div 
           onClick={handleTogglePoll}
-          className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200 !rounded-none"
+          className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200 rounded-none"
         >
           {/* Header with title and action */}
           <div className="flex items-center justify-between mb-3">
