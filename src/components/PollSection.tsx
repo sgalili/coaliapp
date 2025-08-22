@@ -89,14 +89,14 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
               </div>
               
               {/* Mini horizontal gauge */}
-              <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+              <div className="relative h-2 bg-muted overflow-hidden">
                 <div 
-                  className="absolute right-0 top-0 h-full bg-primary rounded-full transition-all duration-500"
+                  className="absolute right-0 top-0 h-full bg-primary transition-all duration-500"
                   style={{ width: `${topPercentage}%` }}
                 />
                 {secondOption && (
                   <div 
-                    className="absolute top-0 h-full bg-secondary rounded-full transition-all duration-500"
+                    className="absolute top-0 h-full bg-secondary transition-all duration-500"
                     style={{ 
                       right: `${topPercentage}%`, 
                       width: `${secondPercentage}%` 
@@ -127,7 +127,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
         )}>
           {isExpanded && isKYCVerified && (
             <div className="p-4 pt-3">
-              <div className="bg-card rounded-lg p-4 border border-border/50 shadow-sm">
+              <div className="bg-card p-4 border border-border/50 shadow-sm">
                 <h3 className="text-base font-semibold mb-4 text-right text-foreground leading-relaxed">
                   {poll.question}
                 </h3>
