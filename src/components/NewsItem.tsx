@@ -252,7 +252,7 @@ export const NewsItemComponent = ({
       <div className="w-full px-1 py-4 bg-slate-50/30 border-t border-slate-100/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-0">
-            <span className="text-sm text-slate-600 mr-2">דעת המומחים,</span>
+            <span className="text-sm text-slate-600 mr-2">דעת המומחים</span>
             {item.comments.length > 0 && <div className="flex -space-x-2">
                 {item.comments.slice(0, 6).map(comment => <button key={comment.id} onClick={() => {
               if (activeComment === comment.id) {
