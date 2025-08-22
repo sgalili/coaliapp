@@ -91,14 +91,14 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
               {/* Mini horizontal gauge */}
               <div className="relative h-2 bg-muted rounded-full overflow-hidden">
                 <div 
-                  className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-500"
+                  className="absolute right-0 top-0 h-full bg-primary rounded-full transition-all duration-500"
                   style={{ width: `${topPercentage}%` }}
                 />
                 {secondOption && (
                   <div 
                     className="absolute top-0 h-full bg-secondary rounded-full transition-all duration-500"
                     style={{ 
-                      left: `${topPercentage}%`, 
+                      right: `${topPercentage}%`, 
                       width: `${secondPercentage}%` 
                     }}
                   />
