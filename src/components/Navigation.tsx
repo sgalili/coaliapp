@@ -1,6 +1,7 @@
-import { Home, TrendingUp, Crown, User, Wallet } from "lucide-react";
+import { Home, Crown, User, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ImpactIcon } from "./ImpactIcon";
 
 interface NavigationProps {
   zoozBalance?: number;
@@ -8,7 +9,7 @@ interface NavigationProps {
 
 const tabs = [
   { id: 'home', icon: Home, label: 'בית', path: '/' },
-  { id: 'news', icon: TrendingUp, label: 'חדשות', path: '/news' },
+  { id: 'news', icon: ImpactIcon, label: 'אימפקט', path: '/news' },
   { id: 'toptrusted', icon: Crown, label: 'מובילים', path: '/toptrusted' },
   { id: 'wallet', icon: Wallet, label: 'ארנק', path: '/wallet' },
   { id: 'profile', icon: User, label: 'פרופיל', path: '/profile' },
@@ -53,16 +54,30 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
               )}
             >
               <div className="relative">
-                <IconComponent 
-                  className={cn(
-                    "w-6 h-6 transition-colors",
-                    isActive 
-                      ? "text-primary" 
-                      : isHomePage 
-                        ? "text-white" 
-                        : "text-muted-foreground"
-                  )} 
-                />
+                {tab.id === 'news' ? (
+                  <ImpactIcon 
+                    className={cn(
+                      "w-6 h-6 transition-colors",
+                      isActive 
+                        ? "text-primary" 
+                        : isHomePage 
+                          ? "text-white" 
+                          : "text-muted-foreground"
+                    )} 
+                    isActive={isActive}
+                  />
+                ) : (
+                  <IconComponent 
+                    className={cn(
+                      "w-6 h-6 transition-colors",
+                      isActive 
+                        ? "text-primary" 
+                        : isHomePage 
+                          ? "text-white" 
+                          : "text-muted-foreground"
+                    )} 
+                  />
+                )}
                 {tab.id === 'wallet' && zoozBalance > 0 && (
                   <div className="absolute -top-2 -right-2 bg-zooz text-zooz-foreground text-xs px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
                     {zoozBalance > 999 ? '999+' : zoozBalance}
