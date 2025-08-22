@@ -250,8 +250,8 @@ const NewsPage = () => {
         onFilterChange={setActiveFilter}
       />
 
-      <div className="flex-1 overflow-y-auto pb-20">
-        <div>
+      <div className="flex-1 overflow-y-auto pb-20 bg-slate-100">
+        <div className="py-4">
           {getFilteredNews().map((newsItem) => (
             <NewsItemComponent
               key={newsItem.id}

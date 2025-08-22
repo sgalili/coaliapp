@@ -180,7 +180,7 @@ const News = () => {
       />
 
       {/* News Feed */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto bg-slate-100">
         <div className="p-4 pb-20">
           {getFilteredNews().map((newsItem) => (
             <NewsItemComponent
