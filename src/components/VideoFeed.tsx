@@ -290,34 +290,15 @@ const VideoCard = ({
       {/* Live ZOOZ Reactions */}
       {liveReactions.map(renderZoozReaction)}
       
-      {/* Profile section */}
-      <div className="absolute top-4 right-4 flex items-center gap-3">
-        <div className="relative cursor-pointer" onClick={() => navigate(`/user/${post.id}`)}>
-          {post.profileImage ? <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" /> : <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
-              <User className="w-6 h-6 text-muted-foreground" />
-            </div>}
-          <KYCBadge level={post.kycLevel} />
+      {/* Volume button - top right */}
+      <button onClick={handleVolumeToggle} className="absolute top-4 right-4 flex flex-col items-center gap-1 group">
+        <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
+          {isMuted ? <VolumeX className="w-6 h-6 text-white" /> : <Volume2 className="w-6 h-6 text-white" />}
         </div>
-        
-        <div className="cursor-pointer text-right" onClick={() => navigate(`/user/${post.id}`)}>
-          <div className="flex items-center justify-end gap-1">
-            <span className="text-white font-semibold text-sm">{post.username}</span>
-          </div>
-          <div className="mt-1">
-            <ExpertiseBadge expertise={post.expertise} category={post.category} />
-          </div>
-        </div>
-      </div>
+      </button>
 
       {/* Action buttons */}
       <div className="absolute left-4 bottom-20 flex flex-col gap-6">
-        {/* Volume button */}
-        <button onClick={handleVolumeToggle} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            {isMuted ? <VolumeX className="w-6 h-6 text-white" /> : <Volume2 className="w-6 h-6 text-white" />}
-          </div>
-        </button>
-
         {/* ZOOZ button */}
         <button onClick={handleZoozSend} className="flex flex-col items-center gap-1 group">
           <div className="w-12 h-12 rounded-full bg-zooz/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden">
@@ -352,8 +333,28 @@ const VideoCard = ({
         </button>
       </div>
 
-      {/* Caption */}
-      <div className="absolute bottom-20 right-4 left-20">
+      {/* Profile and Caption section - bottom */}
+      <div className="absolute bottom-4 left-4 right-4 flex flex-col gap-2">
+        {/* Profile section */}
+        <div className="flex items-center gap-3">
+          <div className="relative cursor-pointer" onClick={() => navigate(`/user/${post.id}`)}>
+            {post.profileImage ? <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" /> : <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
+                <User className="w-6 h-6 text-muted-foreground" />
+              </div>}
+            <KYCBadge level={post.kycLevel} />
+          </div>
+          
+          <div className="cursor-pointer text-right flex-1" onClick={() => navigate(`/user/${post.id}`)}>
+            <div className="flex items-center justify-end gap-1">
+              <span className="text-white font-semibold text-sm">{post.username}</span>
+            </div>
+            <div className="mt-1">
+              <ExpertiseBadge expertise={post.expertise} category={post.category} />
+            </div>
+          </div>
+        </div>
+        
+        {/* Caption */}
         <div className="cursor-pointer" onClick={() => setIsTextExpanded(!isTextExpanded)}>
           <p className={cn("text-white text-sm leading-relaxed text-right", !isTextExpanded && "line-clamp-3")}>
             {post.caption}
