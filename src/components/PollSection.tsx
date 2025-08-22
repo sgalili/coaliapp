@@ -75,7 +75,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
           {totalVotes > 0 && (
             <div className="space-y-2">
               {/* Results preview */}
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground mr-2">
                 {topOption && (
                   <span>{topPercentage}% {topOption[0]}</span>
                 )}
