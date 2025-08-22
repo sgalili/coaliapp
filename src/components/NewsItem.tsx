@@ -276,7 +276,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
       </div>
 
       {/* Trusted Users Profiles and Expert Reply */}
-      <div className="-mx-4 px-6 py-4 border-t border-slate-200 bg-slate-50 shadow-sm border-b border-slate-100">
+      <div className="-mx-6 px-6 py-4 border-t border-slate-200 bg-slate-50 shadow-sm border-b border-slate-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-600">תגובות מומחים:</span>
@@ -330,7 +330,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
 
       {/* Active Comment Video */}
       {activeComment && (
-        <div className="-mx-4 px-6 pb-4 border-t border-slate-100 bg-white border-b border-slate-100">
+        <div className="-mx-6 px-6 pb-4 border-t border-slate-100 bg-white border-b border-slate-100">
           <div className="mt-3">
             {(() => {
               const comment = item.comments.find(c => c.id === activeComment);
