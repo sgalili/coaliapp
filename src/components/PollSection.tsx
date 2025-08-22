@@ -47,8 +47,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
         >
           {/* Header with title and action */}
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Volume2 className="h-4 w-4 text-primary" />
+            <div className="flex items-center gap-2 mr-2">
               <span className="font-medium text-foreground text-sm">📢 קול הציבור</span>
             </div>
             <div className="flex items-center gap-2">
