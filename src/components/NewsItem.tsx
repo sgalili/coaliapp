@@ -328,11 +328,6 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
         </div>
       </div>
 
-      {/* Independent Separator */}
-      <div className="mt-1 mb-1">
-        <div className="h-1 bg-slate-300 mx-0" />
-      </div>
-
       {/* Active Comment Video */}
       {activeComment && (
         <div className="px-4 pb-4 border-t border-slate-100 bg-white border-b border-slate-100">
