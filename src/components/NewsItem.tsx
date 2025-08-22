@@ -276,7 +276,7 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
       </div>
 
       {/* Trusted Users Profiles and Expert Reply */}
-      <div className="w-full px-4 py-4 bg-slate-50 shadow-sm border-b-4 border-slate-300">
+      <div className="w-full px-4 py-4 bg-slate-50 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-600">קול המומחים:</span>
@@ -326,6 +326,11 @@ export const NewsItemComponent = ({ item, onNewsClick, onProfileClick, onExpertR
             הגב
           </button>
         </div>
+      </div>
+
+      {/* Independent Separator */}
+      <div className="mt-1 mb-1">
+        <div className="h-1 bg-slate-300 mx-0" />
       </div>
 
       {/* Active Comment Video */}
