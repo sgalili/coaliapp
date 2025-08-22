@@ -50,7 +50,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
             <div className="flex items-center gap-2 mr-2">
               <span className="font-medium text-foreground text-sm">📢 קול הציבור</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-2">
               <Button
                 variant="outline"
                 size="sm"
