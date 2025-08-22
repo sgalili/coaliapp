@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, BarChart3 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Volume2, Vote } from 'lucide-react';
 import { PollVoting } from './PollVoting';
 import { PollResults } from './PollResults';
 import { KYCForm } from './KYCForm';
@@ -15,7 +15,7 @@ interface PollSectionProps {
 export const PollSection = ({ newsId }: PollSectionProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { isKYCVerified, showKYC, triggerKYCCheck, handleKYCSuccess, handleKYCClose } = useKYC();
-  const { poll, hasUserVoted, totalVotes } = usePoll(newsId);
+  const { poll, hasUserVoted, totalVotes, results } = usePoll(newsId);
 
   if (!poll) return null;
 
@@ -29,40 +29,106 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
     }
   };
 
+  // Get top 2 options for mini display
+  const sortedOptions = Object.entries(results)
+    .sort(([, a], [, b]) => b.count - a.count)
+    .slice(0, 2);
+
+  const [topOption, secondOption] = sortedOptions;
+  const topPercentage = topOption ? topOption[1].percentage : 0;
+  const secondPercentage = secondOption ? secondOption[1].percentage : 0;
+
   return (
     <>
-      <div className="-mx-4 border-t border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm border-b border-blue-100">
-        <Button
-          variant="ghost"
+      <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm">
+        <div 
           onClick={handleTogglePoll}
-          className="w-full justify-between p-4 h-auto text-foreground hover:bg-blue-50/60 transition-all duration-200"
+          className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200"
         >
-          <div className="flex items-center gap-3">
-            <BarChart3 className="h-5 w-5 text-blue-600" />
-            <div className="text-right">
-              <div className="font-medium text-gray-800">דעת הקהילה</div>
-              {totalVotes > 0 && (
-                <div className="text-sm text-blue-600/80">
-                  {totalVotes} משתתפים
-                </div>
+          {/* Header with title and action */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Volume2 className="h-4 w-4 text-primary" />
+              <span className="font-medium text-foreground text-sm">📢 קול הציבור</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs border-primary/20 text-primary hover:bg-primary/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTogglePoll();
+                }}
+              >
+                <Vote className="h-3 w-3 ml-1" />
+                💬 הביע דעתך
+              </Button>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
               )}
             </div>
           </div>
-          {isExpanded ? (
-            <ChevronUp className="h-5 w-5 text-blue-500" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-blue-500" />
-          )}
-        </Button>
 
+          {/* Mini poll display */}
+          {totalVotes > 0 && (
+            <div className="space-y-2">
+              {/* Results preview */}
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                {topOption && (
+                  <span>{topPercentage}% {topOption[0]}</span>
+                )}
+                {secondOption && (
+                  <span>•</span>
+                )}
+                {secondOption && (
+                  <span>{secondPercentage}% {secondOption[0]}</span>
+                )}
+              </div>
+              
+              {/* Mini horizontal gauge */}
+              <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-500"
+                  style={{ width: `${topPercentage}%` }}
+                />
+                {secondOption && (
+                  <div 
+                    className="absolute top-0 h-full bg-secondary rounded-full transition-all duration-500"
+                    style={{ 
+                      left: `${topPercentage}%`, 
+                      width: `${secondPercentage}%` 
+                    }}
+                  />
+                )}
+              </div>
+              
+              {/* Participant count */}
+              <div className="text-xs text-muted-foreground text-right">
+                {totalVotes.toLocaleString()} הצבעות
+              </div>
+            </div>
+          )}
+          
+          {/* No votes yet state */}
+          {totalVotes === 0 && (
+            <div className="text-xs text-muted-foreground text-center py-2">
+              היה הראשון להצביע בסקר
+            </div>
+          )}
+        </div>
+
+        {/* Expanded content */}
         <div className={cn(
-          "overflow-hidden transition-all duration-300 ease-in-out",
+          "overflow-hidden transition-all duration-300 ease-in-out border-t border-border/50",
           isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         )}>
           {isExpanded && isKYCVerified && (
-            <div className="p-4 pt-2 border-t border-blue-100/60">
-              <div className="bg-white/80 rounded-xl p-5 backdrop-blur-sm border border-blue-100/50 shadow-sm">
-                <h3 className="text-lg font-semibold mb-5 text-right text-gray-800 leading-relaxed">
+            <div className="p-4 pt-3">
+              <div className="bg-card rounded-lg p-4 border border-border/50 shadow-sm">
+                <h3 className="text-base font-semibold mb-4 text-right text-foreground leading-relaxed">
                   {poll.question}
                 </h3>
                 
