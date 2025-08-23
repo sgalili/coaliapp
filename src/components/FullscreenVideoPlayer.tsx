@@ -31,15 +31,15 @@ interface FullscreenVideoPlayerProps {
 
 const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
   const config = {
-    1: { icon: Shield, color: "text-gray-400", bg: "bg-gray-400/20" },
-    2: { icon: ShieldAlert, color: "text-blue-500", bg: "bg-blue-500/20" },
-    3: { icon: ShieldCheck, color: "text-green-500", bg: "bg-green-500/20" }
+    1: { icon: Shield, color: "text-gray-400" },
+    2: { icon: ShieldAlert, color: "text-blue-500" },
+    3: { icon: ShieldCheck, color: "text-green-500" }
   };
   
-  const { icon: IconComponent, color, bg } = config[level];
+  const { icon: IconComponent, color } = config[level];
   
   return (
-    <div className={cn("absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center", bg)}>
+    <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center")}>
       <IconComponent className={cn("w-4 h-4", color)} />
     </div>
   );
