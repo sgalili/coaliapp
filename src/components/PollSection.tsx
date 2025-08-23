@@ -64,7 +64,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
                 }}
               >
                 <Vote className="h-3 w-3 ml-1" />
-                💬 הביע דעתך
+                {hasUserVoted ? '👀 ראה תוצאות' : '💬 הביע דעתך'}
               </Button>
               {isExpanded ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />

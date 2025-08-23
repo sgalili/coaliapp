@@ -85,11 +85,14 @@ const mockVotes: { [pollId: string]: PollVote[] } = {
     { id: '12', pollId: 'poll-4', userId: '12', optionSelected: 'מרגש מאוד', userImage: '/src/assets/maya-profile.jpg', userName: 'מיה' },
     { id: '13', pollId: 'poll-4', userId: '13', optionSelected: 'צפוי', userImage: '/src/assets/amit-profile.jpg', userName: 'עמית' },
     { id: '14', pollId: 'poll-4', userId: '14', optionSelected: 'משמח', userImage: '/src/assets/rachel-profile.jpg', userName: 'רחל' },
+    { id: 'current-user', pollId: 'poll-4', userId: 'current-user', optionSelected: 'מרגש מאוד', userImage: '/src/assets/sarah-profile.jpg', userName: 'את/ה' }
   ]
 };
 
 export const usePoll = (newsId: string) => {
-  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({});
+  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({
+    'poll-4': 'מרגש מאוד' // Simuler que l'utilisateur a voté sur la news 4
+  });
   
   const poll = mockPolls[newsId];
   const votes = poll ? mockVotes[poll.id] || [] : [];
