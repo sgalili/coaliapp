@@ -10,6 +10,11 @@ import davidProfile from "@/assets/david-profile.jpg";
 import mayaProfile from "@/assets/maya-profile.jpg";
 import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
+import warrenProfile from "@/assets/warren-buffett-profile.jpg";
+import yaronProfile from "@/assets/yaron-profile.jpg";
+import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
 
 // Mock news data
 const mockNews = [
@@ -49,6 +54,90 @@ const mockNews = [
         timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
         category: "פוליטיקה",
         kycLevel: 2 as const
+      },
+      {
+        id: "comment-3",
+        userId: "3",
+        username: "בנימין נתניהו",
+        userImage: netanyahuProfile,
+        videoUrl: "mock-video-3",
+        duration: 35,
+        likes: 156,
+        replies: 24,
+        trustLevel: 2450,
+        timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-4",
+        userId: "4",
+        username: "נועה קירל",
+        userImage: noaProfile,
+        videoUrl: "mock-video-4",
+        duration: 22,
+        likes: 78,
+        replies: 12,
+        trustLevel: 634,
+        timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 2 as const
+      },
+      {
+        id: "comment-5",
+        userId: "5",
+        username: "וורן באפט",
+        userImage: warrenProfile,
+        videoUrl: "mock-video-5",
+        duration: 42,
+        likes: 234,
+        replies: 45,
+        trustLevel: 3890,
+        timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-6",
+        userId: "6",
+        username: "ירון זלכה",
+        userImage: yaronZelekhaProfile,
+        videoUrl: "mock-video-6",
+        duration: 28,
+        likes: 67,
+        replies: 9,
+        trustLevel: 1125,
+        timestamp: new Date(Date.now() - 150 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 2 as const
+      },
+      {
+        id: "comment-7",
+        userId: "7",
+        username: "ירון לונדון",
+        userImage: yaronProfile,
+        videoUrl: "mock-video-7",
+        duration: 31,
+        likes: 89,
+        replies: 15,
+        trustLevel: 1567,
+        timestamp: new Date(Date.now() - 180 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-8",
+        userId: "8",
+        username: "מיה רוזן",
+        userImage: mayaProfile,
+        videoUrl: "mock-video-8",
+        duration: 26,
+        likes: 43,
+        replies: 6,
+        trustLevel: 789,
+        timestamp: new Date(Date.now() - 210 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 1 as const
       }
     ]
   },
