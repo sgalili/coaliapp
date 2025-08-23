@@ -277,7 +277,7 @@ export const NewsItemComponent = ({
           <div className="relative animate-fade-in">
             {item.comments.length < 6 ? (
               // Simple flex layout for < 6 experts: experts first, then user with +
-              <div className="flex gap-1">
+              <div className="flex gap-1 pt-1">
                 {/* Expert photos */}
                 {item.comments.map(comment => (
                   <button 
@@ -346,7 +346,7 @@ export const NewsItemComponent = ({
                 
                 {/* Expert photos carousel - scrollable, with space for user on left */}
                 <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 pt-1">
                     {item.comments.map(comment => (
                       <button 
                         key={comment.id}
