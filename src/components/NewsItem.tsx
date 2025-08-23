@@ -257,10 +257,10 @@ export const NewsItemComponent = ({
         
         {/* Expert photos row with carousel and user photo */}
         <div className="relative">
-          {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the right */}
+          {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
           <button 
             onClick={() => onExpertReply?.(item.id)} 
-            className="absolute right-0 top-0 z-10 group"
+            className="absolute left-0 top-0 z-10 group"
           >
             <div className="relative">
               <img 
@@ -275,12 +275,12 @@ export const NewsItemComponent = ({
             </div>
           </button>
           
-          {/* Expert photos carousel - scrolls under user photo */}
+          {/* Expert photos carousel - starts from the right, scrolls under Yaakov's photo on the left */}
           {item.comments.length > 0 && (
-            <Carousel className="w-full pr-16" opts={{ align: "start", dragFree: true }}>
-              <CarouselContent className="-ml-2">
+            <Carousel className="w-full pl-16" opts={{ align: "start", dragFree: true, direction: "rtl" }}>
+              <CarouselContent className="-mr-2">
                 {item.comments.map(comment => (
-                  <CarouselItem key={comment.id} className="pl-2 basis-auto">
+                  <CarouselItem key={comment.id} className="pr-2 basis-auto">
                     <button onClick={() => {
                       if (activeComment === comment.id) {
                         setActiveComment(null);
@@ -300,7 +300,7 @@ export const NewsItemComponent = ({
                   </CarouselItem>
                 ))}
                 {/* Extra space to continue scrolling */}
-                <CarouselItem className="pl-2 basis-auto">
+                <CarouselItem className="pr-2 basis-auto">
                   <div className="w-4"></div>
                 </CarouselItem>
               </CarouselContent>
