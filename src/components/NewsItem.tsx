@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, Users } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PollSection } from "./PollSection";
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -254,7 +254,7 @@ export const NewsItemComponent = ({
       <div className="w-full px-2 pb-1 -mt-1">
         {/* Title positioned above everything */}
         <div className="flex items-center gap-2 mb-3">
-          <Users className="w-4 h-4 text-foreground" />
+          <GraduationCap className="w-4 h-4 text-foreground" />
           <span className="font-medium text-foreground text-sm">
             {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
           </span>
