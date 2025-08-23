@@ -251,7 +251,7 @@ export const NewsItemComponent = ({
       </div>
 
       {/* Expert Opinions Section */}
-      <div className="w-full px-2 pb-1">
+      <div className="w-full px-2 pb-1 -mt-1">
         {/* Title positioned above everything */}
         <span className="text-sm text-slate-600 block mb-3">
           {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
