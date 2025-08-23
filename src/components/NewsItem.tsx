@@ -303,12 +303,12 @@ export const NewsItemComponent = ({
               </button>
             </div>
           ) : (
-            // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
-            <div className="relative">
-              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the right */}
+            // Scrollable layout for 6+ experts: user fixed left, experts scrollable right
+            <div className="flex gap-1">
+              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
               <button 
                 onClick={() => onExpertReply?.(item.id)} 
-                className="absolute right-0 top-0 z-10 group"
+                className="flex-shrink-0 group"
               >
                 <div className="relative">
                   <img 
@@ -323,8 +323,8 @@ export const NewsItemComponent = ({
                 </div>
               </button>
               
-              {/* Expert photos carousel - scrollable, with space for user on right */}
-              <div className="overflow-x-auto pr-16 scrollbar-hide">
+              {/* Expert photos carousel - scrollable */}
+              <div className="overflow-x-auto flex-1 scrollbar-hide">
                 <div className="flex gap-1">
                   {item.comments.map(comment => (
                     <button 
