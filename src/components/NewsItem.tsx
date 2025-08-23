@@ -248,36 +248,48 @@ export const NewsItemComponent = ({
         </div>
       </div>
 
-      {/* Trusted Users Profiles and Expert Reply */}
-      <div className="w-full px-1 py-4 bg-slate-50/30 border-t border-slate-100/50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-0">
-            <span className="text-sm text-slate-600 mr-2">דעת המומחים</span>
-            {item.comments.length > 0 && <div className="flex -space-x-2">
-                {item.comments.slice(0, 6).map(comment => <button key={comment.id} onClick={() => {
-              if (activeComment === comment.id) {
-                setActiveComment(null);
-              } else {
-                setActiveComment(comment.id);
-              }
-            }} className="relative">
-                    {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                        <User className="w-6 h-6 text-slate-500" />
-                      </div>}
-                    <KYCBadge level={comment.kycLevel} />
-                  </button>)}
-                {item.comments.length > 6 && <div className="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
-                    <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
-                  </div>}
-              </div>}
-          </div>
-          
+      {/* Expert Opinions Section */}
+      <div className="w-full px-2 pt-2 pb-1">
+        {/* Title positioned above the photos */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-slate-600">דעת המומחים</span>
           {/* Expert Reply Button */}
           <button onClick={() => onExpertReply?.(item.id)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
             <VideoIcon className="w-4 h-4" />
             הגב
           </button>
         </div>
+        
+        {/* Expert photos row */}
+        {item.comments.length > 0 && (
+          <div className="flex items-center justify-start">
+            <div className="flex -space-x-2">
+              {item.comments.slice(0, 6).map(comment => (
+                <button key={comment.id} onClick={() => {
+                  if (activeComment === comment.id) {
+                    setActiveComment(null);
+                  } else {
+                    setActiveComment(comment.id);
+                  }
+                }} className="relative">
+                  {comment.userImage ? (
+                    <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                      <User className="w-6 h-6 text-slate-500" />
+                    </div>
+                  )}
+                  <KYCBadge level={comment.kycLevel} />
+                </button>
+              ))}
+              {item.comments.length > 6 && (
+                <div className="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
+                  <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Active Comment Video */}
