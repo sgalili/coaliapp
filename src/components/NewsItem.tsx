@@ -324,8 +324,8 @@ export const NewsItemComponent = ({
               </button>
               
               {/* Expert photos carousel - scrollable, with space for user on left */}
-              <div className="overflow-x-auto pl-16 scrollbar-hide">
-                <div className="flex gap-1 justify-end">
+              <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
+                <div className="flex gap-1">
                   {item.comments.map(comment => (
                     <button 
                       key={comment.id}
