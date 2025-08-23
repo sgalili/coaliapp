@@ -253,7 +253,9 @@ export const NewsItemComponent = ({
       {/* Expert Opinions Section */}
       <div className="w-full px-2 pt-2 pb-1">
         {/* Title positioned above everything */}
-        <span className="text-sm text-slate-600 block mb-3">דעת המומחים</span>
+        <span className="text-sm text-slate-600 block mb-3">
+          {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
+        </span>
         
         {/* Expert photos row - conditional layout based on expert count */}
         <div className="relative">
