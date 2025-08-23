@@ -278,9 +278,9 @@ export const NewsItemComponent = ({
           {/* Expert photos carousel - starts from the right, scrolls under Yaakov's photo on the left */}
           {item.comments.length > 0 && (
             <Carousel className="w-full pl-16" opts={{ align: "start", dragFree: true, direction: "rtl" }}>
-              <CarouselContent className="-mr-1">
+              <CarouselContent className="-mr-0.5">
                 {item.comments.map(comment => (
-                  <CarouselItem key={comment.id} className="pr-1 basis-auto">
+                  <CarouselItem key={comment.id} className="pr-0.5 basis-auto">
                     <button onClick={() => {
                       if (activeComment === comment.id) {
                         setActiveComment(null);
