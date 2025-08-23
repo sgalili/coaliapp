@@ -280,7 +280,7 @@ export const NewsItemComponent = ({
             <Carousel className="w-full pl-16" opts={{ align: "start", dragFree: true, direction: "rtl" }}>
               <CarouselContent className="-mr-1">
                 {item.comments.map(comment => (
-                  <CarouselItem key={comment.id} className="pr-1 basis-auto">
+                  <CarouselItem key={comment.id} className="pr-0.5 basis-auto">
                     <button onClick={() => {
                       if (activeComment === comment.id) {
                         setActiveComment(null);
