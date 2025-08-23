@@ -305,10 +305,10 @@ export const NewsItemComponent = ({
           ) : (
             // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
             <div className="relative">
-              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
+              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left with white background */}
               <button 
                 onClick={() => onExpertReply?.(item.id)} 
-                className="absolute left-0 top-0 z-10 group"
+                className="absolute left-0 top-0 z-20 group bg-white rounded-full pr-3 shadow-md"
               >
                 <div className="relative">
                   <img 
@@ -322,6 +322,9 @@ export const NewsItemComponent = ({
                   </div>
                 </div>
               </button>
+              
+              {/* Gradient overlay to indicate scrollable content */}
+              <div className="absolute left-12 top-0 w-8 h-12 bg-gradient-to-l from-transparent to-white z-10 pointer-events-none"></div>
               
               {/* Expert photos carousel - scrollable, with space for user on left */}
               <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
