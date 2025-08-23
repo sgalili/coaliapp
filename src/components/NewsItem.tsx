@@ -258,8 +258,26 @@ export const NewsItemComponent = ({
         {/* Expert photos row - conditional layout based on expert count */}
         <div className="relative">
           {item.comments.length < 6 ? (
-            // Simple flex layout for < 6 experts: experts first, then user with +
+            // Simple flex layout for < 6 experts: user first (left), then experts
             <div className="flex gap-1">
+              {/* User Reply Button (Yaakov's photo with Plus icon) - At the beginning (left) */}
+              <button 
+                onClick={() => onExpertReply?.(item.id)} 
+                className="group flex-shrink-0"
+              >
+                <div className="relative">
+                  <img 
+                    src={yaakovProfile} 
+                    alt="יעקב אליעזרוב" 
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
+                  />
+                  {/* Plus icon overlay */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                    <Plus className="w-3 h-3 text-white" />
+                  </div>
+                </div>
+              </button>
+              
               {/* Expert photos */}
               {item.comments.map(comment => (
                 <button 
@@ -283,24 +301,6 @@ export const NewsItemComponent = ({
                   <KYCBadge level={comment.kycLevel} />
                 </button>
               ))}
-              
-              {/* User Reply Button (Yaakov's photo with Plus icon) - At the end */}
-              <button 
-                onClick={() => onExpertReply?.(item.id)} 
-                className="group flex-shrink-0"
-              >
-                <div className="relative">
-                  <img 
-                    src={yaakovProfile} 
-                    alt="יעקב אליעזרוב" 
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
-                  />
-                  {/* Plus icon overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
-                    <Plus className="w-3 h-3 text-white" />
-                  </div>
-                </div>
-              </button>
             </div>
           ) : (
             // Scrollable layout for 6+ experts: user fixed left, experts scrollable right
