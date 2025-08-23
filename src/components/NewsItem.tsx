@@ -253,90 +253,55 @@ export const NewsItemComponent = ({
       {/* Expert Opinions Section */}
       <div className="w-full px-2 pb-1 -mt-1">
         {/* Title positioned above everything */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-1 mb-1">
           <GraduationCap className="w-4 h-4 text-foreground" />
           <span className="font-medium text-foreground text-sm">
             {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
           </span>
-          {item.comments.length > 0 && onToggleExperts && (
-            <button 
-              onClick={onToggleExperts}
-              className="ml-auto p-1 hover:bg-muted rounded-sm transition-colors"
-            >
-              {expertsVisible ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
-          )}
+          {item.comments.length > 0 && onToggleExperts && <button onClick={onToggleExperts} className="ml-auto p-1 hover:bg-muted rounded-sm transition-colors">
+              {expertsVisible ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+            </button>}
         </div>
         
         {/* Expert photos row - conditional layout based on expert count */}
-        {expertsVisible && (
-          <div className="relative animate-fade-in">
-            {item.comments.length < 6 ? (
-              // Simple flex layout for < 6 experts: experts first, then user with +
-              <div className="flex gap-1 pt-1">
+        {expertsVisible && <div className="relative animate-fade-in">
+            {item.comments.length < 6 ?
+        // Simple flex layout for < 6 experts: experts first, then user with +
+        <div className="flex gap-1 pt-1">
                 {/* Expert photos */}
-                {item.comments.map(comment => (
-                  <button 
-                    key={comment.id}
-                    onClick={() => {
-                      if (activeComment === comment.id) {
-                        setActiveComment(null);
-                      } else {
-                        setActiveComment(comment.id);
-                      }
-                    }} 
-                    className="relative flex-shrink-0"
-                  >
-                    {comment.userImage ? (
-                      <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                {item.comments.map(comment => <button key={comment.id} onClick={() => {
+            if (activeComment === comment.id) {
+              setActiveComment(null);
+            } else {
+              setActiveComment(comment.id);
+            }
+          }} className="relative flex-shrink-0">
+                    {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
                         <User className="w-6 h-6 text-slate-500" />
-                      </div>
-                    )}
+                      </div>}
                      <KYCBadge level={comment.kycLevel} />
-                  </button>
-                ))}
+                  </button>)}
                 
                 {/* User Reply Button (Yaakov's photo with Plus icon) - At the end */}
-                <button 
-                  onClick={() => onExpertReply?.(item.id)} 
-                  className="group flex-shrink-0"
-                >
+                <button onClick={() => onExpertReply?.(item.id)} className="group flex-shrink-0">
                   <div className="relative">
-                    <img 
-                      src={yaakovProfile} 
-                      alt="יעקב אליעזרוב" 
-                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
-                    />
+                    <img src={yaakovProfile} alt="יעקב אליעזרוב" className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" />
                     {/* Plus icon overlay */}
                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
                       <Plus className="w-3 h-3 text-white" />
                     </div>
                   </div>
                 </button>
-              </div>
-            ) : (
-              // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
-              <div className="relative">
+              </div> :
+        // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
+        <div className="relative">
                 {/* White fade overlay to indicate scroll */}
                 <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-40"></div>
                 
                 {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
-                <button 
-                  onClick={() => onExpertReply?.(item.id)} 
-                  className="absolute left-0 top-0 z-50 group"
-                >
+                <button onClick={() => onExpertReply?.(item.id)} className="absolute left-0 top-0 z-50 group">
                   <div className="relative">
-                    <img 
-                      src={yaakovProfile} 
-                      alt="יעקב אליעזרוב" 
-                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
-                    />
+                    <img src={yaakovProfile} alt="יעקב אליעזרוב" className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" />
                     {/* Plus icon overlay */}
                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
                       <Plus className="w-3 h-3 text-white" />
@@ -347,34 +312,22 @@ export const NewsItemComponent = ({
                 {/* Expert photos carousel - scrollable, with space for user on left */}
                 <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
                   <div className="flex gap-1 pt-1">
-                    {item.comments.map(comment => (
-                      <button 
-                        key={comment.id}
-                        onClick={() => {
-                          if (activeComment === comment.id) {
-                            setActiveComment(null);
-                          } else {
-                            setActiveComment(comment.id);
-                          }
-                        }} 
-                        className="relative flex-shrink-0"
-                      >
-                        {comment.userImage ? (
-                          <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
-                        ) : (
-                          <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                    {item.comments.map(comment => <button key={comment.id} onClick={() => {
+                if (activeComment === comment.id) {
+                  setActiveComment(null);
+                } else {
+                  setActiveComment(comment.id);
+                }
+              }} className="relative flex-shrink-0">
+                        {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
                             <User className="w-6 h-6 text-slate-500" />
-                          </div>
-                        )}
+                          </div>}
                          <KYCBadge level={comment.kycLevel} />
-                      </button>
-                    ))}
+                      </button>)}
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              </div>}
+          </div>}
       </div>
 
       {/* Active Comment Video */}
