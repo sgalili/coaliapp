@@ -246,6 +246,7 @@ const mockNews = [
 const NewsPage = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [zoozBalance] = useState(1250);
+  const [expertsVisible, setExpertsVisible] = useState(true);
   const [fullscreenVideo, setFullscreenVideo] = useState<{
     comments: any[];
     commentIndex: number;
@@ -361,6 +362,8 @@ const NewsPage = () => {
               onNewsClick={handleNewsClick}
               onProfileClick={handleProfileClick}
               onExpertReply={handleExpertReply}
+              expertsVisible={expertsVisible}
+              onToggleExperts={() => setExpertsVisible(!expertsVisible)}
             />
           ))}
         </div>

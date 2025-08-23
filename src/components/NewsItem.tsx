@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, GraduationCap } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PollSection } from "./PollSection";
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -33,6 +33,8 @@ interface NewsItemProps {
   onNewsClick: (newsId: string) => void;
   onProfileClick: (newsId: string, comment: NewsComment) => void;
   onExpertReply?: (newsId: string) => void;
+  expertsVisible?: boolean;
+  onToggleExperts?: () => void;
 }
 const formatTimeAgo = (timestamp: string) => {
   const now = new Date();
@@ -217,7 +219,9 @@ export const NewsItemComponent = ({
   item,
   onNewsClick,
   onProfileClick,
-  onExpertReply
+  onExpertReply,
+  expertsVisible = true,
+  onToggleExperts
 }: NewsItemProps) => {
   const [activeComment, setActiveComment] = useState<string | null>(null);
   const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
@@ -258,109 +262,123 @@ export const NewsItemComponent = ({
           <span className="font-medium text-foreground text-sm">
             {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
           </span>
+          {item.comments.length > 0 && onToggleExperts && (
+            <button 
+              onClick={onToggleExperts}
+              className="ml-auto p-1 hover:bg-muted rounded-sm transition-colors"
+            >
+              {expertsVisible ? (
+                <ChevronUp className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              )}
+            </button>
+          )}
         </div>
         
         {/* Expert photos row - conditional layout based on expert count */}
-        <div className="relative">
-          {item.comments.length < 6 ? (
-            // Simple flex layout for < 6 experts: experts first, then user with +
-            <div className="flex gap-1">
-              {/* Expert photos */}
-              {item.comments.map(comment => (
+        {expertsVisible && (
+          <div className="relative animate-fade-in">
+            {item.comments.length < 6 ? (
+              // Simple flex layout for < 6 experts: experts first, then user with +
+              <div className="flex gap-1">
+                {/* Expert photos */}
+                {item.comments.map(comment => (
+                  <button 
+                    key={comment.id}
+                    onClick={() => {
+                      if (activeComment === comment.id) {
+                        setActiveComment(null);
+                      } else {
+                        setActiveComment(comment.id);
+                      }
+                    }} 
+                    className="relative flex-shrink-0"
+                  >
+                    {comment.userImage ? (
+                      <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                        <User className="w-6 h-6 text-slate-500" />
+                      </div>
+                    )}
+                    <KYCBadge level={comment.kycLevel} />
+                  </button>
+                ))}
+                
+                {/* User Reply Button (Yaakov's photo with Plus icon) - At the end */}
                 <button 
-                  key={comment.id}
-                  onClick={() => {
-                    if (activeComment === comment.id) {
-                      setActiveComment(null);
-                    } else {
-                      setActiveComment(comment.id);
-                    }
-                  }} 
-                  className="relative flex-shrink-0"
+                  onClick={() => onExpertReply?.(item.id)} 
+                  className="group flex-shrink-0"
                 >
-                  {comment.userImage ? (
-                    <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                      <User className="w-6 h-6 text-slate-500" />
+                  <div className="relative">
+                    <img 
+                      src={yaakovProfile} 
+                      alt="יעקב אליעזרוב" 
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
+                    />
+                    {/* Plus icon overlay */}
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                      <Plus className="w-3 h-3 text-white" />
                     </div>
-                  )}
-                  <KYCBadge level={comment.kycLevel} />
+                  </div>
                 </button>
-              ))}
-              
-              {/* User Reply Button (Yaakov's photo with Plus icon) - At the end */}
-              <button 
-                onClick={() => onExpertReply?.(item.id)} 
-                className="group flex-shrink-0"
-              >
-                <div className="relative">
-                  <img 
-                    src={yaakovProfile} 
-                    alt="יעקב אליעזרוב" 
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
-                  />
-                  {/* Plus icon overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
-                    <Plus className="w-3 h-3 text-white" />
+              </div>
+            ) : (
+              // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
+              <div className="relative">
+                {/* White fade overlay to indicate scroll */}
+                <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-20"></div>
+                
+                {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
+                <button 
+                  onClick={() => onExpertReply?.(item.id)} 
+                  className="absolute left-0 top-0 z-30 group"
+                >
+                  <div className="relative">
+                    <img 
+                      src={yaakovProfile} 
+                      alt="יעקב אליעזרוב" 
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
+                    />
+                    {/* Plus icon overlay */}
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                      <Plus className="w-3 h-3 text-white" />
+                    </div>
                   </div>
-                </div>
-              </button>
-            </div>
-          ) : (
-            // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
-            <div className="relative">
-              {/* White fade overlay to indicate scroll */}
-              <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-20"></div>
-              
-              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
-              <button 
-                onClick={() => onExpertReply?.(item.id)} 
-                className="absolute left-0 top-0 z-30 group"
-              >
-                <div className="relative">
-                  <img 
-                    src={yaakovProfile} 
-                    alt="יעקב אליעזרוב" 
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
-                  />
-                  {/* Plus icon overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
-                    <Plus className="w-3 h-3 text-white" />
+                </button>
+                
+                {/* Expert photos carousel - scrollable, with space for user on left */}
+                <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
+                  <div className="flex gap-1">
+                    {item.comments.map(comment => (
+                      <button 
+                        key={comment.id}
+                        onClick={() => {
+                          if (activeComment === comment.id) {
+                            setActiveComment(null);
+                          } else {
+                            setActiveComment(comment.id);
+                          }
+                        }} 
+                        className="relative flex-shrink-0"
+                      >
+                        {comment.userImage ? (
+                          <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                            <User className="w-6 h-6 text-slate-500" />
+                          </div>
+                        )}
+                        <KYCBadge level={comment.kycLevel} />
+                      </button>
+                    ))}
                   </div>
-                </div>
-              </button>
-              
-              {/* Expert photos carousel - scrollable, with space for user on left */}
-              <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
-                <div className="flex gap-1">
-                  {item.comments.map(comment => (
-                    <button 
-                      key={comment.id}
-                      onClick={() => {
-                        if (activeComment === comment.id) {
-                          setActiveComment(null);
-                        } else {
-                          setActiveComment(comment.id);
-                        }
-                      }} 
-                      className="relative flex-shrink-0"
-                    >
-                      {comment.userImage ? (
-                        <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
-                      ) : (
-                        <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                          <User className="w-6 h-6 text-slate-500" />
-                        </div>
-                      )}
-                      <KYCBadge level={comment.kycLevel} />
-                    </button>
-                  ))}
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Active Comment Video */}
