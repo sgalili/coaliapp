@@ -303,29 +303,11 @@ export const NewsItemComponent = ({
               </button>
             </div>
           ) : (
-            // Scrollable layout for 6+ experts: user fixed left, experts scrollable right
-            <div className="flex gap-1">
-              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
-              <button 
-                onClick={() => onExpertReply?.(item.id)} 
-                className="flex-shrink-0 group"
-              >
-                <div className="relative">
-                  <img 
-                    src={yaakovProfile} 
-                    alt="יעקב אליעזרוב" 
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
-                  />
-                  {/* Plus icon overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
-                    <Plus className="w-3 h-3 text-white" />
-                  </div>
-                </div>
-              </button>
-              
+            // Scrollable layout for 6+ experts: user fixed at start, experts scrollable
+            <div className="flex flex-row-reverse gap-1">
               {/* Expert photos carousel - scrollable */}
               <div className="overflow-x-auto flex-1 scrollbar-hide">
-                <div className="flex gap-1">
+                <div className="flex flex-row-reverse gap-1">
                   {item.comments.map(comment => (
                     <button 
                       key={comment.id}
@@ -350,6 +332,24 @@ export const NewsItemComponent = ({
                   ))}
                 </div>
               </div>
+              
+              {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed at start */}
+              <button 
+                onClick={() => onExpertReply?.(item.id)} 
+                className="flex-shrink-0 group"
+              >
+                <div className="relative">
+                  <img 
+                    src={yaakovProfile} 
+                    alt="יעקב אליעזרוב" 
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
+                  />
+                  {/* Plus icon overlay */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                    <Plus className="w-3 h-3 text-white" />
+                  </div>
+                </div>
+              </button>
             </div>
           )}
         </div>
