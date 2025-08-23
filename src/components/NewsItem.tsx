@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PollSection } from "./PollSection";
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import yaakovProfile from '@/assets/yaakov-profile.jpg';
 interface NewsItem {
   id: string;
   title: string;
@@ -250,46 +252,61 @@ export const NewsItemComponent = ({
 
       {/* Expert Opinions Section */}
       <div className="w-full px-2 pt-2 pb-1">
-        {/* Title positioned above the photos */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600">דעת המומחים</span>
-          {/* Expert Reply Button */}
-          <button onClick={() => onExpertReply?.(item.id)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-            <VideoIcon className="w-4 h-4" />
-            הגב
-          </button>
-        </div>
+        {/* Title positioned above everything */}
+        <span className="text-sm text-slate-600 block mb-3">דעת המומחים</span>
         
-        {/* Expert photos row */}
-        {item.comments.length > 0 && (
-          <div className="flex items-center justify-start">
-            <div className="flex -space-x-2">
-              {item.comments.slice(0, 6).map(comment => (
-                <button key={comment.id} onClick={() => {
-                  if (activeComment === comment.id) {
-                    setActiveComment(null);
-                  } else {
-                    setActiveComment(comment.id);
-                  }
-                }} className="relative">
-                  {comment.userImage ? (
-                    <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                      <User className="w-6 h-6 text-slate-500" />
-                    </div>
-                  )}
-                  <KYCBadge level={comment.kycLevel} />
-                </button>
-              ))}
-              {item.comments.length > 6 && (
-                <div className="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
-                  <span className="text-xs text-slate-600">+{item.comments.length - 6}</span>
-                </div>
-              )}
+        {/* Expert photos row with carousel and user photo */}
+        <div className="relative">
+          {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the right */}
+          <button 
+            onClick={() => onExpertReply?.(item.id)} 
+            className="absolute right-0 top-0 z-10 group"
+          >
+            <div className="relative">
+              <img 
+                src={yaakovProfile} 
+                alt="יעקב אליעזרוב" 
+                className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform" 
+              />
+              {/* Plus icon overlay */}
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                <Plus className="w-3 h-3 text-white" />
+              </div>
             </div>
-          </div>
-        )}
+          </button>
+          
+          {/* Expert photos carousel - scrolls under user photo */}
+          {item.comments.length > 0 && (
+            <Carousel className="w-full pr-16" opts={{ align: "start", dragFree: true }}>
+              <CarouselContent className="-ml-2">
+                {item.comments.map(comment => (
+                  <CarouselItem key={comment.id} className="pl-2 basis-auto">
+                    <button onClick={() => {
+                      if (activeComment === comment.id) {
+                        setActiveComment(null);
+                      } else {
+                        setActiveComment(comment.id);
+                      }
+                    }} className="relative">
+                      {comment.userImage ? (
+                        <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                          <User className="w-6 h-6 text-slate-500" />
+                        </div>
+                      )}
+                      <KYCBadge level={comment.kycLevel} />
+                    </button>
+                  </CarouselItem>
+                ))}
+                {/* Extra space to continue scrolling */}
+                <CarouselItem className="pl-2 basis-auto">
+                  <div className="w-4"></div>
+                </CarouselItem>
+              </CarouselContent>
+            </Carousel>
+          )}
+        </div>
       </div>
 
       {/* Active Comment Video */}
