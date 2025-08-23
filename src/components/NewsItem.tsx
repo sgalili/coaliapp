@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PollSection } from "./PollSection";
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -253,9 +253,12 @@ export const NewsItemComponent = ({
       {/* Expert Opinions Section */}
       <div className="w-full px-2 pb-1 -mt-1">
         {/* Title positioned above everything */}
-        <span className="text-sm text-slate-600 block mb-3">
-          {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
-        </span>
+        <div className="flex items-center gap-2 mb-3">
+          <Users className="w-4 h-4 text-foreground" />
+          <span className="font-medium text-foreground text-sm">
+            {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
+          </span>
+        </div>
         
         {/* Expert photos row - conditional layout based on expert count */}
         <div className="relative">
