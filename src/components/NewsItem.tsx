@@ -76,7 +76,7 @@ const KYCBadge = ({
     icon: IconComponent,
     color
   } = config[level];
-  return <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center")}>
+  return <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center z-30")}>
       <IconComponent className={cn("w-4 h-4", color)} />
     </div>;
 };
@@ -133,7 +133,7 @@ const VideoCommentPreview = ({
           {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-10 h-10 rounded-full object-cover" /> : <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
               <User className="w-5 h-5 text-slate-500" />
             </div>}
-          <KYCBadge level={comment.kycLevel} />
+           <KYCBadge level={comment.kycLevel} />
         </div>
         
         <div className="flex-1 min-w-0">
@@ -298,7 +298,7 @@ export const NewsItemComponent = ({
                         <User className="w-6 h-6 text-slate-500" />
                       </div>
                     )}
-                    <KYCBadge level={comment.kycLevel} />
+                     <KYCBadge level={comment.kycLevel} />
                   </button>
                 ))}
                 
@@ -324,12 +324,12 @@ export const NewsItemComponent = ({
               // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
               <div className="relative">
                 {/* White fade overlay to indicate scroll */}
-                <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-20"></div>
+                <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-40"></div>
                 
                 {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
                 <button 
                   onClick={() => onExpertReply?.(item.id)} 
-                  className="absolute left-0 top-0 z-30 group"
+                  className="absolute left-0 top-0 z-50 group"
                 >
                   <div className="relative">
                     <img 
@@ -366,7 +366,7 @@ export const NewsItemComponent = ({
                             <User className="w-6 h-6 text-slate-500" />
                           </div>
                         )}
-                        <KYCBadge level={comment.kycLevel} />
+                         <KYCBadge level={comment.kycLevel} />
                       </button>
                     ))}
                   </div>

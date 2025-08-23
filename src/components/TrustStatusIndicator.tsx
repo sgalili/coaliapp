@@ -23,7 +23,7 @@ export const TrustStatusIndicator = ({ kycLevel }: TrustStatusIndicatorProps) =>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center cursor-help")}>
+            <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center cursor-help z-30")}>
               <IconComponent className={cn("w-4 h-4", kyc.color)} />
             </div>
           </TooltipTrigger>

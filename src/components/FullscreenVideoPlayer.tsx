@@ -39,7 +39,7 @@ const KYCBadge = ({ level }: { level: 1 | 2 | 3 }) => {
   const { icon: IconComponent, color } = config[level];
   
   return (
-    <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center")}>
+    <div className={cn("absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center z-30")}>
       <IconComponent className={cn("w-4 h-4", color)} />
     </div>
   );
