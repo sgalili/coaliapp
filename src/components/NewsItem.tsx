@@ -305,8 +305,8 @@ export const NewsItemComponent = ({
           ) : (
             // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
             <div className="relative">
-              {/* White background behind Yaakov to indicate scroll */}
-              <div className="absolute left-0 top-0 w-20 h-12 bg-white z-0"></div>
+              {/* White fade overlay to indicate scroll */}
+              <div className="absolute left-12 top-0 w-8 h-12 bg-gradient-to-r from-transparent to-background z-5"></div>
               
               {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
               <button 
