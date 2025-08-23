@@ -306,12 +306,12 @@ export const NewsItemComponent = ({
             // Scrollable layout for 6+ experts: user fixed right, experts scrollable left
             <div className="relative">
               {/* White fade overlay to indicate scroll */}
-              <div className="absolute left-0 top-0 w-14 h-12 bg-white z-9"></div>
+              <div className="absolute left-0 top-0 w-14 h-12 bg-white z-20"></div>
               
               {/* User Reply Button (Yaakov's photo with Plus icon) - Fixed on the left */}
               <button 
                 onClick={() => onExpertReply?.(item.id)} 
-                className="absolute left-0 top-0 z-10 group"
+                className="absolute left-0 top-0 z-30 group"
               >
                 <div className="relative">
                   <img 
