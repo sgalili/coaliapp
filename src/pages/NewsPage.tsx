@@ -13,6 +13,12 @@ import davidProfile from "@/assets/david-profile.jpg";
 import mayaProfile from "@/assets/maya-profile.jpg";
 import amitProfile from "@/assets/amit-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
+import warrenProfile from "@/assets/warren-buffett-profile.jpg";
+import yaronProfile from "@/assets/yaron-profile.jpg";
+import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
 
 // Mock news data with real video URLs
 const mockNews = [
@@ -56,6 +62,102 @@ const mockNews = [
         kycLevel: 2 as const,
         watchCount: 89,
         shareCount: 7
+      },
+      {
+        id: "comment-3",
+        userId: "3",
+        username: "בנימין נתניהו",
+        userImage: netanyahuProfile,
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+        duration: 35,
+        likes: 156,
+        replies: 24,
+        trustLevel: 2450,
+        timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const,
+        watchCount: 423,
+        shareCount: 67
+      },
+      {
+        id: "comment-4",
+        userId: "4",
+        username: "נועה קירל",
+        userImage: noaProfile,
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+        duration: 22,
+        likes: 78,
+        replies: 12,
+        trustLevel: 634,
+        timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 2 as const,
+        watchCount: 187,
+        shareCount: 23
+      },
+      {
+        id: "comment-5",
+        userId: "5",
+        username: "וורן באפט",
+        userImage: warrenProfile,
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+        duration: 42,
+        likes: 234,
+        replies: 45,
+        trustLevel: 3890,
+        timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const,
+        watchCount: 567,
+        shareCount: 89
+      },
+      {
+        id: "comment-6",
+        userId: "6",
+        username: "ירון זלכה",
+        userImage: yaronZelekhaProfile,
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+        duration: 28,
+        likes: 67,
+        replies: 9,
+        trustLevel: 1125,
+        timestamp: new Date(Date.now() - 150 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 2 as const,
+        watchCount: 234,
+        shareCount: 17
+      },
+      {
+        id: "comment-7",
+        userId: "7",
+        username: "ירון לונדון",
+        userImage: yaronProfile,
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
+        duration: 31,
+        likes: 89,
+        replies: 15,
+        trustLevel: 1567,
+        timestamp: new Date(Date.now() - 180 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const,
+        watchCount: 298,
+        shareCount: 34
+      },
+      {
+        id: "comment-8",
+        userId: "8",
+        username: "יעקב נגוסה",
+        userImage: yaakovProfile,
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+        duration: 26,
+        likes: 43,
+        replies: 6,
+        trustLevel: 789,
+        timestamp: new Date(Date.now() - 210 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 1 as const,
+        watchCount: 145,
+        shareCount: 12
       }
     ]
   },
