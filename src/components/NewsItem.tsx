@@ -241,7 +241,7 @@ export const NewsItemComponent = ({
             <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-2">
               {item.title}
             </h3>
-            <p className="text-sm text-slate-600 line-clamp-2">
+            <p className="text-sm text-slate-600 line-clamp-1">
               {item.description}
             </p>
           </div>
