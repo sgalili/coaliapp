@@ -226,9 +226,9 @@ export const NewsItemComponent = ({
       {/* News Header */}
       <div className="px-2 py-5">
         <div className="flex gap-3 cursor-pointer" onClick={() => onNewsClick(item.id)}>
-          <img src={item.thumbnail} alt={item.title} className="w-20 h-20 rounded-lg object-cover flex-shrink-0" />
+          <img src={item.thumbnail} alt={item.title} className="w-24 h-18 rounded-lg object-cover flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-3">
+            <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-2">
               {item.title}
             </h3>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
