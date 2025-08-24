@@ -1,7 +1,28 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Share, Heart, MessageCircle } from "lucide-react";
+import { ArrowLeft, Share, Heart, MessageCircle, Clock, Users, Smartphone, TrendingUp, Trophy, Palette, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+
+// Format time ago function
+const formatTimeAgo = (dateString: string): string => {
+  const now = new Date();
+  const publishedDate = new Date(dateString);
+  const diffInMinutes = Math.floor((now.getTime() - publishedDate.getTime()) / (1000 * 60));
+  
+  if (diffInMinutes < 60) return `לפני ${diffInMinutes} דקות`;
+  if (diffInMinutes < 1440) return `לפני ${Math.floor(diffInMinutes / 60)} שעות`;
+  return `לפני ${Math.floor(diffInMinutes / 1440)} ימים`;
+};
+
+// Category icons mapping
+const categoryIcons = {
+  "פוליטיקה": Users,
+  "טכנולוגיה": Smartphone,
+  "כלכלה": TrendingUp,
+  "ספורט": Trophy,
+  "תרבות": Palette,
+  "חדשות": Newspaper
+};
 
 // Mock data - in real app this would come from API
 const mockNewsData = {
@@ -90,8 +111,20 @@ const NewsDetailPage = () => {
 
           {/* Article Meta */}
           <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
-            <span>{newsItem.source}</span>
-            <span>{new Date(newsItem.publishedAt).toLocaleDateString('he-IL')}</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                {(() => {
+                  const CategoryIcon = categoryIcons[newsItem.category as keyof typeof categoryIcons] || Newspaper;
+                  return <CategoryIcon className="w-4 h-4" />;
+                })()}
+                <span>{newsItem.category}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{formatTimeAgo(newsItem.publishedAt)}</span>
+              </div>
+              {newsItem.source && <span>{newsItem.source}</span>}
+            </div>
           </div>
 
           {/* Title */}
