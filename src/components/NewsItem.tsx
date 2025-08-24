@@ -232,17 +232,21 @@ export const NewsItemComponent = ({
               {item.title}
             </h3>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{item.source}</span>
+              <div className="flex items-center gap-1">
+                <CategoryIcon className="w-3 h-3" />
+                <span>{item.category}</span>
+              </div>
               <span>•</span>
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 <span>{formatTimeAgo(item.publishedAt)}</span>
               </div>
-              <span>•</span>
-              <div className="flex items-center gap-1">
-                <CategoryIcon className="w-3 h-3" />
-                <span>{item.category}</span>
-              </div>
+              {item.source && (
+                <>
+                  <span>•</span>
+                  <span>{item.source}</span>
+                </>
+              )}
             </div>
           </div>
         </div>
