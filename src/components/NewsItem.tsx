@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
+import { Clock, MessageCircle, ThumbsUp, Eye, User, Play, Pause, Shield, ShieldAlert, ShieldCheck, Handshake, Crown, Share2, VideoIcon, Plus, GraduationCap, ChevronDown, ChevronUp, Users, Smartphone, TrendingUp, Trophy, Palette, Newspaper } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PollSection } from "./PollSection";
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -45,13 +45,13 @@ const formatTimeAgo = (timestamp: string) => {
   if (diffInMinutes < 1440) return `לפני ${Math.floor(diffInMinutes / 60)} שעות`;
   return `לפני ${Math.floor(diffInMinutes / 1440)} ימים`;
 };
-const categoryColors = {
-  "פוליטיקה": "bg-red-500/20 text-red-400 border-red-500/30",
-  "טכנולוגיה": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "כלכלה": "bg-green-500/20 text-green-400 border-green-500/30",
-  "ספורט": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  "תרבות": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  "חדשות": "bg-gray-500/20 text-gray-400 border-gray-500/30"
+const categoryIcons = {
+  "פוליטיקה": Users,
+  "טכנולוגיה": Smartphone,
+  "כלכלה": TrendingUp,
+  "ספורט": Trophy,
+  "תרבות": Palette,
+  "חדשות": Newspaper
 };
 const KYCBadge = ({
   level
@@ -220,32 +220,30 @@ export const NewsItemComponent = ({
   onToggleExperts
 }: NewsItemProps) => {
   const [activeComment, setActiveComment] = useState<string | null>(null);
-  const categoryStyle = categoryColors[item.category as keyof typeof categoryColors] || categoryColors["חדשות"];
+  const CategoryIcon = categoryIcons[item.category as keyof typeof categoryIcons] || Newspaper;
+  
   return <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 transition-shadow">
       {/* News Header */}
       <div className="px-2 py-5">
-        <div className="flex items-center gap-2 mb-3">
-          <span className={cn("px-2 py-1 rounded-full text-xs font-medium border", categoryStyle)}>
-            {item.category}
-          </span>
-          <span className="text-xs text-muted-foreground">•</span>
-          <span className="text-xs text-muted-foreground">{item.source}</span>
-          <span className="text-xs text-muted-foreground">•</span>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="w-3 h-3" />
-            <span>{formatTimeAgo(item.publishedAt)}</span>
-          </div>
-        </div>
-
         <div className="flex gap-3 cursor-pointer" onClick={() => onNewsClick(item.id)}>
           <img src={item.thumbnail} alt={item.title} className="w-20 h-20 rounded-lg object-cover flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-2">
+            <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-3">
               {item.title}
             </h3>
-            <p className="text-sm text-slate-600 line-clamp-1">
-              {item.description}
-            </p>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>{item.source}</span>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                <span>{formatTimeAgo(item.publishedAt)}</span>
+              </div>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <CategoryIcon className="w-3 h-3" />
+                <span>{item.category}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
