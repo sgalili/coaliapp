@@ -26,7 +26,7 @@ const mockNews = [
     id: "news-1",
     title: "הכנסת אישרה את חוק השידור החדש - מה זה אומר על העתיד של התקשורת?",
     description: "החוק החדש יעמיד אתגרים חדשים בפני התאגיד החדש של השידור הישראלי ויכול לשנות את פני התקשורת",
-    thumbnail: "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=300&h=200&fit=crop",
+    thumbnail: "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=300&h=200&fit=crop",
     publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     category: "פוליטיקה",
     source: "חדשות 12",
