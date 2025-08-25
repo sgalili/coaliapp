@@ -376,7 +376,7 @@ const VideoCard = ({
         </div>
         
         {/* Authenticity Info - positioned above caption */}
-        <div className="bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1 mb-2">
+        <div className="mb-2">
           <p className="text-white/90 text-xs text-right font-medium">
             {mockAuthenticityText}
           </p>
