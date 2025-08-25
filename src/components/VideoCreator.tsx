@@ -399,22 +399,25 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Main Video Area */}
       <div className="flex-1 relative overflow-hidden">
-        {/* Video Preview */}
+        {/* Background Filter - Behind video */}
+        {selectedFilter !== "none" && (
+          <div 
+            className="absolute inset-0 pointer-events-none z-0"
+            style={getFilterStyle()}
+          />
+        )}
+        
+        {/* Video Preview - With blending */}
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className={cn(
+            "w-full h-full object-cover relative z-10",
+            selectedFilter !== "none" && "mix-blend-multiply opacity-90"
+          )}
         />
-
-        {/* Background Filter */}
-        {selectedFilter !== "none" && (
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={getFilterStyle()}
-          />
-        )}
         
         {/* Overlay elements */}
         {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
