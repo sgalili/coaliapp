@@ -176,17 +176,19 @@ const VideoCard = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const [lastClick, setLastClick] = useState(0);
+  const [isAuthenticityExpanded, setIsAuthenticityExpanded] = useState(false);
   const navigate = useNavigate();
   const {
     liveReactions,
     addZoozReaction
   } = useZoozReactions(post.id, currentUserId);
   
-  // Mock authenticity data for display - in real app this would come from post data  
+  // Split authenticity data for expandable display
   const { getStatusText } = useAuthenticity();
-  const mockAuthenticityText = post.authenticityData 
-    ? `✓ אותנטי | 📍 ${post.authenticityData.city}, ${post.authenticityData.country} ${post.authenticityData.localTime}`
+  const authenticityLocation = post.authenticityData 
+    ? `✓ אותנטי | 📍 ${post.authenticityData.city}, ${post.authenticityData.country}`
     : getStatusText();
+  const authenticityDateTime = post.authenticityData?.localTime;
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -377,9 +379,17 @@ const VideoCard = ({
         
         {/* Authenticity Info - positioned above caption */}
         <div className="mb-2">
-          <p className="text-white/90 text-xs text-right font-medium">
-            {mockAuthenticityText}
-          </p>
+          <div 
+            className="text-white/90 text-xs text-right font-medium cursor-pointer transition-all duration-200 hover:text-white"
+            onClick={() => setIsAuthenticityExpanded(!isAuthenticityExpanded)}
+          >
+            <p>{authenticityLocation}</p>
+            {isAuthenticityExpanded && authenticityDateTime && (
+              <p className="animate-fade-in mt-1 text-white/70">
+                {authenticityDateTime}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
