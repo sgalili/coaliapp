@@ -399,26 +399,31 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Main Video Area */}
       <div className="flex-1 relative overflow-hidden">
-        {/* Video Preview */}
+        {/* Subtle Background - Behind video */}
+        {selectedFilter !== "none" && (
+          <div 
+            className="absolute inset-0 pointer-events-none z-0"
+            style={{
+              ...getFilterStyle(),
+              opacity: 0.15
+            }}
+          />
+        )}
+
+        {/* Video Preview with light color harmony filter */}
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover relative z-10"
+          style={{
+            filter: selectedFilter === "politics" ? "sepia(0.1) saturate(1.1) hue-rotate(10deg)" :
+                   selectedFilter === "podcast" ? "contrast(1.05) saturate(1.1) sepia(0.05)" :
+                   selectedFilter === "tech" ? "contrast(1.1) saturate(1.2) hue-rotate(180deg) sepia(0.1)" :
+                   "none"
+          }}
         />
-
-        {/* Background Filter */}
-        {selectedFilter !== "none" && (
-          <div 
-            className="absolute inset-0 pointer-events-none z-10"
-            style={{
-              ...getFilterStyle(),
-              opacity: 0.3,
-              mixBlendMode: 'multiply'
-            }}
-          />
-        )}
         
         {/* Overlay elements */}
         {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
