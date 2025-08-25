@@ -183,12 +183,12 @@ const VideoCard = ({
     addZoozReaction
   } = useZoozReactions(post.id, currentUserId);
   
-  // Split authenticity data for expandable display
-  const { getStatusText } = useAuthenticity();
-  const authenticityLocation = post.authenticityData 
+  // Only show authenticity info if real metadata exists in video file
+  const hasAuthenticityData = post.authenticityData?.isAuthentic === true;
+  const authenticityLocation = hasAuthenticityData 
     ? `✓ אותנטי | 📍 ${post.authenticityData.city}, ${post.authenticityData.country}`
-    : getStatusText();
-  const authenticityDateTime = post.authenticityData?.localTime;
+    : null;
+  const authenticityDateTime = hasAuthenticityData ? post.authenticityData?.localTime : null;
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -377,20 +377,22 @@ const VideoCard = ({
             </span>}
         </div>
         
-        {/* Authenticity Info - positioned above caption */}
-        <div className="mb-2">
-          <div 
-            className="text-white/90 text-xs text-right font-medium cursor-pointer transition-all duration-200 hover:text-white"
-            onClick={() => setIsAuthenticityExpanded(!isAuthenticityExpanded)}
-          >
-            <p>{authenticityLocation}</p>
-            {isAuthenticityExpanded && authenticityDateTime && (
-              <p className="animate-fade-in mt-1 text-white/70">
-                {authenticityDateTime}
-              </p>
-            )}
+        {/* Authenticity Info - only shown if video has embedded metadata */}
+        {authenticityLocation && (
+          <div className="mb-2">
+            <div 
+              className="text-white/90 text-xs text-right font-medium cursor-pointer transition-all duration-200 hover:text-white"
+              onClick={() => setIsAuthenticityExpanded(!isAuthenticityExpanded)}
+            >
+              <p>{authenticityLocation}</p>
+              {isAuthenticityExpanded && authenticityDateTime && (
+                <p className="animate-fade-in mt-1 text-white/70">
+                  {authenticityDateTime}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
     </div>;
