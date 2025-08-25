@@ -135,8 +135,21 @@ export const useBackgroundRemoval = () => {
       const result = await segmenterRef.current(imageData);
 
       if (!result || !Array.isArray(result) || result.length === 0 || !result[0].mask) {
+        console.log('Segmentation failed or no mask returned');
         return null;
       }
+
+      console.log('Segmentation result:', {
+        resultLength: result.length,
+        maskWidth: result[0].mask.width,
+        maskHeight: result[0].mask.height,
+        maskDataLength: result[0].mask.data.length,
+        maskSample: result[0].mask.data.slice(0, 10), // First 10 values
+        maskMinMax: {
+          min: Math.min(...result[0].mask.data),
+          max: Math.max(...result[0].mask.data)
+        }
+      });
 
       // Scale video frame to output canvas
       const tempCanvas = document.createElement('canvas');
@@ -172,21 +185,27 @@ export const useBackgroundRemoval = () => {
           const maskY = Math.floor((y / outputCanvas.height) * maskHeight);
           const maskIndex = maskY * maskWidth + maskX;
           
-          // Get mask value (inverted - we want to keep the person, not the background)
-          const rawMaskValue = 1 - (result[0].mask.data[maskIndex] || 0);
+          // Get mask value - try both normal and inverted to see which works
+          const originalMaskValue = result[0].mask.data[maskIndex] || 0;
+          const invertedMaskValue = 1 - originalMaskValue;
           
-          // Apply edge smoothing for more natural transitions
-          const smoothedMask = Math.min(1, Math.max(0, rawMaskValue * 1.5 - 0.02));
+          // Try different approaches - let's test with original mask first
+          const maskValue = originalMaskValue; // Will test both approaches
           
-          if (smoothedMask > 0.02) {
+          if (maskValue > 0.05) { // Much lower threshold for testing
             // Keep the person - use video frame data with enhanced brightness and contrast
-            const brightness = 1.5; // Significantly brighten to make person visible
-            const contrast = 1.2; // Add contrast for better definition
+            const brightness = 2.0; // Even brighter to make sure person is visible
+            const contrast = 1.3;
             
-            outputData[i] = Math.min(255, Math.max(0, (videoData[i] - 128) * contrast + 128) * brightness);     // R
-            outputData[i + 1] = Math.min(255, Math.max(0, (videoData[i + 1] - 128) * contrast + 128) * brightness); // G
-            outputData[i + 2] = Math.min(255, Math.max(0, (videoData[i + 2] - 128) * contrast + 128) * brightness); // B
-            outputData[i + 3] = 255; // Full opacity for the person
+            outputData[i] = Math.min(255, Math.max(0, (videoData[i] - 128) * contrast + 128) * brightness);
+            outputData[i + 1] = Math.min(255, Math.max(0, (videoData[i + 1] - 128) * contrast + 128) * brightness);
+            outputData[i + 2] = Math.min(255, Math.max(0, (videoData[i + 2] - 128) * contrast + 128) * brightness);
+            outputData[i + 3] = 255; // Full opacity
+          }
+          
+          // Debug: Log some sample values every 10000 pixels
+          if (pixelIndex % 10000 === 0) {
+            console.log(`Pixel ${pixelIndex}: original=${originalMaskValue.toFixed(3)}, inverted=${invertedMaskValue.toFixed(3)}, using=${maskValue.toFixed(3)}`);
           }
           // Background pixels remain as they were drawn
         }

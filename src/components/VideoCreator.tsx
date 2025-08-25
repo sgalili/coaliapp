@@ -547,6 +547,20 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
+        {/* Debug Toggle */}
+        {isGreenScreenEnabled && (
+          <div className="flex justify-center mb-2">
+            <Button
+              variant={debugMode ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setDebugMode(!debugMode)}
+              className="rounded-full text-xs text-white hover:bg-white/20"
+            >
+              Debug Mode
+            </Button>
+          </div>
+        )}
+
         {/* AI Green Screen Toggle */}
         <div className="flex justify-center mb-4">
           <Button
