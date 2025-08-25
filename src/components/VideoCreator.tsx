@@ -35,9 +35,10 @@ const filters: Filter[] = [
     name: "Politics",
     icon: <Flag className="w-4 h-4" />,
     backgroundCSS: `
-      linear-gradient(135deg, #1a4480 0%, #2563eb 50%, #1a4480 100%),
-      url("data:image/svg+xml,%3Csvg width='100' height='60' viewBox='0 0 100 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='60' fill='%23ffffff'/%3E%3Crect width='100' height='12' fill='%230038b7'/%3E%3Crect y='48' width='100' height='12' fill='%230038b7'/%3E%3Cpolygon points='50,18 53,25 61,25 55,30 57,37 50,32 43,37 45,30 39,25 47,25' fill='%230038b7'/%3E%3C/svg%3E") right center / 120px auto no-repeat,
-      radial-gradient(ellipse at right, rgba(0,56,183,0.3) 0%, transparent 70%)
+      linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%),
+      linear-gradient(to right, transparent 60%, #ffffff 65%, #ffffff 85%, transparent 90%),
+      linear-gradient(to right, transparent 60%, #0038b7 65%, #0038b7 70%, #ffffff 70%, #ffffff 80%, #0038b7 80%, #0038b7 85%, transparent 90%),
+      radial-gradient(ellipse at 75% 50%, rgba(0,56,183,0.4) 0%, transparent 70%)
     `,
   },
   {
@@ -45,9 +46,10 @@ const filters: Filter[] = [
     name: "Podcast",
     icon: <Mic className="w-4 h-4" />,
     backgroundCSS: `
-      linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #2d2d2d 100%),
-      radial-gradient(circle at 70% 30%, rgba(255,215,0,0.1) 0%, transparent 50%),
-      url("data:image/svg+xml,%3Csvg width='80' height='120' viewBox='0 0 80 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23333' stroke-width='2'%3E%3Crect x='35' y='20' width='10' height='30' rx='5'/%3E%3Cpath d='M25 35 Q25 45 40 45 Q55 45 55 35'/%3E%3Cline x1='40' y1='45' x2='40' y2='60'/%3E%3Cline x1='30' y1='60' x2='50' y2='60'/%3E%3C/g%3E%3C/svg%3E") center center / 200px auto no-repeat
+      linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%),
+      radial-gradient(circle at 70% 30%, rgba(255,215,0,0.15) 0%, transparent 60%),
+      radial-gradient(circle at 30% 70%, rgba(139,69,19,0.3) 0%, transparent 50%),
+      linear-gradient(45deg, transparent 45%, rgba(60,60,60,0.8) 48%, rgba(80,80,80,0.9) 52%, transparent 55%)
     `,
   },
   {
