@@ -5,9 +5,10 @@ import { PhoneInput } from '@/components/auth/PhoneInput';
 import { OTPInput } from '@/components/auth/OTPInput';
 import { ProfileCompletion } from '@/components/auth/ProfileCompletion';
 import { LanguageSelector } from '@/components/auth/LanguageSelector';
+import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
 
-type AuthStep = 'phone' | 'otp' | 'profile';
+type AuthStep = 'phone' | 'otp' | 'profile' | 'onboarding';
 
 interface AuthData {
   phone: string;
@@ -88,13 +89,21 @@ export const AuthPage = () => {
       
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
       
-      // Redirect to home
-      navigate('/');
+      // Profile completed, but don't redirect yet - onboarding will handle it
     } catch (error) {
       console.error('Error creating profile:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleStartOnboarding = () => {
+    setCurrentStep('onboarding');
+  };
+
+  const handleOnboardingComplete = () => {
+    // Navigate to home after onboarding is complete
+    navigate('/');
   };
 
   const handleResendOTP = async () => {
@@ -144,7 +153,15 @@ export const AuthPage = () => {
           {currentStep === 'profile' && (
             <ProfileCompletion
               onComplete={handleProfileComplete}
+              onStartOnboarding={handleStartOnboarding}
               isLoading={isLoading}
+            />
+          )}
+          
+          {currentStep === 'onboarding' && (
+            <OnboardingFlow
+              initialStep="profile-completion"
+              onComplete={handleOnboardingComplete}
             />
           )}
         </div>

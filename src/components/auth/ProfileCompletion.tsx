@@ -9,9 +9,10 @@ import { User, Camera } from 'lucide-react';
 interface ProfileCompletionProps {
   onComplete: (firstName: string, lastName: string, profilePicture?: string) => void;
   isLoading: boolean;
+  onStartOnboarding?: () => void; // New prop for triggering onboarding
 }
 
-export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete, isLoading }) => {
+export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete, isLoading, onStartOnboarding }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [profilePicture, setProfilePicture] = useState<string>('');
@@ -37,7 +38,16 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     }
     
     setErrors({});
-    onComplete(firstName.trim(), lastName.trim(), profilePicture);
+    
+    // Check if we should trigger onboarding flow
+    if (onStartOnboarding) {
+      // Save profile data first
+      onComplete(firstName.trim(), lastName.trim(), profilePicture);
+      // Then trigger onboarding
+      onStartOnboarding();
+    } else {
+      onComplete(firstName.trim(), lastName.trim(), profilePicture);
+    }
   };
 
   const handleProfilePictureClick = () => {
