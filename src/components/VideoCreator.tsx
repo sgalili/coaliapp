@@ -2,12 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User, Sparkles } from "lucide-react";
+import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { getDomainConfig, type ExpertDomain } from "@/lib/domainConfig";
 import { useAuthenticity } from "@/hooks/useAuthenticity";
-import { useBackgroundRemoval } from "@/hooks/useBackgroundRemoval";
 
 interface VideoCreatorProps {
   onClose: () => void;
@@ -23,12 +22,6 @@ interface Filter {
   icon: React.ReactNode;
   backgroundImage?: string;
   backgroundCSS?: string;
-  overlayElements?: Array<{
-    type: 'svg' | 'png';
-    src: string;
-    position: { top?: string; bottom?: string; left?: string; right?: string };
-    size: { width: string; height: string };
-  }>;
 }
 
 const filters: Filter[] = [
@@ -41,21 +34,13 @@ const filters: Filter[] = [
     id: "politics",
     name: "Politics",
     icon: <Flag className="w-4 h-4" />,
-    backgroundImage: "/images/politics-background.jpg",
+    backgroundImage: "linear-gradient(135deg, #0078d4 0%, #ffffff 50%, #0078d4 100%)",
   },
   {
     id: "podcast",
     name: "Podcast",
     icon: <Mic className="w-4 h-4" />,
-    backgroundImage: "/images/podcast-background.jpg",
-    overlayElements: [
-      {
-        type: 'svg',
-        src: '/images/microphone-overlay.svg',
-        position: { bottom: '10%', right: '15%' },
-        size: { width: '120px', height: '180px' }
-      }
-    ]
+    backgroundCSS: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
   },
   {
     id: "tech",
@@ -81,93 +66,24 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const [comment, setComment] = useState("");
   const [recordingTime, setRecordingTime] = useState(60);
   const [isCameraFacingUser, setIsCameraFacingUser] = useState(true);
-  const [isGreenScreenEnabled, setIsGreenScreenEnabled] = useState(false);
-  const [debugMode, setDebugMode] = useState(false);
 
   // Mock user profile domains - in real app, this would come from user context/API
   const userDomains: ExpertDomain[] = ['tech', 'politics', 'culture']; // Max 3 domains from user profile
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const debugCanvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const animationRef = useRef<number | null>(null);
 
   const { toast } = useToast();
   const { getStatusText, requestLocationPermission, getAuthenticityStatus } = useAuthenticity();
-  const { 
-    initializeModel, 
-    processVideoFrame, 
-    isModelLoading, 
-    isModelReady, 
-    isProcessing,
-    debugInfo
-  } = useBackgroundRemoval();
 
   useEffect(() => {
     startCamera();
     return () => {
       stopCamera();
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
     };
   }, [isCameraFacingUser]);
-
-  useEffect(() => {
-    if (isGreenScreenEnabled && !isModelReady && !isModelLoading) {
-      initializeModel();
-    }
-  }, [isGreenScreenEnabled, isModelReady, isModelLoading, initializeModel]);
-
-  useEffect(() => {
-    if (isGreenScreenEnabled && isModelReady) {
-      const processFrame = async () => {
-        if (videoRef.current && canvasRef.current) {
-          const filter = filters.find(f => f.id === selectedFilter);
-          const result = await processVideoFrame(
-            videoRef.current,
-            filter?.backgroundImage,
-            filter?.backgroundCSS,
-            debugMode
-          );
-          
-          if (result && canvasRef.current) {
-            const ctx = canvasRef.current.getContext('2d');
-            if (ctx) {
-              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-              ctx.drawImage(result.canvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
-            }
-            
-            // Update debug canvas if available
-            if (result.debugCanvas && debugCanvasRef.current) {
-              const debugCtx = debugCanvasRef.current.getContext('2d');
-              if (debugCtx) {
-                debugCanvasRef.current.width = result.debugCanvas.width;
-                debugCanvasRef.current.height = result.debugCanvas.height;
-                debugCtx.clearRect(0, 0, debugCanvasRef.current.width, debugCanvasRef.current.height);
-                debugCtx.drawImage(result.debugCanvas, 0, 0);
-              }
-            }
-          }
-        }
-        
-        if (isGreenScreenEnabled) {
-          animationRef.current = requestAnimationFrame(processFrame);
-        }
-      };
-      
-      processFrame();
-    }
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isGreenScreenEnabled, isModelReady, selectedFilter, processVideoFrame]);
 
   useEffect(() => {
     if (isRecording) {
@@ -337,18 +253,10 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     if (!filter || filter.id === "none") return {};
 
     if (filter.backgroundImage) {
-      return {
-        backgroundImage: `url(${filter.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      };
+      return { background: filter.backgroundImage };
     }
     if (filter.backgroundCSS) {
-      return { 
-        background: filter.backgroundCSS,
-        backgroundBlendMode: "overlay" as const,
-      };
+      return { background: filter.backgroundCSS };
     }
     return {};
   };
@@ -469,103 +377,26 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Main Video Area */}
       <div className="flex-1 relative overflow-hidden">
-        {/* Subtle Background - Behind video */}
-        {selectedFilter !== "none" && (
-          <div 
-            className="absolute inset-0 pointer-events-none z-0"
-            style={{
-              ...getFilterStyle(),
-              opacity: 0.15
-            }}
-          />
-        )}
-
-        {/* Video Preview with light color harmony filter */}
+        {/* Background Filter */}
+        <div 
+          className="absolute inset-0"
+          style={getFilterStyle()}
+        />
+        
+        {/* Video Preview */}
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
           className={cn(
-            "w-full h-full object-cover relative",
-            isGreenScreenEnabled ? "z-0 opacity-0" : "z-1"
+            "w-full h-full object-cover",
+            selectedFilter === "politics" && "mix-blend-overlay",
+            selectedFilter === "podcast" && "mix-blend-soft-light",
+            selectedFilter === "tech" && "mix-blend-multiply",
+            selectedFilter === "neutral" && "mix-blend-overlay"
           )}
-          style={{
-            filter: !isGreenScreenEnabled && selectedFilter === "politics" ? "sepia(0.1) saturate(1.1) hue-rotate(10deg)" :
-                   !isGreenScreenEnabled && selectedFilter === "podcast" ? "contrast(1.05) saturate(1.1) sepia(0.05)" :
-                   !isGreenScreenEnabled && selectedFilter === "tech" ? "contrast(1.1) saturate(1.2) hue-rotate(180deg) sepia(0.1)" :
-                   "none"
-          }}
-          onLoadedMetadata={() => {
-            if (canvasRef.current && videoRef.current) {
-              canvasRef.current.width = videoRef.current.videoWidth;
-              canvasRef.current.height = videoRef.current.videoHeight;
-            }
-          }}
         />
-
-        {/* AI Processed Canvas (Green Screen) */}
-        {isGreenScreenEnabled && (
-          <canvas
-            ref={canvasRef}
-            className="w-full h-full object-cover relative z-1"
-          />
-        )}
-        
-        {/* Debug Mode Overlay */}
-        {debugMode && isGreenScreenEnabled && (
-          <div className="absolute top-4 left-4 z-20 bg-black/80 p-4 rounded-lg text-white text-xs max-w-sm">
-            <h3 className="font-bold mb-2">Debug Info</h3>
-            {debugInfo && (
-              <div className="space-y-1">
-                <div>Mask: {debugInfo.maskWidth}x{debugInfo.maskHeight}</div>
-                <div>Range: {debugInfo.maskMinMax.min.toFixed(3)} - {debugInfo.maskMinMax.max.toFixed(3)}</div>
-                <div>Inverted: {debugInfo.isInverted ? 'Yes' : 'No'}</div>
-                <div>Sample: [{debugInfo.maskSample.slice(0, 3).map((v: number) => v.toFixed(2)).join(', ')}...]</div>
-              </div>
-            )}
-            <canvas 
-              ref={debugCanvasRef}
-              className="mt-2 border border-white/20 w-24 h-32 object-cover"
-            />
-            <div className="text-center mt-1">Mask Visualization</div>
-          </div>
-        )}
-        
-        {/* AI Model Loading Overlay */}
-        {isGreenScreenEnabled && !isModelReady && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-            <div className="text-white text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
-              <p className="text-sm">Loading AI Model...</p>
-              <p className="text-xs opacity-75 mt-1">This may take a moment</p>
-            </div>
-          </div>
-        )}
-        
-        {/* AI Processing Indicator */}
-        {isGreenScreenEnabled && isProcessing && (
-          <div className="absolute top-2 right-2 bg-green-500/80 text-white px-2 py-1 rounded text-xs z-10">
-            AI Processing...
-          </div>
-        )}
-        
-        {/* Overlay elements */}
-        {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
-          <div
-            key={index}
-            className="absolute pointer-events-none z-5"
-            style={{
-              ...overlay.position,
-              width: overlay.size.width,
-              height: overlay.size.height,
-              backgroundImage: `url(${overlay.src})`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-            }}
-          />
-        ))}
 
         {/* Recording Overlay */}
         {recordedBlob && (
@@ -580,40 +411,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
       </div>
 
       {/* Bottom Controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
-        {/* Debug Toggle */}
-        {isGreenScreenEnabled && (
-          <div className="flex justify-center mb-2">
-            <Button
-              variant={debugMode ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setDebugMode(!debugMode)}
-              className="rounded-full text-xs text-white hover:bg-white/20"
-            >
-              Debug Mode
-            </Button>
-          </div>
-        )}
-
-        {/* AI Green Screen Toggle */}
-        <div className="flex justify-center mb-4">
-          <Button
-            variant={isGreenScreenEnabled ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setIsGreenScreenEnabled(!isGreenScreenEnabled)}
-            className={cn(
-              "rounded-full flex items-center gap-2 text-xs",
-              isGreenScreenEnabled 
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white" 
-                : "text-white hover:bg-white/20"
-            )}
-            disabled={isModelLoading}
-          >
-            <Sparkles className="w-4 h-4" />
-            {isModelLoading ? "Loading AI..." : isGreenScreenEnabled ? "AI Green Screen ON" : "AI Green Screen"}
-          </Button>
-        </div>
-
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
         {/* Filters Row */}
         <div className="flex justify-center gap-3 mb-6">
           {filters.map((filter) => (
