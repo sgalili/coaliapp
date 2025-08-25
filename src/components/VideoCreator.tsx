@@ -6,6 +6,7 @@ import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, Use
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { getDomainConfig, type ExpertDomain } from "@/lib/domainConfig";
+import { useAuthenticity } from "@/hooks/useAuthenticity";
 
 interface VideoCreatorProps {
   onClose: () => void;
@@ -75,6 +76,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { toast } = useToast();
+  const { getStatusText, requestLocationPermission, getAuthenticityStatus } = useAuthenticity();
 
   useEffect(() => {
     startCamera();
@@ -349,6 +351,19 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
               {isLive && "🔴"} {formatTime(recordingTime)}
             </div>
           )}
+        </div>
+
+        {/* Authenticity Status */}
+        <div className="mt-3 bg-black/20 backdrop-blur-sm text-white p-2 rounded-lg text-sm">
+          <div 
+            className={cn(
+              "cursor-pointer transition-colors",
+              getAuthenticityStatus() === 'unavailable' && "hover:text-blue-300"
+            )}
+            onClick={getAuthenticityStatus() === 'unavailable' ? requestLocationPermission : undefined}
+          >
+            {getStatusText()}
+          </div>
         </div>
 
         {/* Profile Warning */}

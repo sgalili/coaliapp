@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useZoozReactions, LiveZoozReaction } from "@/hooks/useZoozReactions";
+import { useAuthenticity } from "@/hooks/useAuthenticity";
 interface VideoPost {
   id: string;
   username: string;
@@ -21,6 +22,12 @@ interface VideoPost {
   expertise: string;
   category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer' | 'economy' | 'jewelry';
   isLive?: boolean;
+  authenticityData?: {
+    city?: string;
+    country?: string;
+    localTime: string;
+    isAuthentic: boolean;
+  };
 }
 interface VideoFeedProps {
   posts: VideoPost[];
@@ -174,6 +181,12 @@ const VideoCard = ({
     liveReactions,
     addZoozReaction
   } = useZoozReactions(post.id, currentUserId);
+  
+  // Mock authenticity data for display - in real app this would come from post data
+  const { getStatusText } = useAuthenticity();
+  const mockAuthenticityText = post.authenticityData 
+    ? `📍 ${post.authenticityData.city}, ${post.authenticityData.country} - ${post.authenticityData.localTime} - ${post.authenticityData.isAuthentic ? '✅ אותנטי' : '❌ לא אותנטי'}`
+    : getStatusText();
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -349,6 +362,15 @@ const VideoCard = ({
           </div>
           <span className="text-white text-xs font-medium">{post.shareCount}</span>
         </button>
+      </div>
+
+      {/* Authenticity Info */}
+      <div className="absolute bottom-28 right-4 left-20">
+        <div className="bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1 mb-2">
+          <p className="text-white/90 text-xs text-right font-medium">
+            {mockAuthenticityText}
+          </p>
+        </div>
       </div>
 
       {/* Caption */}
