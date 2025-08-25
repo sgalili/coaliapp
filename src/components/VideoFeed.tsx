@@ -182,10 +182,10 @@ const VideoCard = ({
     addZoozReaction
   } = useZoozReactions(post.id, currentUserId);
   
-  // Mock authenticity data for display - in real app this would come from post data
+  // Mock authenticity data for display - in real app this would come from post data  
   const { getStatusText } = useAuthenticity();
   const mockAuthenticityText = post.authenticityData 
-    ? `📍 ${post.authenticityData.city}, ${post.authenticityData.country} - ${post.authenticityData.localTime} - ${post.authenticityData.isAuthentic ? '✅ אותנטי' : '❌ לא אותנטי'}`
+    ? `✓ אותנטי | 📍 ${post.authenticityData.city}, ${post.authenticityData.country} ${post.authenticityData.localTime}`
     : getStatusText();
   useEffect(() => {
     const video = videoRef.current;

@@ -38,6 +38,12 @@ const mockPosts = [
     expertise: "פוליטיקה",
     category: "politics" as const,
     isLive: false,
+    authenticityData: {
+      city: "ירושלים",
+      country: "ישראל",
+      localTime: "24-08-2025 20:34",
+      isAuthentic: true,
+    },
   },
   {
     id: "2",
