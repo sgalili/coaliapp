@@ -416,7 +416,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           autoPlay
           muted
           playsInline
-          className="w-full h-full object-cover relative z-10"
+          className="w-full h-full object-cover relative z-1"
           style={{
             filter: selectedFilter === "politics" ? "sepia(0.1) saturate(1.1) hue-rotate(10deg)" :
                    selectedFilter === "podcast" ? "contrast(1.05) saturate(1.1) sepia(0.05)" :
@@ -429,7 +429,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
         {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
           <div
             key={index}
-            className="absolute pointer-events-none"
+            className="absolute pointer-events-none z-5"
             style={{
               ...overlay.position,
               width: overlay.size.width,
@@ -455,7 +455,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
       </div>
 
       {/* Bottom Controls */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
+      <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
         {/* Filters Row */}
         <div className="flex justify-center gap-3 mb-6">
           {filters.map((filter) => (
