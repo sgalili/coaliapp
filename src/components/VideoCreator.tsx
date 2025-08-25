@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User } from "lucide-react";
+import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { getDomainConfig, type ExpertDomain } from "@/lib/domainConfig";
 import { useAuthenticity } from "@/hooks/useAuthenticity";
+import { useBackgroundRemoval } from "@/hooks/useBackgroundRemoval";
 
 interface VideoCreatorProps {
   onClose: () => void;
@@ -80,24 +81,78 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const [comment, setComment] = useState("");
   const [recordingTime, setRecordingTime] = useState(60);
   const [isCameraFacingUser, setIsCameraFacingUser] = useState(true);
+  const [isGreenScreenEnabled, setIsGreenScreenEnabled] = useState(false);
 
   // Mock user profile domains - in real app, this would come from user context/API
   const userDomains: ExpertDomain[] = ['tech', 'politics', 'culture']; // Max 3 domains from user profile
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const animationRef = useRef<number | null>(null);
 
   const { toast } = useToast();
   const { getStatusText, requestLocationPermission, getAuthenticityStatus } = useAuthenticity();
+  const { 
+    initializeModel, 
+    processVideoFrame, 
+    isModelLoading, 
+    isModelReady, 
+    isProcessing 
+  } = useBackgroundRemoval();
 
   useEffect(() => {
     startCamera();
     return () => {
       stopCamera();
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
   }, [isCameraFacingUser]);
+
+  useEffect(() => {
+    if (isGreenScreenEnabled && !isModelReady && !isModelLoading) {
+      initializeModel();
+    }
+  }, [isGreenScreenEnabled, isModelReady, isModelLoading, initializeModel]);
+
+  useEffect(() => {
+    if (isGreenScreenEnabled && isModelReady) {
+      const processFrame = async () => {
+        if (videoRef.current && canvasRef.current) {
+          const filter = filters.find(f => f.id === selectedFilter);
+          const processedCanvas = await processVideoFrame(
+            videoRef.current,
+            filter?.backgroundImage,
+            filter?.backgroundCSS
+          );
+          
+          if (processedCanvas && canvasRef.current) {
+            const ctx = canvasRef.current.getContext('2d');
+            if (ctx) {
+              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+              ctx.drawImage(processedCanvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
+            }
+          }
+        }
+        
+        if (isGreenScreenEnabled) {
+          animationRef.current = requestAnimationFrame(processFrame);
+        }
+      };
+      
+      processFrame();
+    }
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isGreenScreenEnabled, isModelReady, selectedFilter, processVideoFrame]);
 
   useEffect(() => {
     if (isRecording) {
@@ -416,14 +471,31 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           autoPlay
           muted
           playsInline
-          className="w-full h-full object-cover relative z-1"
+          className={cn(
+            "w-full h-full object-cover relative",
+            isGreenScreenEnabled ? "z-0 opacity-0" : "z-1"
+          )}
           style={{
-            filter: selectedFilter === "politics" ? "sepia(0.1) saturate(1.1) hue-rotate(10deg)" :
-                   selectedFilter === "podcast" ? "contrast(1.05) saturate(1.1) sepia(0.05)" :
-                   selectedFilter === "tech" ? "contrast(1.1) saturate(1.2) hue-rotate(180deg) sepia(0.1)" :
+            filter: !isGreenScreenEnabled && selectedFilter === "politics" ? "sepia(0.1) saturate(1.1) hue-rotate(10deg)" :
+                   !isGreenScreenEnabled && selectedFilter === "podcast" ? "contrast(1.05) saturate(1.1) sepia(0.05)" :
+                   !isGreenScreenEnabled && selectedFilter === "tech" ? "contrast(1.1) saturate(1.2) hue-rotate(180deg) sepia(0.1)" :
                    "none"
           }}
+          onLoadedMetadata={() => {
+            if (canvasRef.current && videoRef.current) {
+              canvasRef.current.width = videoRef.current.videoWidth;
+              canvasRef.current.height = videoRef.current.videoHeight;
+            }
+          }}
         />
+
+        {/* AI Processed Canvas (Green Screen) */}
+        {isGreenScreenEnabled && (
+          <canvas
+            ref={canvasRef}
+            className="w-full h-full object-cover relative z-1"
+          />
+        )}
         
         {/* Overlay elements */}
         {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
@@ -456,6 +528,25 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Bottom Controls */}
       <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
+        {/* AI Green Screen Toggle */}
+        <div className="flex justify-center mb-4">
+          <Button
+            variant={isGreenScreenEnabled ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setIsGreenScreenEnabled(!isGreenScreenEnabled)}
+            className={cn(
+              "rounded-full flex items-center gap-2 text-xs",
+              isGreenScreenEnabled 
+                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white" 
+                : "text-white hover:bg-white/20"
+            )}
+            disabled={isModelLoading}
+          >
+            <Sparkles className="w-4 h-4" />
+            {isModelLoading ? "Loading AI..." : isGreenScreenEnabled ? "AI Green Screen ON" : "AI Green Screen"}
+          </Button>
+        </div>
+
         {/* Filters Row */}
         <div className="flex justify-center gap-3 mb-6">
           {filters.map((filter) => (
