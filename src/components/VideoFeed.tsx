@@ -364,15 +364,6 @@ const VideoCard = ({
         </button>
       </div>
 
-      {/* Authenticity Info */}
-      <div className="absolute bottom-28 right-4 left-20">
-        <div className="bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1 mb-2">
-          <p className="text-white/90 text-xs text-right font-medium">
-            {mockAuthenticityText}
-          </p>
-        </div>
-      </div>
-
       {/* Caption */}
       <div className="absolute bottom-20 right-4 left-20">
         <div className="cursor-pointer" onClick={() => setIsTextExpanded(!isTextExpanded)}>
@@ -382,6 +373,13 @@ const VideoCard = ({
           {post.caption.split('\n').length > 3 && !isTextExpanded && <span className="text-white/70 text-xs text-right block mt-1">
               more...
             </span>}
+        </div>
+        
+        {/* Authenticity Info - positioned above caption */}
+        <div className="bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1 mb-2">
+          <p className="text-white/90 text-xs text-right font-medium">
+            {mockAuthenticityText}
+          </p>
         </div>
       </div>
 
