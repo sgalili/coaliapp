@@ -82,6 +82,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const [recordingTime, setRecordingTime] = useState(60);
   const [isCameraFacingUser, setIsCameraFacingUser] = useState(true);
   const [isGreenScreenEnabled, setIsGreenScreenEnabled] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
 
   // Mock user profile domains - in real app, this would come from user context/API
   const userDomains: ExpertDomain[] = ['tech', 'politics', 'culture']; // Max 3 domains from user profile

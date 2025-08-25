@@ -176,15 +176,17 @@ export const useBackgroundRemoval = () => {
           const rawMaskValue = 1 - (result[0].mask.data[maskIndex] || 0);
           
           // Apply edge smoothing for more natural transitions
-          const smoothedMask = Math.min(1, Math.max(0, rawMaskValue * 1.2 - 0.1));
+          const smoothedMask = Math.min(1, Math.max(0, rawMaskValue * 1.5 - 0.02));
           
-          if (smoothedMask > 0.1) {
-            // Keep the person - use video frame data with brightness preservation
-            const brightness = 1.1; // Slightly brighten to compensate for processing
-            outputData[i] = Math.min(255, videoData[i] * brightness);     // R
-            outputData[i + 1] = Math.min(255, videoData[i + 1] * brightness); // G
-            outputData[i + 2] = Math.min(255, videoData[i + 2] * brightness); // B
-            outputData[i + 3] = 255 * smoothedMask; // Alpha with smooth transition
+          if (smoothedMask > 0.02) {
+            // Keep the person - use video frame data with enhanced brightness and contrast
+            const brightness = 1.5; // Significantly brighten to make person visible
+            const contrast = 1.2; // Add contrast for better definition
+            
+            outputData[i] = Math.min(255, Math.max(0, (videoData[i] - 128) * contrast + 128) * brightness);     // R
+            outputData[i + 1] = Math.min(255, Math.max(0, (videoData[i + 1] - 128) * contrast + 128) * brightness); // G
+            outputData[i + 2] = Math.min(255, Math.max(0, (videoData[i + 2] - 128) * contrast + 128) * brightness); // B
+            outputData[i + 3] = 255; // Full opacity for the person
           }
           // Background pixels remain as they were drawn
         }
