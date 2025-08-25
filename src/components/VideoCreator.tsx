@@ -391,6 +391,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           playsInline
           className={cn(
             "w-full h-full object-cover",
+            isCameraFacingUser && "scale-x-[-1]",
             selectedFilter === "politics" && "mix-blend-overlay",
             selectedFilter === "podcast" && "mix-blend-soft-light",
             selectedFilter === "tech" && "mix-blend-multiply",
