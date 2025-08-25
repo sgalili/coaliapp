@@ -89,6 +89,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const debugCanvasRef = useRef<HTMLCanvasElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -101,7 +102,8 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     processVideoFrame, 
     isModelLoading, 
     isModelReady, 
-    isProcessing 
+    isProcessing,
+    debugInfo
   } = useBackgroundRemoval();
 
   useEffect(() => {
@@ -125,17 +127,29 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
       const processFrame = async () => {
         if (videoRef.current && canvasRef.current) {
           const filter = filters.find(f => f.id === selectedFilter);
-          const processedCanvas = await processVideoFrame(
+          const result = await processVideoFrame(
             videoRef.current,
             filter?.backgroundImage,
-            filter?.backgroundCSS
+            filter?.backgroundCSS,
+            debugMode
           );
           
-          if (processedCanvas && canvasRef.current) {
+          if (result && canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
             if (ctx) {
               ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-              ctx.drawImage(processedCanvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
+              ctx.drawImage(result.canvas, 0, 0, canvasRef.current.width, canvasRef.current.height);
+            }
+            
+            // Update debug canvas if available
+            if (result.debugCanvas && debugCanvasRef.current) {
+              const debugCtx = debugCanvasRef.current.getContext('2d');
+              if (debugCtx) {
+                debugCanvasRef.current.width = result.debugCanvas.width;
+                debugCanvasRef.current.height = result.debugCanvas.height;
+                debugCtx.clearRect(0, 0, debugCanvasRef.current.width, debugCanvasRef.current.height);
+                debugCtx.drawImage(result.debugCanvas, 0, 0);
+              }
             }
           }
         }
@@ -496,6 +510,26 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
             ref={canvasRef}
             className="w-full h-full object-cover relative z-1"
           />
+        )}
+        
+        {/* Debug Mode Overlay */}
+        {debugMode && isGreenScreenEnabled && (
+          <div className="absolute top-4 left-4 z-20 bg-black/80 p-4 rounded-lg text-white text-xs max-w-sm">
+            <h3 className="font-bold mb-2">Debug Info</h3>
+            {debugInfo && (
+              <div className="space-y-1">
+                <div>Mask: {debugInfo.maskWidth}x{debugInfo.maskHeight}</div>
+                <div>Range: {debugInfo.maskMinMax.min.toFixed(3)} - {debugInfo.maskMinMax.max.toFixed(3)}</div>
+                <div>Inverted: {debugInfo.isInverted ? 'Yes' : 'No'}</div>
+                <div>Sample: [{debugInfo.maskSample.slice(0, 3).map((v: number) => v.toFixed(2)).join(', ')}...]</div>
+              </div>
+            )}
+            <canvas 
+              ref={debugCanvasRef}
+              className="mt-2 border border-white/20 w-24 h-32 object-cover"
+            />
+            <div className="text-center mt-1">Mask Visualization</div>
+          </div>
         )}
         
         {/* AI Model Loading Overlay */}

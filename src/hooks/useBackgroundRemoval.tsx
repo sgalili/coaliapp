@@ -12,11 +12,14 @@ export const useBackgroundRemoval = () => {
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [isModelReady, setIsModelReady] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
   const segmenterRef = useRef<any>(null);
   const processingCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const outputCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const debugCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastProcessTimeRef = useRef<number>(0);
   const frameIntervalRef = useRef<number>(1000 / PROCESSING_FPS);
+  const maskInvertedRef = useRef<boolean>(false);
 
   const initializeModel = useCallback(async () => {
     if (segmenterRef.current || isModelLoading) return;
@@ -52,14 +55,15 @@ export const useBackgroundRemoval = () => {
   const processVideoFrame = useCallback(async (
     video: HTMLVideoElement,
     backgroundImageUrl?: string,
-    backgroundCSS?: string
-  ): Promise<HTMLCanvasElement | null> => {
+    backgroundCSS?: string,
+    debugMode?: boolean
+  ): Promise<{ canvas: HTMLCanvasElement; debugCanvas?: HTMLCanvasElement } | null> => {
     if (!segmenterRef.current || !isModelReady || isProcessing) return null;
 
     // Throttle processing to avoid browser crashes
     const now = Date.now();
     if (now - lastProcessTimeRef.current < frameIntervalRef.current) {
-      return outputCanvasRef.current;
+      return outputCanvasRef.current ? { canvas: outputCanvasRef.current } : null;
     }
     lastProcessTimeRef.current = now;
 
@@ -73,6 +77,10 @@ export const useBackgroundRemoval = () => {
       
       if (!outputCanvasRef.current) {
         outputCanvasRef.current = document.createElement('canvas');
+      }
+
+      if (debugMode && !debugCanvasRef.current) {
+        debugCanvasRef.current = document.createElement('canvas');
       }
 
       const processingCanvas = processingCanvasRef.current;
@@ -139,17 +147,22 @@ export const useBackgroundRemoval = () => {
         return null;
       }
 
-      console.log('Segmentation result:', {
+      const maskData = result[0].mask.data;
+      const maskMin = Math.min(...maskData);
+      const maskMax = Math.max(...maskData);
+      
+      const debugData = {
         resultLength: result.length,
         maskWidth: result[0].mask.width,
         maskHeight: result[0].mask.height,
-        maskDataLength: result[0].mask.data.length,
-        maskSample: result[0].mask.data.slice(0, 10), // First 10 values
-        maskMinMax: {
-          min: Math.min(...result[0].mask.data),
-          max: Math.max(...result[0].mask.data)
-        }
-      });
+        maskDataLength: maskData.length,
+        maskSample: maskData.slice(0, 10),
+        maskMinMax: { min: maskMin, max: maskMax },
+        isInverted: maskInvertedRef.current
+      };
+      
+      setDebugInfo(debugData);
+      console.log('Segmentation result:', debugData);
 
       // Scale video frame to output canvas
       const tempCanvas = document.createElement('canvas');
@@ -170,51 +183,92 @@ export const useBackgroundRemoval = () => {
       const maskWidth = result[0].mask.width || width;
       const maskHeight = result[0].mask.height || height;
       
-      // Process in chunks for better performance
-      const CHUNK_SIZE = 1000;
-      for (let startIdx = 0; startIdx < outputData.length; startIdx += CHUNK_SIZE * 4) {
-        const endIdx = Math.min(startIdx + CHUNK_SIZE * 4, outputData.length);
+      // Auto-detect if mask should be inverted by analyzing some pixels
+      if (!maskInvertedRef.current) {
+        const sampleSize = Math.min(1000, maskData.length);
+        let personPixels = 0;
+        let backgroundPixels = 0;
         
-        for (let i = startIdx; i < endIdx; i += 4) {
-          const pixelIndex = i / 4;
-          const x = pixelIndex % outputCanvas.width;
-          const y = Math.floor(pixelIndex / outputCanvas.width);
-          
-          // Calculate corresponding mask position
-          const maskX = Math.floor((x / outputCanvas.width) * maskWidth);
-          const maskY = Math.floor((y / outputCanvas.height) * maskHeight);
-          const maskIndex = maskY * maskWidth + maskX;
-          
-          // Get mask value - try both normal and inverted to see which works
-          const originalMaskValue = result[0].mask.data[maskIndex] || 0;
-          const invertedMaskValue = 1 - originalMaskValue;
-          
-          // Try different approaches - let's test with original mask first
-          const maskValue = originalMaskValue; // Will test both approaches
-          
-          if (maskValue > 0.05) { // Much lower threshold for testing
-            // Keep the person - use video frame data with enhanced brightness and contrast
-            const brightness = 2.0; // Even brighter to make sure person is visible
-            const contrast = 1.3;
-            
-            outputData[i] = Math.min(255, Math.max(0, (videoData[i] - 128) * contrast + 128) * brightness);
-            outputData[i + 1] = Math.min(255, Math.max(0, (videoData[i + 1] - 128) * contrast + 128) * brightness);
-            outputData[i + 2] = Math.min(255, Math.max(0, (videoData[i + 2] - 128) * contrast + 128) * brightness);
-            outputData[i + 3] = 255; // Full opacity
-          }
-          
-          // Debug: Log some sample values every 10000 pixels
-          if (pixelIndex % 10000 === 0) {
-            console.log(`Pixel ${pixelIndex}: original=${originalMaskValue.toFixed(3)}, inverted=${invertedMaskValue.toFixed(3)}, using=${maskValue.toFixed(3)}`);
-          }
-          // Background pixels remain as they were drawn
+        for (let i = 0; i < sampleSize; i++) {
+          const maskValue = maskData[i];
+          if (maskValue > 0.5) personPixels++;
+          else backgroundPixels++;
         }
+        
+        // If more than 70% of pixels are "person", probably need to invert
+        if (personPixels > backgroundPixels * 2.5) {
+          maskInvertedRef.current = true;
+          console.log('Auto-detected: mask should be inverted');
+        }
+      }
+      
+      // Create debug canvas if needed
+      let debugCanvas = null;
+      if (debugMode && debugCanvasRef.current) {
+        debugCanvas = debugCanvasRef.current;
+        debugCanvas.width = outputCanvas.width;
+        debugCanvas.height = outputCanvas.height;
+        const debugCtx = debugCanvas.getContext('2d');
+        if (debugCtx) {
+          const debugImageData = debugCtx.createImageData(debugCanvas.width, debugCanvas.height);
+          const debugData = debugImageData.data;
+          
+          // Create mask visualization
+          for (let i = 0; i < debugData.length; i += 4) {
+            const pixelIndex = i / 4;
+            const x = pixelIndex % debugCanvas.width;
+            const y = Math.floor(pixelIndex / debugCanvas.width);
+            
+            const maskX = Math.floor((x / debugCanvas.width) * maskWidth);
+            const maskY = Math.floor((y / debugCanvas.height) * maskHeight);
+            const maskIndex = maskY * maskWidth + maskX;
+            
+            let maskValue = maskData[maskIndex] || 0;
+            if (maskInvertedRef.current) maskValue = 1 - maskValue;
+            
+            const intensity = Math.round(maskValue * 255);
+            debugData[i] = intensity;     // R
+            debugData[i + 1] = intensity; // G
+            debugData[i + 2] = intensity; // B
+            debugData[i + 3] = 255;       // A
+          }
+          
+          debugCtx.putImageData(debugImageData, 0, 0);
+        }
+      }
+      
+      // Apply mask with improved processing
+      for (let i = 0; i < outputData.length; i += 4) {
+        const pixelIndex = i / 4;
+        const x = pixelIndex % outputCanvas.width;
+        const y = Math.floor(pixelIndex / outputCanvas.width);
+        
+        // Calculate corresponding mask position
+        const maskX = Math.floor((x / outputCanvas.width) * maskWidth);
+        const maskY = Math.floor((y / outputCanvas.height) * maskHeight);
+        const maskIndex = maskY * maskWidth + maskX;
+        
+        let maskValue = maskData[maskIndex] || 0;
+        if (maskInvertedRef.current) maskValue = 1 - maskValue;
+        
+        // Apply threshold with better person detection
+        if (maskValue > 0.3) { // Higher confidence threshold
+          // Keep the person - use video frame data with enhanced visibility
+          const brightness = 1.8;
+          const contrast = 1.2;
+          
+          outputData[i] = Math.min(255, Math.max(0, (videoData[i] - 128) * contrast + 128) * brightness);
+          outputData[i + 1] = Math.min(255, Math.max(0, (videoData[i + 1] - 128) * contrast + 128) * brightness);
+          outputData[i + 2] = Math.min(255, Math.max(0, (videoData[i + 2] - 128) * contrast + 128) * brightness);
+          outputData[i + 3] = 255; // Full opacity
+        }
+        // Background pixels remain as they were drawn
       }
       
       // Apply the processed image data
       outputCtx.putImageData(outputImageData, 0, 0);
 
-      return outputCanvas;
+      return { canvas: outputCanvas, debugCanvas };
     } catch (error) {
       console.error('Error processing video frame:', error);
       return null;
@@ -233,6 +287,7 @@ export const useBackgroundRemoval = () => {
     processVideoFrame,
     isModelLoading,
     isModelReady,
-    isProcessing
+    isProcessing,
+    debugInfo
   };
 };
