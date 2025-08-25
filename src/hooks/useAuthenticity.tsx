@@ -111,18 +111,18 @@ export const useAuthenticity = () => {
     const status = getAuthenticityStatus();
     
     if (authenticityData.isVerifying) {
-      return 'Authentique ⏳ מאמת מיקום...';
+      return 'מאמת מיקום...';
     }
     
     switch (status) {
       case 'authentic':
-        return `Authentique ✓ 📍 ${authenticityData.city}, ${authenticityData.country} - ${authenticityData.localTime} - ✅ אותנטי + מצלמה ישירה`;
+        return `אותנטי ✓ | 📍 ${authenticityData.city}, ${authenticityData.country} - ${authenticityData.localTime}`;
       case 'partial':
-        return `Authentique ⚠️ 📍 מיקום זמין - ${authenticityData.localTime} - ⚠️ חלקי`;
+        return `חלקי | 📍 מיקום זמין - ${authenticityData.localTime}`;
       case 'unavailable':
-        return `Authentique ❌ ❌ חסר מיקום - ${authenticityData.localTime}`;
+        return `חסר מיקום | ${authenticityData.localTime}`;
       default:
-        return `Authentique ❓ 📍 ${authenticityData.localTime}`;
+        return `📍 ${authenticityData.localTime}`;
     }
   };
 
