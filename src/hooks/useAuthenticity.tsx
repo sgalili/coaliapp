@@ -108,22 +108,18 @@ export const useAuthenticity = () => {
   };
 
   const getStatusText = (): string => {
-    const status = getAuthenticityStatus();
+    // Toujours authentique car pas d'upload de vidéo
+    const authenticPrefix = "✓ אותנטי";
     
     if (authenticityData.isVerifying) {
-      return '⏳ אותנטי - מאמת מיקום';
+      return `${authenticPrefix} | ⏳ מאמת מיקום`;
     }
     
-    switch (status) {
-      case 'authentic':
-        return `✓ אותנטי | 📍 ${authenticityData.city}, ${authenticityData.country} - ${authenticityData.localTime}`;
-      case 'partial':
-        return `⚠️ אותנטי - חלקי | 📍 מיקום זמין - ${authenticityData.localTime}`;
-      case 'unavailable':
-        return `❌ אותנטי - חסר מיקום | ${authenticityData.localTime}`;
-      default:
-        return `📍 אותנטי | ${authenticityData.localTime}`;
+    if (authenticityData.isLocationAvailable && authenticityData.city && authenticityData.country) {
+      return `${authenticPrefix} | 📍 ${authenticityData.city}, ${authenticityData.country} ${authenticityData.localTime}`;
     }
+    
+    return `${authenticPrefix} | 📍 לא ממוקם`;
   };
 
   return {
