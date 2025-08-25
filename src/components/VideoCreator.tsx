@@ -22,6 +22,12 @@ interface Filter {
   icon: React.ReactNode;
   backgroundImage?: string;
   backgroundCSS?: string;
+  overlayElements?: Array<{
+    type: 'svg' | 'png';
+    src: string;
+    position: { top?: string; bottom?: string; left?: string; right?: string };
+    size: { width: string; height: string };
+  }>;
 }
 
 const filters: Filter[] = [
@@ -34,23 +40,21 @@ const filters: Filter[] = [
     id: "politics",
     name: "Politics",
     icon: <Flag className="w-4 h-4" />,
-    backgroundCSS: `
-      linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%),
-      linear-gradient(to right, transparent 60%, #ffffff 65%, #ffffff 85%, transparent 90%),
-      linear-gradient(to right, transparent 60%, #0038b7 65%, #0038b7 70%, #ffffff 70%, #ffffff 80%, #0038b7 80%, #0038b7 85%, transparent 90%),
-      radial-gradient(ellipse at 75% 50%, rgba(0,56,183,0.4) 0%, transparent 70%)
-    `,
+    backgroundImage: "/images/politics-background.jpg",
   },
   {
     id: "podcast",
     name: "Podcast",
     icon: <Mic className="w-4 h-4" />,
-    backgroundCSS: `
-      linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%),
-      radial-gradient(circle at 70% 30%, rgba(255,215,0,0.15) 0%, transparent 60%),
-      radial-gradient(circle at 30% 70%, rgba(139,69,19,0.3) 0%, transparent 50%),
-      linear-gradient(45deg, transparent 45%, rgba(60,60,60,0.8) 48%, rgba(80,80,80,0.9) 52%, transparent 55%)
-    `,
+    backgroundImage: "/images/podcast-background.jpg",
+    overlayElements: [
+      {
+        type: 'svg',
+        src: '/images/microphone-overlay.svg',
+        position: { bottom: '10%', right: '15%' },
+        size: { width: '120px', height: '180px' }
+      }
+    ]
   },
   {
     id: "tech",
@@ -263,10 +267,18 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     if (!filter || filter.id === "none") return {};
 
     if (filter.backgroundImage) {
-      return { background: filter.backgroundImage };
+      return {
+        backgroundImage: `url(${filter.backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      };
     }
     if (filter.backgroundCSS) {
-      return { background: filter.backgroundCSS };
+      return { 
+        background: filter.backgroundCSS,
+        backgroundBlendMode: "overlay" as const,
+      };
     }
     return {};
   };
@@ -387,26 +399,39 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
       {/* Main Video Area */}
       <div className="flex-1 relative overflow-hidden">
-        {/* Background Filter */}
-        <div 
-          className="absolute inset-0"
-          style={getFilterStyle()}
-        />
-        
         {/* Video Preview */}
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
-          className={cn(
-            "w-full h-full object-cover",
-            selectedFilter === "politics" && "mix-blend-overlay",
-            selectedFilter === "podcast" && "mix-blend-soft-light",
-            selectedFilter === "tech" && "mix-blend-multiply",
-            selectedFilter === "neutral" && "mix-blend-overlay"
-          )}
+          className="w-full h-full object-cover"
         />
+
+        {/* Background Filter */}
+        {selectedFilter !== "none" && (
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={getFilterStyle()}
+          />
+        )}
+        
+        {/* Overlay elements */}
+        {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
+          <div
+            key={index}
+            className="absolute pointer-events-none"
+            style={{
+              ...overlay.position,
+              width: overlay.size.width,
+              height: overlay.size.height,
+              backgroundImage: `url(${overlay.src})`,
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
+        ))}
 
         {/* Recording Overlay */}
         {recordedBlob && (

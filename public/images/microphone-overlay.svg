@@ -1,0 +1,37 @@
+<svg width="120" height="180" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="micGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c0c0c0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#808080;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#404040;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <dropShadow dx="2" dy="4" stdDeviation="3" flood-color="black" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Microphone body -->
+  <rect x="45" y="40" width="30" height="60" rx="15" fill="url(#micGradient)" filter="url(#shadow)"/>
+  
+  <!-- Microphone mesh/grille -->
+  <rect x="47" y="45" width="26" height="50" rx="13" fill="none" stroke="#2a2a2a" stroke-width="1"/>
+  <line x1="50" y1="50" x2="70" y2="50" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="55" x2="70" y2="55" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="60" x2="70" y2="60" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="65" x2="70" y2="65" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="70" x2="70" y2="70" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="75" x2="70" y2="75" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="80" x2="70" y2="80" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="85" x2="70" y2="85" stroke="#2a2a2a" stroke-width="0.5"/>
+  <line x1="50" y1="90" x2="70" y2="90" stroke="#2a2a2a" stroke-width="0.5"/>
+  
+  <!-- Microphone base curve -->
+  <path d="M35 85 Q35 110 60 110 Q85 110 85 85" fill="none" stroke="#606060" stroke-width="3" filter="url(#shadow)"/>
+  
+  <!-- Stand -->
+  <line x1="60" y1="110" x2="60" y2="140" stroke="#606060" stroke-width="4" filter="url(#shadow)"/>
+  <line x1="40" y1="140" x2="80" y2="140" stroke="#606060" stroke-width="6" stroke-linecap="round" filter="url(#shadow)"/>
+  
+  <!-- Brand indicator light -->
+  <circle cx="60" cy="75" r="2" fill="#ff4444" opacity="0.8"/>
+</svg>
