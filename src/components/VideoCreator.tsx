@@ -497,6 +497,24 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           />
         )}
         
+        {/* AI Model Loading Overlay */}
+        {isGreenScreenEnabled && !isModelReady && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+              <p className="text-sm">Loading AI Model...</p>
+              <p className="text-xs opacity-75 mt-1">This may take a moment</p>
+            </div>
+          </div>
+        )}
+        
+        {/* AI Processing Indicator */}
+        {isGreenScreenEnabled && isProcessing && (
+          <div className="absolute top-2 right-2 bg-green-500/80 text-white px-2 py-1 rounded text-xs z-10">
+            AI Processing...
+          </div>
+        )}
+        
         {/* Overlay elements */}
         {selectedFilter !== "none" && filters.find(f => f.id === selectedFilter)?.overlayElements?.map((overlay, index) => (
           <div

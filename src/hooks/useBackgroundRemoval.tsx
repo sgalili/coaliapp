@@ -5,7 +5,8 @@ import { pipeline, env } from '@huggingface/transformers';
 env.allowLocalModels = false;
 env.useBrowserCache = false;
 
-const MAX_IMAGE_DIMENSION = 512;
+const MAX_IMAGE_DIMENSION = 256;
+const PROCESSING_FPS = 8; // Process only 8 frames per second
 
 export const useBackgroundRemoval = () => {
   const [isModelLoading, setIsModelLoading] = useState(false);
@@ -14,6 +15,8 @@ export const useBackgroundRemoval = () => {
   const segmenterRef = useRef<any>(null);
   const processingCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const outputCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastProcessTimeRef = useRef<number>(0);
+  const frameIntervalRef = useRef<number>(1000 / PROCESSING_FPS);
 
   const initializeModel = useCallback(async () => {
     if (segmenterRef.current || isModelLoading) return;
@@ -52,6 +55,13 @@ export const useBackgroundRemoval = () => {
     backgroundCSS?: string
   ): Promise<HTMLCanvasElement | null> => {
     if (!segmenterRef.current || !isModelReady || isProcessing) return null;
+
+    // Throttle processing to avoid browser crashes
+    const now = Date.now();
+    if (now - lastProcessTimeRef.current < frameIntervalRef.current) {
+      return outputCanvasRef.current;
+    }
+    lastProcessTimeRef.current = now;
 
     setIsProcessing(true);
     
@@ -139,13 +149,23 @@ export const useBackgroundRemoval = () => {
       const videoImageData = tempCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
       const videoData = videoImageData.data;
 
+      // Get output image data for efficient processing
+      const outputImageData = outputCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
+      const outputData = outputImageData.data;
+
       // Scale mask to match output dimensions
       const maskWidth = result[0].mask.width || width;
       const maskHeight = result[0].mask.height || height;
       
-      for (let y = 0; y < outputCanvas.height; y++) {
-        for (let x = 0; x < outputCanvas.width; x++) {
-          const outputIndex = (y * outputCanvas.width + x) * 4;
+      // Process in chunks for better performance
+      const CHUNK_SIZE = 1000;
+      for (let startIdx = 0; startIdx < outputData.length; startIdx += CHUNK_SIZE * 4) {
+        const endIdx = Math.min(startIdx + CHUNK_SIZE * 4, outputData.length);
+        
+        for (let i = startIdx; i < endIdx; i += 4) {
+          const pixelIndex = i / 4;
+          const x = pixelIndex % outputCanvas.width;
+          const y = Math.floor(pixelIndex / outputCanvas.width);
           
           // Calculate corresponding mask position
           const maskX = Math.floor((x / outputCanvas.width) * maskWidth);
@@ -153,28 +173,36 @@ export const useBackgroundRemoval = () => {
           const maskIndex = maskY * maskWidth + maskX;
           
           // Get mask value (inverted - we want to keep the person, not the background)
-          const maskValue = 1 - (result[0].mask.data[maskIndex] || 0);
+          const rawMaskValue = 1 - (result[0].mask.data[maskIndex] || 0);
           
-          if (maskValue > 0.5) {
-            // Keep the person - draw video frame
-            outputCtx.putImageData(new ImageData(
-              new Uint8ClampedArray([
-                videoData[outputIndex],
-                videoData[outputIndex + 1], 
-                videoData[outputIndex + 2],
-                255
-              ]), 1, 1
-            ), x, y);
+          // Apply edge smoothing for more natural transitions
+          const smoothedMask = Math.min(1, Math.max(0, rawMaskValue * 1.2 - 0.1));
+          
+          if (smoothedMask > 0.1) {
+            // Keep the person - use video frame data with brightness preservation
+            const brightness = 1.1; // Slightly brighten to compensate for processing
+            outputData[i] = Math.min(255, videoData[i] * brightness);     // R
+            outputData[i + 1] = Math.min(255, videoData[i + 1] * brightness); // G
+            outputData[i + 2] = Math.min(255, videoData[i + 2] * brightness); // B
+            outputData[i + 3] = 255 * smoothedMask; // Alpha with smooth transition
           }
-          // Background is already drawn, so we don't need to do anything for mask value <= 0.5
+          // Background pixels remain as they were drawn
         }
       }
+      
+      // Apply the processed image data
+      outputCtx.putImageData(outputImageData, 0, 0);
 
       return outputCanvas;
     } catch (error) {
       console.error('Error processing video frame:', error);
       return null;
     } finally {
+      // Clean up temporary canvases to prevent memory leaks
+      if (processingCanvasRef.current) {
+        const ctx = processingCanvasRef.current.getContext('2d');
+        ctx?.clearRect(0, 0, processingCanvasRef.current.width, processingCanvasRef.current.height);
+      }
       setIsProcessing(false);
     }
   }, [isModelReady, isProcessing]);
