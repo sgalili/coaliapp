@@ -6,6 +6,8 @@ import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
 import { ExpertVideoCreator } from "@/components/ExpertVideoCreator";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useNews } from "@/hooks/useNews";
+import { useWalletData } from "@/hooks/useWalletData";
 
 // Import profile images for mock data
 import sarahProfile from "@/assets/sarah-profile.jpg";
@@ -245,7 +247,6 @@ const mockNews = [
 
 const NewsPage = () => {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [zoozBalance] = useState(1250);
   const [expertsVisible, setExpertsVisible] = useState(true);
   const [fullscreenVideo, setFullscreenVideo] = useState<{
     comments: any[];
@@ -257,37 +258,22 @@ const NewsPage = () => {
   } | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { articles, loading, fetchNews, createNewsComment, interactWithNewsComment, incrementNewsView } = useNews();
+  const { zoozBalance } = useWalletData();
 
   const getFilteredNews = () => {
-    if (activeFilter === "all") return mockNews;
-    
-    const filterMap: { [key: string]: string } = {
-      politics: "פוליטיקה",
-      technology: "טכנולוגיה", 
-      economy: "כלכלה",
-      sports: "ספורט",
-      culture: "תרבות"
-    };
-
-    if (activeFilter === "trending") {
-      return [...mockNews].sort((a, b) => {
-        const aTrustSum = a.comments.reduce((sum, comment) => sum + comment.trustLevel, 0);
-        const bTrustSum = b.comments.reduce((sum, comment) => sum + comment.trustLevel, 0);
-        return bTrustSum - aTrustSum;
-      });
-    }
-
-    return mockNews.filter(news => news.category === filterMap[activeFilter]);
+    return articles; // News filtering is now handled by the useNews hook
   };
 
-  const handleNewsClick = (newsId: string) => {
+  const handleNewsClick = async (newsId: string) => {
+    await incrementNewsView(newsId);
     navigate(`/news/${newsId}`);
   };
 
   const handleProfileClick = (newsId: string, comment: any) => {
     // Find the news item and get all its comments for fullscreen navigation
-    const newsItem = mockNews.find(news => news.id === newsId);
-    if (newsItem && newsItem.comments.length > 0) {
+    const newsItem = articles.find(news => news.id === newsId);
+    if (newsItem && newsItem.comments && newsItem.comments.length > 0) {
       const commentIndex = newsItem.comments.findIndex(c => c.id === comment.id);
       setFullscreenVideo({
         comments: newsItem.comments,
@@ -296,37 +282,39 @@ const NewsPage = () => {
     }
   };
 
-  const handleVideoInteraction = (commentId: string, action: string) => {
-    const actionTexts: { [key: string]: { title: string; description: string } } = {
-      Trust: { title: "אמון נוסף!", description: "הוספת אמון לתגובה זו." },
-      Watch: { title: "נצפה!", description: "התגובה נוספה לרשימת הצפייה שלך." },
-      Comment: { title: "תגובה!", description: "פתח חלון תגובה חדשה." },
-      Share: { title: "שותף!", description: "התגובה שותפה בהצלחה." }
-    };
-    
-    const actionText = actionTexts[action] || { title: action, description: `פעולה ${action} בוצעה.` };
-    
-    toast({
-      title: actionText.title,
-      description: actionText.description,
-    });
+  const handleVideoInteraction = async (commentId: string, action: string) => {
+    try {
+      const interactionType = action.toLowerCase() as 'trust' | 'watch' | 'like' | 'share';
+      await interactWithNewsComment(commentId, interactionType);
+      
+      const actionTexts: { [key: string]: { title: string; description: string } } = {
+        trust: { title: "אמון נוסף!", description: "הוספת אמון לתגובה זו." },
+        watch: { title: "נצפה!", description: "התגובה נוספה לרשימת הצפייה שלך." },
+        like: { title: "לייק!", description: "התגובה קיבלה לייק." },
+        share: { title: "שותף!", description: "התגובה שותפה בהצלחה." }
+      };
+      
+      const actionText = actionTexts[interactionType] || { title: action, description: `פעולה ${action} בוצעה.` };
+      
+      toast({
+        title: actionText.title,
+        description: actionText.description,
+      });
+
+      // Refresh news to show updated counts
+      await fetchNews(activeFilter);
+    } catch (error: any) {
+      toast({
+        title: "שגיאה",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleExpertReply = (newsId: string) => {
-    // Simulate TRUST validation based on news ID
-    const hasEnoughTrust = newsId === "news-1" || newsId === "news-3";
-    
-    if (!hasEnoughTrust) {
-      toast({
-        title: "אין מספיק אמון",
-        description: "דרוש רמת אמון גבוהה יותר כדי להגיב על חדשה זו.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     // Find the news item to get the title
-    const newsItem = mockNews.find(news => news.id === newsId);
+    const newsItem = articles.find(news => news.id === newsId);
     if (newsItem) {
       setExpertVideoCreator({
         newsId,
@@ -335,13 +323,31 @@ const NewsPage = () => {
     }
   };
 
-  const handleExpertVideoPublish = (videoData: any) => {
-    console.log("Publishing expert video:", videoData);
-    
-    toast({
-      title: "תגובה פורסמה!",
-      description: "תגובת המומחה שלך פורסמה בהצלחה.",
-    });
+  const handleExpertVideoPublish = async (videoData: any) => {
+    try {
+      if (expertVideoCreator) {
+        await createNewsComment(
+          expertVideoCreator.newsId,
+          videoData.content || "תגובת וידאו מומחה",
+          videoData.videoUrl,
+          videoData.duration
+        );
+        
+        toast({
+          title: "תגובה פורסמה!",
+          description: "תגובת המומחה שלך פורסמה בהצלחה.",
+        });
+
+        // Refresh news to show new comment
+        await fetchNews(activeFilter);
+      }
+    } catch (error: any) {
+      toast({
+        title: "שגיאה בפרסום",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
     
     setExpertVideoCreator(null);
   };
@@ -350,7 +356,10 @@ const NewsPage = () => {
     <div className="h-screen bg-slate-100 flex flex-col">
       <NewsFilters 
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={(filter) => {
+          setActiveFilter(filter);
+          fetchNews(filter);
+        }}
       />
 
       <div className="flex-1 overflow-y-auto pb-20">

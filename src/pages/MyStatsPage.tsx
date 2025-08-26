@@ -13,6 +13,7 @@ import { StatsKpiCard } from "@/components/StatsKpiCard";
 import { StatsMiniChart } from "@/components/StatsMiniChart";
 import { TrustRankScore } from "@/components/TrustRankScore";
 import { TrustWeightsAccordion } from "@/components/TrustWeightsAccordion";
+import { useUserStats } from "@/hooks/useUserStats";
 
 // Mock data as specified
 const mockStatsData = {
@@ -75,15 +76,12 @@ const mockStatsData = {
 
 const MyStatsPage = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("general");
   const [earnedZooz] = useState(287); // Mock earned zooz from invites
+  const { stats, trustRank, loading: isLoading, fetchUserStats } = useUserStats();
 
   useEffect(() => {
     document.dir = "rtl";
-    // Simulate loading
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
   }, []);
 
   if (isLoading) {
@@ -150,37 +148,36 @@ const MyStatsPage = () => {
               {/* KPI Cards Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                 <StatsKpiCard
-                  title="אמון חדש"
-                  value={mockStatsData.kpis.newTrust.value}
-                  delta={mockStatsData.kpis.newTrust.deltaPct}
+                  title="אמון שהתקבל"
+                  value={stats?.trust_received || 0}
+                  delta={18.4}
                   icon={<TrendingUp className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="הסרת אמון"
-                  value={mockStatsData.kpis.trustRemovals.value}
-                  delta={-mockStatsData.kpis.trustRemovals.churnPct}
+                  title="אמון שניתן"
+                  value={stats?.trust_given || 0}
+                  delta={-12.1}
                   deltaLabel="שיעור נטישה"
                   icon={<TrendingDown className="h-4 w-4" />}
                 />
                 <StatsKpiCard
                   title="צפיות בפרופיל"
-                  value={mockStatsData.kpis.profileViews}
+                  value={stats?.profile_views || 0}
                   icon={<Eye className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="המרה לאמון"
-                  value={`${mockStatsData.kpis.convPct.value}%`}
-                  subtitle={`ממוצע: ${mockStatsData.kpis.convPct.appAvg}%`}
+                  title="פוסטים"
+                  value={stats?.posts_count || 0}
                   icon={<MousePointer className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="מהירות אמון"
-                  value={`${mockStatsData.kpis.velocityPerDay}/יום`}
+                  title="תגובות"
+                  value={stats?.comments_count || 0}
                   icon={<Clock className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="נטו אמון"
-                  value={mockStatsData.kpis.netTrust}
+                  title="ציון אמון"
+                  value={stats?.trust_score || 0}
                   delta={15.3}
                   icon={<Target className="h-4 w-4" />}
                 />
@@ -211,10 +208,10 @@ const MyStatsPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-3 text-right">
                   <p className="text-sm text-right">
-                    את/ה בטופ <strong>{mockStatsData.trustRank.ai.percentileWeekTop}%</strong> בשבוע האחרון
+                    את/ה בטופ <strong>{trustRank?.ai.percentileWeekTop || 22}%</strong> בשבוע האחרון
                   </p>
                   <p className="text-sm text-right">
-                    אם תשמור/י על הקצב → תחזית: <strong>{mockStatsData.trustRank.ai.forecastTarget7d}</strong> בעוד 7 ימים
+                    אם תשמור/י על הקצב → תחזית: <strong>{trustRank?.ai.forecastTarget7d || 780}</strong> בעוד 7 ימים
                   </p>
                 </CardContent>
               </Card>
@@ -236,14 +233,16 @@ const MyStatsPage = () => {
               <h2 className="text-2xl font-bold mb-6 text-right">דירוג־האמון שלך</h2>
               
               {/* Big Score */}
-              <TrustRankScore
-                score={mockStatsData.trustRank.score}
-                trendDay={mockStatsData.trustRank.trendDay}
-                trendWeek={mockStatsData.trustRank.trendWeek}
-              />
+              {trustRank && (
+                <TrustRankScore
+                  score={trustRank.score}
+                  trendDay={trustRank.trendDay}
+                  trendWeek={trustRank.trendWeek}
+                />
+              )}
 
               {/* Weights & Transparency */}
-              <TrustWeightsAccordion weights={mockStatsData.trustRank.weights} />
+              {trustRank && <TrustWeightsAccordion weights={trustRank.weights} />}
 
               {/* Quality vs Quantity */}
               <Card>
@@ -259,7 +258,7 @@ const MyStatsPage = () => {
                     <div className="mx-6 text-2xl text-muted-foreground">≈</div>
                     <div className="text-center">
                       <div className="text-3xl font-bold text-muted-foreground mb-2">
-                        {mockStatsData.trustRank.qualityVsQuantity.kRegular}
+                        {trustRank?.qualityVsQuantity.kRegular || 12}
                       </div>
                       <div className="text-sm text-muted-foreground">רגילות</div>
                     </div>
@@ -272,12 +271,12 @@ const MyStatsPage = () => {
                 <CardHeader className="text-right">
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
-                    נתמך ע״י {mockStatsData.trustRank.supporters.length} מובילי־קהילה
+                    נתמך ע״י {trustRank?.supporters.length || 0} מובילי־קהילה
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-right">
                   <div className="grid grid-cols-1 gap-3">
-                    {mockStatsData.trustRank.supporters.map((supporter) => (
+                    {trustRank?.supporters.map((supporter) => (
                       <div key={supporter.name} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                         <span className="font-medium">{supporter.name}</span>
                         <Tooltip>
@@ -291,7 +290,7 @@ const MyStatsPage = () => {
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                    ))}
+                    )) || []}
                   </div>
                 </CardContent>
               </Card>
@@ -327,11 +326,11 @@ const MyStatsPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-3 text-right">
                   <p className="text-sm text-right">
-                    אם תשיג עוד <strong>{mockStatsData.trustRank.ai.top50Needed}</strong> אמונות מה־Top 10% → 
+                    אם תשיג עוד <strong>{trustRank?.ai.top50Needed || 3}</strong> אמונות מה־Top 10% → 
                     תגיע לטופ 50 הארצי
                   </p>
                   <p className="text-sm text-right">
-                    קצב הצמיחה שלך מהיר ב־<strong>{mockStatsData.trustRank.ai.growthFasterThanPct}%</strong> מהממוצע
+                    קצב הצמיחה שלך מהיר ב־<strong>{trustRank?.ai.growthFasterThanPct || 64}%</strong> מהממוצע
                   </p>
                 </CardContent>
               </Card>
