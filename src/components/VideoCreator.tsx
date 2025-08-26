@@ -10,7 +10,12 @@ import { useAuthenticity } from "@/hooks/useAuthenticity";
 
 interface VideoCreatorProps {
   onClose: () => void;
-  onPublish: (videoData: any) => void;
+  onPublish: (postData: {
+    content: string;
+    videoBlob?: Blob;
+    category?: string;
+    isLive?: boolean;
+  }) => Promise<boolean>;
 }
 
 type RecordingMode = "record" | "live";
@@ -200,7 +205,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     });
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     // Check if user has domains in profile
     if (userDomains.length === 0) {
       toast({
@@ -222,23 +227,28 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     }
 
     if (mode === "record" && recordedBlob && comment.trim()) {
-      onPublish({
+      const postData = {
+        content: comment.trim(),
         videoBlob: recordedBlob,
-        comment: comment.trim(),
-        filter: selectedFilter,
         category: selectedCategory,
-        mode: "record",
-        duration: 60 - recordingTime,
-        timestamp: new Date().toISOString()
-      });
+        isLive: false
+      };
+      
+      const success = await onPublish(postData);
+      if (success) {
+        onClose();
+      }
     } else if (mode === "live" && comment.trim()) {
-      onPublish({
-        comment: comment.trim(),
-        filter: selectedFilter,
+      const postData = {
+        content: comment.trim(),
         category: selectedCategory,
-        mode: "live",
-        timestamp: new Date().toISOString()
-      });
+        isLive: true
+      };
+      
+      const success = await onPublish(postData);
+      if (success) {
+        onClose();
+      }
     }
   };
 

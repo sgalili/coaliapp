@@ -271,20 +271,47 @@ const Index = () => {
     setIsMuted(!isMuted);
   };
 
+  const convertPostsToVideoFeed = (postsData: PostData[]) => {
+    return postsData.map(post => ({
+      id: post.id,
+      username: `${post.profiles?.first_name} ${post.profiles?.last_name}` || 'Utilisateur',
+      handle: `user_${post.user_id.slice(0, 8)}`,
+      profileImage: post.profiles?.avatar_url || undefined,
+      videoUrl: post.video_url || '',
+      caption: post.content || '',
+      trustCount: post.trust_count,
+      watchCount: post.watch_count, 
+      commentCount: post.comment_count,
+      shareCount: post.share_count,
+      zoozCount: post.zooz_earned,
+      isVerified: true, // TODO: Add verification logic
+      kycLevel: 2 as const, // TODO: Get from user KYC
+      expertise: post.category || 'Expert',
+      category: post.category as any || 'expert',
+      isLive: post.is_live,
+      authenticityData: {
+        city: "Non disponible",
+        country: "Non disponible", 
+        localTime: new Date(post.created_at).toLocaleString('fr-FR'),
+        isAuthentic: false // TODO: Add authenticity verification
+      }
+    }));
+  };
+
   const getFilteredPosts = () => {
+    const convertedPosts = convertPostsToVideoFeed(posts);
+    
     switch (feedFilter.type) {
       case 'trusted':
-        // Sort by trust count descending to show top trusted users
-        return [...mockPosts].sort((a, b) => b.trustCount - a.trustCount);
+        return convertedPosts.sort((a, b) => b.trustCount - a.trustCount);
       case 'category':
         if (feedFilter.category) {
-          return mockPosts.filter(post => post.category === feedFilter.category);
+          return convertedPosts.filter(post => post.category === feedFilter.category);
         }
-        return mockPosts;
+        return convertedPosts;
       case 'all':
       default:
-        // Show all posts, newest first (assuming ID order represents recency)
-        return mockPosts;
+        return convertedPosts;
     }
   };
 
