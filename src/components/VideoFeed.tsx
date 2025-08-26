@@ -154,7 +154,10 @@ const ZoozIcon = ({
   }
   
   return <div className="relative flex items-center justify-center">
-      <div className={cn("font-black text-lg leading-none", className.includes('text-') ? className.split(' ').filter(c => c.startsWith('text-')).join(' ') : "text-zooz")}>Z</div>
+      <div className={cn(
+        "font-black text-xl leading-none drop-shadow-sm transition-all duration-200 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_hsl(var(--zooz-glow)/0.6)]", 
+        className.includes('text-') ? className.split(' ').filter(c => c.startsWith('text-')).join(' ') : "text-zooz group-hover:text-zooz-glow"
+      )}>Z</div>
     </div>;
 };
 const LiveBadge = () => {
