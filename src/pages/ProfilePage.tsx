@@ -14,6 +14,10 @@ import { KYCManagement } from "@/components/KYCManagement";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { VideoGrid } from "@/components/VideoGrid";
 import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserStats } from "@/hooks/useUserStats";
+import { useWalletData } from "@/hooks/useWalletData";
+import { usePosts } from "@/hooks/usePosts";
 import { cn } from "@/lib/utils";
 import sarahProfile from "@/assets/sarah-profile.jpg";
 import amitProfile from "@/assets/amit-profile.jpg";
@@ -21,102 +25,61 @@ import mayaProfile from "@/assets/maya-profile.jpg";
 import davidProfile from "@/assets/david-profile.jpg";
 import rachelProfile from "@/assets/rachel-profile.jpg";
 
-// Mock current user data - in real app this would come from auth
-const mockCurrentUser = {
-  id: "current",
-  username: "שרה כהן", 
-  handle: "sarahp",
-  profileImage: sarahProfile,
-  bio: "מומחית למדיניות ציבורית ודמוקרטיה דיגיטלית. פועלת למען שקיפות ואמון ברשתות חברתיות.",
-  location: "תל אביב, ישראל",
+// Default user data structure
+const getDefaultUser = (profile: any) => ({
+  id: profile?.user_id || "current",
+  username: `${profile?.first_name || ""} ${profile?.last_name || ""}`.trim() || "משתמש חדש", 
+  handle: "user",
+  profileImage: profile?.avatar_url || sarahProfile,
+  bio: "הוסף תיאור אישי...",
+  location: "הוסף מיקום...",
   joinDate: "מאי 2023",
-  website: "https://sarahpolitics.com",
-  twitter: "https://twitter.com/sarahpolitics",
-  facebook: "https://www.facebook.com/sarah.politics.israel",
-  youtube: "https://www.youtube.com/@sarahpolitics",
-  scholar: "https://scholar.google.com/citations?user=sarahp",
-  kycLevel: 2,
-  isVerified: true,
-  trustersCount: 847,
-  watchersCount: 423,
-  postsCount: 89,
-  zoozEarned: 12750,
-  professionalExperience: "מנהלת מחקר במכון למדיניות ציבורית (2020-2024) • יועצת לוועדת הכנסת לחינוך (2018-2020) • חוקרת בכירה במכון הישראלי לדמוקרטיה (2015-2018)",
-  education: "דוקטורט במדעי המדינה, האוניברסיטה העברית (2015) • מוסמך במדיניות ציבורית, אוניברסיטת תל אביב (2010) • תואר ראשון בפילוסופיה ומדעי המדינה, האוניברסיטה הפתוחה (2008)",
-  communityService: "מייסדת שותפה של 'דמוקרטיה דיגיטלית ישראל' • חברת מועצת המנהלים ב'שקיפות ישראל' • מתנדבת במרכז לזכויות אדם • מרצה אורחת באוניברסיטאות שונות",
-  publications: "מחברת של 15 מאמרים מחקריים בכתבי עת מובילים • כותבת טור שבועי בהארץ • מרואיינת קבועה ברדיו וטלוויזיה בנושאי דמוקרטיה • הרצאות TEDx על עתיד הפוליטיקה",
-  awards: "זוכת פרס רוטשילד למדעי החברה (2022) • נבחרת לרשימת 40 תחת 40 של גלובס (2021) • מקבלת מלגת פולברייט לחקר דמוקרטיה דיגיטלית בארה״ב",
-  skills: "עברית (שפת אם) • אנגלית (ברמת דובר יליד) • ערבית (שיחה) • מומחיות בניתוח נתונים, מחקר איכותני, מדיניות ציבורית, ניהול פרויקטים",
-  expertise: [
-    { domain: 'economy', name: 'כלכלה', trustCount: 234, icon: TrendingUp },
-    { domain: 'security', name: 'ביטחון', trustCount: 167, icon: Shield },
-    { domain: 'education', name: 'חינוך', trustCount: 89, icon: GraduationCap }
-  ],
-  posts: [
-    {
-      id: "post1",
-      caption: "העתיד של הדמוקרטיה תלוי ברשתות אמון. הנה למה אנחנו צריכים לחשוב מחדש על איך אנחנו בוחרים את הנציגים שלנו...",
-      trustCount: 234,
-      watchCount: 167,
-      commentCount: 45,
-      shareCount: 23,
-      timestamp: "לפני 2 שעות"
-    },
-    {
-      id: "post2",
-      caption: "מה שלמדתי מהבחירות האחרונות על השפעת הרשתות החברתיות על דעת הקהל",
-      trustCount: 187,
-      watchCount: 423,
-      commentCount: 32,
-      shareCount: 18,
-      timestamp: "לפני יום"
-    },
-    {
-      id: "post3",
-      caption: "איך אפשר לזהות מידע מוטעה ברשתות החברתיות? מדריך מעשי",
-      trustCount: 312,
-      watchCount: 501,
-      commentCount: 67,
-      shareCount: 41,
-      timestamp: "לפני 3 ימים"
-    },
-    {
-      id: "post4",
-      caption: "שקיפות בממשל - מה אפשר לעשות כאזרחים?",
-      trustCount: 156,
-      watchCount: 289,
-      commentCount: 28,
-      shareCount: 15,
-      timestamp: "לפני שבוע"
-    },
-    {
-      id: "post5",
-      caption: "הצעת חוק חדשה שיכולה לשנות את עתיד הדמוקרטיה הדיגיטלית",
-      trustCount: 401,
-      watchCount: 672,
-      commentCount: 89,
-      shareCount: 53,
-      timestamp: "לפני שבועיים"
-    },
-    {
-      id: "post6",
-      caption: "למה חשוב שהאלגוריתמים יהיו שקופים יותר?",
-      trustCount: 223,
-      watchCount: 334,
-      commentCount: 41,
-      shareCount: 27,
-      timestamp: "לפני שלושה שבועות"
-    }
-  ]
-};
+  website: "",
+  twitter: "",
+  facebook: "",
+  youtube: "",
+  scholar: "",
+  kycLevel: 1,
+  isVerified: false,
+  trustersCount: 0,
+  watchersCount: 0,
+  postsCount: 0,
+  zoozEarned: 0,
+  professionalExperience: "הוסף ניסיון מקצועי...",
+  education: "הוסף פרטי השכלה...",
+  communityService: "הוסף פעילות ציבורית וקהילתית...",
+  publications: "הוסף פרסומים והשפעה...",
+  awards: "הוסף הכרה וביקורת עמיתים...",
+  skills: "הוסף כישורים ושפות...",
+  expertise: [],
+  posts: []
+});
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(mockCurrentUser);
+  const { user: authUser } = useAuth();
+  const { stats } = useUserStats();
+  const { zoozBalance } = useWalletData();
+  const { posts } = usePosts();
+  
+  const [user, setUser] = useState(getDefaultUser(null));
   const [activeTab, setActiveTab] = useState("posts");
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedPostIndex, setSelectedPostIndex] = useState(0);
-  const zoozBalance = 1250;
+
+  // Update user data when auth user or stats change
+  useEffect(() => {
+    if (authUser || stats) {
+      setUser(prev => ({
+        ...prev,
+        id: authUser?.id || "current",
+        trustersCount: stats?.trust_received || 0,
+        postsCount: stats?.posts_count || 0,
+        watchersCount: stats?.watch_count || 0,
+        zoozEarned: zoozBalance,
+      }));
+    }
+  }, [authUser, stats, zoozBalance]);
 
   useEffect(() => {
     // Set RTL direction
@@ -287,16 +250,16 @@ const ProfilePage = () => {
         
         <TabsContent value="posts" className="mt-0" dir="rtl">
           <VideoGrid 
-            posts={user.posts.map(post => ({
+            posts={posts.length > 0 ? posts.map(post => ({
               id: post.id,
-              thumbnail: `/api/placeholder/300/400`,
-              caption: post.caption,
-              trustCount: post.trustCount,
-              watchCount: post.watchCount,
-              commentCount: post.commentCount,
-              shareCount: post.shareCount,
+              thumbnail: post.thumbnail_url || `/api/placeholder/300/400`,
+              caption: post.content || '',
+              trustCount: post.trust_count,
+              watchCount: post.watch_count,
+              commentCount: post.comment_count,
+              shareCount: post.share_count,
               duration: "0:15",
-            }))}
+            })) : []}
             onVideoClick={(postId, index) => {
               setSelectedPostIndex(index);
               setIsFullscreenOpen(true);
