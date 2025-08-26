@@ -9,9 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 import { CoaliOnboarding } from '../CoaliOnboarding';
+import { TrustStatusIndicator } from '../TrustStatusIndicator';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
@@ -58,8 +59,13 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4 pt-4">
-        <div className="w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
-          <Shield className="w-10 h-10 text-white" />
+        <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
+          <img 
+            src="/lovable-uploads/e0471f62-282a-45f6-9be8-5329f095178f.png" 
+            alt="Coali Logo"
+            className="w-14 h-14 object-contain"
+          />
+          <TrustStatusIndicator kycLevel={1} />
         </div>
         <div className="space-y-3">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-trust bg-clip-text text-transparent">
