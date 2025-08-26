@@ -185,6 +185,142 @@ export type Database = {
           },
         ]
       }
+      news_articles: {
+        Row: {
+          category: string
+          comment_count: number | null
+          content: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean | null
+          published_at: string
+          source: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          category: string
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string
+          source: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          category?: string
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string
+          source?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      news_comments: {
+        Row: {
+          content: string | null
+          created_at: string
+          duration: number | null
+          id: string
+          like_count: number | null
+          news_article_id: string
+          reply_count: number | null
+          share_count: number | null
+          trust_count: number | null
+          updated_at: string
+          user_id: string
+          video_url: string | null
+          watch_count: number | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          duration?: number | null
+          id?: string
+          like_count?: number | null
+          news_article_id: string
+          reply_count?: number | null
+          share_count?: number | null
+          trust_count?: number | null
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+          watch_count?: number | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          duration?: number | null
+          id?: string
+          like_count?: number | null
+          news_article_id?: string
+          reply_count?: number | null
+          share_count?: number | null
+          trust_count?: number | null
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+          watch_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_comments_news_article_id_fkey"
+            columns: ["news_article_id"]
+            isOneToOne: false
+            referencedRelation: "news_articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          news_comment_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          news_comment_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          news_comment_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_interactions_news_comment_id_fkey"
+            columns: ["news_comment_id"]
+            isOneToOne: false
+            referencedRelation: "news_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -549,6 +685,48 @@ export type Database = {
           },
         ]
       }
+      user_stats: {
+        Row: {
+          comments_count: number | null
+          created_at: string
+          id: string
+          posts_count: number | null
+          profile_views: number | null
+          trust_given: number | null
+          trust_received: number | null
+          trust_score: number | null
+          updated_at: string
+          user_id: string
+          watch_count: number | null
+        }
+        Insert: {
+          comments_count?: number | null
+          created_at?: string
+          id?: string
+          posts_count?: number | null
+          profile_views?: number | null
+          trust_given?: number | null
+          trust_received?: number | null
+          trust_score?: number | null
+          updated_at?: string
+          user_id: string
+          watch_count?: number | null
+        }
+        Update: {
+          comments_count?: number | null
+          created_at?: string
+          id?: string
+          posts_count?: number | null
+          profile_views?: number | null
+          trust_given?: number | null
+          trust_received?: number | null
+          trust_score?: number | null
+          updated_at?: string
+          user_id?: string
+          watch_count?: number | null
+        }
+        Relationships: []
+      }
       watches: {
         Row: {
           created_at: string
@@ -727,6 +905,10 @@ export type Database = {
         Args: { phone_number: string }
         Returns: string
       }
+      increment_news_view_count: {
+        Args: { news_id: string }
+        Returns: boolean
+      }
       increment_post_views: {
         Args: { p_post_id: string }
         Returns: boolean
@@ -753,6 +935,10 @@ export type Database = {
           p_post?: string
           to_user: string
         }
+        Returns: boolean
+      }
+      update_user_stats: {
+        Args: { p_user_id: string }
         Returns: boolean
       }
       validate_invitation_code: {
