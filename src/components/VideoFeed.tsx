@@ -137,10 +137,22 @@ const KYCBadge = ({
     </div>;
 };
 const ZoozIcon = ({
-  className = "w-6 h-6 text-zooz"
+  className = "w-6 h-6 text-zooz",
+  isCoin = false
 }: {
   className?: string;
+  isCoin?: boolean;
 }) => {
+  if (isCoin) {
+    return (
+      <div className="relative flex items-center justify-center">
+        <div className="w-8 h-8 bg-gradient-to-br from-zooz-glow to-zooz rounded-full flex items-center justify-center shadow-lg border-2 border-zooz-glow/30">
+          <div className="font-black text-xl leading-none text-zooz-foreground drop-shadow-sm">Z</div>
+        </div>
+      </div>
+    );
+  }
+  
   return <div className="relative flex items-center justify-center">
       <div className={cn("font-black text-lg leading-none", className.includes('text-') ? className.split(' ').filter(c => c.startsWith('text-')).join(' ') : "text-zooz")}>Z</div>
     </div>;
@@ -259,26 +271,45 @@ const VideoCard = ({
     navigate(`/post/${post.id}`);
   };
   const renderZoozReaction = (reaction: LiveZoozReaction) => {
-    // Enhanced animation for live videos
-    const animationType = post.isLive ? reaction.isOwn ? 'animate-zooz-burst' : 'animate-[zooz-float_2s_ease-out_forwards,pulse_1s_ease-in-out_infinite]' : reaction.isOwn ? 'animate-zooz-burst' : 'animate-zooz-float';
-    const basePosition = reaction.x_position && reaction.y_position ? {
-      left: `${reaction.x_position}px`,
-      top: `${reaction.y_position}px`
-    } : {
-      left: '50%',
-      top: '50%'
-    };
-    return <div key={reaction.animationId} className="absolute pointer-events-none z-50" style={basePosition}>
-        <div className={cn("transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1", animationType, post.isLive && "drop-shadow-[0_0_8px_rgba(255,69,69,0.8)]" // Red glow for live
-      )}>
-          <span className={cn("font-bold text-lg drop-shadow-lg", reaction.isOwn ? "text-zooz-glow" : post.isLive ? "text-red-400" : "text-white")}>
-            +{reaction.amount}
-          </span>
-          <div className={cn("font-black text-2xl leading-none drop-shadow-lg", reaction.isOwn ? "text-zooz-glow" : post.isLive ? "text-red-500" : "text-zooz")}>
-            Z
+    // Generate multiple flying coins for each reaction
+    const coinCount = Math.min(reaction.amount, 5); // Max 5 coins per reaction
+    const coins = [];
+    
+    for (let i = 0; i < coinCount; i++) {
+      // Random animation type for variety
+      const animations = ['animate-zooz-coin-center', 'animate-zooz-coin-left', 'animate-zooz-coin-right'];
+      const animationType = reaction.isOwn ? 'animate-zooz-coin-burst' : animations[i % animations.length];
+      
+      // Random delay for staggered effect
+      const delay = i * 150; // 150ms delay between coins
+      
+      coins.push(
+        <div 
+          key={`${reaction.animationId}-coin-${i}`}
+          className="absolute pointer-events-none z-50 left-1/2 bottom-0"
+          style={{ 
+            animationDelay: `${delay}ms`,
+            left: '50%'
+          }}
+        >
+          <div 
+            className={cn(
+              "transform -translate-x-1/2",
+              animationType,
+              post.isLive && "drop-shadow-[0_0_12px_rgba(255,215,0,0.8)]" // Golden glow for live
+            )}
+          >
+            <ZoozIcon isCoin={true} />
           </div>
         </div>
-      </div>;
+      );
+    }
+    
+    return (
+      <div key={reaction.animationId} className="absolute inset-0 pointer-events-none">
+        {coins}
+      </div>
+    );
   };
   return <div ref={containerRef} className="relative h-screen w-full snap-start snap-always">
       <video 
