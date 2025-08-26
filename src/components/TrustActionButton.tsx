@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Crown, Handshake, Check } from "lucide-react";
+import { Crown, Handshake, Check, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useInvitation } from "@/hooks/useInvitation";
 import type { Expert } from "@/pages/TopTrustedPage";
 
 interface TrustActionButtonProps {
@@ -12,20 +13,50 @@ export const TrustActionButton = ({ expert }: TrustActionButtonProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [localTrusted, setLocalTrusted] = useState(expert.trustedByUser);
   const { toast } = useToast();
+  const { createTrustIntent, generateInvitationLink } = useInvitation();
 
-  const handleTrustClick = () => {
+  const handleTrustClick = async () => {
     if (isAnimating) return;
     
     setIsAnimating(true);
-    setLocalTrusted(!localTrusted);
     
-    toast({
-      title: localTrusted ? "הוסר אמון" : "נתן אמון",
-      description: localTrusted 
-        ? `הוסר האמון מ${expert.name}` 
-        : `נתת אמון ל${expert.name}`,
-      duration: 2000,
-    });
+    if (!localTrusted) {
+      // When trusting someone, check if they need an invitation
+      const mockPhone = "+972-50-000-0000"; // In real app, this would come from expert data
+      
+      // Create trust intent for unregistered experts
+      const trustCreated = await createTrustIntent(mockPhone);
+      
+      if (trustCreated) {
+        // Generate invitation link with user's referral code
+        const inviteLink = generateInvitationLink();
+        
+        // TODO: Send invitation via WhatsApp/SMS with the link
+        console.log('Sending invitation to expert:', inviteLink);
+        
+        toast({
+          title: "אמון נתן + הזמנה נשלחה",
+          description: `נתת אמון ל${expert.name} והזמנה נשלחה אליו`,
+          duration: 3000,
+        });
+      } else {
+        // Regular trust action
+        toast({
+          title: "נתן אמון",
+          description: `נתת אמון ל${expert.name}`,
+          duration: 2000,
+        });
+      }
+    } else {
+      // Remove trust
+      toast({
+        title: "הוסר אמון",
+        description: `הוסר האמון מ${expert.name}`,
+        duration: 2000,
+      });
+    }
+    
+    setLocalTrusted(!localTrusted);
 
     // Reset animation after delay
     setTimeout(() => {

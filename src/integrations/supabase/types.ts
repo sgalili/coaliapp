@@ -14,6 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          current_uses: number | null
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          current_uses?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          current_uses?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_codes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      trust_intents: {
+        Row: {
+          consumed_at: string | null
+          created_at: string
+          id: string
+          is_consumed: boolean | null
+          referral_code: string
+          target_phone_hash: string
+          truster_user_id: string
+        }
+        Insert: {
+          consumed_at?: string | null
+          created_at?: string
+          id?: string
+          is_consumed?: boolean | null
+          referral_code: string
+          target_phone_hash: string
+          truster_user_id: string
+        }
+        Update: {
+          consumed_at?: string | null
+          created_at?: string
+          id?: string
+          is_consumed?: boolean | null
+          referral_code?: string
+          target_phone_hash?: string
+          truster_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_intents_referral_code_fkey"
+            columns: ["referral_code"]
+            isOneToOne: false
+            referencedRelation: "referral_codes"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "trust_intents_truster_user_id_fkey"
+            columns: ["truster_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       zooz_reactions: {
         Row: {
           amount: number
@@ -49,7 +168,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      consume_invitation: {
+        Args: { invitation_code: string; new_user_id: string }
+        Returns: boolean
+      }
+      consume_trust: {
+        Args: { new_user_id: string; phone_hash: string }
+        Returns: string
+      }
+      create_trust_intent: {
+        Args: { target_phone_hash: string; truster_id?: string }
+        Returns: boolean
+      }
+      generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_my_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      has_trust_for_phone_hash: {
+        Args: { phone_hash: string }
+        Returns: boolean
+      }
+      hash_phone: {
+        Args: { phone_number: string }
+        Returns: string
+      }
+      validate_invitation_code: {
+        Args: { invitation_code: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
