@@ -61,11 +61,13 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       <div className="text-center space-y-4 pt-4">
         <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
           <img 
-            src="/lovable-uploads/e0471f62-282a-45f6-9be8-5329f095178f.png" 
+            src="/lovable-uploads/709c4719-8e39-45a6-b14c-89556c5b2d4e.png" 
             alt="Coali Logo"
             className="w-14 h-14 object-contain"
           />
-          <TrustStatusIndicator kycLevel={1} />
+          <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center cursor-help z-30 bg-background border-2 border-background">
+            <TrustStatusIndicator kycLevel={3} />
+          </div>
         </div>
         <div className="space-y-3">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-trust bg-clip-text text-transparent">
