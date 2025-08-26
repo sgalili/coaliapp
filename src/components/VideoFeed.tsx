@@ -22,7 +22,6 @@ interface VideoPost {
   expertise: string;
   category: 'politics' | 'technology' | 'education' | 'academia' | 'startup' | 'art' | 'expert' | 'influencer' | 'economy' | 'jewelry';
   isLive?: boolean;
-  isUploaded?: boolean;
   authenticityData?: {
     city?: string;
     country?: string;
@@ -413,19 +412,15 @@ const VideoCard = ({
             </span>}
         </div>
         
-        {/* Authenticity Info - shown for uploaded videos or if video has embedded metadata */}
-        {(post.isUploaded || authenticityLocation) && (
+        {/* Authenticity Info - only shown if video has embedded metadata */}
+        {authenticityLocation && (
           <div className="mb-2">
             <div 
               className="text-white/90 text-xs text-right font-medium cursor-pointer transition-all duration-200 hover:text-white"
               onClick={() => setIsAuthenticityExpanded(!isAuthenticityExpanded)}
             >
-              {post.isUploaded ? (
-                <p className="text-orange-300">⚠️ לא מאומת</p>
-              ) : (
-                <p>{authenticityLocation}</p>
-              )}
-              {isAuthenticityExpanded && authenticityDateTime && !post.isUploaded && (
+              <p>{authenticityLocation}</p>
+              {isAuthenticityExpanded && authenticityDateTime && (
                 <p className="animate-fade-in mt-1 text-white/70">
                   {authenticityDateTime}
                 </p>
