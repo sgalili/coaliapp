@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
   const navigate = useNavigate();
@@ -22,7 +23,13 @@ export const useAuth = () => {
           // Initialize user data when signed in
           setTimeout(async () => {
             await initializeUserData(session.user.id);
+            await fetchProfile(session.user.id);
           }, 0);
+        }
+        
+        if (session?.user) {
+          // Always fetch profile for existing sessions
+          fetchProfile(session.user.id);
         }
         
         if (initializing) {
@@ -36,12 +43,34 @@ export const useAuth = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
       setLoading(false);
       setInitializing(false);
     });
 
     return () => subscription.unsubscribe();
   }, [initializing]);
+
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+      
+      setProfile(data);
+    } catch (error) {
+      console.error('Error in fetchProfile:', error);
+    }
+  };
 
   const initializeUserData = async (userId: string) => {
     try {
@@ -109,6 +138,9 @@ export const useAuth = () => {
 
       if (profileError) throw profileError;
 
+      // Refetch profile after update
+      await fetchProfile(user.id);
+
       return { error: null };
     } catch (error) {
       return { error: error as Error };
@@ -128,6 +160,7 @@ export const useAuth = () => {
   return {
     user,
     session,
+    profile,
     loading,
     initializing,
     signInWithPhone,
