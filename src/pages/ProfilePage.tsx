@@ -280,7 +280,7 @@ const ProfilePage = () => {
                 ניסיון מקצועי
               </h3>
               <EditableField
-                value="מנהלת מחקר במכון למדיניות ציבורית (2020-2024) • יועצת לוועדת הכנסת לחינוך (2018-2020) • חוקרת בכירה במכון הישראלי לדמוקרטיה (2015-2018)"
+                value={profile?.professional_experience || "הוסף ניסיון מקצועי..."}
                 onSave={(value) => handleUpdateField('professionalExperience', value)}
                 type="textarea"
                 placeholder="תאר את הניסיון המקצועי שלך..."
@@ -298,7 +298,7 @@ const ProfilePage = () => {
                 השכלה
               </h3>
               <EditableField
-                value="דוקטורט במדעי המדינה, האוניברסיטה העברית (2015) • מוסמך במדיניות ציבורית, אוניברסיטת תל אביב (2010) • תואר ראשון בפילוסופיה ומדעי המדינה, האוניברסיטה הפתוחה (2008)"
+                value={profile?.education || "הוסף פרטי השכלה..."}
                 onSave={(value) => handleUpdateField('education', value)}
                 type="textarea"
                 placeholder="פרט על ההשכלה שלך..."
@@ -316,7 +316,7 @@ const ProfilePage = () => {
                 פעילות ציבורית וקהילתית
               </h3>
               <EditableField
-                value="מייסדת שותפה של 'דמוקרטיה דיגיטלית ישראל' • חברת מועצת המנהלים ב'שקיפות ישראל' • מתנדבת במרכז לזכויות אדם • מרצה אורחת באוניברסיטאות שונות"
+                value={profile?.community_service || "הוסף פעילות ציבורית וקהילתית..."}
                 onSave={(value) => handleUpdateField('communityService', value)}
                 type="textarea"
                 placeholder="תאר את הפעילות הציבורית והקהילתית שלך..."
@@ -334,7 +334,7 @@ const ProfilePage = () => {
                 פרסומים והשפעה
               </h3>
               <EditableField
-                value="מחברת של 15 מאמרים מחקריים בכתבי עת מובילים • כותבת טור שבועי בהארץ • מרואיינת קבועה ברדיו וטלוויזיה בנושאי דמוקרטיה • הרצאות TEDx על עתיד הפוליטיקה"
+                value={profile?.publications || "הוסף פרסומים והשפעה..."}
                 onSave={(value) => handleUpdateField('publications', value)}
                 type="textarea"
                 placeholder="פרט על פרסומים, הרצאות והשפעתך..."
@@ -352,7 +352,7 @@ const ProfilePage = () => {
                 הכרה וביקורת עמיתים
               </h3>
               <EditableField
-                value="זוכת פרס רוטשילד למדעי החברה (2022) • נבחרת לרשימת 40 תחת 40 של גלובס (2021) • מקבלת מלגת פולברייט לחקר דמוקרטיה דיגיטלית בארה״ב"
+                value={profile?.awards || "הוסף פרסים, הכרה והישגים..."}
                 onSave={(value) => handleUpdateField('awards', value)}
                 type="textarea"
                 placeholder="פרט על פרסים, הכרה והישגים..."
@@ -370,7 +370,7 @@ const ProfilePage = () => {
                 כישורים ושפות
               </h3>
               <EditableField
-                value="עברית (שפת אם) • אנגלית (ברמת דובר יליד) • ערבית (שיחה) • מומחיות בניתוח נתונים, מחקר איכותני, מדיניות ציבורית, ניהול פרויקטים"
+                value={profile?.skills || "הוסף כישורים ושפות..."}
                 onSave={(value) => handleUpdateField('skills', value)}
                 type="textarea"
                 placeholder="פרט על שפות, כישורים טכניים ומקצועיים..."
@@ -392,18 +392,20 @@ const ProfilePage = () => {
                   <span className="text-muted-foreground">דוא״ל מאומת</span>
                   <span className="flex items-center gap-1 text-green-600">
                     <UserCheck className="w-4 h-4" />
-                    sarah.politics@gmail.com
+                    {authUser?.email || "לא הוגדר"}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">LinkedIn</span>
-                  <span className="text-primary">@sarahpolitics</span>
+                  <span className="text-muted-foreground">טלפון</span>
+                  <span className="text-muted-foreground">
+                    {authUser?.phone || profile?.phone || "לא הוגדר"}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">רמת KYC</span>
                   <div className="flex items-center gap-1">
                     <Shield className="w-4 h-4 text-green-600" />
-                    <span>רמה {user.kycLevel} - מאומת</span>
+                    <span>רמה {user.kycLevel} - {user.kycLevel > 0 ? 'מאומת' : 'לא מאומת'}</span>
                   </div>
                 </div>
               </div>

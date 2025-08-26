@@ -11,7 +11,10 @@ export const useAuth = () => {
   const [initializing, setInitializing] = useState(true);
   const navigate = useNavigate();
 
+  console.log('useAuth called');
+
   useEffect(() => {
+    console.log('useAuth useEffect running');
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -32,9 +35,7 @@ export const useAuth = () => {
           fetchProfile(session.user.id);
         }
         
-        if (initializing) {
-          setInitializing(false);
-        }
+        setInitializing(false);
         setLoading(false);
       }
     );
@@ -51,7 +52,7 @@ export const useAuth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [initializing]);
+  }, []); // Remove initializing dependency
 
   const fetchProfile = async (userId: string) => {
     try {
