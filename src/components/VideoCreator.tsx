@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User } from "lucide-react";
+import { X, Camera, RotateCcw, CircleStop, Play, Mic, Flag, Monitor, Laptop, User, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { getDomainConfig, type ExpertDomain } from "@/lib/domainConfig";
@@ -14,6 +14,7 @@ interface VideoCreatorProps {
 }
 
 type RecordingMode = "record" | "live";
+type VideoSource = "camera" | "upload";
 type FilterType = "none" | "politics" | "podcast" | "tech" | "neutral";
 
 interface Filter {
@@ -58,11 +59,13 @@ const filters: Filter[] = [
 
 export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const [mode, setMode] = useState<RecordingMode>("record");
+  const [videoSource, setVideoSource] = useState<VideoSource>("camera");
   const [isRecording, setIsRecording] = useState(false);
   const [isLive, setIsLive] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<FilterType>("none");
   const [selectedCategory, setSelectedCategory] = useState<ExpertDomain | "">("");
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [comment, setComment] = useState("");
   const [recordingTime, setRecordingTime] = useState(60);
   const [isCameraFacingUser, setIsCameraFacingUser] = useState(true);
@@ -71,6 +74,8 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const userDomains: ExpertDomain[] = ['tech', 'politics', 'culture']; // Max 3 domains from user profile
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const uploadVideoRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -79,11 +84,13 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const { getStatusText, requestLocationPermission, getAuthenticityStatus } = useAuthenticity();
 
   useEffect(() => {
-    startCamera();
+    if (videoSource === "camera") {
+      startCamera();
+    }
     return () => {
       stopCamera();
     };
-  }, [isCameraFacingUser]);
+  }, [isCameraFacingUser, videoSource]);
 
   useEffect(() => {
     if (isRecording) {
@@ -143,6 +150,31 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
   const flipCamera = () => {
     setIsCameraFacingUser(prev => !prev);
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      setUploadedFile(file);
+      setVideoSource("upload");
+      setRecordedBlob(null);
+      
+      // Create video preview
+      if (uploadVideoRef.current) {
+        const url = URL.createObjectURL(file);
+        uploadVideoRef.current.src = url;
+      }
+    }
+  };
+
+  const switchToCamera = () => {
+    setVideoSource("camera");
+    setUploadedFile(null);
+    if (uploadVideoRef.current) {
+      URL.revokeObjectURL(uploadVideoRef.current.src);
+      uploadVideoRef.current.src = "";
+    }
+    startCamera();
   };
 
   const startRecording = () => {
@@ -221,14 +253,17 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
       return;
     }
 
-    if (mode === "record" && recordedBlob && comment.trim()) {
+    if (mode === "record" && (recordedBlob || uploadedFile) && comment.trim()) {
       onPublish({
         videoBlob: recordedBlob,
+        videoFile: uploadedFile,
         comment: comment.trim(),
         filter: selectedFilter,
         category: selectedCategory,
         mode: "record",
-        duration: 60 - recordingTime,
+        videoSource: videoSource,
+        isUploaded: videoSource === "upload",
+        duration: videoSource === "camera" ? 60 - recordingTime : undefined,
         timestamp: new Date().toISOString()
       });
     } else if (mode === "live" && comment.trim()) {
@@ -237,6 +272,8 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
         filter: selectedFilter,
         category: selectedCategory,
         mode: "live",
+        videoSource: "camera",
+        isUploaded: false,
         timestamp: new Date().toISOString()
       });
     }
@@ -245,7 +282,9 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
   const resetRecording = () => {
     setRecordedBlob(null);
     setRecordingTime(60);
-    startCamera();
+    if (videoSource === "camera") {
+      startCamera();
+    }
   };
 
   const getFilterStyle = () => {
@@ -271,7 +310,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     if (userDomains.length === 0) return false;
     if (!selectedCategory) return false;
     if (mode === "record") {
-      return recordedBlob && comment.trim();
+      return (recordedBlob || uploadedFile) && comment.trim();
     }
     return comment.trim();
   };
@@ -358,11 +397,11 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           <div 
             className={cn(
               "cursor-pointer transition-colors",
-              getAuthenticityStatus() === 'unavailable' && "hover:text-blue-300"
+              videoSource === "upload" ? "text-orange-300" : (getAuthenticityStatus() === 'unavailable' && "hover:text-blue-300")
             )}
-            onClick={getAuthenticityStatus() === 'unavailable' ? requestLocationPermission : undefined}
+            onClick={videoSource === "camera" && getAuthenticityStatus() === 'unavailable' ? requestLocationPermission : undefined}
           >
-            {getStatusText()}
+            {videoSource === "upload" ? "⚠️ לא מאומת" : getStatusText()}
           </div>
         </div>
 
@@ -384,20 +423,36 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
         />
         
         {/* Video Preview */}
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className={cn(
-            "w-full h-full object-cover",
-            isCameraFacingUser && "scale-x-[-1]",
-            selectedFilter === "politics" && "mix-blend-overlay",
-            selectedFilter === "podcast" && "mix-blend-soft-light",
-            selectedFilter === "tech" && "mix-blend-multiply",
-            selectedFilter === "neutral" && "mix-blend-overlay"
-          )}
-        />
+        {videoSource === "camera" ? (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            className={cn(
+              "w-full h-full object-cover",
+              isCameraFacingUser && "scale-x-[-1]",
+              selectedFilter === "politics" && "mix-blend-overlay",
+              selectedFilter === "podcast" && "mix-blend-soft-light",
+              selectedFilter === "tech" && "mix-blend-multiply",
+              selectedFilter === "neutral" && "mix-blend-overlay"
+            )}
+          />
+        ) : (
+          <video
+            ref={uploadVideoRef}
+            controls
+            muted
+            playsInline
+            className={cn(
+              "w-full h-full object-cover",
+              selectedFilter === "politics" && "mix-blend-overlay",
+              selectedFilter === "podcast" && "mix-blend-soft-light",
+              selectedFilter === "tech" && "mix-blend-multiply",
+              selectedFilter === "neutral" && "mix-blend-overlay"
+            )}
+          />
+        )}
 
         {/* Recording Overlay */}
         {recordedBlob && (
@@ -447,45 +502,94 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
 
         {/* Control Buttons */}
         <div className="flex items-center justify-between">
-          {/* Flip Camera */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={flipCamera}
-            className="text-white hover:bg-white/20"
-          >
-            <RotateCcw className="w-6 h-6" />
-          </Button>
+          {/* Left side controls */}
+          <div className="flex items-center gap-2">
+            {/* Flip Camera - only for camera mode */}
+            {videoSource === "camera" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={flipCamera}
+                className="text-white hover:bg-white/20"
+              >
+                <RotateCcw className="w-6 h-6" />
+              </Button>
+            )}
+            
+            {/* Switch to Camera - only for upload mode */}
+            {videoSource === "upload" && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={switchToCamera}
+                className="text-white hover:bg-white/20"
+              >
+                <Camera className="w-4 h-4 mr-2" />
+                Camera
+              </Button>
+            )}
+          </div>
 
           {/* Main Action Button */}
           <div className="flex flex-col items-center">
             {mode === "record" ? (
               <>
-                {!recordedBlob ? (
-                  <Button
-                    size="lg"
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className={cn(
-                      "rounded-full w-20 h-20 p-0",
-                      isRecording 
-                        ? "bg-red-500 hover:bg-red-600" 
-                        : "bg-white hover:bg-gray-100 text-black"
-                    )}
-                  >
-                    {isRecording ? (
-                      <CircleStop className="w-8 h-8" />
-                    ) : (
-                      <Camera className="w-8 h-8" />
-                    )}
-                  </Button>
-                ) : (
+                {videoSource === "camera" && !recordedBlob ? (
+                  <div className="relative">
+                    {/* Main record button */}
+                    <Button
+                      size="lg"
+                      onClick={isRecording ? stopRecording : startRecording}
+                      className={cn(
+                        "rounded-full w-20 h-20 p-0",
+                        isRecording 
+                          ? "bg-red-500 hover:bg-red-600" 
+                          : "bg-white hover:bg-gray-100 text-black"
+                      )}
+                    >
+                      {isRecording ? (
+                        <CircleStop className="w-8 h-8" />
+                      ) : (
+                        <Camera className="w-8 h-8" />
+                      )}
+                    </Button>
+                    
+                    {/* Gallery upload button */}
+                    <Button
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute -bottom-2 -right-2 w-8 h-8 p-0 rounded-full bg-gray-800/80 border-2 border-white/20 hover:bg-gray-700/80"
+                    >
+                      <Upload className="w-4 h-4 text-white" />
+                    </Button>
+                    
+                    {/* Hidden file input */}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="video/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                  </div>
+                ) : (recordedBlob || uploadedFile) ? (
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
-                      onClick={resetRecording}
+                      onClick={() => {
+                        if (videoSource === "upload") {
+                          setUploadedFile(null);
+                          if (uploadVideoRef.current) {
+                            URL.revokeObjectURL(uploadVideoRef.current.src);
+                            uploadVideoRef.current.src = "";
+                          }
+                        } else {
+                          resetRecording();
+                        }
+                      }}
                       className="text-white border-white hover:bg-white/20"
                     >
-                      Retake
+                      {videoSource === "upload" ? "Choose Another" : "Retake"}
                     </Button>
                     <Button
                       onClick={handlePublish}
@@ -495,7 +599,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
                       Publish
                     </Button>
                   </div>
-                )}
+                ) : null}
               </>
             ) : (
               <Button
@@ -530,12 +634,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           )}
 
           {/* Spacer for alignment */}
-          {mode === "record" && !recordedBlob && (
-            <div className="w-12" />
-          )}
-          {mode === "live" && !isLive && (
-            <div className="w-12" />
-          )}
+          <div className="w-12" />
         </div>
       </div>
     </div>
