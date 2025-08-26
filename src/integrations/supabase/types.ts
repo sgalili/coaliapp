@@ -727,6 +727,10 @@ export type Database = {
         Args: { phone_number: string }
         Returns: string
       }
+      increment_post_views: {
+        Args: { p_post_id: string }
+        Returns: boolean
+      }
       init_user_balance: {
         Args: { p_user?: string }
         Returns: boolean
