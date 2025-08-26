@@ -366,9 +366,10 @@ const VideoCard = ({
 
         {/* ZOOZ button */}
         <button onClick={handleZoozSend} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-zooz/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden">
-            <ZoozIcon />
-            <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400/30 via-yellow-500/20 to-yellow-600/30 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-all duration-200 relative overflow-hidden border border-yellow-500/40 shadow-lg">
+            <div className="w-8 h-8 text-yellow-200 font-black text-2xl flex items-center justify-center">Z</div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
           </div>
           <span className="text-white text-xs font-medium">{post.zoozCount}</span>
         </button>
