@@ -145,9 +145,9 @@ const ZoozIcon = ({
 }) => {
   if (isCoin) {
     return (
-      <div className="relative flex items-center justify-center">
-        <div className="w-8 h-8 bg-gradient-to-br from-zooz-glow to-zooz rounded-full flex items-center justify-center shadow-lg border-2 border-zooz-glow/30">
-          <div className="font-black text-xl leading-none text-zooz-foreground drop-shadow-sm">Z</div>
+      <div className="relative">
+        <div className="w-8 h-8 rounded-full zooz-coin-3d flex items-center justify-center">
+          <div className="font-black text-xl leading-none text-amber-900 drop-shadow-sm z-10 relative">Z</div>
         </div>
       </div>
     );

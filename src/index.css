@@ -308,6 +308,39 @@ All colors MUST be HSL.
     animation: zooz-coin-burst 2.5s ease-out forwards;
   }
 
+  /* Realistic 3D coin styles */
+  .zooz-coin-3d {
+    position: relative;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 25%, #FFD700 50%, #DAA520 75%, #B8860B 100%);
+    border: 2px solid #B8860B;
+    box-shadow: 
+      inset 0 2px 4px rgba(255, 255, 255, 0.3),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(255, 215, 0, 0.6);
+    transform-style: preserve-3d;
+  }
+  
+  .zooz-coin-3d::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .zooz-coin-3d::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    border: 1px solid #DAA520;
+    border-style: dashed;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
   .animate-zooz-heart {
     animation: zooz-heart 2.5s ease-out forwards;
   }
