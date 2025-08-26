@@ -7,10 +7,8 @@ import { ProfileCompletion } from '@/components/auth/ProfileCompletion';
 import { LanguageSelector } from '@/components/auth/LanguageSelector';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, Users, Sparkles } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 type AuthStep = 'phone' | 'otp' | 'profile' | 'onboarding';
 
@@ -32,12 +30,13 @@ export const AuthPage = () => {
     firstName: '',
     lastName: ''
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
   
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
   const { saveAffiliateLink } = useAffiliateLinks();
+  const { user, loading: authLoading, signInWithPhone, verifyOTP, updateProfile } = useAuth();
 
   useEffect(() => {
     // Check for optional referral code in URL
@@ -50,64 +49,80 @@ export const AuthPage = () => {
     }
   }, [location, saveAffiliateLink]);
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate('/');
+    }
+  }, [user, authLoading, navigate]);
+
   const handlePhoneSubmit = async (phone: string) => {
-    setIsLoading(true);
     try {
-      // TODO: Integrate with Ultramsg API for WhatsApp OTP
-      console.log('Sending OTP to:', phone);
+      const { error } = await signInWithPhone(phone);
       
+      if (error) {
+        console.error('Error sending OTP:', error);
+        toast.error('Erreur lors de l\'envoi du code');
+        setAuthError('Impossible d\'envoyer le code de vérification');
+        return;
+      }
+      
+      toast.success('Code envoyé !');
       setAuthData(prev => ({ ...prev, phone }));
       setCurrentStep('otp');
     } catch (error) {
       console.error('Error sending OTP:', error);
-    } finally {
-      setIsLoading(false);
+      setAuthError('Erreur technique');
     }
   };
 
   const handleOTPVerify = async (otp: string) => {
-    setIsLoading(true);
     try {
-      // TODO: Verify OTP with backend
-      console.log('Verifying OTP:', otp);
+      const { error } = await verifyOTP(authData.phone, otp);
       
+      if (error) {
+        console.error('Error verifying OTP:', error);
+        toast.error('Code incorrect');
+        setAuthError('Code de vérification incorrect');
+        return;
+      }
+      
+      toast.success('Connexion réussie !');
       setAuthData(prev => ({ ...prev, otp }));
       
-      // Check if user is new (mock logic for now)
-      const isNewUser = true; // TODO: Check from backend
-      
-      if (isNewUser) {
-        setCurrentStep('profile');
-      } else {
-        // Existing user, redirect to home
-        navigate('/');
-      }
+      // For new users, go to profile completion
+      // The useAuth hook will handle the session and redirect
+      setCurrentStep('profile');
     } catch (error) {
       console.error('Error verifying OTP:', error);
-    } finally {
-      setIsLoading(false);
+      setAuthError('Erreur de vérification');
     }
   };
 
   const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
-    setIsLoading(true);
     try {
-      // TODO: Create user profile in Supabase with auth
-      console.log('Creating profile:', { firstName, lastName, profilePicture });
+      const { error } = await updateProfile(firstName, lastName, profilePicture);
+      
+      if (error) {
+        console.error('Error creating profile:', error);
+        toast.error('Erreur lors de la création du profil');
+        setAuthError('Impossible de créer le profil');
+        return;
+      }
       
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
       
-      // TODO: Consume invitation code or trust intent
+      // Handle invitation code or trust intent if present
       if (authData.invitationCode) {
+        // TODO: Consume invitation code
         console.log('Consuming invitation code:', authData.invitationCode);
-      } else if (authData.hasTrustIntent) {
-        console.log('Consuming trust intent for phone:', authData.phone);
       }
       
+      toast.success('Profil créé avec succès !');
+      navigate('/');
     } catch (error) {
       console.error('Error creating profile:', error);
-    } finally {
-      setIsLoading(false);
+      setAuthError('Erreur technique');
     }
   };
 
@@ -121,20 +136,11 @@ export const AuthPage = () => {
   };
 
   const handleResendOTP = async () => {
-    setIsLoading(true);
-    try {
-      // TODO: Resend OTP
-      console.log('Resending OTP to:', authData.phone);
-    } catch (error) {
-      console.error('Error resending OTP:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    await handlePhoneSubmit(authData.phone);
   };
 
   const handleAlternativeMethod = () => {
-    // TODO: Switch to SMS instead of WhatsApp
-    console.log('Switching to SMS method');
+    toast.info('Changement de méthode non disponible pour le moment');
   };
 
   return (
@@ -151,7 +157,7 @@ export const AuthPage = () => {
           {currentStep === 'phone' && (
             <PhoneInput
               onSubmit={handlePhoneSubmit}
-              isLoading={isLoading}
+              isLoading={authLoading}
             />
           )}
           
@@ -161,7 +167,7 @@ export const AuthPage = () => {
               onVerify={handleOTPVerify}
               onResend={handleResendOTP}
               onAlternativeMethod={handleAlternativeMethod}
-              isLoading={isLoading}
+              isLoading={authLoading}
             />
           )}
           
@@ -169,8 +175,14 @@ export const AuthPage = () => {
             <ProfileCompletion
               onComplete={handleProfileComplete}
               onStartOnboarding={handleStartOnboarding}
-              isLoading={isLoading}
+              isLoading={authLoading}
             />
+          )}
+
+          {authError && (
+            <div className="text-center">
+              <p className="text-sm text-destructive">{authError}</p>
+            </div>
           )}
           
           {currentStep === 'onboarding' && (
