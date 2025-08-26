@@ -47,7 +47,12 @@ export const useUserStats = () => {
   const { user } = useAuth();
 
   const fetchUserStats = async () => {
-    if (!user?.id) return;
+    console.log('fetchUserStats called, user:', user?.id);
+    if (!user?.id) {
+      console.log('No user ID, returning');
+      setLoading(false);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -154,8 +159,14 @@ export const useUserStats = () => {
   };
 
   useEffect(() => {
+    console.log('useUserStats: user changed', user?.id);
     if (user?.id) {
       fetchUserStats();
+    } else if (user === null) {
+      // No user, stop loading
+      setLoading(false);
+      setStats(null);
+      setTrustRank(null);
     }
   }, [user?.id]);
 

@@ -14,6 +14,7 @@ import { StatsMiniChart } from "@/components/StatsMiniChart";
 import { TrustRankScore } from "@/components/TrustRankScore";
 import { TrustWeightsAccordion } from "@/components/TrustWeightsAccordion";
 import { useUserStats } from "@/hooks/useUserStats";
+import { useAuth } from "@/hooks/useAuth";
 
 // Mock data as specified - default empty data structure
 const getEmptyStatsData = () => ({
@@ -58,6 +59,9 @@ const MyStatsPage = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [earnedZooz] = useState(287); // Mock earned zooz from invites
   const { stats, trustRank, loading: isLoading } = useUserStats();
+  const { user: authUser } = useAuth();
+
+  console.log('MyStatsPage render:', { isLoading, stats, authUser: authUser?.id });
   const statsData = stats ? {
     kpis: {
       newTrust: { value: stats.trust_received || 0, deltaPct: 0 },
@@ -75,6 +79,19 @@ const MyStatsPage = () => {
   useEffect(() => {
     document.dir = "rtl";
   }, []);
+
+  // If not authenticated and not loading, show empty state
+  if (!authUser && !isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-2">נדרשת התחברות</h2>
+          <p className="text-muted-foreground mb-4">יש להתחבר כדי לצפות בסטטיסטיקות</p>
+          <Button onClick={() => navigate('/auth')}>התחבר</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
