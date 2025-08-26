@@ -14,6 +14,303 @@ export type Database = {
   }
   public: {
     Tables: {
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          post_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          post_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          post_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      kyc_verifications: {
+        Row: {
+          created_at: string
+          documents: Json | null
+          id: string
+          level: number | null
+          status: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          documents?: Json | null
+          id?: string
+          level?: number | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          documents?: Json | null
+          id?: string
+          level?: number | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_verifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          related_post_id: string | null
+          related_user_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          related_post_id?: string | null
+          related_user_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          related_post_id?: string | null
+          related_user_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_related_post_id_fkey"
+            columns: ["related_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_related_user_id_fkey"
+            columns: ["related_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          category: string | null
+          comment_count: number | null
+          content: string | null
+          created_at: string
+          domain: string | null
+          id: string
+          is_live: boolean | null
+          share_count: number | null
+          thumbnail_url: string | null
+          title: string | null
+          trust_count: number | null
+          updated_at: string
+          user_id: string
+          video_url: string | null
+          view_count: number | null
+          watch_count: number | null
+          zooz_earned: number | null
+        }
+        Insert: {
+          category?: string | null
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          domain?: string | null
+          id?: string
+          is_live?: boolean | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          trust_count?: number | null
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+          view_count?: number | null
+          watch_count?: number | null
+          zooz_earned?: number | null
+        }
+        Update: {
+          category?: string | null
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          domain?: string | null
+          id?: string
+          is_live?: boolean | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          trust_count?: number | null
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+          view_count?: number | null
+          watch_count?: number | null
+          zooz_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -133,6 +430,171 @@ export type Database = {
           },
         ]
       }
+      trusts: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          trusted_id: string
+          truster_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          trusted_id: string
+          truster_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          trusted_id?: string
+          truster_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trusts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trusts_trusted_id_fkey"
+            columns: ["trusted_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "trusts_truster_id_fkey"
+            columns: ["truster_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      user_balances: {
+        Row: {
+          created_at: string
+          id: string
+          percentage_change: number | null
+          updated_at: string
+          usd_value: number | null
+          user_id: string
+          zooz_balance: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          percentage_change?: number | null
+          updated_at?: string
+          usd_value?: number | null
+          user_id: string
+          zooz_balance?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          percentage_change?: number | null
+          updated_at?: string
+          usd_value?: number | null
+          user_id?: string
+          zooz_balance?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_balances_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      user_expertise: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          level: number | null
+          user_id: string
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id?: string
+          level?: number | null
+          user_id: string
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          level?: number | null
+          user_id?: string
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_expertise_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      watches: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          watched_id: string
+          watcher_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          watched_id: string
+          watcher_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          watched_id?: string
+          watcher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watches_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "watches_watched_id_fkey"
+            columns: ["watched_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "watches_watcher_id_fkey"
+            columns: ["watcher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       zooz_reactions: {
         Row: {
           amount: number
@@ -163,6 +625,64 @@ export type Database = {
         }
         Relationships: []
       }
+      zooz_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          from_user_id: string | null
+          id: string
+          note: string | null
+          post_id: string | null
+          to_user_id: string | null
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          from_user_id?: string | null
+          id?: string
+          note?: string | null
+          post_id?: string | null
+          to_user_id?: string | null
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          from_user_id?: string | null
+          id?: string
+          note?: string | null
+          post_id?: string | null
+          to_user_id?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zooz_transactions_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "zooz_transactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zooz_transactions_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -174,6 +694,17 @@ export type Database = {
       }
       consume_trust: {
         Args: { new_user_id: string; phone_hash: string }
+        Returns: string
+      }
+      create_notification: {
+        Args: {
+          notification_type: string
+          p_message: string
+          p_title: string
+          rel_post?: string
+          rel_user?: string
+          target_user: string
+        }
         Returns: string
       }
       create_trust_intent: {
@@ -195,6 +726,30 @@ export type Database = {
       hash_phone: {
         Args: { phone_number: string }
         Returns: string
+      }
+      init_user_balance: {
+        Args: { p_user?: string }
+        Returns: boolean
+      }
+      reward_zooz: {
+        Args: {
+          p_amount: number
+          p_post?: string
+          reason: string
+          target_user: string
+        }
+        Returns: boolean
+      }
+      transfer_zooz: {
+        Args: {
+          from_user: string
+          p_amount: number
+          p_description?: string
+          p_note?: string
+          p_post?: string
+          to_user: string
+        }
+        Returns: boolean
       }
       validate_invitation_code: {
         Args: { invitation_code: string }
