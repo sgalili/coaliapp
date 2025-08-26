@@ -272,7 +272,7 @@ const VideoCard = ({
   };
   const renderZoozReaction = (reaction: LiveZoozReaction) => {
     // Generate multiple flying coins for each reaction
-    const coinCount = Math.min(reaction.amount, 5); // Max 5 coins per reaction
+    const coinCount = Math.min(reaction.amount, 3); // Max 3 coins per reaction for better visibility
     const coins = [];
     
     for (let i = 0; i < coinCount; i++) {
@@ -281,20 +281,21 @@ const VideoCard = ({
       const animationType = reaction.isOwn ? 'animate-zooz-coin-burst' : animations[i % animations.length];
       
       // Random delay for staggered effect
-      const delay = i * 150; // 150ms delay between coins
+      const delay = i * 200; // 200ms delay between coins
       
       coins.push(
         <div 
           key={`${reaction.animationId}-coin-${i}`}
-          className="absolute pointer-events-none z-50 left-1/2 bottom-0"
+          className="absolute pointer-events-none z-50"
           style={{ 
             animationDelay: `${delay}ms`,
-            left: '50%'
+            left: '50%',
+            bottom: '100px', // Start from near the button
+            transform: 'translateX(-50%)'
           }}
         >
           <div 
             className={cn(
-              "transform -translate-x-1/2",
               animationType,
               post.isLive && "drop-shadow-[0_0_12px_rgba(255,215,0,0.8)]" // Golden glow for live
             )}
