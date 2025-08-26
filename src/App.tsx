@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedPage } from "@/components/ProtectedPage";
 import Index from "./pages/Index";
 import UserProfile from "./pages/UserProfile";
 import NewsPage from "./pages/NewsPage";
@@ -29,6 +30,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/news" element={<NewsPage />} />
@@ -37,15 +39,20 @@ const App = () => (
           <Route path="/post/:postId" element={<PostDetailPage />} />
           <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/user/:userId/post/:postId" element={<PostDetailPage />} />
-          <Route path="/messages" element={<MessagesPage />} />
           <Route path="/toptrusted" element={<TopTrustedPage />} />
-          <Route path="/wallet" element={<WalletPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/data-management" element={<DataManagementPage />} />
-          <Route path="/notifications-settings" element={<NotificationsSettingsPage />} />
-          <Route path="/invite-friends" element={<InviteFriendsPage />} />
-          <Route path="/my-stats" element={<MyStatsPage />} />
+          
+          {/* Protected routes - require authentication */}
+          <Route path="/messages" element={<ProtectedPage><MessagesPage /></ProtectedPage>} />
+          <Route path="/wallet" element={<ProtectedPage><WalletPage /></ProtectedPage>} />
+          <Route path="/profile" element={<ProtectedPage><ProfilePage /></ProtectedPage>} />
+          <Route path="/data-management" element={<ProtectedPage><DataManagementPage /></ProtectedPage>} />
+          <Route path="/notifications-settings" element={<ProtectedPage><NotificationsSettingsPage /></ProtectedPage>} />
+          <Route path="/invite-friends" element={<ProtectedPage><InviteFriendsPage /></ProtectedPage>} />
+          <Route path="/my-stats" element={<ProtectedPage><MyStatsPage /></ProtectedPage>} />
+          
+          {/* Settings routes - can be public but some features require auth */}
           <Route path="/language-settings" element={<LanguageSettingsPage />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

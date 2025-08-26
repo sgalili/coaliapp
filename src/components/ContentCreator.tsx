@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Camera, VideoIcon, X, Tag, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useActionProtection } from "@/hooks/useActionProtection";
 
 interface ContentCreatorProps {
   onClose: () => void;
@@ -24,6 +25,7 @@ export const ContentCreator = ({ onClose, onPublish }: ContentCreatorProps) => {
   });
   const [newTag, setNewTag] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
+  const { executeProtectedAction } = useActionProtection();
 
   const handleFileSelect = (selectedFile: File) => {
     setFile(selectedFile);
@@ -54,14 +56,18 @@ export const ContentCreator = ({ onClose, onPublish }: ContentCreatorProps) => {
   };
 
   const handlePublish = () => {
-    if (file && formData.caption) {
-      onPublish({
-        file,
-        contentType,
-        ...formData,
-        timestamp: new Date().toISOString()
-      });
-    }
+    executeProtectedAction(() => {
+      if (file && formData.caption) {
+        onPublish({
+          file,
+          contentType,
+          ...formData,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }, 'kyc1', {
+      kycMessage: 'נדרש אימות זהות כדי לפרסם תוכן'
+    });
   };
 
   const isFormValid = () => {
