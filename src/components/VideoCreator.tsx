@@ -531,11 +531,20 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
           </div>
 
           {/* Main Action Button */}
-          <div className="flex flex-col items-center">
+          <div className="flex items-center gap-4">
             {mode === "record" ? (
               <>
                 {videoSource === "camera" && !recordedBlob ? (
-                  <div className="relative">
+                  <>
+                    {/* Gallery upload button */}
+                    <Button
+                      size="lg"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-16 h-16 p-0 rounded-lg bg-gray-800/60 border-2 border-white/20 hover:bg-gray-700/80"
+                    >
+                      <Upload className="w-6 h-6 text-white" />
+                    </Button>
+                    
                     {/* Main record button */}
                     <Button
                       size="lg"
@@ -554,15 +563,6 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
                       )}
                     </Button>
                     
-                    {/* Gallery upload button */}
-                    <Button
-                      size="sm"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="absolute -bottom-2 -right-2 w-8 h-8 p-0 rounded-full bg-gray-800/80 border-2 border-white/20 hover:bg-gray-700/80"
-                    >
-                      <Upload className="w-4 h-4 text-white" />
-                    </Button>
-                    
                     {/* Hidden file input */}
                     <input
                       ref={fileInputRef}
@@ -571,7 +571,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
                       onChange={handleFileSelect}
                       className="hidden"
                     />
-                  </div>
+                  </>
                 ) : (recordedBlob || uploadedFile) ? (
                   <div className="flex gap-2">
                     <Button
