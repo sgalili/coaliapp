@@ -127,20 +127,28 @@ serve(async (req) => {
 function normalizePhoneE164(phone: string): string {
   // Remove all non-digit characters
   const digits = phone.replace(/\D/g, '');
-  
-  // Handle Israeli numbers specifically
+
+  // Handle Israeli numbers specifically (strip leading 0 after country code)
   if (digits.startsWith('972')) {
-    return `+${digits}`;
-  } else if (digits.startsWith('0')) {
-    return `+972${digits.substring(1)}`;
-  } else if (digits.length === 9) {
-    return `+972${digits}`;
-  } else if (digits.startsWith('9720')) {
-    return `+${digits.substring(1)}`;
+    const rest = digits.substring(3).replace(/^0+/, '');
+    return `+972${rest}`;
   }
-  
-  // Default: assume it's already formatted or add +972
-  return digits.startsWith('+') ? digits : `+972${digits}`;
+
+  // Local Israeli format starting with 0 (e.g., 05X...)
+  if (digits.startsWith('0')) {
+    return `+972${digits.substring(1)}`;
+  }
+
+  // If 9 digits without leading 0, assume Israel
+  if (digits.length === 9) {
+    return `+972${digits}`;
+  }
+
+  // If the original input already had a leading '+', keep it
+  if (phone.trim().startsWith('+')) return phone.trim();
+
+  // Fallback: just prefix a '+'
+  return `+${digits}`;
 }
 
 // Hash the code with salt and pepper
