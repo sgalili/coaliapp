@@ -54,7 +54,7 @@ const resources = {
         subtitle: "הרשת הראשונה של אמון דיגיטלי",
         whatIsCoali: "מה זה Coali?",
         enterPhone: "הכניסו את מספר הטלפון שלכם כדי להתחיל",
-        receiveCode: "קבלו קוד",
+        receiveCode: "קבלו קוד בוואטסאפ",
         sending: "שולח...",
         verificationCode: "קוד אימות",
         codeSentWhatsApp: "קוד נשלח דרך WhatsApp ל",
@@ -74,7 +74,17 @@ const resources = {
         phoneRequired: "אנא הכניסו מספר טלפון",
         invalidPhone: "פורמט מספר טלפון לא תקין",
         firstNameRequired: "שם פרטי נדרש",
-        lastNameRequired: "שם משפחה נדרש"
+        lastNameRequired: "שם משפחה נדרש",
+        whatsappCode: "קוד WhatsApp (4 ספרות)",
+        codePlaceholder: "1234",
+        sendingWhatsApp: "שולח קוד בוואטסאפ...",
+        verifyingCode: "מאמת קוד...",
+        codeVerified: "הנומר אומת בהצלחה דרך WhatsApp",
+        invalidCode: "קוד לא תקין",
+        codeExpired: "קוד פג תוקף",
+        tooManyAttempts: "יותר מדי ניסיונות",
+        requestNewCode: "בקש קוד חדש",
+        continueToLogin: "המשך להתחברות"
       },
       onboarding: {
         close: "סגור",
@@ -174,7 +184,17 @@ const resources = {
         phoneRequired: "Please enter your phone number",
         invalidPhone: "Invalid phone number format",
         firstNameRequired: "First name is required",
-        lastNameRequired: "Last name is required"
+        lastNameRequired: "Last name is required",
+        whatsappCode: "WhatsApp Code (4 digits)",
+        codePlaceholder: "1234",
+        sendingWhatsApp: "Sending WhatsApp code...",
+        verifyingCode: "Verifying code...",
+        codeVerified: "Number verified successfully via WhatsApp",
+        invalidCode: "Invalid code",
+        codeExpired: "Code expired",
+        tooManyAttempts: "Too many attempts",
+        requestNewCode: "Request new code",
+        continueToLogin: "Continue to login"
       },
       onboarding: {
         close: "Close",
@@ -274,7 +294,17 @@ const resources = {
         phoneRequired: "Veuillez entrer votre numéro de téléphone",
         invalidPhone: "Format de numéro de téléphone invalide",
         firstNameRequired: "Le prénom est requis",
-        lastNameRequired: "Le nom est requis"
+        lastNameRequired: "Le nom est requis",
+        whatsappCode: "Code WhatsApp (4 chiffres)",
+        codePlaceholder: "1234",
+        sendingWhatsApp: "Envoi du code WhatsApp...",
+        verifyingCode: "Vérification du code...",
+        codeVerified: "Numéro vérifié avec succès via WhatsApp",
+        invalidCode: "Code invalide",
+        codeExpired: "Code expiré",
+        tooManyAttempts: "Trop de tentatives",
+        requestNewCode: "Demander un nouveau code",
+        continueToLogin: "Continuer vers la connexion"
       },
       onboarding: {
         close: "Fermer",

@@ -773,6 +773,54 @@ export type Database = {
           },
         ]
       }
+      whatsapp_otps: {
+        Row: {
+          attempts: number
+          code_hash: string
+          created_at: string
+          expires_at: string
+          id: string
+          ip_address: string | null
+          last_attempt_at: string | null
+          phone_e164: string
+          salt: string
+          status: string
+          user_agent: string | null
+          vendor_message_id: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          last_attempt_at?: string | null
+          phone_e164: string
+          salt: string
+          status?: string
+          user_agent?: string | null
+          vendor_message_id?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          last_attempt_at?: string | null
+          phone_e164?: string
+          salt?: string
+          status?: string
+          user_agent?: string | null
+          vendor_message_id?: string | null
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       zooz_reactions: {
         Row: {
           amount: number
