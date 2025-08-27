@@ -8,6 +8,7 @@ import { usePosts, PostData } from "@/hooks/usePosts";
 import { usePostInteractions } from "@/hooks/usePostInteractions";
 import { useAuth } from "@/hooks/useAuth";
 import { useRealtimePosts } from "@/hooks/useRealtimePosts";
+import { useActionProtection } from "@/hooks/useActionProtection";
 import { Plus } from "lucide-react";
 
 export default function Index() {
@@ -30,6 +31,7 @@ export default function Index() {
     isTrusted,
     isWatched
   } = usePostInteractions();
+  const { executeProtectedAction } = useActionProtection();
 
   // Real-time updates
   useRealtimePosts(
@@ -151,7 +153,14 @@ export default function Index() {
     <div className="h-screen bg-background relative overflow-hidden" dir="rtl">
       {/* Create Post Button */}
       <button
-        onClick={() => setShowVideoCreator(true)}
+        onClick={() => executeProtectedAction(
+          () => setShowVideoCreator(true),
+          'kyc1',
+          {
+            authMessage: 'יש להתחבר כדי ליצור פוסט',
+            kycMessage: 'נדרש אימות KYC רמה 1 כדי ליצור פוסט'
+          }
+        )}
         className="fixed top-6 left-6 z-50 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
         aria-label="Créer un post"
       >
