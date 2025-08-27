@@ -9,11 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Shield, ChevronDown, HelpCircle, CheckCircle } from 'lucide-react';
+import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 import { CoaliOnboarding } from '../CoaliOnboarding';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
@@ -25,20 +23,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [whatsappStep, setWhatsappStep] = useState<'phone' | 'code' | 'verified'>('phone');
-  const [whatsappCode, setWhatsappCode] = useState('');
-  const [isWhatsappLoading, setIsWhatsappLoading] = useState(false);
-  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
   const { t } = useTranslation();
-
-  // Cooldown timer effect
-  useEffect(() => {
-    if (cooldown > 0) {
-      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [cooldown]);
 
   const validatePhone = (phoneNumber: string) => {
     // Basic phone validation - can be enhanced
@@ -46,8 +31,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     return phoneRegex.test(phoneNumber);
   };
 
-  // Send WhatsApp OTP
-  const handleWhatsAppSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!phoneNumber.trim()) {
@@ -61,166 +45,13 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     }
     
     setError('');
-    setIsWhatsappLoading(true);
-    
-    try {
-      const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
-      console.log('Sending WhatsApp OTP to:', fullPhone);
-      
-      const { data, error } = await supabase.functions.invoke('whatsapp-otp-send', {
-        body: { phone: fullPhone }
-      });
-      
-      console.log('WhatsApp OTP response:', { data, error });
-      
-      if (error) {
-        console.error('WhatsApp OTP send error:', error);
-        
-        // Handle specific error types
-        if (error.message?.includes('429')) {
-          setError('יש להמתין דקה לפני שליחת קוד נוסף');
-          toast.error('יש להמתין דקה לפני שליחת קוד נוסף');
-        } else if (error.message?.includes('500')) {
-          setError('שגיאה בשרת. אנא נסה שוב מאוחר יותר');
-          toast.error('שגיאה בשרת. אנא נסה שוב מאוחר יותר');
-        } else {
-          setError(error.message || 'שגיאה בשליחת קוד WhatsApp');
-          toast.error(error.message || 'שגיאה בשליחת קוד WhatsApp');
-        }
-        return;
-      }
-      
-      if (data?.error) {
-        const errorMessage = data.error;
-        console.error('WhatsApp OTP data error:', errorMessage);
-        
-        if (errorMessage.includes('Rate limit') && data.cooldown) {
-          setCooldown(data.cooldown);
-          setError(`יש להמתין ${data.cooldown} שניות לפני קוד חדש`);
-          toast.error(`יש להמתין ${data.cooldown} שניות לפני קוד חדש`);
-        } else if (errorMessage.includes('instance has been Stopped')) {
-          setError('שירות WhatsApp אינו זמין כרגע. אנא נסה מאוחר יותר');
-          toast.error('שירות WhatsApp אינו זמין כרגע. אנא נסה מאוחר יותר');
-        } else if (errorMessage.includes('Failed to send WhatsApp message')) {
-          setError('שגיאה בשליחת הודעת WhatsApp. בדקו את הגדרות החשבון');
-          toast.error('שגיאה בשליחת הודעת WhatsApp. בדקו את הגדרות החשבון');
-        } else {
-          setError(errorMessage);
-          toast.error(errorMessage);
-        }
-        return;
-      }
-      
-      if (data?.success) {
-        toast.success('קוד נשלח בהצלחה דרך WhatsApp');
-        setWhatsappStep('code');
-        setCooldown(data.cooldown || 60);
-      } else {
-        setError('שגיאה לא צפויה בשליחת הקוד');
-        toast.error('שגיאה לא צפויה בשליחת הקוד');
-      }
-      
-    } catch (error: any) {
-      console.error('WhatsApp OTP error:', error);
-      setError(error.message || 'שגיאה בשליחת קוד WhatsApp');
-      toast.error(error.message || 'שגיאה בשליחת קוד WhatsApp');
-    } finally {
-      setIsWhatsappLoading(false);
-    }
-  };
-
-  // Verify WhatsApp OTP
-  const handleVerifyCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!whatsappCode || whatsappCode.length !== 4) {
-      setError(t('auth.invalidCode'));
-      return;
-    }
-    
-    setError('');
-    setIsVerifyingCode(true);
-    
-    try {
-      const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
-      
-      const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify', {
-        body: { 
-          phone: fullPhone, 
-          code: whatsappCode 
-        }
-      });
-      
-      if (error) {
-        console.error('WhatsApp OTP verify error:', error);
-        setError('שגיאה באימות קוד');
-        return;
-      }
-      
-      if (data.error) {
-        setError(data.error);
-        return;
-      }
-      
-      toast.success(t('auth.codeVerified'));
-      setWhatsappStep('verified');
-      
-    } catch (error) {
-      console.error('WhatsApp verification error:', error);
-      setError('שגיאה באימות קוד');
-    } finally {
-      setIsVerifyingCode(false);
-    }
-  };
-
-  // Continue to normal flow (SMS OTP)
-  const handleContinueToLogin = () => {
     const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
     onSubmit(fullPhone);
-  };
-
-  // Reset WhatsApp flow
-  const handleRequestNewCode = () => {
-    setWhatsappStep('phone');
-    setWhatsappCode('');
-    setError('');
-    setCooldown(0);
   };
 
   const handleCountrySelect = (country: Country) => {
     setSelectedCountry(country);
     setError('');
-  };
-
-  // Test function for WhatsApp API
-  const handleTestWhatsApp = async () => {
-    setIsWhatsappLoading(true);
-    setError('');
-    
-    try {
-      console.log('Testing WhatsApp API...');
-      const { data, error } = await supabase.functions.invoke('whatsapp-test');
-      
-      console.log('Test response:', { data, error });
-      
-      if (error) {
-        setError(`Test failed: ${error.message}`);
-        toast.error(`Test failed: ${error.message}`);
-      } else if (data?.success) {
-        toast.success('WhatsApp test successful! 🎉');
-        setError('');
-      } else {
-        const errorMsg = data?.ultraMsgResponse?.error || 'Test failed';
-        setError(`Test failed: ${errorMsg}`);
-        toast.error(`Test failed: ${errorMsg}`);
-      }
-    } catch (error: any) {
-      console.error('Test error:', error);
-      setError(`Test error: ${error.message}`);
-      toast.error(`Test error: ${error.message}`);
-    } finally {
-      setIsWhatsappLoading(false);
-    }
   };
 
   return (
@@ -251,189 +82,88 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
 
       {/* Auth Form */}
       <div className="space-y-4">
-        {whatsappStep === 'phone' && (
-          <>
-            <p className="text-center text-muted-foreground">
-              {t('auth.enterPhone')}
-            </p>
-            
-            <Card>
-              <CardContent className="p-6">
-                <form onSubmit={handleWhatsAppSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex" dir="ltr">
-                      {/* Country Selector */}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
-                            disabled={isWhatsappLoading}
-                            type="button"
-                          >
-                            <span className="text-lg">{selectedCountry.flag}</span>
-                            <span className="text-sm font-medium">{selectedCountry.dialCode}</span>
-                            <ChevronDown className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent 
-                          className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50 [direction:ltr]"
-                          align="start"
-                        >
-                          {countries.map((country) => (
-                            <DropdownMenuItem
-                              key={country.code}
-                              onClick={() => handleCountrySelect(country)}
-                              className="flex items-center gap-3 cursor-pointer hover:bg-accent"
-                            >
-                              <span className="text-lg">{country.flag}</span>
-                              <span className="text-sm font-medium w-12">{country.dialCode}</span>
-                              <span className="text-sm flex-1 text-left">{country.name}</span>
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-
-                      {/* Phone Number Input */}
-                      <Input
-                        type="tel"
-                        placeholder="6 12 34 56 78"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="text-lg py-3 rounded-l-none flex-1"
-                        disabled={isWhatsappLoading}
-                        dir="ltr"
-                      />
-                    </div>
-                    {error && (
-                      <p className="text-sm text-destructive">{error}</p>
-                    )}
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full py-3 text-lg" 
-                    disabled={isWhatsappLoading || cooldown > 0}
-                  >
-                    {isWhatsappLoading ? t('auth.sendingWhatsApp') : 
-                     cooldown > 0 ? `המתן ${cooldown}s` : 
-                     t('auth.receiveCode')}
-                  </Button>
-                  
-                  {/* Temporary test button */}
-                  <Button 
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleTestWhatsApp}
-                    disabled={isWhatsappLoading}
-                  >
-                    🧪 Test WhatsApp API
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {whatsappStep === 'code' && (
-          <>
-            <p className="text-center text-muted-foreground">
-              הכניסו את הקוד בן 4 הספרות שנשלח לכם ב-WhatsApp
-            </p>
-            
-            <Card>
-              <CardContent className="p-6">
-                <form onSubmit={handleVerifyCode} className="space-y-4">
-                  <div className="space-y-2">
-                    <Input
-                      type="text"
-                      placeholder={t('auth.codePlaceholder')}
-                      value={whatsappCode}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
-                        setWhatsappCode(value);
-                      }}
-                      className="text-2xl text-center py-4 tracking-widest"
-                      disabled={isVerifyingCode}
-                      maxLength={4}
-                      autoFocus
-                    />
-                    {error && (
-                      <p className="text-sm text-destructive">{error}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Button 
-                      type="submit" 
-                      className="w-full py-3 text-lg" 
-                      disabled={isVerifyingCode || whatsappCode.length !== 4}
-                    >
-                      {isVerifyingCode ? t('auth.verifyingCode') : 'אמת קוד'}
-                    </Button>
-                    
-                    <Button 
-                      type="button"
-                      variant="ghost"
-                      className="w-full"
-                      onClick={handleRequestNewCode}
-                      disabled={cooldown > 0}
-                    >
-                      {cooldown > 0 ? `קוד חדש בעוד ${cooldown}s` : t('auth.requestNewCode')}
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {whatsappStep === 'verified' && (
-          <>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
+        <p className="text-center text-muted-foreground">
+          {t('auth.enterPhone')}
+        </p>
+        
+        {/* Form */}
+        <Card>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <h3 className="text-xl font-semibold text-green-600">
-                  {t('auth.codeVerified')}
-                </h3>
-                <p className="text-muted-foreground">
-                  המשיכו עכשיו לתהליך ההתחברות הרגיל
-                </p>
-              </div>
-            </div>
-            
-            <Card>
-              <CardContent className="p-6">
-                <Button 
-                  onClick={handleContinueToLogin}
-                  className="w-full py-3 text-lg"
-                  disabled={isLoading}
-                >
-                  {isLoading ? t('auth.sending') : t('auth.continueToLogin')}
-                </Button>
-              </CardContent>
-            </Card>
-          </>
-        )}
+                <div className="flex" dir="ltr">
+                  {/* Country Selector */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
+                        disabled={isLoading}
+                        type="button"
+                      >
+                        <span className="text-lg">{selectedCountry.flag}</span>
+                        <span className="text-sm font-medium">{selectedCountry.dialCode}</span>
+                        <ChevronDown className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                      className="w-72 max-h-60 overflow-y-auto bg-popover border shadow-lg z-50 [direction:ltr]"
+                      align="start"
+                    >
+                      {countries.map((country) => (
+                        <DropdownMenuItem
+                          key={country.code}
+                          onClick={() => handleCountrySelect(country)}
+                          className="flex items-center gap-3 cursor-pointer hover:bg-accent"
+                        >
+                          <span className="text-lg">{country.flag}</span>
+                          <span className="text-sm font-medium w-12">{country.dialCode}</span>
+                          <span className="text-sm flex-1 text-left">{country.name}</span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-        {/* Terms - only show on phone step */}
-        {whatsappStep === 'phone' && (
-          <div className="text-center space-y-2">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {t('auth.termsAccept')}{' '}
-              <a href="/terms" className="text-primary underline">
-                {t('auth.termsOfService')}
-              </a>{' '}
-              {t('auth.and')}{' '}
-              <a href="/privacy" className="text-primary underline">
-                {t('auth.privacyPolicy')}
-              </a>
-            </p>
-          </div>
-        )}
+                  {/* Phone Number Input */}
+                  <Input
+                    type="tel"
+                    placeholder="6 12 34 56 78"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="text-lg py-3 rounded-l-none flex-1"
+                    disabled={isLoading}
+                    dir="ltr"
+                  />
+                </div>
+                {error && (
+                  <p className="text-sm text-destructive">{error}</p>
+                )}
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full py-3 text-lg" 
+                disabled={isLoading}
+              >
+                {isLoading ? t('auth.sending') : t('auth.receiveCode')}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Terms */}
+        <div className="text-center space-y-2">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {t('auth.termsAccept')}{' '}
+            <a href="/terms" className="text-primary underline">
+              {t('auth.termsOfService')}
+            </a>{' '}
+            {t('auth.and')}{' '}
+            <a href="/privacy" className="text-primary underline">
+              {t('auth.privacyPolicy')}
+            </a>
+          </p>
+        </div>
       </div>
 
       {/* Coali Onboarding */}
