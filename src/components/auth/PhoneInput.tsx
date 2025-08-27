@@ -192,6 +192,37 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     setError('');
   };
 
+  // Test function for WhatsApp API
+  const handleTestWhatsApp = async () => {
+    setIsWhatsappLoading(true);
+    setError('');
+    
+    try {
+      console.log('Testing WhatsApp API...');
+      const { data, error } = await supabase.functions.invoke('whatsapp-test');
+      
+      console.log('Test response:', { data, error });
+      
+      if (error) {
+        setError(`Test failed: ${error.message}`);
+        toast.error(`Test failed: ${error.message}`);
+      } else if (data?.success) {
+        toast.success('WhatsApp test successful! 🎉');
+        setError('');
+      } else {
+        const errorMsg = data?.ultraMsgResponse?.error || 'Test failed';
+        setError(`Test failed: ${errorMsg}`);
+        toast.error(`Test failed: ${errorMsg}`);
+      }
+    } catch (error: any) {
+      console.error('Test error:', error);
+      setError(`Test error: ${error.message}`);
+      toast.error(`Test error: ${error.message}`);
+    } finally {
+      setIsWhatsappLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -287,6 +318,17 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                     {isWhatsappLoading ? t('auth.sendingWhatsApp') : 
                      cooldown > 0 ? `המתן ${cooldown}s` : 
                      t('auth.receiveCode')}
+                  </Button>
+                  
+                  {/* Temporary test button */}
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleTestWhatsApp}
+                    disabled={isWhatsappLoading}
+                  >
+                    🧪 Test WhatsApp API
                   </Button>
                 </form>
               </CardContent>
