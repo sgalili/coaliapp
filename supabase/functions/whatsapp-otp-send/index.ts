@@ -69,12 +69,15 @@ serve(async (req) => {
     const instanceId = Deno.env.get('ULTRAMSG_INSTANCE_ID')!;
     const token = Deno.env.get('ULTRAMSG_TOKEN')!;
     
+    console.log(`Using UltraMsg instance: ${instanceId}`);
+    console.log(`Token length: ${token ? token.length : 'undefined'}`);
+    
     const message = `קוד האימות שלך ב-Coali: ${code}\n\nהקוד יפוג בעוד 5 דקות.`;
     
     console.log(`Sending WhatsApp to ${normalizedPhone}: ${message}`);
     
     const ultraMsgResponse = await sendWhatsAppMessage(instanceId, token, normalizedPhone, message);
-    console.log('UltraMsg response:', ultraMsgResponse);
+    console.log('UltraMsg response:', JSON.stringify(ultraMsgResponse, null, 2));
 
     // Store OTP in database
     const { error: dbError } = await supabase
@@ -162,6 +165,9 @@ async function hashCode(code: string, salt: string, pepper: string): Promise<str
 // Send WhatsApp message via UltraMsg
 async function sendWhatsAppMessage(instanceId: string, token: string, to: string, body: string) {
   try {
+    const url = `https://api.ultramsg.com/${instanceId}/messages/chat`;
+    console.log(`UltraMsg API URL: ${url}`);
+    
     const params = new URLSearchParams({
       token,
       to,
@@ -169,7 +175,10 @@ async function sendWhatsAppMessage(instanceId: string, token: string, to: string
       priority: '10'
     });
 
-    const response = await fetch(`https://api.ultramsg.com/${instanceId}/messages/chat`, {
+    console.log(`Request params: to=${to}, body=${body}, priority=10`);
+    console.log(`Full request body: ${params.toString()}`);
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -177,13 +186,34 @@ async function sendWhatsAppMessage(instanceId: string, token: string, to: string
       body: params.toString(),
     });
 
-    const data = await response.json();
+    console.log(`UltraMsg API response status: ${response.status} ${response.statusText}`);
     
-    return {
+    const responseText = await response.text();
+    console.log(`UltraMsg API raw response: ${responseText}`);
+    
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Failed to parse UltraMsg response as JSON:', parseError);
+      return {
+        sent: false,
+        id: null,
+        error: `Invalid JSON response: ${responseText}`
+      };
+    }
+    
+    const result = {
       sent: response.ok && data.sent === 'true',
       id: data.id || null,
-      error: response.ok ? null : data.error || 'Unknown error'
+      error: response.ok ? null : data.error || 'Unknown error',
+      httpStatus: response.status,
+      rawResponse: data
     };
+    
+    console.log(`Processed result: ${JSON.stringify(result, null, 2)}`);
+    
+    return result;
   } catch (error) {
     console.error('UltraMsg API error:', error);
     return {

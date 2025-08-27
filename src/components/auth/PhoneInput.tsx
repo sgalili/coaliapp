@@ -65,34 +65,65 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     
     try {
       const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
+      console.log('Sending WhatsApp OTP to:', fullPhone);
       
       const { data, error } = await supabase.functions.invoke('whatsapp-otp-send', {
         body: { phone: fullPhone }
       });
       
+      console.log('WhatsApp OTP response:', { data, error });
+      
       if (error) {
         console.error('WhatsApp OTP send error:', error);
-        setError('שגיאה בשליחת קוד WhatsApp');
-        return;
-      }
-      
-      if (data.error) {
-        if (data.cooldown) {
-          setCooldown(data.cooldown);
-          setError(`יש להמתין ${data.cooldown} שניות לפני קוד חדש`);
+        
+        // Handle specific error types
+        if (error.message?.includes('429')) {
+          setError('יש להמתין דקה לפני שליחת קוד נוסף');
+          toast.error('יש להמתין דקה לפני שליחת קוד נוסף');
+        } else if (error.message?.includes('500')) {
+          setError('שגיאה בשרת. אנא נסה שוב מאוחר יותר');
+          toast.error('שגיאה בשרת. אנא נסה שוב מאוחר יותר');
         } else {
-          setError(data.error);
+          setError(error.message || 'שגיאה בשליחת קוד WhatsApp');
+          toast.error(error.message || 'שגיאה בשליחת קוד WhatsApp');
         }
         return;
       }
       
-      toast.success('קוד נשלח בהצלחה דרך WhatsApp');
-      setWhatsappStep('code');
-      setCooldown(data.cooldown || 60);
+      if (data?.error) {
+        const errorMessage = data.error;
+        console.error('WhatsApp OTP data error:', errorMessage);
+        
+        if (errorMessage.includes('Rate limit') && data.cooldown) {
+          setCooldown(data.cooldown);
+          setError(`יש להמתין ${data.cooldown} שניות לפני קוד חדש`);
+          toast.error(`יש להמתין ${data.cooldown} שניות לפני קוד חדש`);
+        } else if (errorMessage.includes('instance has been Stopped')) {
+          setError('שירות WhatsApp אינו זמין כרגע. אנא נסה מאוחר יותר');
+          toast.error('שירות WhatsApp אינו זמין כרגע. אנא נסה מאוחר יותר');
+        } else if (errorMessage.includes('Failed to send WhatsApp message')) {
+          setError('שגיאה בשליחת הודעת WhatsApp. בדקו את הגדרות החשבון');
+          toast.error('שגיאה בשליחת הודעת WhatsApp. בדקו את הגדרות החשבון');
+        } else {
+          setError(errorMessage);
+          toast.error(errorMessage);
+        }
+        return;
+      }
       
-    } catch (error) {
+      if (data?.success) {
+        toast.success('קוד נשלח בהצלחה דרך WhatsApp');
+        setWhatsappStep('code');
+        setCooldown(data.cooldown || 60);
+      } else {
+        setError('שגיאה לא צפויה בשליחת הקוד');
+        toast.error('שגיאה לא צפויה בשליחת הקוד');
+      }
+      
+    } catch (error: any) {
       console.error('WhatsApp OTP error:', error);
-      setError('שגיאה בשליחת קוד WhatsApp');
+      setError(error.message || 'שגיאה בשליחת קוד WhatsApp');
+      toast.error(error.message || 'שגיאה בשליחת קוד WhatsApp');
     } finally {
       setIsWhatsappLoading(false);
     }
