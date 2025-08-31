@@ -48,8 +48,8 @@ serve(async (req) => {
     const json = await res.json().catch(() => ({}));
     console.log(`UltraMsg response:`, { status: res.status, json });
     
-    return new Response(JSON.stringify({ ok: res.ok, json }), { 
-      status: res.status, 
+    return new Response(JSON.stringify({ ok: res.ok, vendor_status: res.status, vendor_json: json }), { 
+      status: 200, 
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   } catch (e) {
