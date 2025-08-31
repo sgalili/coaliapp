@@ -22,7 +22,7 @@ interface PhoneInputProps {
 // Helper pour formater en +972...
 const toE164 = (dialCode: string, local: string) => {
   const d = dialCode.startsWith('+') ? dialCode : `+${dialCode}`;
-  const n = (local || '').replace(/\D/g, '');
+  const n = (local || '').replace(/\D/g, '').replace(/^0+/, ''); // enlève le zéro initial
   return `${d}${n}`;
 };
 
@@ -67,12 +67,11 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         setError(fnError.message || 'Send failed');
         return;
       }
-      if (!data?.ok) {
-        setError('Send failed');
-        return;
-      }
 
-      // ✅ On notifie le parent
+      // Debug (optionnel)
+      console.log('OTP sent payload:', data);
+
+      // ✅ Succès → passer à l'étape suivante
       onSubmit(fullPhone);
     } catch (err: any) {
       setError(err?.message || 'Unexpected error');
