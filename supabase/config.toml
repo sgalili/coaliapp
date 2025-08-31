@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.whatsapp-otp-verify]
 verify_jwt = false
+
+[functions.whatsapp-otp-verify-and-login]
+verify_jwt = false
