@@ -89,6 +89,31 @@ export const AuthPage = () => {
       }
       
       console.log('OTP verified successfully:', data);
+      
+      // Maintenant on doit authentifier l'utilisateur dans Supabase
+      // On génère un email temporaire basé sur le numéro de téléphone
+      const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
+      const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
+      
+      // Créer l'utilisateur dans Supabase
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: tempEmail,
+        password: tempPassword,
+        options: {
+          data: {
+            phone: authData.phone,
+            temp_auth: true
+          }
+        }
+      });
+
+      if (signUpError) {
+        console.error('Error creating Supabase user:', signUpError);
+        toast.error('Erreur lors de la création du compte');
+        setAuthError('Impossible de créer le compte');
+        return;
+      }
+
       toast.success('Vérification réussie !');
       setAuthData(prev => ({ ...prev, otp }));
       
