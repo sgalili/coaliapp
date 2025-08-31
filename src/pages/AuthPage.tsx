@@ -100,11 +100,11 @@ export const AuthPage = () => {
     }
   };
 
-  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
+  const handleBasicProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
     try {
       setAuthError(''); // Clear any previous errors
       
-      // D'abord créer l'utilisateur Supabase avec toutes les bonnes métadonnées
+      // Créer l'utilisateur Supabase dès que les infos de base sont remplies
       const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
       const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
       
@@ -152,11 +152,17 @@ export const AuthPage = () => {
       }
       
       toast.success('Profil créé avec succès !');
-      navigate('/');
+      // L'utilisateur reste dans ProfileCompletion pour l'étape 2
     } catch (error) {
       console.error('Error creating profile:', error);
       setAuthError('Erreur technique');
     }
+  };
+
+  const handleFullProfileComplete = () => {
+    // L'utilisateur a terminé ou sauté l'étape bio/domaines
+    // Il peut maintenant accéder à l'app
+    navigate('/');
   };
 
   const handleStartOnboarding = () => {
@@ -207,8 +213,8 @@ export const AuthPage = () => {
           
           {currentStep === 'profile' && (
             <ProfileCompletion
-              onComplete={handleProfileComplete}
-              onStartOnboarding={handleStartOnboarding}
+              onBasicComplete={handleBasicProfileComplete}
+              onFullComplete={handleFullProfileComplete}
               isLoading={authLoading}
             />
           )}
