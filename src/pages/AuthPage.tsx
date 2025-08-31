@@ -70,40 +70,33 @@ export const AuthPage = () => {
     try {
       setAuthError(''); // Clear any previous errors
       
-      const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify-and-login', {
-        body: { phone: authData.phone, otp }
+      // Vérifier l'OTP via notre fonction WhatsApp
+      const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-verify', {
+        body: { phone: authData.phone, otp },
       });
 
-      if (error) throw error;
-
-      // Établir la session Supabase avec les tokens retournés
-      await supabase.auth.setSession({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-      });
-
-      console.log('User session established:', data.user);
-      toast.success('Vérification réussie !');
-      setAuthData(prev => ({ ...prev, otp }));
-      setCurrentStep('profile');
-    } catch (error: any) {
-      console.error('OTP verification error:', error);
-      
-      let errorMessage = 'שגיאה באימות הקוד';
-      if (error.message?.includes('expired') || error.message?.includes('otp_expired')) {
-        errorMessage = 'הקוד פג תוקף';
-        toast.error('Code expiré');
-      } else if (error.message?.includes('invalid') || error.message?.includes('otp_invalid')) {
-        errorMessage = 'קוד לא נכון';
+      if (fnError) {
+        console.error('Error verifying OTP:', fnError);
         toast.error('Code incorrect');
-      } else if (error.message?.includes('not found') || error.message?.includes('otp_not_found')) {
-        errorMessage = 'קוד לא נמצא';
-        toast.error('Code non trouvé');
-      } else {
+        setAuthError('Code de vérification incorrect');
+        return;
+      }
+
+      if (!data?.success) {
         toast.error('Code incorrect');
+        setAuthError('Code de vérification incorrect');
+        return;
       }
       
-      setAuthError(errorMessage);
+      console.log('OTP verified successfully:', data);
+      toast.success('Vérification réussie !');
+      setAuthData(prev => ({ ...prev, otp }));
+      
+      // Passer directement à l'étape profil - on créera l'utilisateur Supabase après
+      setCurrentStep('profile');
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      setAuthError('Erreur de vérification');
     }
   };
 
@@ -111,16 +104,45 @@ export const AuthPage = () => {
     try {
       setAuthError(''); // Clear any previous errors
       
-      // User is already authenticated via OTP, just update profile
-      const { error: updateError } = await updateProfile(firstName, lastName, profilePicture);
+      // D'abord créer l'utilisateur Supabase avec toutes les bonnes métadonnées
+      const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
+      const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
       
-      if (updateError) {
-        console.error('Error updating profile:', updateError);
-        toast.error('Erreur lors de la mise à jour du profil');
-        setAuthError('Impossible de mettre à jour le profil');
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: tempEmail,
+        password: tempPassword,
+        options: {
+          data: {
+            phone: authData.phone,
+            first_name: firstName,
+            last_name: lastName,
+            temp_auth: true
+          }
+        }
+      });
+
+      if (signUpError) {
+        console.error('Error creating Supabase user:', signUpError);
+        toast.error('Erreur lors de la création du compte');
+        setAuthError('Impossible de créer le compte');
         return;
       }
-
+      
+      // Attendre un peu que l'utilisateur soit créé et que les triggers se déclenchent
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Maintenant mettre à jour le profil avec l'avatar si fourni
+      if (profilePicture && signUpData.user) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ avatar_url: profilePicture })
+          .eq('user_id', signUpData.user.id);
+          
+        if (updateError) {
+          console.error('Error updating avatar:', updateError);
+        }
+      }
+      
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
       
       // Handle invitation code or trust intent if present
@@ -134,7 +156,6 @@ export const AuthPage = () => {
     } catch (error) {
       console.error('Error creating profile:', error);
       setAuthError('Erreur technique');
-      toast.error('Erreur technique');
     }
   };
 
