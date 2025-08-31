@@ -89,19 +89,33 @@ export const AuthPage = () => {
       }
       
       console.log('OTP verified successfully:', data);
+      toast.success('Vérification réussie !');
+      setAuthData(prev => ({ ...prev, otp }));
       
-      // Maintenant on doit authentifier l'utilisateur dans Supabase
-      // On génère un email temporaire basé sur le numéro de téléphone
+      // Passer directement à l'étape profil - on créera l'utilisateur Supabase après
+      setCurrentStep('profile');
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      setAuthError('Erreur de vérification');
+    }
+  };
+
+  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
+    try {
+      setAuthError(''); // Clear any previous errors
+      
+      // D'abord créer l'utilisateur Supabase avec toutes les bonnes métadonnées
       const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
       const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
       
-      // Créer l'utilisateur dans Supabase
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: tempEmail,
         password: tempPassword,
         options: {
           data: {
             phone: authData.phone,
+            first_name: firstName,
+            last_name: lastName,
             temp_auth: true
           }
         }
@@ -113,27 +127,20 @@ export const AuthPage = () => {
         setAuthError('Impossible de créer le compte');
         return;
       }
-
-      toast.success('Vérification réussie !');
-      setAuthData(prev => ({ ...prev, otp }));
       
-      // Pour les nouveaux utilisateurs, aller à la complétion du profil
-      setCurrentStep('profile');
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-      setAuthError('Erreur de vérification');
-    }
-  };
-
-  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
-    try {
-      const { error } = await updateProfile(firstName, lastName, profilePicture);
+      // Attendre un peu que l'utilisateur soit créé et que les triggers se déclenchent
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (error) {
-        console.error('Error creating profile:', error);
-        toast.error('Erreur lors de la création du profil');
-        setAuthError('Impossible de créer le profil');
-        return;
+      // Maintenant mettre à jour le profil avec l'avatar si fourni
+      if (profilePicture && signUpData.user) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ avatar_url: profilePicture })
+          .eq('user_id', signUpData.user.id);
+          
+        if (updateError) {
+          console.error('Error updating avatar:', updateError);
+        }
       }
       
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
