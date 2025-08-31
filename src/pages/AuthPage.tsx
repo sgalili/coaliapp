@@ -128,7 +128,22 @@ export const AuthPage = () => {
         return;
       }
       
-      // Attendre un peu que l'utilisateur soit créé et que les triggers se déclenchent
+      // Maintenant connecter l'utilisateur avec les mêmes identifiants
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: tempEmail,
+        password: tempPassword,
+      });
+
+      if (signInError) {
+        console.error('Error signing in user:', signInError);
+        toast.error('Erreur lors de la connexion');
+        setAuthError('Impossible de se connecter');
+        return;
+      }
+
+      console.log('User signed in successfully:', signInData.user?.id);
+      
+      // Attendre un peu que la session soit établie
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Maintenant mettre à jour le profil avec l'avatar si fourni
