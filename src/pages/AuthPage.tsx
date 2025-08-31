@@ -101,10 +101,24 @@ export const AuthPage = () => {
   };
 
   const handleBasicProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
+    // Stocker les données de profil et passer à l'étape suivante
+    // La création de l'utilisateur Supabase se fera plus tard dans le process
+    setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
+    
+    // Handle invitation code or trust intent if present
+    if (authData.invitationCode) {
+      // TODO: Consume invitation code
+      console.log('Invitation code present:', authData.invitationCode);
+    }
+    
+    // L'utilisateur reste dans ProfileCompletion pour l'étape 2 (bio/domaines)
+  };
+
+  const handleFullProfileComplete = async () => {
     try {
-      setAuthError(''); // Clear any previous errors
+      setAuthError('');
       
-      // Créer l'utilisateur Supabase dès que les infos de base sont remplies
+      // Créer l'utilisateur Supabase maintenant que tout le profil est complété
       const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
       const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
       
@@ -114,8 +128,8 @@ export const AuthPage = () => {
         options: {
           data: {
             phone: authData.phone,
-            first_name: firstName,
-            last_name: lastName,
+            first_name: authData.firstName,
+            last_name: authData.lastName,
             temp_auth: true
           }
         }
@@ -128,7 +142,7 @@ export const AuthPage = () => {
         return;
       }
       
-      // Maintenant connecter l'utilisateur avec les mêmes identifiants
+      // Connecter l'utilisateur
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: tempEmail,
         password: tempPassword,
@@ -141,43 +155,26 @@ export const AuthPage = () => {
         return;
       }
 
-      console.log('User signed in successfully:', signInData.user?.id);
-      
-      // Attendre un peu que la session soit établie
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Maintenant mettre à jour le profil avec l'avatar si fourni
-      if (profilePicture && signUpData.user) {
-        const { error: updateError } = await supabase
+      // Mettre à jour l'avatar si présent
+      if (authData.profilePicture && signUpData.user) {
+        await supabase
           .from('profiles')
-          .update({ avatar_url: profilePicture })
+          .update({ avatar_url: authData.profilePicture })
           .eq('user_id', signUpData.user.id);
-          
-        if (updateError) {
-          console.error('Error updating avatar:', updateError);
-        }
       }
       
-      setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
-      
-      // Handle invitation code or trust intent if present
+      // Gérer le code d'invitation si présent
       if (authData.invitationCode) {
-        // TODO: Consume invitation code
         console.log('Consuming invitation code:', authData.invitationCode);
       }
       
-      toast.success('Profil créé avec succès !');
-      // L'utilisateur reste dans ProfileCompletion pour l'étape 2
+      toast.success('Compte créé avec succès !');
+      // Navigation vers l'app
+      navigate('/');
     } catch (error) {
-      console.error('Error creating profile:', error);
+      console.error('Error creating account:', error);
       setAuthError('Erreur technique');
     }
-  };
-
-  const handleFullProfileComplete = () => {
-    // L'utilisateur a terminé ou sauté l'étape bio/domaines
-    // Il peut maintenant accéder à l'app
-    navigate('/');
   };
 
   const handleStartOnboarding = () => {
