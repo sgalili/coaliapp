@@ -11,6 +11,8 @@ export const useAuth = () => {
   const [initializing, setInitializing] = useState(true);
   const navigate = useNavigate();
 
+  console.log('useAuth called');
+
   useEffect(() => {
     console.log('useAuth useEffect running');
     // Set up auth state listener FIRST

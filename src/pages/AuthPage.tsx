@@ -100,25 +100,11 @@ export const AuthPage = () => {
     }
   };
 
-  const handleBasicProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
-    // Stocker les données de profil et passer à l'étape suivante
-    // La création de l'utilisateur Supabase se fera plus tard dans le process
-    setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
-    
-    // Handle invitation code or trust intent if present
-    if (authData.invitationCode) {
-      // TODO: Consume invitation code
-      console.log('Invitation code present:', authData.invitationCode);
-    }
-    
-    // L'utilisateur reste dans ProfileCompletion pour l'étape 2 (bio/domaines)
-  };
-
-  const handleFullProfileComplete = async () => {
+  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
     try {
-      setAuthError('');
+      setAuthError(''); // Clear any previous errors
       
-      // Créer l'utilisateur Supabase maintenant que tout le profil est complété
+      // D'abord créer l'utilisateur Supabase avec toutes les bonnes métadonnées
       const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
       const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
       
@@ -128,8 +114,8 @@ export const AuthPage = () => {
         options: {
           data: {
             phone: authData.phone,
-            first_name: authData.firstName,
-            last_name: authData.lastName,
+            first_name: firstName,
+            last_name: lastName,
             temp_auth: true
           }
         }
@@ -142,37 +128,33 @@ export const AuthPage = () => {
         return;
       }
       
-      // Connecter l'utilisateur
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: tempEmail,
-        password: tempPassword,
-      });
-
-      if (signInError) {
-        console.error('Error signing in user:', signInError);
-        toast.error('Erreur lors de la connexion');
-        setAuthError('Impossible de se connecter');
-        return;
-      }
-
-      // Mettre à jour l'avatar si présent
-      if (authData.profilePicture && signUpData.user) {
-        await supabase
+      // Attendre un peu que l'utilisateur soit créé et que les triggers se déclenchent
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Maintenant mettre à jour le profil avec l'avatar si fourni
+      if (profilePicture && signUpData.user) {
+        const { error: updateError } = await supabase
           .from('profiles')
-          .update({ avatar_url: authData.profilePicture })
+          .update({ avatar_url: profilePicture })
           .eq('user_id', signUpData.user.id);
+          
+        if (updateError) {
+          console.error('Error updating avatar:', updateError);
+        }
       }
       
-      // Gérer le code d'invitation si présent
+      setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
+      
+      // Handle invitation code or trust intent if present
       if (authData.invitationCode) {
+        // TODO: Consume invitation code
         console.log('Consuming invitation code:', authData.invitationCode);
       }
       
-      toast.success('Compte créé avec succès !');
-      // Navigation vers l'app
+      toast.success('Profil créé avec succès !');
       navigate('/');
     } catch (error) {
-      console.error('Error creating account:', error);
+      console.error('Error creating profile:', error);
       setAuthError('Erreur technique');
     }
   };
@@ -225,8 +207,8 @@ export const AuthPage = () => {
           
           {currentStep === 'profile' && (
             <ProfileCompletion
-              onBasicComplete={handleBasicProfileComplete}
-              onFullComplete={handleFullProfileComplete}
+              onComplete={handleProfileComplete}
+              onStartOnboarding={handleStartOnboarding}
               isLoading={authLoading}
             />
           )}

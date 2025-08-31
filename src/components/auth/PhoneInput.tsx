@@ -68,15 +68,8 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         return;
       }
 
-      // Vérifier que l'envoi WhatsApp a réussi
-      if (!data?.ok || !data?.json?.sent) {
-        console.log('WhatsApp send failed:', data);
-        setError('Échec de l\'envoi du code WhatsApp');
-        return;
-      }
-
       // Debug (optionnel)
-      console.log('OTP sent successfully:', data);
+      console.log('OTP sent payload:', data);
 
       // ✅ Succès → passer à l'étape suivante
       onSubmit(fullPhone);
