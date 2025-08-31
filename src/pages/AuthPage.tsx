@@ -92,7 +92,7 @@ export const AuthPage = () => {
       toast.success('Vérification réussie !');
       setAuthData(prev => ({ ...prev, otp }));
       
-      // Pour les nouveaux utilisateurs, aller à la complétion du profil
+      // Passer directement à l'étape profil - on créera l'utilisateur Supabase après
       setCurrentStep('profile');
     } catch (error) {
       console.error('Error verifying OTP:', error);
@@ -102,13 +102,45 @@ export const AuthPage = () => {
 
   const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
     try {
-      const { error } = await updateProfile(firstName, lastName, profilePicture);
+      setAuthError(''); // Clear any previous errors
       
-      if (error) {
-        console.error('Error creating profile:', error);
-        toast.error('Erreur lors de la création du profil');
-        setAuthError('Impossible de créer le profil');
+      // D'abord créer l'utilisateur Supabase avec toutes les bonnes métadonnées
+      const tempEmail = `${authData.phone.replace(/[^0-9]/g, '')}@temp.coalichain.com`;
+      const tempPassword = `temp_${Math.random().toString(36).substring(2, 15)}`;
+      
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: tempEmail,
+        password: tempPassword,
+        options: {
+          data: {
+            phone: authData.phone,
+            first_name: firstName,
+            last_name: lastName,
+            temp_auth: true
+          }
+        }
+      });
+
+      if (signUpError) {
+        console.error('Error creating Supabase user:', signUpError);
+        toast.error('Erreur lors de la création du compte');
+        setAuthError('Impossible de créer le compte');
         return;
+      }
+      
+      // Attendre un peu que l'utilisateur soit créé et que les triggers se déclenchent
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Maintenant mettre à jour le profil avec l'avatar si fourni
+      if (profilePicture && signUpData.user) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ avatar_url: profilePicture })
+          .eq('user_id', signUpData.user.id);
+          
+        if (updateError) {
+          console.error('Error updating avatar:', updateError);
+        }
       }
       
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
