@@ -72,6 +72,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       console.log('OTP sent payload:', data);
 
       // ✅ Succès → passer à l'étape suivante
+      console.log('🔥 PhoneInput: OTP sent successfully, calling onSubmit');
       onSubmit(fullPhone);
     } catch (err: any) {
       setError(err?.message || 'Unexpected error');
