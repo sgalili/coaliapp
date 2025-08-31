@@ -8,6 +8,7 @@ import { LanguageSelector } from '@/components/auth/LanguageSelector';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 type AuthStep = 'phone' | 'otp' | 'profile' | 'onboarding';
@@ -57,41 +58,41 @@ export const AuthPage = () => {
   }, [user, authLoading, navigate]);
 
   const handlePhoneSubmit = async (phone: string) => {
-    try {
-      const { error } = await signInWithPhone(phone);
-      
-      if (error) {
-        console.error('Error sending OTP:', error);
-        toast.error('Erreur lors de l\'envoi du code');
-        setAuthError('Impossible d\'envoyer le code de vérification');
-        return;
-      }
-      
-      toast.success('Code envoyé !');
-      setAuthData(prev => ({ ...prev, phone }));
-      setCurrentStep('otp');
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      setAuthError('Erreur technique');
-    }
+    // L'OTP WhatsApp a déjà été envoyé avec succès par PhoneInput
+    // On passe directement à l'étape de vérification
+    setAuthError(''); // Clear any previous errors
+    toast.success('Code envoyé via WhatsApp !');
+    setAuthData(prev => ({ ...prev, phone }));
+    setCurrentStep('otp');
   };
 
   const handleOTPVerify = async (otp: string) => {
     try {
-      const { error } = await verifyOTP(authData.phone, otp);
+      setAuthError(''); // Clear any previous errors
       
-      if (error) {
-        console.error('Error verifying OTP:', error);
+      // Vérifier l'OTP via notre fonction WhatsApp
+      const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-verify', {
+        body: { phone: authData.phone, otp },
+      });
+
+      if (fnError) {
+        console.error('Error verifying OTP:', fnError);
+        toast.error('Code incorrect');
+        setAuthError('Code de vérification incorrect');
+        return;
+      }
+
+      if (!data?.success) {
         toast.error('Code incorrect');
         setAuthError('Code de vérification incorrect');
         return;
       }
       
-      toast.success('Connexion réussie !');
+      console.log('OTP verified successfully:', data);
+      toast.success('Vérification réussie !');
       setAuthData(prev => ({ ...prev, otp }));
       
-      // For new users, go to profile completion
-      // The useAuth hook will handle the session and redirect
+      // Pour les nouveaux utilisateurs, aller à la complétion du profil
       setCurrentStep('profile');
     } catch (error) {
       console.error('Error verifying OTP:', error);
@@ -136,7 +137,8 @@ export const AuthPage = () => {
   };
 
   const handleResendOTP = async () => {
-    await handlePhoneSubmit(authData.phone);
+    // Pour renvoyer l'OTP, on revient à l'étape phone qui enverra via WhatsApp
+    setCurrentStep('phone');
   };
 
   const handleAlternativeMethod = () => {
