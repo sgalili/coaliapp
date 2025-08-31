@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,16 +12,25 @@ import {
 import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 import { CoaliOnboarding } from '../CoaliOnboarding';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
   isLoading: boolean;
 }
 
+// Helper pour formater en +972...
+const toE164 = (dialCode: string, local: string) => {
+  const d = dialCode.startsWith('+') ? dialCode : `+${dialCode}`;
+  const n = (local || '').replace(/\D/g, '');
+  return `${d}${n}`;
+};
+
 export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) => {
   const [selectedCountry, setSelectedCountry] = useState<Country>(detectCountryFromTimezone());
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { t } = useTranslation();
 
@@ -31,7 +40,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     return phoneRegex.test(phoneNumber);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!phoneNumber.trim()) {
@@ -45,8 +54,31 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     }
     
     setError('');
-    const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
-    onSubmit(fullPhone);
+    const fullPhone = toE164(selectedCountry.dialCode, phoneNumber);
+
+    try {
+      setBusy(true);
+      // 🔐 Envoi OTP via Supabase Edge Function
+      const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
+        body: { phone: fullPhone },
+      });
+
+      if (fnError) {
+        setError(fnError.message || 'Send failed');
+        return;
+      }
+      if (!data?.ok) {
+        setError('Send failed');
+        return;
+      }
+
+      // ✅ On notifie le parent
+      onSubmit(fullPhone);
+    } catch (err: any) {
+      setError(err?.message || 'Unexpected error');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleCountrySelect = (country: Country) => {
@@ -98,7 +130,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                       <Button
                         variant="outline"
                         className="flex items-center gap-2 px-3 rounded-r-none border-r-0 bg-card"
-                        disabled={isLoading}
+                        disabled={isLoading || busy}
                         type="button"
                       >
                         <span className="text-lg">{selectedCountry.flag}</span>
@@ -131,7 +163,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className="text-lg py-3 rounded-l-none flex-1"
-                    disabled={isLoading}
+                    disabled={isLoading || busy}
                     dir="ltr"
                   />
                 </div>
@@ -143,9 +175,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
               <Button 
                 type="submit" 
                 className="w-full py-3 text-lg" 
-                disabled={isLoading}
+                disabled={isLoading || busy}
               >
-                {isLoading ? t('auth.sending') : t('auth.receiveCode')}
+                {(isLoading || busy) ? t('auth.sending') : t('auth.receiveCode')}
               </Button>
             </form>
           </CardContent>
