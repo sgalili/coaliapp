@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Search, Filter } from "lucide-react";
@@ -7,8 +7,6 @@ import { ProfileOverlay } from "@/components/ProfileOverlay";
 import { SearchModal } from "@/components/SearchModal";
 import { CategoryFilterModal } from "@/components/CategoryFilterModal";
 import { useToast } from "@/hooks/use-toast";
-import { useWalletData } from "@/hooks/useWalletData";
-import { supabase } from "@/integrations/supabase/client";
 import amitProfile from "@/assets/amit-profile.jpg";
 import sarahProfile from "@/assets/sarah-profile.jpg";
 import davidProfile from "@/assets/david-profile.jpg";
@@ -180,90 +178,17 @@ const mockExperts: Expert[] = [
 ];
 
 const TopTrustedPage = () => {
-  const { zoozBalance } = useWalletData();
+  const zoozBalance = 1250;
   const { toast } = useToast();
   
   // State management
-  const [experts, setExperts] = useState<Expert[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<ExpertDomain[]>([]);
 
-  // Fetch experts from database
-  useEffect(() => {
-    const fetchExperts = async () => {
-      try {
-        // First get profiles
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('*')
-          .limit(20);
-
-        if (profiles) {
-          // Then get related data for each profile
-          const formattedExperts: Expert[] = await Promise.all(
-            profiles.map(async (profile) => {
-              // Get user stats
-              const { data: userStats } = await supabase
-                .from('user_stats')
-                .select('trust_received, posts_count, watch_count')
-                .eq('user_id', profile.user_id)
-                .single();
-
-              // Get user expertise
-              const { data: userExpertise } = await supabase
-                .from('user_expertise')
-                .select('domain, level, verified')
-                .eq('user_id', profile.user_id);
-
-              // Get KYC level
-              const { data: kycData } = await supabase
-                .from('kyc_verifications')
-                .select('level')
-                .eq('user_id', profile.user_id)
-                .order('created_at', { ascending: false })
-                .limit(1)
-                .single();
-
-              return {
-                id: profile.user_id,
-                name: `${profile.first_name} ${profile.last_name}`,
-                avatar: profile.avatar_url || "/api/placeholder/300/300",
-                username: `${profile.first_name}_${profile.last_name}`.toLowerCase().replace(' ', '_'),
-                bio: "מומחה בתחום",
-                followers: Math.floor(Math.random() * 10000) + 1000,
-                expertise: userExpertise?.map((exp: any) => exp.domain) || ['tech'],
-                stats: {
-                  trustCount: userStats?.trust_received || 0,
-                  views: userStats?.watch_count || 0,
-                  trustRate: Math.floor(Math.random() * 40) + 60, // 6.0-10.0
-                  kycLevel: kycData?.level || 1
-                },
-                trustedByUser: Math.random() > 0.5,
-                trending: Math.random() > 0.7,
-                verified: (kycData?.level || 0) >= 2
-              };
-            })
-          );
-          
-          setExperts(formattedExperts);
-        }
-      } catch (error) {
-        console.error('Error fetching experts:', error);
-        // Fallback to mock data
-        setExperts(mockExperts);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExperts();
-  }, []);
-
   // Filter and sort experts
-  const filteredExperts = experts
+  const filteredExperts = mockExperts
     .filter(expert => 
       selectedCategories.length === 0 || 
       expert.expertise.some(domain => selectedCategories.includes(domain))
@@ -341,7 +266,7 @@ const TopTrustedPage = () => {
           {/* Filter indicator */}
           {selectedCategories.length > 0 && (
             <p className="text-xs text-muted-foreground mt-2">
-              מציג {filteredExperts.length} מתוך {experts.length} משתמשים
+              מציג {filteredExperts.length} מתוך {mockExperts.length} משתמשים
             </p>
           )}
         </div>
@@ -350,11 +275,7 @@ const TopTrustedPage = () => {
       {/* Periscope-style Vertical List */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-3">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <p className="text-muted-foreground">טוען...</p>
-            </div>
-          ) : filteredExperts.map((expert) => (
+          {filteredExperts.map((expert) => (
             <TrustedUserCard
               key={expert.id}
               expert={expert}
@@ -379,7 +300,7 @@ const TopTrustedPage = () => {
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        allExperts={experts}
+        allExperts={mockExperts}
       />
 
       <CategoryFilterModal

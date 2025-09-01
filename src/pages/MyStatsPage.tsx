@@ -13,69 +13,77 @@ import { StatsKpiCard } from "@/components/StatsKpiCard";
 import { StatsMiniChart } from "@/components/StatsMiniChart";
 import { TrustRankScore } from "@/components/TrustRankScore";
 import { TrustWeightsAccordion } from "@/components/TrustWeightsAccordion";
-import { useUserStats } from "@/hooks/useUserStats";
 
-// Mock data as specified - default empty data structure
-const getEmptyStatsData = () => ({
+// Mock data as specified
+const mockStatsData = {
   kpis: {
-    newTrust: { value: 0, deltaPct: 0 },
-    trustRemovals: { value: 0, churnPct: 0 },
-    profileViews: 0,
-    convPct: { value: 0, appAvg: 2.1 },
-    velocityPerDay: 0,
-    variance: "נמוכה",
-    netTrust: 0
+    newTrust: { value: 124, deltaPct: 18.4 },
+    trustRemovals: { value: 17, churnPct: 12.1 },
+    profileViews: 4821,
+    convPct: { value: 3.6, appAvg: 2.1 },
+    velocityPerDay: 4.1,
+    variance: "בינונית",
+    netTrust: 107
   },
-  dailyTrust: [],
-  heatmap: [],
+  dailyTrust: [
+    { date: "2025-07-22", value: 3 },
+    { date: "2025-07-23", value: 5 },
+    { date: "2025-07-24", value: 2 },
+    { date: "2025-07-25", value: 7 },
+    { date: "2025-07-26", value: 4 },
+    { date: "2025-07-27", value: 6 },
+    { date: "2025-07-28", value: 3 }
+  ],
+  heatmap: [
+    { day: "א", hour: 9, value: 1 },
+    { day: "ב", hour: 14, value: 3 },
+    { day: "ג", hour: 21, value: 6 },
+    { day: "ד", hour: 11, value: 2 },
+    { day: "ה", hour: 19, value: 5 },
+    { day: "ו", hour: 16, value: 4 },
+    { day: "ש", hour: 10, value: 2 }
+  ],
   trustRank: {
-    score: 0,
-    trendDay: "neutral" as const,
-    trendWeek: "neutral" as const,
+    score: 734,
+    trendDay: "up" as const,
+    trendWeek: "down" as const,
     weights: {
-      strongUserWeightPct: 0,
-      avgTrustPower: 0,
-      lastBoost: 0,
-      gen: [0, 0, 0],
-      removalsImpact: 0
+      strongUserWeightPct: 62,
+      avgTrustPower: 1.8,
+      lastBoost: 24,
+      gen: [55, 30, 15],
+      removalsImpact: 12
     },
     qualityVsQuantity: {
-      strongEqualsRegular: 0,
-      kRegular: 0
+      strongEqualsRegular: 1,
+      kRegular: 12
     },
-    supporters: [],
+    supporters: [
+      { name: "@LeaderOne", powerW: 5.2 },
+      { name: "@CivicPro", powerW: 3.9 },
+      { name: "@TechGuru", powerW: 4.1 },
+      { name: "@CommunityChamp", powerW: 2.8 }
+    ],
     ai: {
-      percentileWeekTop: 0,
-      forecastTarget7d: 0,
-      top50Needed: 0,
-      growthFasterThanPct: 0
+      percentileWeekTop: 22,
+      forecastTarget7d: 780,
+      top50Needed: 3,
+      growthFasterThanPct: 64
     }
   }
-});
+};
 
 const MyStatsPage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("general");
   const [earnedZooz] = useState(287); // Mock earned zooz from invites
-  const { stats, trustRank, loading: isLoading } = useUserStats();
-
-  console.log('MyStatsPage render:', { isLoading, stats });
-  const statsData = stats ? {
-    kpis: {
-      newTrust: { value: stats.trust_received || 0, deltaPct: 0 },
-      trustRemovals: { value: 0, churnPct: 0 },
-      profileViews: stats.profile_views || 0,
-      convPct: { value: 0, appAvg: 2.1 },
-      velocityPerDay: 0,
-      variance: "נמוכה",
-      netTrust: stats.trust_received || 0
-    },
-    dailyTrust: [],
-    heatmap: []
-  } : getEmptyStatsData();
 
   useEffect(() => {
     document.dir = "rtl";
+    // Simulate loading
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   if (isLoading) {
@@ -104,7 +112,7 @@ const MyStatsPage = () => {
     );
   }
 
-  const badges = stats?.trust_received > 0 ? ["משתמש פעיל"] : ["משתמש חדש"];
+  const badges = ["אמון יציב", "משפיע צומח", "מוביל המרות"];
 
   return (
     <TooltipProvider>
@@ -142,36 +150,37 @@ const MyStatsPage = () => {
               {/* KPI Cards Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                 <StatsKpiCard
-                  title="אמון שהתקבל"
-                  value={stats?.trust_received || 0}
-                  delta={18.4}
+                  title="אמון חדש"
+                  value={mockStatsData.kpis.newTrust.value}
+                  delta={mockStatsData.kpis.newTrust.deltaPct}
                   icon={<TrendingUp className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="אמון שניתן"
-                  value={stats?.trust_given || 0}
-                  delta={-12.1}
+                  title="הסרת אמון"
+                  value={mockStatsData.kpis.trustRemovals.value}
+                  delta={-mockStatsData.kpis.trustRemovals.churnPct}
                   deltaLabel="שיעור נטישה"
                   icon={<TrendingDown className="h-4 w-4" />}
                 />
                 <StatsKpiCard
                   title="צפיות בפרופיל"
-                  value={stats?.profile_views || 0}
+                  value={mockStatsData.kpis.profileViews}
                   icon={<Eye className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="פוסטים"
-                  value={stats?.posts_count || 0}
+                  title="המרה לאמון"
+                  value={`${mockStatsData.kpis.convPct.value}%`}
+                  subtitle={`ממוצע: ${mockStatsData.kpis.convPct.appAvg}%`}
                   icon={<MousePointer className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="תגובות"
-                  value={stats?.comments_count || 0}
+                  title="מהירות אמון"
+                  value={`${mockStatsData.kpis.velocityPerDay}/יום`}
                   icon={<Clock className="h-4 w-4" />}
                 />
                 <StatsKpiCard
-                  title="ציון אמון"
-                  value={stats?.trust_score || 0}
+                  title="נטו אמון"
+                  value={mockStatsData.kpis.netTrust}
                   delta={15.3}
                   icon={<Target className="h-4 w-4" />}
                 />
@@ -181,13 +190,13 @@ const MyStatsPage = () => {
               <div className="space-y-6">
                 <StatsMiniChart
                   title="אמון יומי - 30 ימים"
-                  data={statsData.dailyTrust}
+                  data={mockStatsData.dailyTrust}
                   type="line"
                 />
                 
                 <StatsMiniChart
                   title="מפת חום - שעות פעילות"
-                  data={statsData.heatmap}
+                  data={mockStatsData.heatmap}
                   type="heatmap"
                 />
               </div>
@@ -202,10 +211,10 @@ const MyStatsPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-3 text-right">
                   <p className="text-sm text-right">
-                    את/ה בטופ <strong>{trustRank?.ai?.percentileWeekTop || 0}%</strong> בשבוע האחרון
+                    את/ה בטופ <strong>{mockStatsData.trustRank.ai.percentileWeekTop}%</strong> בשבוע האחרון
                   </p>
                   <p className="text-sm text-right">
-                    אם תשמור/י על הקצב → תחזית: <strong>{trustRank?.ai?.forecastTarget7d || 0}</strong> בעוד 7 ימים
+                    אם תשמור/י על הקצב → תחזית: <strong>{mockStatsData.trustRank.ai.forecastTarget7d}</strong> בעוד 7 ימים
                   </p>
                 </CardContent>
               </Card>
@@ -227,94 +236,65 @@ const MyStatsPage = () => {
               <h2 className="text-2xl font-bold mb-6 text-right">דירוג־האמון שלך</h2>
               
               {/* Big Score */}
-              {trustRank ? (
-                <TrustRankScore
-                  score={trustRank.score}
-                  trendDay={trustRank.trendDay}
-                  trendWeek={trustRank.trendWeek}
-                />
-              ) : (
-                <Card className="text-center p-8">
-                  <CardContent>
-                    <div className="text-6xl font-bold text-muted-foreground mb-2">0</div>
-                    <p className="text-muted-foreground">עדיין אין דירוג אמון</p>
-                    <p className="text-sm text-muted-foreground mt-2">קבל אמון ממשתמשים אחרים כדי לבנות את הדירוג שלך</p>
-                  </CardContent>
-                </Card>
-              )}
+              <TrustRankScore
+                score={mockStatsData.trustRank.score}
+                trendDay={mockStatsData.trustRank.trendDay}
+                trendWeek={mockStatsData.trustRank.trendWeek}
+              />
 
               {/* Weights & Transparency */}
-              {trustRank && <TrustWeightsAccordion weights={trustRank.weights} />}
+              <TrustWeightsAccordion weights={mockStatsData.trustRank.weights} />
 
               {/* Quality vs Quantity */}
-              {trustRank ? (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">איכות נגד כמות</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-right">
-                    <div className="flex items-center justify-center p-6">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-primary mb-2">
-                          {trustRank.qualityVsQuantity?.strongEqualsRegular || 0}
-                        </div>
-                        <div className="text-sm text-muted-foreground">אמונות חזקות</div>
-                      </div>
-                      <div className="mx-6 text-2xl text-muted-foreground">≈</div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-muted-foreground mb-2">
-                          {trustRank.qualityVsQuantity?.kRegular || 0}
-                        </div>
-                        <div className="text-sm text-muted-foreground">רגילות</div>
-                      </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">איכות נגד כמות</CardTitle>
+                </CardHeader>
+                <CardContent className="text-right">
+                  <div className="flex items-center justify-center p-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary mb-2">5</div>
+                      <div className="text-sm text-muted-foreground">אמונות חזקות</div>
                     </div>
-                  </CardContent>
-                </Card>
-              ) : null}
+                    <div className="mx-6 text-2xl text-muted-foreground">≈</div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-muted-foreground mb-2">
+                        {mockStatsData.trustRank.qualityVsQuantity.kRegular}
+                      </div>
+                      <div className="text-sm text-muted-foreground">רגילות</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Trust Network */}
-              {trustRank && trustRank.supporters && trustRank.supporters.length > 0 ? (
-                <Card>
-                  <CardHeader className="text-right">
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      נתמך ע״י {trustRank.supporters.length} מובילי־קהילה
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-right">
-                    <div className="grid grid-cols-1 gap-3">
-                      {trustRank.supporters.map((supporter) => (
-                        <div key={supporter.name} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                          <span className="font-medium">{supporter.name}</span>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Badge variant="outline">
-                                שווי אמון = {supporter.powerW} רגילות
-                              </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>משקל האמון של {supporter.name}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card>
-                  <CardHeader className="text-right">
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      רשת האמון שלך
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center py-8">
-                    <p className="text-muted-foreground">עדיין אין לך תומכים</p>
-                    <p className="text-sm text-muted-foreground mt-2">צור תוכן איכותי ובנה מוניטין כדי לקבל תמיכה ממובילי קהילה</p>
-                  </CardContent>
-                </Card>
-              )}
+              <Card>
+                <CardHeader className="text-right">
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    נתמך ע״י {mockStatsData.trustRank.supporters.length} מובילי־קהילה
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-right">
+                  <div className="grid grid-cols-1 gap-3">
+                    {mockStatsData.trustRank.supporters.map((supporter) => (
+                      <div key={supporter.name} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                        <span className="font-medium">{supporter.name}</span>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="outline">
+                              שווי אמון = {supporter.powerW} רגילות
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>משקל האמון של {supporter.name}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Explainer */}
               <Collapsible>
@@ -338,25 +318,23 @@ const MyStatsPage = () => {
               </Collapsible>
 
               {/* AI Forecasts */}
-              {trustRank && trustRank.ai ? (
-                <Card className="bg-gradient-to-l from-trust/5 to-trust/10 border-trust/20">
-                  <CardHeader className="text-right">
-                    <CardTitle className="flex items-center gap-2 justify-end text-right" dir="rtl">
-                      <Award className="h-5 w-5 text-trust" />
-                      תחזיות AI
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3 text-right">
-                    <p className="text-sm text-right">
-                      אם תשיג עוד <strong>{trustRank.ai.top50Needed || 0}</strong> אמונות מה־Top 10% → 
-                      תגיע לטופ 50 הארצי
-                    </p>
-                    <p className="text-sm text-right">
-                      קצב הצמיחה שלך מהיר ב־<strong>{trustRank.ai.growthFasterThanPct || 0}%</strong> מהממוצע
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : null}
+              <Card className="bg-gradient-to-l from-trust/5 to-trust/10 border-trust/20">
+                <CardHeader className="text-right">
+                  <CardTitle className="flex items-center gap-2 justify-end text-right" dir="rtl">
+                    <Award className="h-5 w-5 text-trust" />
+                    תחזיות AI
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-right">
+                  <p className="text-sm text-right">
+                    אם תשיג עוד <strong>{mockStatsData.trustRank.ai.top50Needed}</strong> אמונות מה־Top 10% → 
+                    תגיע לטופ 50 הארצי
+                  </p>
+                  <p className="text-sm text-right">
+                    קצב הצמיחה שלך מהיר ב־<strong>{mockStatsData.trustRank.ai.growthFasterThanPct}%</strong> מהממוצע
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>

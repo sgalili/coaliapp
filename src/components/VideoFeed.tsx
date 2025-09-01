@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useZoozReactions, LiveZoozReaction } from "@/hooks/useZoozReactions";
 import { useAuthenticity } from "@/hooks/useAuthenticity";
-import { useActionProtection } from "@/hooks/useActionProtection";
 interface VideoPost {
   id: string;
   username: string;
@@ -194,7 +193,6 @@ const VideoCard = ({
   const [lastClick, setLastClick] = useState(0);
   const [isAuthenticityExpanded, setIsAuthenticityExpanded] = useState(false);
   const navigate = useNavigate();
-  const { executeProtectedAction } = useActionProtection();
   const {
     liveReactions,
     addZoozReaction
@@ -251,29 +249,25 @@ const VideoCard = ({
     onVolumeToggle();
   };
   const handleZoozSend = async (e?: React.MouseEvent) => {
-    executeProtectedAction(async () => {
-      if (userBalance < 1) {
-        toast.error("Solde ZOOZ insuffisant", {
-          position: "bottom-center",
-          duration: 2000
-        });
-        return;
-      }
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (rect && e) {
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        await addZoozReaction(x, y, 1);
-      }
-      onZooz(post.id);
-
-      // Bottom toast only - no top popup
-      toast.success("1 ZOOZ envoyé! 🚀", {
+    if (userBalance < 1) {
+      toast.error("Solde ZOOZ insuffisant", {
         position: "bottom-center",
-        duration: 1500
+        duration: 2000
       });
-    }, 'kyc1', {
-      kycMessage: 'נדרש אימות זהות כדי לשלוח ZOOZ'
+      return;
+    }
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect && e) {
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      await addZoozReaction(x, y, 1);
+    }
+    onZooz(post.id);
+
+    // Bottom toast only - no top popup
+    toast.success("1 ZOOZ envoyé! 🚀", {
+      position: "bottom-center",
+      duration: 1500
     });
   };
   const handlePostClick = () => {
@@ -383,12 +377,7 @@ const VideoCard = ({
         </button>
 
         {/* Trust button */}
-        <button 
-          onClick={() => executeProtectedAction(() => onTrust(post.id), 'kyc1', {
-            kycMessage: 'נדרש אימות זהות כדי לתת אמון'
-          })} 
-          className="flex flex-col items-center gap-1 group"
-        >
+        <button onClick={() => onTrust(post.id)} className="flex flex-col items-center gap-1 group">
           <div className="w-12 h-12 rounded-full bg-trust/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
             <TrustIcon />
           </div>

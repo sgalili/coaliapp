@@ -1,5 +1,4 @@
 import { CreditCard, ArrowDown, ArrowUp, Wallet } from "lucide-react";
-import { useActionProtection } from "@/hooks/useActionProtection";
 
 interface WalletActionsProps {
   onBuyClick: () => void;
@@ -14,16 +13,12 @@ export const WalletActions = ({
   onSendClick,
   onWithdrawClick
 }: WalletActionsProps) => {
-  const { executeProtectedAction } = useActionProtection();
-
   return (
     <div className="px-4 py-4">
       <div className="grid grid-cols-4 gap-4">
         {/* Buy Button */}
         <button 
-          onClick={() => executeProtectedAction(onBuyClick, 'kyc1', {
-            kycMessage: 'נדרש אימות זהות כדי לקנות ZOOZ'
-          })}
+          onClick={onBuyClick}
           className="flex flex-col items-center gap-2 group"
         >
           <div className="w-16 h-16 bg-green-500/10 hover:bg-green-500/20 rounded-full flex items-center justify-center transition-colors">
@@ -34,9 +29,7 @@ export const WalletActions = ({
 
         {/* Request Button */}
         <button 
-          onClick={() => executeProtectedAction(onRequestClick, 'kyc1', {
-            kycMessage: 'נדרש אימות זהות כדי לבקש ZOOZ'
-          })}
+          onClick={onRequestClick}
           className="flex flex-col items-center gap-2 group"
         >
           <div className="w-16 h-16 bg-blue-500/10 hover:bg-blue-500/20 rounded-full flex items-center justify-center transition-colors">
@@ -47,9 +40,7 @@ export const WalletActions = ({
 
         {/* Send Button */}
         <button 
-          onClick={() => executeProtectedAction(onSendClick, 'kyc1', {
-            kycMessage: 'נדרש אימות זהות כדי לשלוח ZOOZ'
-          })}
+          onClick={onSendClick}
           className="flex flex-col items-center gap-2 group"
         >
           <div className="w-16 h-16 bg-purple-500/10 hover:bg-purple-500/20 rounded-full flex items-center justify-center transition-colors">
@@ -60,7 +51,7 @@ export const WalletActions = ({
 
         {/* Withdraw Button */}
         <button 
-          onClick={() => executeProtectedAction(onWithdrawClick, 'auth')}
+          onClick={onWithdrawClick}
           className="flex flex-col items-center gap-2 group opacity-60"
         >
           <div className="w-16 h-16 bg-gray-500/10 hover:bg-gray-500/20 rounded-full flex items-center justify-center transition-colors">

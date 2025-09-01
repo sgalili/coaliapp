@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ArrowRight, Users, Share2, Copy, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { QRCodeDisplay } from "@/components/QRCodeDisplay";
 import { ContactPicker } from "@/components/ContactPicker";
-import { useInvitation } from "@/hooks/useInvitation";
 import { toast } from "sonner";
 
 // Mock contacts data - in real app this would come from device contacts
@@ -23,15 +22,8 @@ const InviteFriendsPage = () => {
   const [selectedContact, setSelectedContact] = useState<any>(null);
   const [totalEarned] = useState(127); // Mock data
   
-  const { referralCode, fetchReferralCode, generateInvitationLink, createTrustIntent, isLoading } = useInvitation();
-  
-  // Fetch user's referral code on mount
-  useEffect(() => {
-    fetchReferralCode();
-  }, []);
-
-  // Generate personal referral link using real referral code
-  const referralLink = generateInvitationLink(referralCode || undefined);
+  // Generate personal referral link
+  const referralLink = "https://trust-swipe-zooz.app/join?ref=user123";
 
   const socialPlatforms = [
     { name: "WhatsApp", color: "bg-[#25D366]", icon: "📱", shareUrl: `https://wa.me/?text=${encodeURIComponent(`הצטרף לזוז עם הקישור שלי: ${referralLink}`)}` },
@@ -68,18 +60,11 @@ const InviteFriendsPage = () => {
     toast.success("קישור הועתק ללוח!");
   };
 
-  const handleContactSelect = async (contact: any) => {
+  const handleContactSelect = (contact: any) => {
     setSelectedContact(contact);
     setShowContactPicker(false);
-    
-    // Create trust intent for the selected contact
-    const success = await createTrustIntent(contact.phone);
-    
-    if (success) {
-      toast.success(`אמון נוצר עבור ${contact.name} - עכשיו הם יכולים להירשם!`);
-    } else {
-      toast.error(`שגיאה ביצירת אמון עבור ${contact.name}`);
-    }
+    // Here you would implement the actual invitation sending logic
+    toast.success(`הזמנה נשלחה ל${contact.name}`);
   };
 
   return (

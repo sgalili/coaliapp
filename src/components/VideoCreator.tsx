@@ -10,12 +10,7 @@ import { useAuthenticity } from "@/hooks/useAuthenticity";
 
 interface VideoCreatorProps {
   onClose: () => void;
-  onPublish: (postData: {
-    content: string;
-    videoBlob?: Blob;
-    category?: string;
-    isLive?: boolean;
-  }) => Promise<boolean>;
+  onPublish: (videoData: any) => void;
 }
 
 type RecordingMode = "record" | "live";
@@ -205,7 +200,7 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     });
   };
 
-  const handlePublish = async () => {
+  const handlePublish = () => {
     // Check if user has domains in profile
     if (userDomains.length === 0) {
       toast({
@@ -227,28 +222,23 @@ export const VideoCreator = ({ onClose, onPublish }: VideoCreatorProps) => {
     }
 
     if (mode === "record" && recordedBlob && comment.trim()) {
-      const postData = {
-        content: comment.trim(),
+      onPublish({
         videoBlob: recordedBlob,
+        comment: comment.trim(),
+        filter: selectedFilter,
         category: selectedCategory,
-        isLive: false
-      };
-      
-      const success = await onPublish(postData);
-      if (success) {
-        onClose();
-      }
+        mode: "record",
+        duration: 60 - recordingTime,
+        timestamp: new Date().toISOString()
+      });
     } else if (mode === "live" && comment.trim()) {
-      const postData = {
-        content: comment.trim(),
+      onPublish({
+        comment: comment.trim(),
+        filter: selectedFilter,
         category: selectedCategory,
-        isLive: true
-      };
-      
-      const success = await onPublish(postData);
-      if (success) {
-        onClose();
-      }
+        mode: "live",
+        timestamp: new Date().toISOString()
+      });
     }
   };
 
