@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import { VideoFeed } from "@/components/VideoFeed";
+import { VoteFeed } from "@/components/VoteFeed";
+import { VoteHeader } from "@/components/VoteHeader";
+import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
 import { Navigation } from "@/components/Navigation";
-import { SwipeHandler } from "@/components/SwipeHandler";
 import { KYCForm } from "@/components/KYCForm";
 import { VideoCreator } from "@/components/VideoCreator";
-import { FeedFilters, FilterState } from "@/components/FeedFilters";
 import { useToast } from "@/hooks/use-toast";
-import { Plus } from "lucide-react";
-import News from "./News";
 
 // Import profile images
 import sarahProfile from "@/assets/sarah-profile.jpg";
@@ -187,8 +185,7 @@ const Index = () => {
   const [showKYC, setShowKYC] = useState(false);
   const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [zoozBalance, setZoozBalance] = useState(1250);
-  const [feedFilter, setFeedFilter] = useState<FilterState>({ type: 'all' });
-  const [isMuted, setIsMuted] = useState(true);
+  const [voteFilter, setVoteFilter] = useState<VoteFilterType>('all');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -198,18 +195,16 @@ const Index = () => {
   }, []);
 
   const handleTrust = (postId: string) => {
-    const post = mockPosts.find(p => p.id === postId);
     toast({
       title: "Trust Given! ❤️",
-      description: `You trusted @${post?.handle}. Your trust helps build a better network.`,
+      description: "Your trust helps build a better network.",
     });
   };
 
   const handleWatch = (postId: string) => {
-    const post = mockPosts.find(p => p.id === postId);
     toast({
       title: "Now Watching 👁️",
-      description: `You're now watching @${post?.handle}. You'll see their content more often.`,
+      description: "You'll see their content more often.",
     });
   };
 
@@ -222,28 +217,18 @@ const Index = () => {
       return;
     }
 
-    const post = mockPosts.find(p => p.id === postId);
     setZoozBalance(prev => prev - 1);
     
-    // Update the post's zooz count
-    const postIndex = mockPosts.findIndex(p => p.id === postId);
-    if (postIndex !== -1) {
-      mockPosts[postIndex].zoozCount += 1;
-    }
-
     toast({
       title: "ZOOZ Sent! 🚀",
-      description: `You sent 1 ZOOZ to @${post?.handle}. Supporting amazing creators!`,
+      description: "Supporting amazing creators!",
     });
   };
 
   const handleCreateContent = () => {
-    console.log("+ button clicked!", { isKYCVerified, showKYC });
     if (!isKYCVerified) {
-      console.log("Setting showKYC to true");
       setShowKYC(true);
     } else {
-      console.log("Opening video creator");
       setShowVideoCreator(true);
     }
   };
@@ -264,72 +249,23 @@ const Index = () => {
       description: `Your ${videoData.mode} content has been published successfully.`,
     });
     setShowVideoCreator(false);
-    console.log("Published video data:", videoData);
   };
-
-  const handleVolumeToggle = () => {
-    setIsMuted(!isMuted);
-  };
-
-  const getFilteredPosts = () => {
-    switch (feedFilter.type) {
-      case 'trusted':
-        // Sort by trust count descending to show top trusted users
-        return [...mockPosts].sort((a, b) => b.trustCount - a.trustCount);
-      case 'category':
-        if (feedFilter.category) {
-          return mockPosts.filter(post => post.category === feedFilter.category);
-        }
-        return mockPosts;
-      case 'all':
-      default:
-        // Show all posts, newest first (assuming ID order represents recency)
-        return mockPosts;
-    }
-  };
-
-
-  console.log("Posts filtrés:", getFilteredPosts().map(p => ({ id: p.id, username: p.username })));
   
   return (
-    <div className="h-screen bg-background relative">
-      {/* Add Content Button */}
-      <button
-        onClick={handleCreateContent}
-        className="absolute top-4 left-4 z-50 w-12 h-12 bg-primary/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-primary/30 hover:bg-primary/30 transition-colors"
-      >
-        <Plus className="w-6 h-6 text-primary" />
-      </button>
-      
-      <div className="h-screen relative">
-        <SwipeHandler
-          onSwipeLeft={() => {
-            toast({
-              title: "Watch Added! 👁️",
-              description: "You're now watching this creator.",
-            });
-          }}
-          onSwipeRight={() => {
-            toast({
-              title: "Trust Given! ❤️",
-              description: "Your trust helps build a better network.",
-            });
-          }}
-        >
-          <VideoFeed
-            posts={getFilteredPosts()}
-            onTrust={handleTrust}
-            onWatch={handleWatch}
-            onZooz={handleZooz}
-            userBalance={zoozBalance}
-            currentUserId="550e8400-e29b-41d4-a716-446655440000" // Valid UUID for testing
-            isMuted={isMuted}
-            onVolumeToggle={handleVolumeToggle}
-          />
-        </SwipeHandler>
-        <FeedFilters 
-          activeFilter={feedFilter}
-          onFilterChange={setFeedFilter}
+    <div className="h-screen bg-background relative">      
+      <div className="h-screen flex flex-col">
+        {/* Vote Header */}
+        <VoteHeader />
+        
+        {/* Vote Feed */}
+        <div className="flex-1 relative overflow-hidden">
+          <VoteFeed filter={voteFilter} />
+        </div>
+        
+        {/* Vote Filters */}
+        <VoteFilters 
+          activeFilter={voteFilter}
+          onFilterChange={setVoteFilter}
         />
       </div>
 
