@@ -200,30 +200,86 @@ const mockOrganizationVotes: OrganizationVote[] = [
 ];
 
 export const VoteFeed = ({ filter }: VoteFeedProps) => {
-  const [selectedVideo, setSelectedVideo] = useState<VideoComment | null>(null);
+  const [selectedVideos, setSelectedVideos] = useState<VideoComment[] | null>(null);
   const [dismissedProfiles, setDismissedProfiles] = useState<string[]>([]);
   const { toast } = useToast();
 
   const handleProfileVideoClick = (profile: Profile) => {
-    // Convert profile to VideoComment format for the player
-    const videoComment: VideoComment = {
-      id: profile.id,
-      userId: profile.id,
-      username: profile.name,
-      userImage: profile.avatar,
-      videoUrl: profile.videoUrl,
-      duration: 180, // Mock duration
-      likes: profile.voteCount || profile.trustCount || 0,
-      replies: Math.floor((profile.voteCount || profile.trustCount || 0) * 0.1),
-      trustLevel: profile.trustCount || profile.voteCount || 0,
-      timestamp: "לפני שעה",
-      category: profile.expertise[0] || "פוליטיקה",
-      kycLevel: 3,
-      watchCount: profile.trustCount || profile.voteCount || 0,
-      shareCount: Math.floor((profile.voteCount || profile.trustCount || 0) * 0.2)
-    };
-    
-    setSelectedVideo(videoComment);
+    // Check if this is Netanyahu - create multiple videos for him
+    if (profile.name === "בנימין נתניהו" || profile.id === "c1") {
+      const netanyahuVideos: VideoComment[] = [
+        {
+          id: "netanyahu_1",
+          userId: profile.id,
+          username: profile.name,
+          userImage: profile.avatar,
+          videoUrl: "/videos/netanyahu-debate.mp4",
+          duration: 180,
+          likes: 89420,
+          replies: Math.floor(89420 * 0.1),
+          trustLevel: 89420,
+          timestamp: "לפני שעה",
+          category: "פוליטיקה",
+          kycLevel: 3,
+          watchCount: 125560,
+          shareCount: 15205
+        },
+        {
+          id: "netanyahu_2", 
+          userId: profile.id,
+          username: profile.name,
+          userImage: profile.avatar,
+          videoUrl: "/videos/netanyahu-debate (1).mp4",
+          duration: 165,
+          likes: 76230,
+          replies: Math.floor(76230 * 0.1),
+          trustLevel: 76230,
+          timestamp: "לפני 3 שעות",
+          category: "ביטחון",
+          kycLevel: 3,
+          watchCount: 98450,
+          shareCount: 12890
+        },
+        {
+          id: "netanyahu_3",
+          userId: profile.id,
+          username: profile.name, 
+          userImage: profile.avatar,
+          videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755817615/netanyahu-debate_fitgzh.mp4",
+          duration: 195,
+          likes: 65780,
+          replies: Math.floor(65780 * 0.1),
+          trustLevel: 65780,
+          timestamp: "לפני 5 שעות",
+          category: "כלכלה",
+          kycLevel: 3,
+          watchCount: 87340,
+          shareCount: 10450
+        }
+      ];
+      
+      setSelectedVideos(netanyahuVideos);
+    } else {
+      // For other profiles, create a single video as before
+      const videoComment: VideoComment = {
+        id: profile.id,
+        userId: profile.id,
+        username: profile.name,
+        userImage: profile.avatar,
+        videoUrl: profile.videoUrl,
+        duration: 180,
+        likes: profile.voteCount || profile.trustCount || 0,
+        replies: Math.floor((profile.voteCount || profile.trustCount || 0) * 0.1),
+        trustLevel: profile.trustCount || profile.voteCount || 0,
+        timestamp: "לפני שעה",
+        category: profile.expertise[0] || "פוליטיקה",
+        kycLevel: 3,
+        watchCount: profile.trustCount || profile.voteCount || 0,
+        shareCount: Math.floor((profile.voteCount || profile.trustCount || 0) * 0.2)
+      };
+      
+      setSelectedVideos([videoComment]);
+    }
   };
 
   const handleVote = (profileId: string) => {
@@ -385,11 +441,11 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
       </div>
 
       {/* Fullscreen Video Player */}
-      {selectedVideo && (
+      {selectedVideos && (
         <FullscreenVideoPlayer
-          comments={[selectedVideo]}
+          comments={selectedVideos}
           initialCommentIndex={0}
-          onClose={() => setSelectedVideo(null)}
+          onClose={() => setSelectedVideos(null)}
           onTrust={(id) => console.log('Trust:', id)}
           onWatch={(id) => console.log('Watch:', id)}
           onComment={(id) => console.log('Comment:', id)}
