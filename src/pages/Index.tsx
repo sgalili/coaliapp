@@ -280,7 +280,7 @@ const Index = () => {
               onClick={() => triggerKYCCheck()} 
               className="text-blue-800 text-sm hover:underline cursor-pointer p-3 w-full font-medium"
             >
-              🎉 אמתו זהות וזכו ב-10 Z + תוכן מותאם אישית רק בשבילכם! ✨
+              🎉 אמתו זהות וזכו ב-10 זוז + תוכן מותאם אישית רק בשבילכם! ✨
             </button>
           </div>
         </div>
