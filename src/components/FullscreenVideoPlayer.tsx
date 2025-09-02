@@ -185,24 +185,21 @@ export const FullscreenVideoPlayer = ({
       return;
     }
     
-    // Generate flying Z animation
-    const buttonRect = (e?.currentTarget as HTMLElement)?.getBoundingClientRect();
-    if (buttonRect && containerRef.current) {
+    // Generate flying coins from bottom of screen
+    if (containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
-      const x = buttonRect.left - containerRect.left + buttonRect.width / 2;
-      const y = buttonRect.top - containerRect.top + buttonRect.height / 2;
       
-      // Create multiple flying Zs
+      // Create multiple flying coins from bottom of screen
       for (let i = 0; i < 3; i++) {
         const flyingZ = {
           id: `${Date.now()}-${i}`,
-          x: x + (Math.random() - 0.5) * 20,
-          y: y + (Math.random() - 0.5) * 20
+          x: Math.random() * containerRect.width, // Random x position across screen width
+          y: containerRect.height - 20 // Start from bottom of screen
         };
         
         setFlyingZs(prev => [...prev, flyingZ]);
         
-        // Remove the flying Z after animation completes
+        // Remove the flying coin after animation completes
         setTimeout(() => {
           setFlyingZs(prev => prev.filter(z => z.id !== flyingZ.id));
         }, 2000);
