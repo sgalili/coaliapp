@@ -155,7 +155,7 @@ export const OrganizationVoteCard = ({
       }} />
     </div>
   );
-  return <Card className="w-full max-w-2xl mx-4 mb-6 border-none bg-card/90 backdrop-blur-sm relative overflow-hidden">
+  return <Card className="w-full max-w-2xl mx-4 mb-6 bg-card/90 backdrop-blur-sm relative overflow-hidden">
       {showConfetti && <ConfettiEffect />}
       
       {/* Points notification */}
