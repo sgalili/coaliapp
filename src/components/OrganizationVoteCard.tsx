@@ -42,6 +42,7 @@ export const OrganizationVoteCard = ({
   const [isVoting, setIsVoting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [earnedPoints, setEarnedPoints] = useState(0);
+  const [hasVoted, setHasVoted] = useState(vote.hasUserVoted);
   const { toast } = useToast();
   const getOrganizationIcon = () => {
     switch (vote.organizationType) {
@@ -85,7 +86,7 @@ export const OrganizationVoteCard = ({
     return `${minutes} דקות`;
   };
   const handleVote = async (optionId: string) => {
-    if (vote.hasUserVoted) return;
+    if (hasVoted) return;
     
     setIsVoting(true);
     setSelectedOption(optionId);
@@ -95,6 +96,7 @@ export const OrganizationVoteCard = ({
       setIsVoting(false);
       setShowConfetti(true);
       setEarnedPoints(5);
+      setHasVoted(true); // Prevent further voting
       
       // Show success toast with gamification
       toast({
@@ -117,18 +119,29 @@ export const OrganizationVoteCard = ({
       {[...Array(20)].map((_, i) => (
         <div
           key={i}
-          className={`absolute w-2 h-2 animate-bounce opacity-80 ${
+          className={`absolute w-2 h-2 opacity-80 ${
             i % 4 === 0 ? 'bg-yellow-400' :
             i % 4 === 1 ? 'bg-blue-400' :
             i % 4 === 2 ? 'bg-green-400' : 'bg-pink-400'
           } rounded-full`}
           style={{
             left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 2}s`,
-            animationDuration: `${1 + Math.random()}s`
+            top: '-10px',
+            animationDelay: `${Math.random() * 0.5}s`,
+            animation: 'fall 2s ease-in forwards',
           }}
         />
       ))}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes fall {
+            to {
+              transform: translateY(400px) rotate(360deg);
+              opacity: 0;
+            }
+          }
+        `
+      }} />
     </div>
   );
   return <Card className="w-full max-w-2xl mx-4 mb-6 border border-border/50 bg-card/90 backdrop-blur-sm relative overflow-hidden">
@@ -196,11 +209,11 @@ export const OrganizationVoteCard = ({
           return <button 
             key={option.id} 
             onClick={() => handleVote(option.id)} 
-            disabled={vote.hasUserVoted || isVoting} 
+            disabled={hasVoted || isVoting} 
             className={cn(
               "w-full p-3 rounded-lg border transition-all duration-300 text-right relative overflow-hidden",
-              vote.hasUserVoted ? "cursor-not-allowed" : "hover:border-primary/50 cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
-              isSelected && !vote.hasUserVoted && "border-primary bg-primary/5 animate-pulse",
+              hasVoted ? "cursor-not-allowed" : "hover:border-primary/50 cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
+              isSelected && !hasVoted && "border-primary bg-primary/5 animate-pulse",
               isUserVote && "border-green-500 bg-green-50 ring-2 ring-green-200",
               isVoting && selectedOption === option.id && "animate-pulse bg-primary/20"
             )}
@@ -241,7 +254,7 @@ export const OrganizationVoteCard = ({
             <span>{vote.totalVotes} הצביעו מתוך {vote.totalMembers}</span>
           </div>
           
-          {vote.hasUserVoted ? (
+          {hasVoted ? (
             <div className="flex items-center gap-2 text-green-600 font-medium">
               <CheckCircle className="w-4 h-4" />
               <span>הצבעתך נרשמה בהצלחה!</span>
