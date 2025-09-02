@@ -5,7 +5,10 @@ import { Profile } from "./ProfileCard";
 import { FullscreenVideoPlayer } from "./FullscreenVideoPlayer";
 import { PollCard, Poll } from "./PollCard";
 import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
+import { FeedSection } from "./FeedSection";
 import { useToast } from "@/hooks/use-toast";
+import { useKYC } from "@/hooks/useKYC";
+import { Building, MapPin, Flag, Users, GraduationCap } from "lucide-react";
 
 // Import profile images
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -43,6 +46,8 @@ const positions = [
     id: "pm",
     title: "מועמדים לראשות הממשלה",
     description: "בחירות 2024 - ראש הממשלה הבא של ישראל",
+    level: "national",
+    city: null,
     candidates: [
       {
         id: "1",
@@ -80,6 +85,8 @@ const positions = [
     id: "mayor", 
     title: "מועמדים לראשות עיריית תל אביב",
     description: "בחירות מקומיות 2024",
+    level: "local",
+    city: "תל אביב",
     candidates: [
       {
         id: "3",
@@ -182,6 +189,8 @@ const mockOrganizationVotes: OrganizationVote[] = [
     organizationType: "foundation",
     title: "מכירת נכס ברחוב הרצל - החלטה דחופה",
     description: "העמותה קיבלה הצעה לרכישת הנכס ברחוב הרצל 15. ההצעה תקפה למשך 15 יום בלבד. הנכס נרכש לפני 8 שנים ב-1.2M ₪ והצעת הרכישה הנוכחית היא 3.7M ₪.",
+    targetPhones: ["+972-50-123-4567", "+972-52-987-6543"],
+    targetIds: ["123456789", "987654321"],
     financialDetails: {
       amount: "2.5M",
       currency: "₪",
@@ -205,6 +214,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   const [dismissedProfiles, setDismissedProfiles] = useState<string[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useKYC();
 
   const handleProfileVideoClick = (profile: Profile) => {
     // Convert profile to VideoComment format for the player
@@ -286,17 +296,41 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
           organizationVotes: []
         };
       case 'for-me':
-        return { 
-          positions: positions.slice(0, 1).map(pos => ({
-            ...pos,
-            candidates: filterProfiles(pos.candidates)
-          })),
-          experts: expertSections.slice(0, 1).map(section => ({
-            ...section,
-            experts: filterProfiles(section.experts)
-          })),
-          polls: mockPolls.slice(0, 1),
-          organizationVotes: mockOrganizationVotes
+        // Filter organization votes by user's phone/ID
+        const urgentOrgVotes = mockOrganizationVotes.filter(vote => 
+          vote.urgency === 'high' && (
+            vote.targetPhones?.includes(user.phoneNumber || '') ||
+            vote.targetIds?.includes(user.idNumber || '')
+          )
+        );
+
+        // Filter local positions by user's city
+        const localPositions = positions.filter(pos => 
+          pos.level === 'local' && pos.city === user.city
+        ).map(pos => ({
+          ...pos,
+          candidates: filterProfiles(pos.candidates)
+        }));
+
+        // National positions
+        const nationalPositions = positions.filter(pos => 
+          pos.level === 'national'
+        ).map(pos => ({
+          ...pos,
+          candidates: filterProfiles(pos.candidates)
+        }));
+
+        return {
+          urgentOrgVotes,
+          localPositions,
+          nationalPositions,
+          polls: mockPolls.slice(0, 2),
+          experts: urgentOrgVotes.length === 0 && localPositions.length === 0 && nationalPositions.length === 0 
+            ? expertSections.slice(0, 1).map(section => ({
+                ...section,
+                experts: filterProfiles(section.experts)
+              }))
+            : []
         };
       case 'all':
       default:
@@ -315,9 +349,155 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
     }
   };
 
-  const { positions: filteredPositions, experts: filteredExperts, polls, organizationVotes } = getFilteredContent();
+  const filteredContent = getFilteredContent();
 
-  const hasContent = filteredPositions.length > 0 || filteredExperts.length > 0 || polls.length > 0 || organizationVotes.length > 0;
+  // Handle "for-me" filter with sections
+  if (filter === 'for-me') {
+    const { urgentOrgVotes, localPositions, nationalPositions, polls, experts } = filteredContent as any;
+    const hasContent = urgentOrgVotes.length > 0 || localPositions.length > 0 || nationalPositions.length > 0 || polls.length > 0 || experts.length > 0;
+
+    return (
+      <>
+        <div className="pt-24 pb-20 w-full min-h-screen bg-background">
+          {!hasContent ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="text-6xl mb-4">🗳️</div>
+              <h3 className="text-lg font-semibold mb-2">אין תוכן להצבעה כרגע</h3>
+              <p className="text-muted-foreground">נסה לשנות את הפילטר או לחזור מאוחר יותר</p>
+            </div>
+          ) : (
+            <div className="space-y-0">
+              {/* Urgent Organization Votes */}
+              <FeedSection
+                icon={Building}
+                title="הצבעות דחופות בארגון שלך"
+                description="החלטות חשובות הדורשות הצבעה מיידית מחברי הארגון"
+                badge={urgentOrgVotes.length}
+                isEmpty={urgentOrgVotes.length === 0}
+              >
+                {urgentOrgVotes.map((vote: any) => (
+                  <div key={vote.id} className="w-full flex justify-center py-6">
+                    <OrganizationVoteCard
+                      vote={vote}
+                      onVote={handleOrganizationVote}
+                    />
+                  </div>
+                ))}
+              </FeedSection>
+
+              {/* Local City Votes */}
+              <FeedSection
+                icon={MapPin}
+                title={`הצבעות בעיר שלך: ${user.city || 'העיר שלך'}`}
+                description="מועמדים ובחירות מקומיות המשפיעות ישירות על חייך"
+                badge={localPositions.reduce((acc: number, pos: any) => acc + pos.candidates.length, 0)}
+                isEmpty={localPositions.length === 0}
+              >
+                {localPositions.map((position: any) => (
+                  <PositionCarousel
+                    key={position.id}
+                    title={position.title}
+                    description={position.description}
+                    profiles={position.candidates}
+                    type="candidate"
+                    onVideoClick={handleProfileVideoClick}
+                    onVote={handleVote}
+                    onAddCandidate={handleAddCandidate}
+                    onProfileClick={handleProfileClick}
+                    onDismiss={handleDismissProfile}
+                  />
+                ))}
+              </FeedSection>
+
+              {/* National Votes */}
+              <FeedSection
+                icon={Flag}
+                title="בחירות לכנסת ישראל"
+                description="מועמדים למשרות הכי חשובות במדינה - ראש הממשלה, שרים וחברי כנסת"
+                badge={nationalPositions.reduce((acc: number, pos: any) => acc + pos.candidates.length, 0)}
+                isEmpty={nationalPositions.length === 0}
+              >
+                {nationalPositions.map((position: any) => (
+                  <PositionCarousel
+                    key={position.id}
+                    title={position.title}
+                    description={position.description}
+                    profiles={position.candidates}
+                    type="candidate"
+                    onVideoClick={handleProfileVideoClick}
+                    onVote={handleVote}
+                    onAddCandidate={handleAddCandidate}
+                    onProfileClick={handleProfileClick}
+                    onDismiss={handleDismissProfile}
+                  />
+                ))}
+              </FeedSection>
+
+              {/* Community Polls */}
+              <FeedSection
+                icon={Users}
+                title="סקרי דעת קהילתיים"
+                description="הביעו את דעתכם בסוגיות החשובות לציבור הישראלי"
+                badge={polls.length}
+                isEmpty={polls.length === 0}
+              >
+                {polls.map((poll: any) => (
+                  <div key={poll.id} className="w-full px-4 py-6">
+                    <PollCard
+                      poll={poll}
+                      onVote={handlePollVote}
+                    />
+                  </div>
+                ))}
+              </FeedSection>
+
+              {/* Trusted Experts - Only if no votes available */}
+              <FeedSection
+                icon={GraduationCap}
+                title="מומחים מהימנים"
+                description="מומחים איכותיים בתחומים השונים שיכולים לעזור לכם להחליט"
+                badge={experts.reduce((acc: number, section: any) => acc + section.experts.length, 0)}
+                isEmpty={experts.length === 0}
+              >
+                {experts.map((section: any) => (
+                  <PositionCarousel
+                    key={section.id}
+                    title={section.title}
+                    description={section.description}
+                    profiles={section.experts}
+                    type="expert"
+                    onVideoClick={handleProfileVideoClick}
+                    onTrust={handleTrust}
+                    onProfileClick={handleProfileClick}
+                    onDismiss={handleDismissProfile}
+                  />
+                ))}
+              </FeedSection>
+            </div>
+          )}
+        </div>
+
+        {selectedVideo && (
+          <FullscreenVideoPlayer
+            comments={[selectedVideo]}
+            initialCommentIndex={0}
+            onClose={() => setSelectedVideo(null)}
+            onTrust={(id) => console.log('Trust:', id)}
+            onWatch={(id) => console.log('Watch:', id)}
+            onComment={(id) => console.log('Comment:', id)}
+            onShare={(id) => console.log('Share:', id)}
+            onZooz={(id) => console.log('Zooz:', id)}
+            userBalance={1000}
+            currentUserId="user123"
+          />
+        )}
+      </>
+    );
+  }
+
+  // Handle other filters (candidates, experts, all)
+  const { positions: filteredPositions, experts: filteredExperts, polls, organizationVotes } = filteredContent as any;
+  const hasContent = filteredPositions?.length > 0 || filteredExperts?.length > 0 || polls?.length > 0 || organizationVotes?.length > 0;
 
   return (
     <>

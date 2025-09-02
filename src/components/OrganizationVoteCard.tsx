@@ -9,6 +9,8 @@ export interface OrganizationVote {
   organizationType: "foundation" | "company" | "school" | "community";
   title: string;
   description: string;
+  targetPhones?: string[];
+  targetIds?: string[];
   financialDetails?: {
     amount: string;
     currency: string;
