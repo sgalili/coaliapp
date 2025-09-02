@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Building2, Clock, Users, CheckCircle, XCircle, MinusCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Building2, Clock, Users, CheckCircle, XCircle, MinusCircle, Sparkles, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 export interface OrganizationVote {
   id: string;
   organization: string;
@@ -38,6 +39,10 @@ export const OrganizationVoteCard = ({
   onVote
 }: OrganizationVoteCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(vote.userVotedOption || null);
+  const [isVoting, setIsVoting] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [earnedPoints, setEarnedPoints] = useState(0);
+  const { toast } = useToast();
   const getOrganizationIcon = () => {
     switch (vote.organizationType) {
       case 'foundation':
@@ -79,12 +84,63 @@ export const OrganizationVoteCard = ({
     const minutes = Math.floor(timeDiff / (1000 * 60));
     return `${minutes} דקות`;
   };
-  const handleVote = (optionId: string) => {
+  const handleVote = async (optionId: string) => {
     if (vote.hasUserVoted) return;
+    
+    setIsVoting(true);
     setSelectedOption(optionId);
-    onVote(vote.id, optionId);
+    
+    // Simulate vote processing
+    setTimeout(() => {
+      setIsVoting(false);
+      setShowConfetti(true);
+      setEarnedPoints(10);
+      
+      // Show success toast with gamification
+      toast({
+        title: "🎉 הצבעה נרשמה בהצלחה!",
+        description: "זכית ב-10 נקודות אמון! המשך להשפיע על הקהילה שלך",
+      });
+
+      onVote(vote.id, optionId);
+      
+      // Hide confetti after animation
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 3000);
+    }, 1000);
   };
-  return <Card className="w-full max-w-2xl mx-4 mb-6 border border-border/50 bg-card/90 backdrop-blur-sm">
+
+  // Confetti effect component
+  const ConfettiEffect = () => (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg">
+      {[...Array(20)].map((_, i) => (
+        <div
+          key={i}
+          className={`absolute w-2 h-2 animate-bounce opacity-80 ${
+            i % 4 === 0 ? 'bg-yellow-400' :
+            i % 4 === 1 ? 'bg-blue-400' :
+            i % 4 === 2 ? 'bg-green-400' : 'bg-pink-400'
+          } rounded-full`}
+          style={{
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 2}s`,
+            animationDuration: `${1 + Math.random()}s`
+          }}
+        />
+      ))}
+    </div>
+  );
+  return <Card className="w-full max-w-2xl mx-4 mb-6 border border-border/50 bg-card/90 backdrop-blur-sm relative overflow-hidden">
+      {showConfetti && <ConfettiEffect />}
+      
+      {/* Points notification */}
+      {earnedPoints > 0 && (
+        <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-bounce">
+          <Trophy className="w-4 h-4" />
+          +{earnedPoints} נקודות!
+        </div>
+      )}
       <CardHeader className="pb-3">
         {/* Organization Header */}
         <div className="flex items-center justify-between">
@@ -137,7 +193,30 @@ export const OrganizationVoteCard = ({
           const IconComponent = getOptionIcon(option.text);
           const isSelected = selectedOption === option.id;
           const isUserVote = vote.userVotedOption === option.id;
-          return <button key={option.id} onClick={() => handleVote(option.id)} disabled={vote.hasUserVoted} className={cn("w-full p-3 rounded-lg border transition-all duration-200 text-right", vote.hasUserVoted ? "cursor-not-allowed opacity-70" : "hover:border-primary/50 cursor-pointer", isSelected && !vote.hasUserVoted && "border-primary bg-primary/5", isUserVote && "border-primary bg-primary/10")}>
+          return <button 
+            key={option.id} 
+            onClick={() => handleVote(option.id)} 
+            disabled={vote.hasUserVoted || isVoting} 
+            className={cn(
+              "w-full p-3 rounded-lg border transition-all duration-300 text-right relative overflow-hidden",
+              vote.hasUserVoted ? "cursor-not-allowed" : "hover:border-primary/50 cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
+              isSelected && !vote.hasUserVoted && "border-primary bg-primary/5 animate-pulse",
+              isUserVote && "border-green-500 bg-green-50 ring-2 ring-green-200",
+              isVoting && selectedOption === option.id && "animate-pulse bg-primary/20"
+            )}
+          >
+            {/* Voting loading effect */}
+            {isVoting && selectedOption === option.id && (
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 animate-pulse" />
+            )}
+            
+            {/* Already voted indicator */}
+            {isUserVote && (
+              <div className="absolute top-1 right-1 flex items-center gap-1 bg-green-500 text-white px-2 py-1 rounded-full text-xs">
+                <CheckCircle className="w-3 h-3" />
+                <span>בחירתך</span>
+              </div>
+            )}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <IconComponent className={cn("w-4 h-4", option.text.includes('בעד') ? "text-green-500" : option.text.includes('נגד') ? "text-red-500" : "text-gray-500")} />
@@ -162,10 +241,18 @@ export const OrganizationVoteCard = ({
             <span>{vote.totalVotes} הצביעו מתוך {vote.totalMembers}</span>
           </div>
           
-          {vote.hasUserVoted && <div className="flex items-center gap-1 text-xs text-green-600">
-              <CheckCircle className="w-3 h-3" />
-              <span>הצבעתך נרשמה</span>
-            </div>}
+          {vote.hasUserVoted ? (
+            <div className="flex items-center gap-2 text-green-600 font-medium">
+              <CheckCircle className="w-4 h-4" />
+              <span>הצבעתך נרשמה בהצלחה!</span>
+              <Sparkles className="w-4 h-4 text-yellow-500" />
+            </div>
+          ) : isVoting ? (
+            <div className="flex items-center gap-2 text-primary font-medium">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <span>רושם הצבעה...</span>
+            </div>
+          ) : null}
         </div>
       </CardContent>
     </Card>;
