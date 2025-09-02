@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PositionCarousel } from "./PositionCarousel";
 import { Profile } from "./ProfileCard";
 import { FullscreenVideoPlayer } from "./FullscreenVideoPlayer";
@@ -203,6 +204,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   const [selectedVideo, setSelectedVideo] = useState<VideoComment | null>(null);
   const [dismissedProfiles, setDismissedProfiles] = useState<string[]>([]);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleProfileVideoClick = (profile: Profile) => {
     // Convert profile to VideoComment format for the player
@@ -247,8 +249,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   };
 
   const handleProfileClick = (profileId: string) => {
-    console.log('Navigate to profile:', profileId);
-    // TODO: Navigate to profile page
+    navigate(`/user/${profileId}`);
   };
 
   const handleDismissProfile = (profileId: string) => {
