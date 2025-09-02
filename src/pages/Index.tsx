@@ -185,7 +185,7 @@ const Index = () => {
   const [showKYC, setShowKYC] = useState(false);
   const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [zoozBalance, setZoozBalance] = useState(1250);
-  const [voteFilter, setVoteFilter] = useState<VoteFilterType>('all');
+  const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
   const { toast } = useToast();
 
   useEffect(() => {
