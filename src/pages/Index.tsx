@@ -278,9 +278,9 @@ const Index = () => {
             </button>
             <button 
               onClick={() => triggerKYCCheck()} 
-              className="text-blue-800 text-xs hover:underline cursor-pointer p-2 w-full"
+              className="text-blue-800 text-sm hover:underline cursor-pointer p-3 w-full font-medium"
             >
-              🎉 Authentifiez-vous et gagnez 10 Z + contenu personnalisé juste pour vous ! ✨
+              🎉 אמתו זהות וזכו ב-10 Z + תוכן מותאם אישית רק בשבילכם! ✨
             </button>
           </div>
         </div>
