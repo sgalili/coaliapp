@@ -45,7 +45,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
 
   return (
     <div className={`fixed top-[73px] left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      isVisible ? 'opacity-100' : 'opacity-30 pointer-events-none'
     }`}>
       <div className="flex items-center gap-1 bg-background/20 backdrop-blur-md rounded-full px-2 py-1 border border-border/20">
         {filters.map((filter) => (
