@@ -16,22 +16,22 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   ];
 
   return (
-    <div className="fixed top-20 left-4 right-4 z-30">
-      <div className="bg-background/70 backdrop-blur-md border border-border/50 rounded-full p-1 shadow-lg">
-        <div className="flex justify-between gap-1">
+    <div className="fixed top-16 left-1/2 transform -translate-x-1/2 z-30">
+      <div className="bg-background/80 backdrop-blur-md border border-border/50 rounded-full px-2 py-1 shadow-lg">
+        <div className="flex items-center gap-1">
           {filters.map((filter) => (
             <button
               key={filter.id}
               onClick={() => onFilterChange(filter.id)}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-full transition-all duration-200 text-xs font-medium",
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 text-xs font-medium whitespace-nowrap",
                 activeFilter === filter.id
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
-              <span className="text-xs mb-0.5">{filter.icon}</span>
-              <span className="text-[10px]">{filter.label}</span>
+              <span className="text-xs">{filter.icon}</span>
+              <span className="text-xs">{filter.label}</span>
             </button>
           ))}
         </div>
