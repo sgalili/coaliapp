@@ -47,7 +47,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
     <div className={`fixed top-[73px] left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
       isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
     }`}>
-      <div className="flex items-center gap-1 bg-white/5 backdrop-blur-md rounded-full px-2 py-1 border border-white/10">
+      <div className="flex items-center gap-1 bg-background/20 backdrop-blur-md rounded-full px-2 py-1 border border-border/20">
         {filters.map((filter) => (
           <button
             key={filter.id}
@@ -55,8 +55,8 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200",
               activeFilter === filter.id
-                ? "bg-white/20 text-white shadow-sm"
-                : "text-white/70 hover:text-white/90 hover:bg-white/10"
+                ? "bg-primary/20 text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
             )}
           >
             <span className="text-xs opacity-80">{filter.icon}</span>
