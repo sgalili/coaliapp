@@ -268,7 +268,7 @@ const Index = () => {
       
       {/* KYC Notice */}
       {showKycNotice && (
-        <div className="pt-[95px] px-3 pb-0">
+        <div className="pt-[101px] px-3 pb-0">
           <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
             <button 
               onClick={() => setShowKycNotice(false)} 
