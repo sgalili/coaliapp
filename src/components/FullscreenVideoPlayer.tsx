@@ -93,6 +93,7 @@ export const FullscreenVideoPlayer = ({
   const [currentIndex, setCurrentIndex] = useState(initialCommentIndex);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [flyingZs, setFlyingZs] = useState<Array<{id: string, x: number, y: number}>>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -182,6 +183,30 @@ export const FullscreenVideoPlayer = ({
         duration: 2000
       });
       return;
+    }
+    
+    // Generate flying Z animation
+    const buttonRect = (e?.currentTarget as HTMLElement)?.getBoundingClientRect();
+    if (buttonRect && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const x = buttonRect.left - containerRect.left + buttonRect.width / 2;
+      const y = buttonRect.top - containerRect.top + buttonRect.height / 2;
+      
+      // Create multiple flying Zs
+      for (let i = 0; i < 3; i++) {
+        const flyingZ = {
+          id: `${Date.now()}-${i}`,
+          x: x + (Math.random() - 0.5) * 20,
+          y: y + (Math.random() - 0.5) * 20
+        };
+        
+        setFlyingZs(prev => [...prev, flyingZ]);
+        
+        // Remove the flying Z after animation completes
+        setTimeout(() => {
+          setFlyingZs(prev => prev.filter(z => z.id !== flyingZ.id));
+        }, 2000);
+      }
     }
     
     const rect = containerRef.current?.getBoundingClientRect();
@@ -277,6 +302,23 @@ export const FullscreenVideoPlayer = ({
 
         {/* Live ZOOZ Reactions */}
         {liveReactions.map(renderZoozReaction)}
+
+        {/* Flying Zs Animation */}
+        {flyingZs.map(flyingZ => (
+          <div
+            key={flyingZ.id}
+            className="absolute pointer-events-none z-50 animate-fly-up"
+            style={{
+              left: flyingZ.x,
+              top: flyingZ.y,
+              transform: 'translate(-50%, -50%)'
+            }}
+          >
+            <div className="text-4xl font-black text-zooz drop-shadow-lg">
+              Z
+            </div>
+          </div>
+        ))}
 
         {/* Video Index Indicator */}
         <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full text-white text-sm">
