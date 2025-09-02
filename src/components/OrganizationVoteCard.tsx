@@ -127,19 +127,30 @@ export const OrganizationVoteCard = ({
           style={{
             left: `${Math.random() * 100}%`,
             top: '-10px',
-            animationDelay: `${Math.random() * 0.5}s`,
-            animation: 'fall 2s ease-in forwards',
+            animationDelay: `${Math.random() * 1}s`,
+            animation: `confetti-fall-${i} ${2 + Math.random() * 2}s ease-out forwards`,
+            transform: `rotate(${Math.random() * 360}deg)`,
           }}
         />
       ))}
       <style dangerouslySetInnerHTML={{
         __html: `
-          @keyframes fall {
-            to {
-              transform: translateY(400px) rotate(360deg);
-              opacity: 0;
+          ${[...Array(20)].map((_, i) => `
+            @keyframes confetti-fall-${i} {
+              0% {
+                transform: translateY(-10px) translateX(0) rotate(${Math.random() * 360}deg);
+                opacity: 1;
+              }
+              50% {
+                transform: translateY(200px) translateX(${(Math.random() - 0.5) * 100}px) rotate(${Math.random() * 720}deg);
+                opacity: 0.8;
+              }
+              100% {
+                transform: translateY(400px) translateX(${(Math.random() - 0.5) * 150}px) rotate(${Math.random() * 1080}deg);
+                opacity: 0;
+              }
             }
-          }
+          `).join('')}
         `
       }} />
     </div>
