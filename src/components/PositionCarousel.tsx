@@ -11,6 +11,8 @@ interface PositionCarouselProps {
   onVote?: (profileId: string) => void;
   onTrust?: (profileId: string) => void;
   onAddCandidate?: () => void;
+  onProfileClick?: (profileId: string) => void;
+  onDismiss?: (profileId: string) => void;
 }
 
 export const PositionCarousel = ({ 
@@ -21,7 +23,9 @@ export const PositionCarousel = ({
   onVideoClick, 
   onVote, 
   onTrust,
-  onAddCandidate 
+  onAddCandidate,
+  onProfileClick,
+  onDismiss 
 }: PositionCarouselProps) => {
   
   return (
@@ -87,6 +91,8 @@ export const PositionCarousel = ({
                 onVideoClick={onVideoClick}
                 onVote={type === 'candidate' ? onVote : undefined}
                 onTrust={type === 'expert' ? onTrust : undefined}
+                onProfileClick={onProfileClick}
+                onDismiss={onDismiss}
               />
             ))
           )}

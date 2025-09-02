@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, CheckCircle, Vote, Heart } from "lucide-react";
+import { Play, CheckCircle, Vote, Heart, TrendingUp, TrendingDown, X, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,6 +17,8 @@ export interface Profile {
   hasUserTrusted?: boolean;
   isVerified: boolean;
   type: 'candidate' | 'expert';
+  trustRank?: number;
+  trustTrend?: 'up' | 'down' | 'stable';
 }
 
 interface ProfileCardProps {
@@ -24,9 +26,11 @@ interface ProfileCardProps {
   onVideoClick: (profile: Profile) => void;
   onVote?: (profileId: string) => void;
   onTrust?: (profileId: string) => void;
+  onProfileClick?: (profileId: string) => void;
+  onDismiss?: (profileId: string) => void;
 }
 
-export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust }: ProfileCardProps) => {
+export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust, onProfileClick, onDismiss }: ProfileCardProps) => {
   const [isVoting, setIsVoting] = useState(false);
   const [isTrusting, setIsTrusting] = useState(false);
   const { toast } = useToast();
@@ -59,10 +63,47 @@ export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust }: ProfileC
     }, 500);
   };
 
+  const handleProfileClick = () => {
+    if (onProfileClick) {
+      onProfileClick(profile.id);
+    }
+  };
+
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDismiss) {
+      onDismiss(profile.id);
+    }
+  };
+
+  const getTrustTrendIcon = (trend?: 'up' | 'down' | 'stable') => {
+    switch (trend) {
+      case 'up':
+        return <TrendingUp className="w-3 h-3 text-trust" />;
+      case 'down':
+        return <TrendingDown className="w-3 h-3 text-destructive" />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="flex-shrink-0 w-48 bg-background border border-border rounded-xl p-3 shadow-sm">
+    <div className="flex-shrink-0 w-48 bg-background border border-border rounded-xl p-3 shadow-sm relative">
+      {/* Dismiss Button */}
+      {onDismiss && (
+        <button
+          onClick={handleDismiss}
+          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-background/80 hover:bg-muted flex items-center justify-center z-10 transition-colors"
+        >
+          <X className="w-3 h-3 text-muted-foreground" />
+        </button>
+      )}
+
       {/* Profile Header */}
-      <div className="flex items-center gap-2 mb-3">
+      <div 
+        className="flex items-center gap-2 mb-3 cursor-pointer"
+        onClick={handleProfileClick}
+      >
         <div className="relative">
           <img
             src={profile.avatar}
@@ -158,7 +199,10 @@ export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust }: ProfileC
         )}
 
         {/* Stats */}
-        <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
+        <div 
+          className="flex items-center justify-center gap-3 text-xs text-muted-foreground cursor-pointer"
+          onClick={handleProfileClick}
+        >
           {profile.type === 'candidate' && profile.voteCount && (
             <div className="flex items-center gap-1">
               <Vote className="w-3 h-3" />
@@ -169,6 +213,13 @@ export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust }: ProfileC
             <div className="flex items-center gap-1">
               <Heart className="w-3 h-3" />
               <span>{profile.trustCount.toLocaleString('he')}</span>
+            </div>
+          )}
+          {profile.trustRank && (
+            <div className="flex items-center gap-1">
+              <Award className="w-3 h-3 text-trust" />
+              <span>{profile.trustRank}</span>
+              {getTrustTrendIcon(profile.trustTrend)}
             </div>
           )}
         </div>

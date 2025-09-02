@@ -53,7 +53,9 @@ const positions = [
         voteCount: 89420,
         hasUserVoted: false,
         isVerified: true,
-        type: 'candidate' as const
+        type: 'candidate' as const,
+        trustRank: 850,
+        trustTrend: 'up' as const,
       },
       {
         id: "c2",
@@ -66,7 +68,9 @@ const positions = [
         voteCount: 67890,
         hasUserVoted: false,
         isVerified: true,
-        type: 'candidate' as const
+        type: 'candidate' as const,
+        trustRank: 720,
+        trustTrend: 'down' as const,
       }
     ]
   },
@@ -86,7 +90,9 @@ const positions = [
         voteCount: 23150,
         hasUserVoted: false,
         isVerified: true,
-        type: 'candidate' as const
+        type: 'candidate' as const,
+        trustRank: 680,
+        trustTrend: 'stable' as const,
       }
     ]
   }
@@ -109,7 +115,9 @@ const expertSections = [
         trustCount: 12400,
         hasUserTrusted: false,
         isVerified: true,
-        type: 'expert' as const
+        type: 'expert' as const,
+        trustRank: 920,
+        trustTrend: 'up' as const,
       },
       {
         id: "e2", 
@@ -122,7 +130,9 @@ const expertSections = [
         trustCount: 8900,
         hasUserTrusted: true,
         isVerified: true,
-        type: 'expert' as const
+        type: 'expert' as const,
+        trustRank: 760,
+        trustTrend: 'stable' as const,
       }
     ]
   }
@@ -233,6 +243,16 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
     console.log('Add candidate clicked');
   };
 
+  const handleProfileClick = (profileId: string) => {
+    console.log('Navigate to profile:', profileId);
+    // TODO: Navigate to profile page
+  };
+
+  const handleDismissProfile = (profileId: string) => {
+    console.log('Dismiss profile:', profileId);
+    // TODO: Remove profile from feed
+  };
+
   const getFilteredContent = () => {
     switch (filter) {
       case 'candidates':
@@ -294,6 +314,8 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
                 onVideoClick={handleProfileVideoClick}
                 onVote={handleVote}
                 onAddCandidate={handleAddCandidate}
+                onProfileClick={handleProfileClick}
+                onDismiss={handleDismissProfile}
               />
             ))}
 
@@ -307,6 +329,8 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
                 type="expert"
                 onVideoClick={handleProfileVideoClick}
                 onTrust={handleTrust}
+                onProfileClick={handleProfileClick}
+                onDismiss={handleDismissProfile}
               />
             ))}
 
