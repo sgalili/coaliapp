@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { CandidateCard, type Candidate } from "./CandidateCard";
-import { PollCard, type Poll } from "./PollCard";
+import { CandidateCard, Candidate } from "./CandidateCard";
+import { PollCard, Poll } from "./PollCard";
 import { FullscreenVideoPlayer } from "./FullscreenVideoPlayer";
+
+// Import profile images
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
+import sarahProfile from "@/assets/sarah-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
 
 interface VideoComment {
   id: string;
@@ -20,110 +27,89 @@ interface VideoComment {
   shareCount?: number;
 }
 
-// Mock data for candidates
-import sarahProfile from "@/assets/sarah-profile.jpg";
-import yaakovProfile from "@/assets/yaakov-profile.jpg";
-import mayaProfile from "@/assets/maya-profile.jpg";
-import amitProfile from "@/assets/amit-profile.jpg";
-import rachelProfile from "@/assets/rachel-profile.jpg";
-import noaProfile from "@/assets/noa-profile.jpg";
-import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
-import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
+export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 
 interface VoteFeedProps {
-  filter: 'for-me' | 'candidates' | 'experts' | 'all';
+  filter: VoteFilterType;
 }
 
+// Mock candidates data
 const mockCandidates: Candidate[] = [
   {
-    id: "cand-1",
+    id: "c1",
     name: "בנימין נתניהו",
-    position: "ראש ממשלה",
+    position: "ראש הממשלה",
     city: "ירושלים",
     avatar: netanyahuProfile,
     videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755817615/netanyahu-debate_fitgzh.mp4",
-    expertise: ["פוליטיקה", "ביטחון", "דיפלומטיה"],
+    expertise: ["מדיניות", "ביטחון", "כלכלה"],
     voteCount: 89420,
-    supporterCount: 125560,
+    supporterCount: 234567,
     hasUserVoted: false,
     isVerified: true,
-    program: "חיזוק הביטחון הלאומי והמשך הקפיצה הטכנולוגית של ישראל במזרח התיכון החדש"
+    program: "המשך החזקת הביטחון הלאומי ופיתוח כלכלי מתקדם. חיזוק הקשרים הבינלאומיים ושמירה על הערכים היהודיים והדמוקרטיים של המדינה."
   },
   {
-    id: "cand-2", 
+    id: "c2", 
     name: "ירון זליכה",
-    position: "מומחה כלכלה",
-    city: "תל-אביב",
+    position: "כלכלן ראשי",
+    city: "תל אביב",
     avatar: yaronProfile,
     videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818123/%D7%90%D7%96_%D7%9E%D7%94_%D7%90%D7%AA%D7%94_%D7%91%D7%A2%D7%A6%D7%9D_%D7%9E%D7%A6%D7%99%D7%A2__jb7xb0.mp4",
-    expertise: ["כלכלה", "פיננסים", "השקעות"],
-    voteCount: 2847,
-    supporterCount: 4156,
-    hasUserVoted: true,
+    expertise: ["כלכלה", "השקעות", "מדיניות פיסקלית"],
+    voteCount: 45230,
+    supporterCount: 89456,
+    hasUserVoted: false,
     isVerified: true,
-    program: "רפורמה כלכלית מקיפה, הורדת מחירי המחיה וחיזוק השקל מול המטבעות העולמיים"
+    program: "רפורמה כלכלית מקיפה, הקלות מס למעמד הבינוני, פיתוח תשתיות טכנולוגיות וחיזוק התחרותיות הישראלית בשוק העולמי."
   },
   {
-    id: "cand-3",
+    id: "c3",
     name: "שרה כהן",
-    position: "מומחת חינוך",
+    position: "מומחית דמוקרטיה דיגיטלית",
     city: "חיפה", 
     avatar: sarahProfile,
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    expertise: ["חינוך", "טכנולוגיה", "חדשנות"],
-    voteCount: 1247,
-    supporterCount: 856,
-    hasUserVoted: false,
+    expertise: ["טכנולוגיה", "דמוקרטיה", "חדשנות"],
+    voteCount: 23150,
+    supporterCount: 45678,
+    hasUserVoted: true,
     isVerified: true,
-    program: "דיגיטציה של מערכת החינוך ושילוב בינה מלאכותית בכיתות הלימוד"
-  },
-  {
-    id: "cand-4",
-    name: "מיה רוזן",
-    position: "מומחת סביבה",
-    city: "באר שבע",
-    avatar: mayaProfile,
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    expertise: ["סביבה", "אקלים", "קיימות"],
-    voteCount: 456,
-    supporterCount: 621,
-    hasUserVoted: false,
-    isVerified: false,
-    program: "מעבר לאנרגיות מתחדשות ויצירת כלכלה ירוקה ברחבי ישראל"
+    program: "דיגיטציה של השירותים הממשלתיים, הטמעת בלוקצ'יין בהצבעות, ושיפור השקיפות והנגישות הדמוקרטית באמצעות טכנולוגיה."
   }
 ];
 
+// Mock polls data
 const mockPolls: Poll[] = [
   {
-    id: "poll-1",
-    question: "מה דעתכם על מס השבח החדש?",
-    description: "הממשלה מציעה להעלות את מס השבח ל-30%. האם אתם תומכים?",
+    id: "p1",
+    question: "האם אתה תומך בהעברת הכנסת לתל אביב?",
+    description: "השאלה עוסקת בהעברת מקום ישיבות הכנסת מירושלים לתל אביב בכדי להתמודד עם עומסי התנועה ולשפר נגישות.",
     options: [
-      { id: "opt-1", text: "תומך מאוד", votes: 1240, percentage: 15 },
-      { id: "opt-2", text: "תומך במידה מסוימת", votes: 2480, percentage: 30 },
-      { id: "opt-3", text: "מתנגד", votes: 2890, percentage: 35 },
-      { id: "opt-4", text: "מתנגד בתוקף", votes: 1650, percentage: 20 }
+      { id: "o1", text: "בעד - העברה לתל אביב", votes: 12450, percentage: 45 },
+      { id: "o2", text: "נגד - להשאיר בירושלים", votes: 10890, percentage: 40 },
+      { id: "o3", text: "אין לי דעה", votes: 4110, percentage: 15 }
     ],
-    totalVotes: 8260,
-    endDate: "2024-12-31T23:59:59",
-    category: "כלכלה",
+    totalVotes: 27450,
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
+    category: "מדיניות",
     hasUserVoted: false
   },
   {
-    id: "poll-2",
-    question: "איך לשפר את מערכת החינוך?",
-    description: "מה השינוי החשוב ביותר שנדרש במערכת החינוך הישראלית?",
+    id: "p2", 
+    question: "איזה נושא הכי חשוב לך בבחירות הקרובות?",
+    description: "רנקינג הנושאים החשובים ביותר לציבור הישראלי קראת בחירות 2024.",
     options: [
-      { id: "opt-1", text: "הקטנת כיתות", votes: 3420, percentage: 45 },
-      { id: "opt-2", text: "שיפור שכר המורים", votes: 2280, percentage: 30 },
-      { id: "opt-3", text: "שילוב טכנולוגיה", votes: 1140, percentage: 15 },
-      { id: "opt-4", text: "שינוי תכנית הלימודים", votes: 760, percentage: 10 }
+      { id: "o1", text: "ביטחון ומדיניות חוץ", votes: 18930, percentage: 35 },
+      { id: "o2", text: "כלכלה ויוקר המחיה", votes: 16200, percentage: 30 },
+      { id: "o3", text: "חינוך ורווחה", votes: 10800, percentage: 20 },
+      { id: "o4", text: "איכות הסביבה", votes: 8100, percentage: 15 }
     ],
-    totalVotes: 7600,
-    endDate: "2024-12-25T23:59:59",
-    category: "חינוך",
+    totalVotes: 54030,
+    endDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000), // 12 days from now
+    category: "כללי",
     hasUserVoted: true,
-    userChoice: "opt-1"
+    userVotedOption: "o2"
   }
 ];
 
@@ -131,105 +117,97 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   const [selectedVideo, setSelectedVideo] = useState<VideoComment | null>(null);
 
   const handleCandidateVideoClick = (candidate: Candidate) => {
-    // Convert candidate to VideoComment format for FullscreenVideoPlayer
+    // Convert candidate to VideoComment format for the player
     const videoComment: VideoComment = {
       id: candidate.id,
       userId: candidate.id,
       username: candidate.name,
       userImage: candidate.avatar,
       videoUrl: candidate.videoUrl,
-      duration: 120, // Mock duration
+      duration: 180, // Mock duration
       likes: candidate.voteCount,
       replies: Math.floor(candidate.voteCount * 0.1),
-      trustLevel: candidate.voteCount,
-      timestamp: "2h",
-      category: candidate.expertise[0],
+      trustLevel: candidate.supporterCount,
+      timestamp: "לפני שעה",
+      category: candidate.expertise[0] || "פוליטיקה",
       kycLevel: 3,
       watchCount: candidate.supporterCount,
-      shareCount: Math.floor(candidate.voteCount * 0.05)
+      shareCount: Math.floor(candidate.voteCount * 0.2)
     };
     
     setSelectedVideo(videoComment);
   };
 
   const handleVote = (candidateId: string) => {
-    // Update candidate vote status
-    const candidateIndex = mockCandidates.findIndex(c => c.id === candidateId);
-    if (candidateIndex !== -1) {
-      mockCandidates[candidateIndex].hasUserVoted = true;
-      mockCandidates[candidateIndex].voteCount += 1;
-    }
+    // Mock vote logic - in real app would update backend
+    console.log(`Voted for candidate: ${candidateId}`);
   };
 
   const handlePollVote = (pollId: string, optionId: string) => {
-    const pollIndex = mockPolls.findIndex(p => p.id === pollId);
-    if (pollIndex !== -1) {
-      mockPolls[pollIndex].hasUserVoted = true;
-      mockPolls[pollIndex].userChoice = optionId;
-      // Update vote counts (simplified)
-      const optionIndex = mockPolls[pollIndex].options.findIndex(opt => opt.id === optionId);
-      if (optionIndex !== -1) {
-        mockPolls[pollIndex].options[optionIndex].votes += 1;
-        mockPolls[pollIndex].totalVotes += 1;
-      }
-    }
+    // Mock poll vote logic - in real app would update backend
+    console.log(`Voted in poll ${pollId} for option: ${optionId}`);
   };
 
   const getFilteredContent = () => {
-    let candidates = [...mockCandidates];
-    let polls = [...mockPolls];
-
     switch (filter) {
-      case 'for-me':
-        // Show personalized content based on location/interests
-        candidates = candidates.slice(0, 2);
-        polls = polls.slice(0, 1);
-        break;
       case 'candidates':
-        // Show only political candidates
-        candidates = candidates.filter(c => c.position.includes('ראש') || c.position.includes('שר'));
-        polls = [];
-        break;
+        return { candidates: mockCandidates, polls: [] };
       case 'experts':
-        // Show only expert candidates
-        candidates = candidates.filter(c => c.position.includes('מומחה'));
-        polls = [];
-        break;
+        return { candidates: mockCandidates.filter(c => c.expertise.includes('טכנולוגיה')), polls: [] };
+      case 'for-me':
+        return { 
+          candidates: mockCandidates.slice(0, 2), 
+          polls: mockPolls.slice(0, 1) 
+        };
       case 'all':
       default:
-        // Show everything
-        break;
+        return { candidates: mockCandidates, polls: mockPolls };
     }
-
-    return { candidates, polls };
   };
 
   const { candidates, polls } = getFilteredContent();
 
+  // Mix candidates and polls for display
+  const mixedContent = [];
+  const maxItems = Math.max(candidates.length, polls.length);
+  
+  for (let i = 0; i < maxItems; i++) {
+    if (i < candidates.length) {
+      mixedContent.push({ type: 'candidate', data: candidates[i] });
+    }
+    if (i < polls.length) {
+      mixedContent.push({ type: 'poll', data: polls[i] });
+    }
+  }
+
   return (
     <>
-      <div className="pb-32 px-4 pt-4">
-        {/* Mix candidates and polls */}
-        {candidates.map((candidate, index) => (
-          <CandidateCard
-            key={candidate.id}
-            candidate={candidate}
-            onVideoClick={handleCandidateVideoClick}
-            onVote={handleVote}
-          />
-        ))}
-        
-        {polls.map((poll) => (
-          <PollCard
-            key={poll.id}
-            poll={poll}
-            onVote={handlePollVote}
-          />
-        ))}
-        
-        {candidates.length === 0 && polls.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">אין תוכן זמין לפילטר שנבחר</p>
+      {/* Main Feed - Full Width */}
+      <div className="pt-32 pb-20 w-full min-h-screen bg-background">
+        {mixedContent.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="text-6xl mb-4">🗳️</div>
+            <h3 className="text-lg font-semibold mb-2">אין תוכן להצבעה כרגע</h3>
+            <p className="text-muted-foreground">נסה לשנות את הפילטר או לחזור מאוחר יותר</p>
+          </div>
+        ) : (
+          <div className="space-y-0">
+            {mixedContent.map((item, index) => (
+              <div key={`${item.type}-${item.data.id}-${index}`}>
+                {item.type === 'candidate' ? (
+                  <CandidateCard
+                    candidate={item.data as Candidate}
+                    onVideoClick={handleCandidateVideoClick}
+                    onVote={handleVote}
+                  />
+                ) : (
+                  <PollCard
+                    poll={item.data as Poll}
+                    onVote={handlePollVote}
+                  />
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -240,10 +218,10 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
           comments={[selectedVideo]}
           initialCommentIndex={0}
           onClose={() => setSelectedVideo(null)}
-          onTrust={() => {}}
-          onWatch={() => {}}
-          onComment={() => {}}
-          onShare={() => {}}
+          onTrust={(id) => console.log('Trust:', id)}
+          onWatch={(id) => console.log('Watch:', id)}
+          onComment={(id) => console.log('Comment:', id)}
+          onShare={(id) => console.log('Share:', id)}
         />
       )}
     </>

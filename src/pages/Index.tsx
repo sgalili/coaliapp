@@ -252,22 +252,18 @@ const Index = () => {
   };
   
   return (
-    <div className="h-screen bg-background relative">      
-      <div className="h-screen flex flex-col">
-        {/* Vote Header */}
-        <VoteHeader />
-        
-        {/* Vote Feed */}
-        <div className="flex-1 relative overflow-hidden">
-          <VoteFeed filter={voteFilter} />
-        </div>
-        
-        {/* Vote Filters */}
-        <VoteFilters 
-          activeFilter={voteFilter}
-          onFilterChange={setVoteFilter}
-        />
-      </div>
+    <div className="min-h-screen bg-background relative">
+      {/* Vote Header */}
+      <VoteHeader />
+      
+      {/* Vote Filters */}
+      <VoteFilters 
+        activeFilter={voteFilter}
+        onFilterChange={setVoteFilter}
+      />
+      
+      {/* Vote Feed - Full Width Instagram Style */}
+      <VoteFeed filter={voteFilter} />
 
       <Navigation zoozBalance={zoozBalance} />
 

@@ -1,51 +1,44 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { MapPin, Plus, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapPin, Plus, ChevronDown } from "lucide-react";
 
 export const VoteHeader = () => {
   const [showCitySelector, setShowCitySelector] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState("תל-אביב - ישראל");
+  const [selectedLocation, setSelectedLocation] = useState("תל אביב");
 
   const cities = [
-    "תל-אביב - ישראל",
-    "ירושלים - ישראל", 
-    "חיפה - ישראל",
-    "באר שבע - ישראל",
-    "פתח תקווה - ישראל",
-    "נתניה - ישראל",
-    "רמת גן - ישראל"
+    "תל אביב", "ירושלים", "חיפה", "באר שבע", "פתח תקווה", "נתניה", "אשדוד", "ראשון לציון",
+    "הרצליה", "רעננה", "כפר סבא", "רחובות", "בת ים", "חולון", "גבעתיים", "קריית אונו"
   ];
 
   return (
     <>
-      <div className="bg-card/95 backdrop-blur-sm border-b border-border p-4 sticky top-0 z-40">
-        <div className="flex items-center justify-between">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-md border-b border-border">
+        <div className="flex items-center justify-between px-4 py-3">
           {/* Location Selector */}
           <button
             onClick={() => setShowCitySelector(true)}
-            className="flex items-center gap-2 bg-accent/50 hover:bg-accent rounded-lg px-3 py-2 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
           >
             <MapPin className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">{selectedLocation}</span>
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            <span className="font-medium text-sm">{selectedLocation}</span>
           </button>
 
           {/* Create Vote Button */}
-          <Button 
-            size="sm" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Plus className="w-4 h-4 ml-2" />
-            צור הצבעה
-          </Button>
+          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
+            <Plus className="w-4 h-4" />
+            <span className="font-medium text-sm">יצירת הצבעה</span>
+          </button>
         </div>
 
         {/* KYC Notice */}
-        <div className="mt-3 bg-primary/10 border border-primary/20 rounded-lg p-3">
-          <p className="text-xs text-primary text-center">
-            💡 השלם אימות KYC כדי לראות הצבעות מותאמות לאזור שלך
-          </p>
+        <div className="px-4 pb-2">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-right">
+            <p className="text-blue-800 text-xs">
+              💡 לתוכן מותאם אישית, השלימו אימות זהות (KYC) בפרופיל
+            </p>
+          </div>
         </div>
       </div>
 
@@ -53,33 +46,32 @@ export const VoteHeader = () => {
       <Dialog open={showCitySelector} onOpenChange={setShowCitySelector}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-center">בחר מיקום</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-2">
-            {cities.map((city) => (
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-right">בחירת עיר</DialogTitle>
               <button
-                key={city}
-                onClick={() => {
-                  setSelectedLocation(city);
-                  setShowCitySelector(false);
-                }}
-                className={`w-full text-right p-3 rounded-lg border transition-colors ${
-                  selectedLocation === city 
-                    ? 'bg-primary text-primary-foreground border-primary' 
-                    : 'bg-card hover:bg-accent border-border'
-                }`}
+                onClick={() => setShowCitySelector(false)}
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100"
               >
-                <div className="flex items-center justify-between">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">{city}</span>
-                </div>
+                <X className="h-4 w-4" />
               </button>
-            ))}
-          </div>
-          <div className="mt-4 p-3 bg-muted rounded-lg">
-            <p className="text-xs text-muted-foreground text-center">
-              המיקום שלך מסייע להציג הצבעות רלוונטיות לאזור שלך
-            </p>
+            </div>
+          </DialogHeader>
+          
+          <div className="max-h-80 overflow-y-auto">
+            <div className="space-y-1">
+              {cities.map((city) => (
+                <button
+                  key={city}
+                  onClick={() => {
+                    setSelectedLocation(city);
+                    setShowCitySelector(false);
+                  }}
+                  className="w-full text-right p-3 hover:bg-muted rounded-lg transition-colors border-b border-border last:border-b-0"
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
