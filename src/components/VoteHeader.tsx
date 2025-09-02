@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 export const VoteHeader = () => {
   const [showCitySelector, setShowCitySelector] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("תל אביב");
+  const [showKycNotice, setShowKycNotice] = useState(true);
 
   const cities = [
     "תל אביב", "ירושלים", "חיפה", "באר שבע", "פתח תקווה", "נתניה", "אשדוד", "ראשון לציון",
@@ -33,13 +34,21 @@ export const VoteHeader = () => {
         </div>
 
         {/* KYC Notice */}
-        <div className="px-4 pb-2">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-right">
-            <p className="text-blue-800 text-xs">
-              💡 לתוכן מותאם אישית, השלימו אימות זהות (KYC) בפרופיל
-            </p>
+        {showKycNotice && (
+          <div className="px-4 pb-2">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-right relative">
+              <button
+                onClick={() => setShowKycNotice(false)}
+                className="absolute top-1 left-1 w-4 h-4 flex items-center justify-center transition-colors hover:opacity-70"
+              >
+                <X className="w-3 h-3 text-blue-600" />
+              </button>
+              <p className="text-blue-800 text-xs">
+                💡 לתוכן מותאם אישית, השלימו אימות זהות (KYC) בפרופיל
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* City Selector Modal */}
