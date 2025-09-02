@@ -44,25 +44,33 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   ];
 
   return (
-    <div className={`fixed top-[73px] left-1/2 transform -translate-x-1/2 z-50 transition-opacity duration-300 ${
-      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    <div className={`fixed top-[73px] left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
     }`}>
-      <div className="flex items-center gap-2">
-        {filters.map((filter) => (
-          <button
-            key={filter.id}
-            onClick={() => onFilterChange(filter.id)}
-            className={cn(
-              "flex items-center gap-1 px-3 py-2 rounded-full transition-all duration-200 text-xs font-medium whitespace-nowrap backdrop-blur-sm shadow-sm",
-              activeFilter === filter.id
-                ? "bg-white/90 text-black"
-                : "bg-black/20 text-white/90 hover:bg-black/30 hover:text-white"
-            )}
-          >
-            <span className="text-xs">{filter.icon}</span>
-            <span className="text-xs">{filter.label}</span>
-          </button>
-        ))}
+      <div className="bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl p-1 shadow-lg shadow-black/5">
+        <div className="flex items-center gap-1">
+          {filters.map((filter) => (
+            <button
+              key={filter.id}
+              onClick={() => onFilterChange(filter.id)}
+              className={cn(
+                "relative flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 text-sm font-medium whitespace-nowrap group",
+                "hover:scale-105 active:scale-95",
+                activeFilter === filter.id
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/25 scale-105"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              )}
+            >
+              <span className="text-base transition-transform duration-300 group-hover:scale-110">
+                {filter.icon}
+              </span>
+              <span className="font-semibold tracking-tight">{filter.label}</span>
+              {activeFilter === filter.id && (
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-xl" />
+              )}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
