@@ -26,7 +26,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
               "flex items-center gap-1 px-3 py-2 rounded-full transition-all duration-200 text-xs font-medium whitespace-nowrap backdrop-blur-sm shadow-sm",
               activeFilter === filter.id
                 ? "bg-white/90 text-black"
-                : "bg-black/20 text-white/90 hover:bg-black/30 hover:text-white"
+                : "bg-white/20 text-white hover:bg-white/30"
             )}
           >
             <span className="text-xs">{filter.icon}</span>
