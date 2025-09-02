@@ -6,7 +6,6 @@ import { KYCForm } from "@/components/KYCForm";
 export const VoteHeader = () => {
   const [showCitySelector, setShowCitySelector] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("תל אביב");
-  const [showKycNotice, setShowKycNotice] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   
@@ -61,17 +60,6 @@ export const VoteHeader = () => {
           </button>
         </div>
 
-        {/* KYC Notice */}
-        {showKycNotice && <div className="px-3 pt-0 pb-1">
-            <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
-              <button onClick={() => setShowKycNotice(false)} className="absolute top-1 left-1 w-4 h-4 flex items-center justify-center transition-colors hover:opacity-70">
-                <X className="w-2.5 h-2.5 text-blue-600" />
-              </button>
-              <button onClick={() => triggerKYCCheck()} className="text-blue-800 text-xs hover:underline cursor-pointer">
-                💡 לתוכן מותאם אישית, השלימו אימות זהות
-              </button>
-            </div>
-          </div>}
       </div>
 
       {/* City Selector Modal */}

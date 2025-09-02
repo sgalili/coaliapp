@@ -6,6 +6,8 @@ import { Navigation } from "@/components/Navigation";
 import { KYCForm } from "@/components/KYCForm";
 import { VideoCreator } from "@/components/VideoCreator";
 import { useToast } from "@/hooks/use-toast";
+import { useKYC } from "@/hooks/useKYC";
+import { X } from "lucide-react";
 
 // Import profile images
 import sarahProfile from "@/assets/sarah-profile.jpg";
@@ -186,7 +188,15 @@ const Index = () => {
   const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [zoozBalance, setZoozBalance] = useState(1250);
   const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
+  const [showKycNotice, setShowKycNotice] = useState(true);
   const { toast } = useToast();
+  
+  const {
+    showKYC: showKYCFromHook,
+    triggerKYCCheck,
+    handleKYCSuccess,
+    handleKYCClose
+  } = useKYC();
 
   useEffect(() => {
     // Set RTL direction for the entire app
@@ -256,6 +266,26 @@ const Index = () => {
       {/* Vote Header */}
       <VoteHeader />
       
+      {/* KYC Notice */}
+      {showKycNotice && (
+        <div className="pt-20 px-3 pb-0">
+          <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
+            <button 
+              onClick={() => setShowKycNotice(false)} 
+              className="absolute top-1 left-1 w-4 h-4 flex items-center justify-center transition-colors hover:opacity-70"
+            >
+              <X className="w-2.5 h-2.5 text-blue-600" />
+            </button>
+            <button 
+              onClick={() => triggerKYCCheck()} 
+              className="text-blue-800 text-xs hover:underline cursor-pointer"
+            >
+              💡 לתוכן מותאם אישית, השלימו אימות זהות
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Vote Filters */}
       <VoteFilters 
         activeFilter={voteFilter}
@@ -267,11 +297,14 @@ const Index = () => {
 
       <Navigation zoozBalance={zoozBalance} />
 
-      {showKYC && (
+      {(showKYC || showKYCFromHook) && (
         <div className="fixed inset-0 z-50">
           <KYCForm
             onSubmit={handleKYCSubmit}
-            onBack={() => setShowKYC(false)}
+            onBack={() => {
+              setShowKYC(false);
+              handleKYCClose();
+            }}
           />
         </div>
       )}
