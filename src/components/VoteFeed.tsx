@@ -8,7 +8,7 @@ import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
 import { FeedSection } from "./FeedSection";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
-import { Building, MapPin, Flag, Users, GraduationCap } from "lucide-react";
+import { Building, MapPin, Flag, Users, GraduationCap, Home, AlertTriangle, BarChart3, MessageCircle } from "lucide-react";
 
 // Import profile images
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -40,7 +40,115 @@ interface VoteFeedProps {
   filter: VoteFilterType;
 }
 
-// Mock positions and candidates data
+// Mock data for hyper-local to national content
+const condoVotes: OrganizationVote[] = [
+  {
+    id: "condo1",
+    organization: "בניין רמת אביב 15",
+    organizationType: "community",
+    title: "שיפוץ לובי הכניסה",
+    description: "הצעה להחלפת ריצוף ותאורת לובי הכניסה הראשי. עלות משוערת: 35,000 ₪",
+    targetPhones: ["+972-50-123-4567"],
+    targetIds: ["123456789"],
+    financialDetails: {
+      amount: "35,000",
+      currency: "₪",
+      type: "cost"
+    },
+    options: [
+      { id: "c1-o1", text: "בעד השיפוץ", votes: 18, percentage: 75 },
+      { id: "c1-o2", text: "נגד השיפוץ", votes: 6, percentage: 25 }
+    ],
+    totalVotes: 24,
+    totalMembers: 32,
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    hasUserVoted: false,
+    urgency: "medium"
+  }
+];
+
+const schoolVotes: OrganizationVote[] = [
+  {
+    id: "school1",
+    organization: "בי״ס יסודי ביאליק",
+    organizationType: "school",
+    title: "הרחבת זמני המגרש",
+    description: "הצעה להרחיב את זמני השימוש במגרש הכדורסל עד 19:00 לפעילויות תלמידים",
+    targetPhones: ["+972-50-123-4567"],
+    targetIds: ["123456789"],
+    options: [
+      { id: "s1-o1", text: "בעד ההרחבה", votes: 89, percentage: 70 },
+      { id: "s1-o2", text: "נגד ההרחבה", votes: 38, percentage: 30 }
+    ],
+    totalVotes: 127,
+    totalMembers: 180,
+    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    hasUserVoted: false,
+    urgency: "low"
+  }
+];
+
+const neighborhoodPolls: Poll[] = [
+  {
+    id: "nb1",
+    question: "איזה שיפור הכי דחוף בשכונה?",
+    description: "סקר דעת קהל לתושבי רמת אביב צפון",
+    options: [
+      { id: "nb1-o1", text: "תאורת רחוב", votes: 234, percentage: 45 },
+      { id: "nb1-o2", text: "מעברי חצייה", votes: 156, percentage: 30 },
+      { id: "nb1-o3", text: "גינות ציבוריות", votes: 130, percentage: 25 }
+    ],
+    totalVotes: 520,
+    endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    category: "שכונה",
+    hasUserVoted: false
+  }
+];
+
+const cityVotes: OrganizationVote[] = [
+  {
+    id: "city1",
+    organization: "עיריית תל אביב",
+    organizationType: "community",
+    title: "תקציב לתחבורה ציבורית 2025",
+    description: "הצעה להגדלת התקציב לשיפור התחבורה הציבורית בעיר ב-20%",
+    targetPhones: ["+972-50-123-4567"],
+    targetIds: ["123456789"],
+    financialDetails: {
+      amount: "50M",
+      currency: "₪",
+      type: "investment"
+    },
+    options: [
+      { id: "city1-o1", text: "בעד הגדלת התקציב", votes: 2134, percentage: 75 },
+      { id: "city1-o2", text: "נגד הגדלת התקציב", votes: 713, percentage: 25 }
+    ],
+    totalVotes: 2847,
+    totalMembers: 15000,
+    endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    hasUserVoted: false,
+    urgency: "high"
+  }
+];
+
+const cityPolls: Poll[] = [
+  {
+    id: "cp1",
+    question: "איזה פרויקט עירוני הכי חשוב?",
+    description: "סקר דעת קהל לתושבי תל אביב",
+    options: [
+      { id: "cp1-o1", text: "רכבת קלה נוספת", votes: 4521, percentage: 42 },
+      { id: "cp1-o2", text: "פארקים חדשים", votes: 3251, percentage: 30 },
+      { id: "cp1-o3", text: "שיפור החופים", votes: 3018, percentage: 28 }
+    ],
+    totalVotes: 10790,
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    category: "עירוני",
+    hasUserVoted: false
+  }
+];
+
+// National positions and candidates data
 const positions = [
   {
     id: "pm",
@@ -297,40 +405,52 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
         };
       case 'for-me':
         // Filter organization votes by user's phone/ID
-        const urgentOrgVotes = mockOrganizationVotes.filter(vote => 
-          vote.urgency === 'high' && (
-            vote.targetPhones?.includes(user.phoneNumber || '') ||
-            vote.targetIds?.includes(user.idNumber || '')
-          )
+        const userCondoVotes = condoVotes.filter(vote => 
+          vote.targetPhones?.includes(user.phoneNumber || '') ||
+          vote.targetIds?.includes(user.idNumber || '')
         );
 
-        // Filter local positions by user's city
-        const localPositions = positions.filter(pos => 
-          pos.level === 'local' && pos.city === user.city
-        ).map(pos => ({
-          ...pos,
-          candidates: filterProfiles(pos.candidates)
-        }));
+        const userSchoolVotes = schoolVotes.filter(vote => 
+          vote.targetPhones?.includes(user.phoneNumber || '') ||
+          vote.targetIds?.includes(user.idNumber || '')
+        );
 
-        // National positions
-        const nationalPositions = positions.filter(pos => 
-          pos.level === 'national'
-        ).map(pos => ({
-          ...pos,
-          candidates: filterProfiles(pos.candidates)
-        }));
+        const userCityVotes = cityVotes.filter(vote => 
+          vote.targetPhones?.includes(user.phoneNumber || '') ||
+          vote.targetIds?.includes(user.idNumber || '')
+        );
+
+        // Filter polls by location relevance
+        const userNeighborhoodPolls = neighborhoodPolls;
+        const userCityPolls = cityPolls;
+
+        // Community polls from original data
+        const communityPolls = mockPolls.filter(poll => poll.category !== 'שכונה' && poll.category !== 'עירוני').slice(0, 2);
+
+        // Trusted experts (only if minimal other content)
+        const trustedExperts = (userCondoVotes.length === 0 && userSchoolVotes.length === 0 && userCityVotes.length === 0) 
+          ? expertSections.slice(0, 1).map(section => ({
+              ...section,
+              experts: filterProfiles(section.experts)
+            }))
+          : [];
 
         return {
-          urgentOrgVotes,
-          localPositions,
-          nationalPositions,
-          polls: mockPolls.slice(0, 2),
-          experts: urgentOrgVotes.length === 0 && localPositions.length === 0 && nationalPositions.length === 0 
-            ? expertSections.slice(0, 1).map(section => ({
-                ...section,
-                experts: filterProfiles(section.experts)
-              }))
-            : []
+          condoVotes: userCondoVotes,
+          schoolVotes: userSchoolVotes,
+          neighborhoodPolls: userNeighborhoodPolls,
+          cityVotes: userCityVotes,
+          cityPolls: userCityPolls,
+          communityPolls,
+          experts: trustedExperts,
+          // Keep old structure for backward compatibility
+          urgentOrgVotes: [],
+          localPositions: [],
+          nationalPositions: positions.filter(pos => pos.level === 'national').map(pos => ({
+            ...pos,
+            candidates: filterProfiles(pos.candidates)
+          })),
+          polls: []
         };
       case 'all':
       default:
@@ -351,10 +471,10 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
 
   const filteredContent = getFilteredContent();
 
-  // Handle "for-me" filter with sections
+  // Handle "for-me" filter with hyper-local hierarchy
   if (filter === 'for-me') {
-    const { urgentOrgVotes, localPositions, nationalPositions, polls, experts } = filteredContent as any;
-    const hasContent = urgentOrgVotes.length > 0 || localPositions.length > 0 || nationalPositions.length > 0 || polls.length > 0 || experts.length > 0;
+    const { condoVotes, schoolVotes, neighborhoodPolls, cityVotes, cityPolls, communityPolls, experts, nationalPositions } = filteredContent as any;
+    const hasContent = condoVotes.length > 0 || schoolVotes.length > 0 || neighborhoodPolls.length > 0 || cityVotes.length > 0 || cityPolls.length > 0 || communityPolls.length > 0 || experts.length > 0 || nationalPositions.length > 0;
 
     return (
       <>
@@ -367,15 +487,15 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
             </div>
           ) : (
             <div className="space-y-0">
-              {/* Urgent Organization Votes */}
+              {/* Condo/Building Votes */}
               <FeedSection
-                icon={Building}
-                title="הצבעות דחופות בארגון שלך"
-                description="החלטות חשובות הדורשות הצבעה מיידית מחברי הארגון"
-                badge={urgentOrgVotes.length}
-                isEmpty={urgentOrgVotes.length === 0}
+                icon={Home}
+                title="הצבעות בבניין"
+                description="החלטות ועדת הבית והשכנים"
+                badge={condoVotes.length}
+                isEmpty={condoVotes.length === 0}
               >
-                {urgentOrgVotes.map((vote: any) => (
+                {condoVotes.map((vote: any) => (
                   <div key={vote.id} className="w-full flex justify-center py-6">
                     <OrganizationVoteCard
                       vote={vote}
@@ -385,35 +505,83 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
                 ))}
               </FeedSection>
 
-              {/* Local City Votes */}
+              {/* School/University Votes */}
               <FeedSection
-                icon={MapPin}
-                title={`הצבעות בעיר שלך: ${user.city || 'העיר שלך'}`}
-                description="מועמדים ובחירות מקומיות המשפיעות ישירות על חייך"
-                badge={localPositions.reduce((acc: number, pos: any) => acc + pos.candidates.length, 0)}
-                isEmpty={localPositions.length === 0}
+                icon={GraduationCap}
+                title="הצבעות בית ספר"
+                description="החלטות הורים ותלמידים"
+                badge={schoolVotes.length}
+                isEmpty={schoolVotes.length === 0}
               >
-                {localPositions.map((position: any) => (
-                  <PositionCarousel
-                    key={position.id}
-                    title={position.title}
-                    description={position.description}
-                    profiles={position.candidates}
-                    type="candidate"
-                    onVideoClick={handleProfileVideoClick}
-                    onVote={handleVote}
-                    onAddCandidate={handleAddCandidate}
-                    onProfileClick={handleProfileClick}
-                    onDismiss={handleDismissProfile}
-                  />
+                {schoolVotes.map((vote: any) => (
+                  <div key={vote.id} className="w-full flex justify-center py-6">
+                    <OrganizationVoteCard
+                      vote={vote}
+                      onVote={handleOrganizationVote}
+                    />
+                  </div>
                 ))}
               </FeedSection>
 
-              {/* National Votes */}
+              {/* Neighborhood Polls */}
+              <FeedSection
+                icon={MapPin}
+                title="סקרי שכונה"
+                description="דעת קהל תושבי השכונה"
+                badge={neighborhoodPolls.length}
+                isEmpty={neighborhoodPolls.length === 0}
+              >
+                {neighborhoodPolls.map((poll: any) => (
+                  <div key={poll.id} className="w-full px-4 py-6">
+                    <PollCard
+                      poll={poll}
+                      onVote={handlePollVote}
+                    />
+                  </div>
+                ))}
+              </FeedSection>
+
+              {/* City Votes */}
+              <FeedSection
+                icon={Building}
+                title="הצבעות עירוניות"
+                description="החלטות עיריית תל אביב"
+                badge={cityVotes.length}
+                isEmpty={cityVotes.length === 0}
+              >
+                {cityVotes.map((vote: any) => (
+                  <div key={vote.id} className="w-full flex justify-center py-6">
+                    <OrganizationVoteCard
+                      vote={vote}
+                      onVote={handleOrganizationVote}
+                    />
+                  </div>
+                ))}
+              </FeedSection>
+
+              {/* City Polls */}
+              <FeedSection
+                icon={BarChart3}
+                title="סקרי עיר"
+                description="דעת קהל תושבי תל אביב"
+                badge={cityPolls.length}
+                isEmpty={cityPolls.length === 0}
+              >
+                {cityPolls.map((poll: any) => (
+                  <div key={poll.id} className="w-full px-4 py-6">
+                    <PollCard
+                      poll={poll}
+                      onVote={handlePollVote}
+                    />
+                  </div>
+                ))}
+              </FeedSection>
+
+              {/* National Positions */}
               <FeedSection
                 icon={Flag}
                 title="בחירות לכנסת ישראל"
-                description="מועמדים למשרות הכי חשובות במדינה - ראש הממשלה, שרים וחברי כנסת"
+                description="מועמדים למשרות הכי חשובות במדינה"
                 badge={nationalPositions.reduce((acc: number, pos: any) => acc + pos.candidates.length, 0)}
                 isEmpty={nationalPositions.length === 0}
               >
@@ -435,13 +603,13 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
 
               {/* Community Polls */}
               <FeedSection
-                icon={Users}
-                title="סקרי דעת קהילתיים"
-                description="הביעו את דעתכם בסוגיות החשובות לציבור הישראלי"
-                badge={polls.length}
-                isEmpty={polls.length === 0}
+                icon={MessageCircle}
+                title="סקרי קהילה"
+                description="הביעו את דעתכם בנושאים כלליים"
+                badge={communityPolls.length}
+                isEmpty={communityPolls.length === 0}
               >
-                {polls.map((poll: any) => (
+                {communityPolls.map((poll: any) => (
                   <div key={poll.id} className="w-full px-4 py-6">
                     <PollCard
                       poll={poll}
@@ -451,11 +619,11 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
                 ))}
               </FeedSection>
 
-              {/* Trusted Experts - Only if no votes available */}
+              {/* Trusted Experts - Only if minimal other content */}
               <FeedSection
-                icon={GraduationCap}
+                icon={Users}
                 title="מומחים מהימנים"
-                description="מומחים איכותיים בתחומים השונים שיכולים לעזור לכם להחליט"
+                description="מומחים איכותיים שיכולים לעזור לכם להחליט"
                 badge={experts.reduce((acc: number, section: any) => acc + section.experts.length, 0)}
                 isEmpty={experts.length === 0}
               >
@@ -476,7 +644,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
             </div>
           )}
         </div>
-
+        
         {selectedVideo && (
           <FullscreenVideoPlayer
             comments={[selectedVideo]}

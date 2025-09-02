@@ -18,21 +18,16 @@ export const SectionHeader = ({
   className = "" 
 }: SectionHeaderProps) => {
   return (
-    <div className={`px-4 py-6 border-b border-border/50 bg-gradient-to-l from-background to-background/95 ${className}`}>
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-          <Icon className="w-4 h-4 text-primary" />
-        </div>
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+    <div className={`w-full px-4 py-2 bg-muted/20 hover:bg-muted/30 transition-colors border-b border-border/30 ${className}`}>
+      <div className="flex items-center gap-2">
+        <Icon className="w-3 h-3 text-muted-foreground" />
+        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{title}</h3>
         {badge !== undefined && badge > 0 && (
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-xs px-1.5 py-0.5 h-4">
             {badge}
           </Badge>
         )}
       </div>
-      <p className="text-sm text-muted-foreground mr-11 leading-relaxed">
-        {description}
-      </p>
     </div>
   );
 };
