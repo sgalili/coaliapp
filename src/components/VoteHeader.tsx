@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { MapPin, Plus, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useKYC } from "@/hooks/useKYC";
+import { KYCForm } from "@/components/KYCForm";
 
 export const VoteHeader = () => {
   const [showCitySelector, setShowCitySelector] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("תל אביב");
   const [showKycNotice, setShowKycNotice] = useState(true);
+  const { showKYC, triggerKYCCheck, handleKYCSuccess, handleKYCClose } = useKYC();
 
   const cities = [
     "תל אביב", "ירושלים", "חיפה", "באר שבע", "פתח תקווה", "נתניה", "אשדוד", "ראשון לציון",
@@ -43,9 +46,12 @@ export const VoteHeader = () => {
               >
                 <X className="w-3 h-3 text-blue-600" />
               </button>
-              <p className="text-blue-800 text-xs">
-                💡 לתוכן מותאם אישית, השלימו אימות זהות (KYC) בפרופיל
-              </p>
+              <button
+                onClick={() => triggerKYCCheck()}
+                className="text-blue-800 text-xs hover:underline cursor-pointer"
+              >
+                💡 לתוכן מותאם אישית, השלימו אימות זהות
+              </button>
             </div>
           </div>
         )}
@@ -84,6 +90,15 @@ export const VoteHeader = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* KYC Dialog */}
+      {showKYC && (
+        <Dialog open={showKYC} onOpenChange={handleKYCClose}>
+          <DialogContent className="sm:max-w-md">
+            <KYCForm onSubmit={handleKYCSuccess} onBack={handleKYCClose} />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
