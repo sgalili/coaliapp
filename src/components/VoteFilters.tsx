@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
@@ -8,6 +9,33 @@ interface VoteFiltersProps {
 }
 
 export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  
+  // Scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < 10) {
+        // Always show filter at the top
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past 100px
+        setIsVisible(false);
+      } else if (lastScrollY - currentScrollY > 5) {
+        // Scrolling up by at least 5px
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   const filters = [
     { id: 'for-me' as const, label: 'עבורי', icon: '👤' },
     { id: 'candidates' as const, label: 'מועמדים', icon: '🗳️' },
@@ -16,7 +44,9 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   ];
 
   return (
-    <div className="fixed top-[88px] left-1/2 transform -translate-x-1/2 z-50">
+    <div className={`fixed top-[88px] left-1/2 transform -translate-x-1/2 z-50 transition-opacity duration-300 ${
+      isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    }`}>
       <div className="flex items-center gap-2">
         {filters.map((filter) => (
           <button
