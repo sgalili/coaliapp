@@ -155,19 +155,19 @@ export const OrganizationVoteCard = ({ vote, onVote }: OrganizationVoteCardProps
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <IconComponent 
-                      className={cn(
-                        "w-4 h-4",
-                        option.text.includes('בעד') ? "text-green-500" :
-                        option.text.includes('נגד') ? "text-red-500" : "text-gray-500"
-                      )} 
-                    />
-                    <span className="text-xs font-medium">{option.percentage}%</span>
-                  </div>
+                  <IconComponent 
+                    className={cn(
+                      "w-4 h-4",
+                      option.text.includes('בעד') ? "text-green-500" :
+                      option.text.includes('נגד') ? "text-red-500" : "text-gray-500"
+                    )} 
+                  />
                   
                   <div className="flex-1 text-right">
-                    <p className="font-medium text-sm">{option.text}</p>
+                    <p className="font-medium text-sm">
+                      <span className="text-xs font-medium text-muted-foreground ml-2">{option.percentage}%</span>
+                      {option.text}
+                    </p>
                     <div className="mt-1">
                       <Progress value={option.percentage} className="h-1" />
                     </div>
