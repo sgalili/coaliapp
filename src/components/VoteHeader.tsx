@@ -38,13 +38,13 @@ export const VoteHeader = () => {
 
         {/* KYC Notice */}
         {showKycNotice && (
-          <div className="px-4 pb-2">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 text-right relative">
+          <div className="px-4 pt-0 pb-1">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-1.5 text-right relative">
               <button
                 onClick={() => setShowKycNotice(false)}
                 className="absolute top-1 left-1 w-4 h-4 flex items-center justify-center transition-colors hover:opacity-70"
               >
-                <X className="w-3 h-3 text-blue-600" />
+                <X className="w-2.5 h-2.5 text-blue-600" />
               </button>
               <button
                 onClick={() => triggerKYCCheck()}
