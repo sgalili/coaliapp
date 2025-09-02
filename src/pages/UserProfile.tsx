@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 
 // Import profile images
 import sarahProfile from "@/assets/sarah-profile.jpg";
+import yaronProfile from "@/assets/yaron-profile.jpg";
 
 // Mock user data - in real app this would come from API
 const mockUserData = {
@@ -51,24 +52,117 @@ const mockUserData = {
         commentCount: 45,
         shareCount: 23,
         timestamp: "לפני 2 שעות"
-      },
+      }
+    ]
+  },
+  "2": {
+    id: "2",
+    username: "יאיר לפיד",
+    handle: "yairlapid",
+    profileImage: yaronProfile,
+    bio: "מנהיג יש עתיד, לשעבר שר האוצר וראש הממשלה. פועל למען שינוי פוליטי וחברתי בישראל.",
+    location: "תל אביב, ישראל",
+    joinDate: "מרץ 2022",
+    kycLevel: 3,
+    isVerified: true,
+    trustersCount: 2890,
+    watchersCount: 4567,
+    postsCount: 156,
+    zoozEarned: 15420,
+    professionalExperience: "ראש הממשלה (2022) • שר האוצר (2021-2022) • מנהיג יש עתיד (2012-עכשיו) • עיתונאי ומגיש (1995-2012)",
+    education: "תואר ראשון בפילוסופיה ותולדות עם ישראל, אוניברסיטת תל אביב",
+    communityService: "מייסד תנועת יש עתיד • פעילות למען זכויות אזרחיות • תמיכה בארגונים חברתיים",
+    publications: "מחבר מספר ספרים • כותב עמודי דעה בעיתונות • מרואיין בתכניות חדשות",
+    awards: "פרס הכתיבה העיתונאית (2010) • איש השנה בתחום התקשורת",
+    skills: "עברית (שפת אם) • אנגלית (רמה גבוהה) • יכולות הנהגה, מדיניות כלכלית, תקשורת ציבורית",
+    expertise: [
+      { domain: 'politics', name: 'פוליטיקה', trustCount: 1890 },
+      { domain: 'economy', name: 'כלכלה', trustCount: 1456 },
+      { domain: 'diplomacy', name: 'דיפלומטיה', trustCount: 890 }
+    ],
+    posts: [
       {
-        id: "post2",
-        caption: "מה שלמדתי מהבחירות האחרונות על השפעת הרשתות החברתיות על דעת הקהל",
-        trustCount: 187,
-        watchCount: 423,
-        commentCount: 32,
-        shareCount: 18,
+        id: "post2_1",
+        caption: "הזמן הגיע לשינוי אמיתי בישראל. נבנה מדינה של כבוד, צדק ושוויון הזדמנויות לכל אזרח.",
+        trustCount: 1890,
+        watchCount: 3456,
+        commentCount: 234,
+        shareCount: 156,
         timestamp: "לפני יום"
-      },
+      }
+    ]
+  },
+  "3": {
+    id: "3",
+    username: "רון חולדאי",
+    handle: "ronhuldai",
+    profileImage: sarahProfile,
+    bio: "ראש עיריית תל אביב-יפו. עובד למען פיתוח עירוני בר קיימא ושיפור איכות החיים בעיר.",
+    location: "תל אביב-יפו, ישראל",
+    joinDate: "ינואר 2021",
+    kycLevel: 3,
+    isVerified: true,
+    trustersCount: 1567,
+    watchersCount: 2234,
+    postsCount: 123,
+    zoozEarned: 11250,
+    professionalExperience: "ראש עיריית תל אביב-יפו (1998-עכשיו) • קצין טייס בחיל האוויר • מהנדס אווירונאוטיקה",
+    education: "תואר ראשון בהנדסת אווירונאוטיקה, הטכניון • קורס הנהלת ערים, אוניברסיטת הרווארד",
+    communityService: "הובלת פרויקטים עירוניים מתקדמים • פעילות למען איכות הסביבה • תמיכה בתרבות ואמנות",
+    publications: "כתבות על פיתוח עירוני • ראיונות על ניהול עירייה • הרצאות בכנסים בינלאומיים",
+    awards: "פרס ראש העיר הטוב בעולם (2019) • אות הוקרה על תרומה לפיתוח העיר",
+    skills: "עברית (שפת אם) • אנגלית (רמה גבוהה) • ניהול עירוני, תכנון מרחבי, הנהגה ציבורית",
+    expertise: [
+      { domain: 'urban', name: 'ניהול עירוני', trustCount: 987 },
+      { domain: 'transport', name: 'תחבורה', trustCount: 567 },
+      { domain: 'culture', name: 'תרבות', trustCount: 456 }
+    ],
+    posts: [
       {
-        id: "post3",
-        caption: "איך אפשר לזהות מידע מוטעה ברשתות החברתיות? מדריך מעשי",
-        trustCount: 312,
-        watchCount: 501,
-        commentCount: 67,
-        shareCount: 41,
-        timestamp: "לפני 3 ימים"
+        id: "post3_1",
+        caption: "תל אביב ממשיכה להיות עיר חדשנית ומתקדמת. הפרויקטים החדשים שלנו ישפרו את איכות החיים לכל התושבים.",
+        trustCount: 987,
+        watchCount: 1456,
+        commentCount: 89,
+        shareCount: 67,
+        timestamp: "לפני 3 שעות"
+      }
+    ]
+  },
+  "4": {
+    id: "4",
+    username: "ירון זליכה",
+    handle: "yaronzelikha", 
+    profileImage: yaronProfile,
+    bio: "כלכלן ראשי ומומחה למדיניות כלכלית. מנתח את השווקים הפיננסיים ומייעץ למשקיעים.",
+    location: "תל אביב, ישראל",
+    joinDate: "פברואר 2023",
+    kycLevel: 3,
+    isVerified: true,
+    trustersCount: 2134,
+    watchersCount: 3890,
+    postsCount: 198,
+    zoozEarned: 18650,
+    professionalExperience: "כלכלן ראשי בבנק הפועלים (2018-עכשיו) • יועץ כלכלי בוועדת הכספים של הכנסת (2015-2018) • אנליסט בכיר בבנק ישראל (2010-2015)",
+    education: "דוקטורט בכלכלה, אוניברסיטת חיפה (2010) • מוסמך בכלכלה ומימון, האוניברסיטה העברית (2005) • תואר ראשון במתמטיקה וכלכלה, אוניברסיטת תל אביב (2003)",
+    communityService: "מייסד פורום הכלכלנים הצעירים • מרצה בקורסי העשרה כלכלית לציבור • יועץ בהתנדבות לעמותות חברתיות",
+    publications: "מחבר של 25 מאמרים אקדמיים • כותב עמוד כלכלי שבועי בגלובס • מרואיין קבוע בתכניות כלכלה • ספר בנושא השקעות חכמות",
+    awards: "זוכה פרס הכלכלן הצעיר של השנה (2020) • מקבל אות הוקרה מבנק ישראל • נבחר למומחה כלכלה מוביל",
+    skills: "עברית (שפת אם) • אנגלית (ברמת דובר יליד) • צרפתית (שיחה) • מומחיות בניתוח פיננסי, מדיניות מוניטרית, חיזוי כלכלי",
+    expertise: [
+      { domain: 'economy', name: 'כלכלה', trustCount: 1456 },
+      { domain: 'investments', name: 'השקעות', trustCount: 1234 },
+      { domain: 'fiscal', name: 'מדיניות פיסקלית', trustCount: 987 }
+    ],
+    posts: [
+      {
+        id: "post4_1", 
+        caption: "השווקים הפיננסיים עוברים תמורות משמעותיות. הנה התחזית שלי לרבעון הקרוב ואיך זה ישפיע על המשק הישראלי.",
+        trustCount: 1456,
+        watchCount: 2890,
+        commentCount: 167,
+        shareCount: 123,
+        timestamp: "לפני 4 שעות"
       }
     ]
   }

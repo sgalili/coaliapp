@@ -45,7 +45,7 @@ const positions = [
     description: "בחירות 2024 - ראש הממשלה הבא של ישראל",
     candidates: [
       {
-        id: "c1",
+        id: "1",
         name: "בנימין נתניהו", 
         position: "ראש הממשלה",
         city: "ירושלים",
@@ -60,7 +60,7 @@ const positions = [
         trustTrend: 'up' as const,
       },
       {
-        id: "c2",
+        id: "2",
         name: "יאיר לפיד",
         position: "ראש הממשלה", 
         city: "תל אביב",
@@ -82,7 +82,7 @@ const positions = [
     description: "בחירות מקומיות 2024",
     candidates: [
       {
-        id: "c3",
+        id: "3",
         name: "רון חולדאי",
         position: "ראש עירית תל אביב",
         city: "תל אביב", 
@@ -107,7 +107,7 @@ const expertSections = [
     description: "תן אמון למומחים שדעתם חשובה לך",
     experts: [
       {
-        id: "e1",
+        id: "1",
         name: "ירון זליכה",
         position: "כלכלן ראשי",
         city: "תל אביב",
@@ -122,7 +122,7 @@ const expertSections = [
         trustTrend: 'up' as const,
       },
       {
-        id: "e2", 
+        id: "4", 
         name: "שרה כהן",
         position: "מומחית דמוקרטיה דיגיטלית",
         city: "חיפה",
