@@ -163,13 +163,11 @@ export const OrganizationVoteCard = ({ vote, onVote }: OrganizationVoteCardProps
                         option.text.includes('נגד') ? "text-red-500" : "text-gray-500"
                       )} 
                     />
+                    <span className="text-xs font-medium">{option.percentage}%</span>
                   </div>
                   
                   <div className="flex-1 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <span className="text-xs font-medium text-muted-foreground">{option.percentage}%</span>
-                      <p className="font-medium text-sm">{option.text}</p>
-                    </div>
+                    <p className="font-medium text-sm">{option.text}</p>
                     <div className="mt-1">
                       <Progress value={option.percentage} className="h-1" />
                     </div>
