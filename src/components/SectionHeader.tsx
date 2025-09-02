@@ -18,7 +18,7 @@ export const SectionHeader = ({
   className = "" 
 }: SectionHeaderProps) => {
   return (
-    <div className={`w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 transition-colors ${className}`}>
+    <div className={`w-full px-4 py-3 bg-blue-50/50 hover:bg-blue-50/80 transition-colors ${className}`}>
       <div className="flex items-center gap-2">
         <Icon className="w-3 h-3 text-muted-foreground" />
         <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{title}</h3>
