@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, CheckCircle, Vote, Heart, TrendingUp, TrendingDown, X, Award } from "lucide-react";
+import { Play, CheckCircle, Vote, Heart, TrendingUp, TrendingDown, X, Award, Handshake, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,6 +29,13 @@ interface ProfileCardProps {
   onProfileClick?: (profileId: string) => void;
   onDismiss?: (profileId: string) => void;
 }
+
+const TrustIcon = () => (
+  <div className="relative">
+    <Handshake className="w-4 h-4 text-trust" />
+    <Crown className="w-2.5 h-2.5 absolute -top-0.5 -right-0.5 text-yellow-500" />
+  </div>
+);
 
 export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust, onProfileClick, onDismiss }: ProfileCardProps) => {
   const [isVoting, setIsVoting] = useState(false);
@@ -191,7 +198,7 @@ export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust, onProfileC
                 : "bg-blue-600 text-white hover:bg-blue-600/90 hover:scale-105 active:scale-95"
             )}
           >
-            <Heart className="w-4 h-4" />
+            <TrustIcon />
             <span>
               {profile.hasUserTrusted ? "נתת אמון" : isTrusting ? "שולח..." : "אמון"}
             </span>
@@ -211,7 +218,10 @@ export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust, onProfileC
           )}
           {profile.type === 'expert' && profile.trustCount && (
             <div className="flex items-center gap-1">
-              <Heart className="w-3 h-3" />
+              <div className="relative">
+                <Handshake className="w-3 h-3 text-trust" />
+                <Crown className="w-2 h-2 absolute -top-0.5 -right-0.5 text-yellow-500" />
+              </div>
               <span>{profile.trustCount.toLocaleString('he')}</span>
             </div>
           )}
