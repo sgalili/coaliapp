@@ -94,12 +94,12 @@ export const OrganizationVoteCard = ({
     setTimeout(() => {
       setIsVoting(false);
       setShowConfetti(true);
-      setEarnedPoints(10);
+      setEarnedPoints(5);
       
       // Show success toast with gamification
       toast({
         title: "🎉 הצבעה נרשמה בהצלחה!",
-        description: "זכית ב-10 נקודות אמון! המשך להשפיע על הקהילה שלך",
+        description: "זכית ב-5 ZooZ! המשך להשפיע על הקהילה שלך",
       });
 
       onVote(vote.id, optionId);
@@ -138,7 +138,7 @@ export const OrganizationVoteCard = ({
       {earnedPoints > 0 && (
         <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-bounce">
           <Trophy className="w-4 h-4" />
-          +{earnedPoints} נקודות!
+          +{earnedPoints} ZooZ!
         </div>
       )}
       <CardHeader className="pb-3">
