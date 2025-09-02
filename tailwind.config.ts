@@ -97,25 +97,10 @@ export default {
 						height: '0'
 					}
 				},
-				'fly-up': {
-					'0%': {
-						transform: 'translateY(0) translateX(0) scale(1)',
-						opacity: '1'
-					},
-					'50%': {
-						transform: 'translateY(-100px) translateX(20px) scale(1.2)',
-						opacity: '0.8'
-					},
-					'100%': {
-						transform: 'translateY(-200px) translateX(40px) scale(0.5)',
-						opacity: '0'
-					}
-				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fly-up': 'fly-up 2s ease-out forwards'
+				'accordion-up': 'accordion-up 0.2s ease-out'
 			}
 		}
 	},

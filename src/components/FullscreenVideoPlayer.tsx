@@ -303,22 +303,28 @@ export const FullscreenVideoPlayer = ({
         {/* Live ZOOZ Reactions */}
         {liveReactions.map(renderZoozReaction)}
 
-        {/* Flying Zs Animation */}
-        {flyingZs.map(flyingZ => (
-          <div
-            key={flyingZ.id}
-            className="absolute pointer-events-none z-50 animate-fly-up"
-            style={{
-              left: flyingZ.x,
-              top: flyingZ.y,
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <div className="text-4xl font-black text-zooz drop-shadow-lg">
-              Z
+        {/* Flying ZOOZ Coins Animation */}
+        {flyingZs.map((flyingZ, index) => {
+          const animationClass = index % 3 === 0 
+            ? 'animate-zooz-coin-center' 
+            : index % 3 === 1 
+            ? 'animate-zooz-coin-left' 
+            : 'animate-zooz-coin-right';
+          
+          return (
+            <div
+              key={flyingZ.id}
+              className={`absolute pointer-events-none z-50 ${animationClass}`}
+              style={{
+                left: flyingZ.x,
+                top: flyingZ.y,
+                transform: 'translate(-50%, -50%)'
+              }}
+            >
+              <ZoozIcon isCoin={true} className="w-8 h-8" />
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Video Index Indicator */}
         <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full text-white text-sm">
