@@ -185,25 +185,23 @@ export const FullscreenVideoPlayer = ({
       return;
     }
     
-    // Generate flying coins from bottom of screen
+    // Generate single flying coin from bottom of screen
     if (containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
       
-      // Create multiple flying coins from bottom of screen
-      for (let i = 0; i < 3; i++) {
-        const flyingZ = {
-          id: `${Date.now()}-${i}`,
-          x: Math.random() * containerRect.width, // Random x position across screen width
-          y: containerRect.height - 20 // Start from bottom of screen
-        };
-        
-        setFlyingZs(prev => [...prev, flyingZ]);
-        
-        // Remove the flying coin after animation completes
-        setTimeout(() => {
-          setFlyingZs(prev => prev.filter(z => z.id !== flyingZ.id));
-        }, 2000);
-      }
+      // Create one flying coin from bottom of screen
+      const flyingZ = {
+        id: `${Date.now()}`,
+        x: Math.random() * containerRect.width, // Random x position across screen width
+        y: containerRect.height - 20 // Start from bottom of screen
+      };
+      
+      setFlyingZs(prev => [...prev, flyingZ]);
+      
+      // Remove the flying coin after animation completes
+      setTimeout(() => {
+        setFlyingZs(prev => prev.filter(z => z.id !== flyingZ.id));
+      }, 2000);
     }
     
     const rect = containerRef.current?.getBoundingClientRect();
