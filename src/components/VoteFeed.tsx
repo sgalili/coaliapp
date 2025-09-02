@@ -4,6 +4,7 @@ import { Profile } from "./ProfileCard";
 import { FullscreenVideoPlayer } from "./FullscreenVideoPlayer";
 import { PollCard, Poll } from "./PollCard";
 import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
+import { useToast } from "@/hooks/use-toast";
 
 // Import profile images
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -200,6 +201,8 @@ const mockOrganizationVotes: OrganizationVote[] = [
 
 export const VoteFeed = ({ filter }: VoteFeedProps) => {
   const [selectedVideo, setSelectedVideo] = useState<VideoComment | null>(null);
+  const [dismissedProfiles, setDismissedProfiles] = useState<string[]>([]);
+  const { toast } = useToast();
 
   const handleProfileVideoClick = (profile: Profile) => {
     // Convert profile to VideoComment format for the player
@@ -249,15 +252,24 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   };
 
   const handleDismissProfile = (profileId: string) => {
-    console.log('Dismiss profile:', profileId);
-    // TODO: Remove profile from feed
+    setDismissedProfiles(prev => [...prev, profileId]);
+    toast({
+      title: "פרופיל הוסר",
+      description: "הפרופיל הוסר מהפיד שלך",
+    });
   };
 
   const getFilteredContent = () => {
+    const filterProfiles = (profiles: Profile[]) => 
+      profiles.filter(profile => !dismissedProfiles.includes(profile.id));
+
     switch (filter) {
       case 'candidates':
         return { 
-          positions: positions,
+          positions: positions.map(pos => ({
+            ...pos,
+            candidates: filterProfiles(pos.candidates)
+          })),
           experts: [],
           polls: [],
           organizationVotes: []
@@ -265,22 +277,37 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
       case 'experts':
         return { 
           positions: [],
-          experts: expertSections,
+          experts: expertSections.map(section => ({
+            ...section,
+            experts: filterProfiles(section.experts)
+          })),
           polls: [],
           organizationVotes: []
         };
       case 'for-me':
         return { 
-          positions: positions.slice(0, 1),
-          experts: expertSections.slice(0, 1),
+          positions: positions.slice(0, 1).map(pos => ({
+            ...pos,
+            candidates: filterProfiles(pos.candidates)
+          })),
+          experts: expertSections.slice(0, 1).map(section => ({
+            ...section,
+            experts: filterProfiles(section.experts)
+          })),
           polls: mockPolls.slice(0, 1),
           organizationVotes: mockOrganizationVotes
         };
       case 'all':
       default:
         return { 
-          positions: positions,
-          experts: expertSections,
+          positions: positions.map(pos => ({
+            ...pos,
+            candidates: filterProfiles(pos.candidates)
+          })),
+          experts: expertSections.map(section => ({
+            ...section,
+            experts: filterProfiles(section.experts)
+          })),
           polls: mockPolls,
           organizationVotes: mockOrganizationVotes
         };

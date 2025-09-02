@@ -93,7 +93,7 @@ export const ProfileCard = ({ profile, onVideoClick, onVote, onTrust, onProfileC
       {onDismiss && (
         <button
           onClick={handleDismiss}
-          className="absolute top-2 left-2 w-6 h-6 flex items-center justify-center z-10 transition-colors hover:opacity-70"
+          className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center z-10 transition-colors hover:opacity-70"
         >
           <X className="w-3 h-3 text-muted-foreground" />
         </button>
