@@ -3,6 +3,7 @@ import { PositionCarousel } from "./PositionCarousel";
 import { Profile } from "./ProfileCard";
 import { FullscreenVideoPlayer } from "./FullscreenVideoPlayer";
 import { PollCard, Poll } from "./PollCard";
+import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
 
 // Import profile images
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -161,6 +162,32 @@ const mockPolls: Poll[] = [
   }
 ];
 
+// Mock organization votes data
+const mockOrganizationVotes: OrganizationVote[] = [
+  {
+    id: "ov1",
+    organization: "עמותת AMIT",
+    organizationType: "foundation",
+    title: "מכירת נכס ברחוב הרצל - החלטה דחופה",
+    description: "העמותה קיבלה הצעה לרכישת הנכס ברחוב הרצל 15. ההצעה תקפה למשך 15 יום בלבד. הנכס נרכש לפני 8 שנים ב-1.2M ₪ והצעת הרכישה הנוכחית היא 3.7M ₪.",
+    financialDetails: {
+      amount: "2.5M",
+      currency: "₪",
+      type: "profit"
+    },
+    options: [
+      { id: "ov1-o1", text: "בעד מכירת הנכס", votes: 8, percentage: 67 },
+      { id: "ov1-o2", text: "נגד מכירת הנכס", votes: 3, percentage: 25 },
+      { id: "ov1-o3", text: "נמנע מהצבעה", votes: 1, percentage: 8 }
+    ],
+    totalVotes: 12,
+    totalMembers: 25,
+    endDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
+    hasUserVoted: false,
+    urgency: "high"
+  }
+];
+
 export const VoteFeed = ({ filter }: VoteFeedProps) => {
   const [selectedVideo, setSelectedVideo] = useState<VideoComment | null>(null);
 
@@ -198,6 +225,10 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
     console.log(`Voted in poll ${pollId} for option: ${optionId}`);
   };
 
+  const handleOrganizationVote = (voteId: string, optionId: string) => {
+    console.log(`Voted in organization vote ${voteId} for option: ${optionId}`);
+  };
+
   const handleAddCandidate = () => {
     console.log('Add candidate clicked');
   };
@@ -208,33 +239,37 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
         return { 
           positions: positions,
           experts: [],
-          polls: []
+          polls: [],
+          organizationVotes: []
         };
       case 'experts':
         return { 
           positions: [],
           experts: expertSections,
-          polls: []
+          polls: [],
+          organizationVotes: []
         };
       case 'for-me':
         return { 
           positions: positions.slice(0, 1),
           experts: expertSections.slice(0, 1),
-          polls: mockPolls.slice(0, 1)
+          polls: mockPolls.slice(0, 1),
+          organizationVotes: mockOrganizationVotes
         };
       case 'all':
       default:
         return { 
           positions: positions,
           experts: expertSections,
-          polls: mockPolls
+          polls: mockPolls,
+          organizationVotes: mockOrganizationVotes
         };
     }
   };
 
-  const { positions: filteredPositions, experts: filteredExperts, polls } = getFilteredContent();
+  const { positions: filteredPositions, experts: filteredExperts, polls, organizationVotes } = getFilteredContent();
 
-  const hasContent = filteredPositions.length > 0 || filteredExperts.length > 0 || polls.length > 0;
+  const hasContent = filteredPositions.length > 0 || filteredExperts.length > 0 || polls.length > 0 || organizationVotes.length > 0;
 
   return (
     <>
@@ -275,6 +310,16 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
               />
             ))}
 
+            {/* Organization Votes */}
+            {organizationVotes.map((vote) => (
+              <div key={vote.id} className="w-full flex justify-center py-6">
+                <OrganizationVoteCard
+                  vote={vote}
+                  onVote={handleOrganizationVote}
+                />
+              </div>
+            ))}
+
             {/* Polls */}
             {polls.map((poll) => (
               <div key={poll.id} className="w-full px-4 py-6">
@@ -298,6 +343,9 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
           onWatch={(id) => console.log('Watch:', id)}
           onComment={(id) => console.log('Comment:', id)}
           onShare={(id) => console.log('Share:', id)}
+          onZooz={(id) => console.log('Zooz:', id)}
+          userBalance={1000}
+          currentUserId="user123"
         />
       )}
     </>
