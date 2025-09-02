@@ -32,7 +32,7 @@ export const VoteHeader = () => {
         </div>
 
         {/* KYC Notice */}
-        {showKycNotice && <div className="px-4 pt-0 pb-1">
+        {showKycNotice && <div className="px-3 pt-0 pb-1">
             <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
               <button onClick={() => setShowKycNotice(false)} className="absolute top-1 left-1 w-4 h-4 flex items-center justify-center transition-colors hover:opacity-70">
                 <X className="w-2.5 h-2.5 text-blue-600" />
