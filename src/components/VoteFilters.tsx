@@ -16,7 +16,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   ];
 
   return (
-    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+    <div className="fixed top-[88px] left-1/2 transform -translate-x-1/2 z-50">
       <div className="flex items-center gap-2">
         {filters.map((filter) => (
           <button
