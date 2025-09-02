@@ -164,7 +164,7 @@ export const OrganizationVoteCard = ({ vote, onVote }: OrganizationVoteCardProps
                   />
                   
                   <div className="flex-1 text-right mr-3">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex items-center justify-between">
                       <span className="text-xs font-medium">{option.percentage}%</span>
                       <p className="font-medium text-sm">{option.text}</p>
                     </div>
