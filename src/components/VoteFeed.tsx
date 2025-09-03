@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PositionCarousel } from "./PositionCarousel";
 import { Profile } from "./ProfileCard";
@@ -39,6 +39,9 @@ export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 
 interface VoteFeedProps {
   filter: VoteFilterType;
+  onFilterChange?: (filter: VoteFilterType) => void;
+  isMuted?: boolean;
+  onVolumeToggle?: () => void;
 }
 
 // Mock data for hyper-local to national content
@@ -318,12 +321,86 @@ const mockOrganizationVotes: OrganizationVote[] = [
   }
 ];
 
-export const VoteFeed = ({ filter }: VoteFeedProps) => {
+export const VoteFeed = ({ filter, onFilterChange, isMuted = true, onVolumeToggle }: VoteFeedProps) => {
   const [selectedVideo, setSelectedVideo] = useState<VideoComment | null>(null);
   const [dismissedProfiles, setDismissedProfiles] = useState<string[]>([]);
+  const [fullscreenVideoData, setFullscreenVideoData] = useState<{comments: VideoComment[], index: number} | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useKYC();
+
+  // Fonction pour convertir les données en format NewsComment pour FullscreenVideoPlayer
+  const convertToNewsComments = (type: 'candidates' | 'experts'): VideoComment[] => {
+    if (type === 'candidates') {
+      return positions.flatMap(position => 
+        position.candidates
+          .filter(candidate => candidate.videoUrl && !dismissedProfiles.includes(candidate.id))
+          .map(candidate => ({
+            id: candidate.id,
+            userId: candidate.id,
+            username: candidate.name,
+            userImage: candidate.avatar,
+            videoUrl: candidate.videoUrl!,
+            duration: 30,
+            likes: Math.floor(Math.random() * 1000),
+            replies: Math.floor(Math.random() * 100),
+            trustLevel: Math.floor(Math.random() * 100),
+            timestamp: "2h",
+            category: `Candidat pour ${position.title}`,
+            kycLevel: 3 as const,
+            watchCount: Math.floor(Math.random() * 5000),
+            shareCount: Math.floor(Math.random() * 50)
+          }))
+      );
+    } else {
+      return expertSections.flatMap(section =>
+        section.experts
+          .filter(expert => expert.videoUrl && !dismissedProfiles.includes(expert.id))
+          .map(expert => ({
+            id: expert.id,
+            userId: expert.id,
+            username: expert.name,
+            userImage: expert.avatar,
+            videoUrl: expert.videoUrl!,
+            duration: 30,
+            likes: Math.floor(Math.random() * 1000),
+            replies: Math.floor(Math.random() * 100),
+            trustLevel: Math.floor(Math.random() * 100),
+            timestamp: "1h",
+            category: `Expert en ${section.title}`,
+            kycLevel: 3 as const,
+            watchCount: Math.floor(Math.random() * 5000),
+            shareCount: Math.floor(Math.random() * 50)
+          }))
+      );
+    }
+  };
+
+  // Gérer les changements de filtre pour fermer/ouvrir le fullscreen
+  useEffect(() => {
+    if (filter === 'for-me' || filter === 'all') {
+      setFullscreenVideoData(null);
+    } else if ((filter === 'candidates' || filter === 'experts') && !fullscreenVideoData) {
+      const comments = convertToNewsComments(filter);
+      if (comments.length > 0) {
+        setFullscreenVideoData({ comments, index: 0 });
+      }
+    }
+  }, [filter]);
+
+  const handleSwipeNavigation = (direction: 'left' | 'right') => {
+    if (!onFilterChange) return;
+    
+    if (direction === 'left') {
+      // Swipe gauche : retour vers FOR ME
+      onFilterChange('for-me');
+    } else if (direction === 'right') {
+      // Swipe droit : aller vers experts si on est sur candidats
+      if (filter === 'candidates') {
+        onFilterChange('experts');
+      }
+    }
+  };
 
   const handleProfileVideoClick = (profile: Profile) => {
     // Convert profile to VideoComment format for the player
@@ -380,94 +457,82 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   };
 
   const getFilteredContent = () => {
+    // Ouvrir automatiquement en fullscreen pour candidats et experts
+    if (filter === 'candidates' || filter === 'experts') {
+      const comments = convertToNewsComments(filter);
+      if (comments.length > 0 && !fullscreenVideoData) {
+        setFullscreenVideoData({ comments, index: 0 });
+      }
+      return null; // Le contenu sera affiché via FullscreenVideoPlayer
+    }
+
     const filterProfiles = (profiles: Profile[]) => 
       profiles.filter(profile => !dismissedProfiles.includes(profile.id));
 
-    switch (filter) {
-      case 'candidates':
-        return { 
-          positions: positions.map(pos => ({
-            ...pos,
-            candidates: filterProfiles(pos.candidates)
-          })),
-          experts: [],
-          polls: [],
-          organizationVotes: []
-        };
-      case 'experts':
-        return { 
-          positions: [],
-          experts: expertSections.map(section => ({
+    if (filter === 'for-me') {
+      // Filter organization votes by user's phone/ID
+      const userCondoVotes = condoVotes.filter(vote => 
+        vote.targetPhones?.includes(user.phoneNumber || '') ||
+        vote.targetIds?.includes(user.idNumber || '')
+      );
+
+      const userSchoolVotes = schoolVotes.filter(vote => 
+        vote.targetPhones?.includes(user.phoneNumber || '') ||
+        vote.targetIds?.includes(user.idNumber || '')
+      );
+
+      const userCityVotes = cityVotes.filter(vote => 
+        vote.targetPhones?.includes(user.phoneNumber || '') ||
+        vote.targetIds?.includes(user.idNumber || '')
+      );
+
+      // Filter polls by location relevance
+      const userNeighborhoodPolls = neighborhoodPolls;
+      const userCityPolls = cityPolls;
+
+      // Community polls from original data
+      const communityPolls = mockPolls.filter(poll => poll.category !== 'שכונה' && poll.category !== 'עירוני').slice(0, 2);
+
+      // Trusted experts (only if minimal other content)
+      const trustedExperts = (userCondoVotes.length === 0 && userSchoolVotes.length === 0 && userCityVotes.length === 0) 
+        ? expertSections.slice(0, 1).map(section => ({
             ...section,
             experts: filterProfiles(section.experts)
-          })),
-          polls: [],
-          organizationVotes: []
-        };
-      case 'for-me':
-        // Filter organization votes by user's phone/ID
-        const userCondoVotes = condoVotes.filter(vote => 
-          vote.targetPhones?.includes(user.phoneNumber || '') ||
-          vote.targetIds?.includes(user.idNumber || '')
-        );
+          }))
+        : [];
 
-        const userSchoolVotes = schoolVotes.filter(vote => 
-          vote.targetPhones?.includes(user.phoneNumber || '') ||
-          vote.targetIds?.includes(user.idNumber || '')
-        );
-
-        const userCityVotes = cityVotes.filter(vote => 
-          vote.targetPhones?.includes(user.phoneNumber || '') ||
-          vote.targetIds?.includes(user.idNumber || '')
-        );
-
-        // Filter polls by location relevance
-        const userNeighborhoodPolls = neighborhoodPolls;
-        const userCityPolls = cityPolls;
-
-        // Community polls from original data
-        const communityPolls = mockPolls.filter(poll => poll.category !== 'שכונה' && poll.category !== 'עירוני').slice(0, 2);
-
-        // Trusted experts (only if minimal other content)
-        const trustedExperts = (userCondoVotes.length === 0 && userSchoolVotes.length === 0 && userCityVotes.length === 0) 
-          ? expertSections.slice(0, 1).map(section => ({
-              ...section,
-              experts: filterProfiles(section.experts)
-            }))
-          : [];
-
-        return {
-          condoVotes: userCondoVotes,
-          schoolVotes: userSchoolVotes,
-          neighborhoodPolls: userNeighborhoodPolls,
-          cityVotes: userCityVotes,
-          cityPolls: userCityPolls,
-          communityPolls,
-          experts: trustedExperts,
-          // Keep old structure for backward compatibility
-          urgentOrgVotes: [],
-          localPositions: [],
-          nationalPositions: positions.filter(pos => pos.level === 'national').map(pos => ({
-            ...pos,
-            candidates: filterProfiles(pos.candidates)
-          })),
-          polls: []
-        };
-      case 'all':
-      default:
-        return { 
-          positions: positions.map(pos => ({
-            ...pos,
-            candidates: filterProfiles(pos.candidates)
-          })),
-          experts: expertSections.map(section => ({
-            ...section,
-            experts: filterProfiles(section.experts)
-          })),
-          polls: mockPolls,
-          organizationVotes: mockOrganizationVotes
-        };
+      return {
+        condoVotes: userCondoVotes,
+        schoolVotes: userSchoolVotes,
+        neighborhoodPolls: userNeighborhoodPolls,
+        cityVotes: userCityVotes,
+        cityPolls: userCityPolls,
+        communityPolls,
+        experts: trustedExperts,
+        // Keep old structure for backward compatibility
+        urgentOrgVotes: [],
+        localPositions: [],
+        nationalPositions: positions.filter(pos => pos.level === 'national').map(pos => ({
+          ...pos,
+          candidates: filterProfiles(pos.candidates)
+        })),
+        polls: []
+      };
     }
+
+    // For 'all' filter
+    return { 
+      positions: positions.map(pos => ({
+        ...pos,
+        candidates: filterProfiles(pos.candidates)
+      })),
+      experts: expertSections.map(section => ({
+        ...section,
+        experts: filterProfiles(section.experts)
+      })),
+      polls: mockPolls,
+      organizationVotes: mockOrganizationVotes
+    };
   };
 
   const filteredContent = getFilteredContent();
@@ -484,168 +549,167 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="text-6xl mb-4">🗳️</div>
               <h3 className="text-lg font-semibold mb-2">אין תוכן להצבעה כרגע</h3>
-              <p className="text-muted-foreground">נסה לשנות את הפילטר או לחזור מאוחר יותר</p>
+              <p className="text-muted-foreground max-w-md">
+                כשיהיו הצבעות רלוונטיות עבורך באזור המגורים או הקהילה שלך, הן יופיעו כאן
+              </p>
+              <button 
+                onClick={() => navigate('/notifications-settings')}
+                className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                הגדר התראות
+              </button>
             </div>
           ) : (
-            <div className="space-y-0">
-              {/* Condo/Building Votes */}
-              <FeedSection
-                icon={Home}
-                title="הצבעות בבניין"
-                description="החלטות ועדת הבית והשכנים"
-                badge={condoVotes.length}
-                isEmpty={condoVotes.length === 0}
-              >
-                {condoVotes.map((vote: any) => (
-                  <div key={vote.id} className="w-full flex justify-center py-6">
+            <div className="w-full">
+              <div className="space-y-1 px-1">
+                {/* Building/Condo Votes - Highest Priority */}
+                {condoVotes.map((vote) => (
+                  <div key={vote.id} className="w-full px-4 py-6 bg-background border-b border-border/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Building className="w-5 h-5 text-primary" />
+                      <span className="text-sm font-semibold text-primary">דירות</span>
+                      {vote.urgency === 'high' && <AlertTriangle className="w-4 h-4 text-destructive animate-pulse" />}
+                    </div>
                     <OrganizationVoteCard
                       vote={vote}
                       onVote={handleOrganizationVote}
                     />
                   </div>
                 ))}
-              </FeedSection>
 
-              {/* School/University Votes */}
-              <FeedSection
-                icon={GraduationCap}
-                title="הצבעות בית ספר"
-                description="החלטות הורים ותלמידים"
-                badge={schoolVotes.length}
-                isEmpty={schoolVotes.length === 0}
-              >
-                {schoolVotes.map((vote: any) => (
-                  <div key={vote.id} className="w-full flex justify-center py-6">
+                {/* School Votes */}
+                {schoolVotes.map((vote) => (
+                  <div key={vote.id} className="w-full px-4 py-6 bg-background border-b border-border/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <GraduationCap className="w-5 h-5 text-accent" />
+                      <span className="text-sm font-semibold text-accent">בית ספר</span>
+                      {vote.urgency === 'high' && <AlertTriangle className="w-4 h-4 text-destructive animate-pulse" />}
+                    </div>
                     <OrganizationVoteCard
                       vote={vote}
                       onVote={handleOrganizationVote}
                     />
                   </div>
                 ))}
-              </FeedSection>
 
-              {/* Neighborhood Polls */}
-              <FeedSection
-                icon={MapPin}
-                title="סקרי שכונה"
-                description="דעת קהל תושבי השכונה"
-                badge={neighborhoodPolls.length}
-                isEmpty={neighborhoodPolls.length === 0}
-              >
-                {neighborhoodPolls.map((poll: any) => (
-                  <div key={poll.id} className="w-full px-4 py-6">
+                {/* Neighborhood Polls */}
+                {neighborhoodPolls.map((poll) => (
+                  <div key={poll.id} className="w-full px-4 py-6 bg-background border-b border-border/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Home className="w-5 h-5 text-secondary" />
+                      <span className="text-sm font-semibold text-secondary">שכונה</span>
+                    </div>
                     <PollCard
                       poll={poll}
                       onVote={handlePollVote}
                     />
                   </div>
                 ))}
-              </FeedSection>
 
-              {/* City Votes */}
-              <FeedSection
-                icon={Building}
-                title="הצבעות עירוניות"
-                description="החלטות עיריית תל אביב"
-                badge={cityVotes.length}
-                isEmpty={cityVotes.length === 0}
-              >
-                {cityVotes.map((vote: any) => (
-                  <div key={vote.id} className="w-full flex justify-center py-6">
+                {/* City Votes */}
+                {cityVotes.map((vote) => (
+                  <div key={vote.id} className="w-full px-4 py-6 bg-background border-b border-border/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <MapPin className="w-5 h-5 text-muted-foreground" />
+                      <span className="text-sm font-semibold text-muted-foreground">עיר</span>
+                      {vote.urgency === 'high' && <AlertTriangle className="w-4 h-4 text-destructive animate-pulse" />}
+                    </div>
                     <OrganizationVoteCard
                       vote={vote}
                       onVote={handleOrganizationVote}
                     />
                   </div>
                 ))}
-              </FeedSection>
 
-              {/* City Polls */}
-              <FeedSection
-                icon={BarChart3}
-                title="סקרי עיר"
-                description="דעת קהל תושבי תל אביב"
-                badge={cityPolls.length}
-                isEmpty={cityPolls.length === 0}
-              >
-                {cityPolls.map((poll: any) => (
-                  <div key={poll.id} className="w-full px-4 py-6">
+                {/* City Polls */}
+                {cityPolls.map((poll) => (
+                  <div key={poll.id} className="w-full px-4 py-6 bg-background border-b border-border/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <BarChart3 className="w-5 h-5 text-chart-1" />
+                      <span className="text-sm font-semibold text-chart-1">סקר עירוני</span>
+                    </div>
                     <PollCard
                       poll={poll}
                       onVote={handlePollVote}
                     />
                   </div>
                 ))}
-              </FeedSection>
 
-              {/* National Positions */}
-              <FeedSection
-                icon={Flag}
-                title="בחירות לכנסת ישראל"
-                description="מועמדים למשרות הכי חשובות במדינה"
-                badge={nationalPositions.reduce((acc: number, pos: any) => acc + pos.candidates.length, 0)}
-                isEmpty={nationalPositions.length === 0}
-              >
+                {/* Community Polls */}
+                {communityPolls.map((poll) => (
+                  <div key={poll.id} className="w-full px-4 py-6 bg-background border-b border-border/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <MessageCircle className="w-5 h-5 text-chart-2" />
+                      <span className="text-sm font-semibold text-chart-2">דעת קהל</span>
+                    </div>
+                    <PollCard
+                      poll={poll}
+                      onVote={handlePollVote}
+                    />
+                  </div>
+                ))}
+
+                {/* Trusted Experts */}
+                {experts.map((section) => (
+                  <div key={section.id} className="w-full py-6">
+                    <FeedSection
+                      title={section.title}
+                      description={section.description}
+                      profiles={section.experts}
+                      onProfileClick={handleProfileClick}
+                      onVideoClick={handleProfileVideoClick}
+                      onTrust={handleTrust}
+                      onDismiss={handleDismissProfile}
+                      showTrustButton={true}
+                      actionLabel="אמון"
+                    />
+                  </div>
+                ))}
+
+                {/* National Positions */}
                 {nationalPositions.map((position: any) => (
-                  <PositionCarousel
-                    key={position.id}
-                    title={position.title}
-                    description={position.description}
-                    profiles={position.candidates}
-                    type="candidate"
-                    onVideoClick={handleProfileVideoClick}
-                    onVote={handleVote}
-                    onAddCandidate={handleAddCandidate}
-                    onProfileClick={handleProfileClick}
-                    onDismiss={handleDismissProfile}
-                  />
-                ))}
-              </FeedSection>
-
-              {/* Community Polls */}
-              <FeedSection
-                icon={MessageCircle}
-                title="סקרי קהילה"
-                description="הביעו את דעתכם בנושאים כלליים"
-                badge={communityPolls.length}
-                isEmpty={communityPolls.length === 0}
-              >
-                {communityPolls.map((poll: any) => (
-                  <div key={poll.id} className="w-full px-4 py-6">
-                    <PollCard
-                      poll={poll}
-                      onVote={handlePollVote}
+                  <div key={position.id} className="w-full py-6">
+                    <div className="flex items-center gap-2 mb-4 px-4">
+                      <Flag className="w-5 h-5 text-chart-3" />
+                      <span className="text-sm font-semibold text-chart-3">בחירות ארציות</span>
+                    </div>
+                    <PositionCarousel
+                      title={position.title}
+                      description={position.description}
+                      profiles={position.candidates}
+                      type="candidate"
+                      onVideoClick={handleProfileVideoClick}
+                      onVote={handleVote}
+                      onAddCandidate={handleAddCandidate}
+                      onProfileClick={handleProfileClick}
+                      onDismiss={handleDismissProfile}
                     />
                   </div>
                 ))}
-              </FeedSection>
-
-              {/* Trusted Experts - Only if minimal other content */}
-              <FeedSection
-                icon={Users}
-                title="מומחים מהימנים"
-                description="מומחים איכותיים שיכולים לעזור לכם להחליט"
-                badge={experts.reduce((acc: number, section: any) => acc + section.experts.length, 0)}
-                isEmpty={experts.length === 0}
-              >
-                {experts.map((section: any) => (
-                  <PositionCarousel
-                    key={section.id}
-                    title={section.title}
-                    description={section.description}
-                    profiles={section.experts}
-                    type="expert"
-                    onVideoClick={handleProfileVideoClick}
-                    onTrust={handleTrust}
-                    onProfileClick={handleProfileClick}
-                    onDismiss={handleDismissProfile}
-                  />
-                ))}
-              </FeedSection>
+              </div>
             </div>
           )}
         </div>
-        
+
+        {/* FullscreenVideoPlayer pour candidats et experts */}
+        {fullscreenVideoData && (
+          <FullscreenVideoPlayer
+            comments={fullscreenVideoData.comments}
+            initialCommentIndex={fullscreenVideoData.index}
+            onClose={() => {
+              setFullscreenVideoData(null);
+              onFilterChange?.('for-me');
+            }}
+            onTrust={handleTrust}
+            onWatch={() => {}}
+            onComment={() => {}}
+            onShare={() => {}}
+            onZooz={() => {}}
+            onSwipeNavigation={handleSwipeNavigation}
+          />
+        )}
+
+        {/* Fullscreen Video Player */}
         {selectedVideo && (
           <FullscreenVideoPlayer
             comments={[selectedVideo]}
@@ -733,6 +797,24 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
           </div>
         )}
       </div>
+
+      {/* FullscreenVideoPlayer pour candidats et experts */}
+      {fullscreenVideoData && (
+        <FullscreenVideoPlayer
+          comments={fullscreenVideoData.comments}
+          initialCommentIndex={fullscreenVideoData.index}
+          onClose={() => {
+            setFullscreenVideoData(null);
+            onFilterChange?.('for-me');
+          }}
+          onTrust={handleTrust}
+          onWatch={() => {}}
+          onComment={() => {}}
+          onShare={() => {}}
+          onZooz={() => {}}
+          onSwipeNavigation={handleSwipeNavigation}
+        />
+      )}
 
       {/* Fullscreen Video Player */}
       {selectedVideo && (

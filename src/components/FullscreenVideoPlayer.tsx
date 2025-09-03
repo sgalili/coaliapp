@@ -130,15 +130,29 @@ export const FullscreenVideoPlayer = ({
 
     const handleTouchStart = (e: TouchEvent) => {
       const startY = e.touches[0].clientY;
+      const startX = e.touches[0].clientX;
       
       const handleTouchMove = (e: TouchEvent) => {
         const deltaY = startY - e.touches[0].clientY;
+        const deltaX = e.touches[0].clientX - startX;
         
-        if (Math.abs(deltaY) > 50) { // Minimum swipe distance
+        if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
+          // Vertical swipe (video navigation)
           if (deltaY > 0 && currentIndex < comments.length - 1) {
             setCurrentIndex(prev => prev + 1);
           } else if (deltaY < 0 && currentIndex > 0) {
             setCurrentIndex(prev => prev - 1);
+          }
+          document.removeEventListener('touchmove', handleTouchMove);
+          document.removeEventListener('touchend', handleTouchEnd);
+        } else if (Math.abs(deltaX) > 100 && Math.abs(deltaX) > Math.abs(deltaY)) {
+          // Horizontal swipe (filter navigation)
+          if (onSwipeNavigation) {
+            if (deltaX > 0) {
+              onSwipeNavigation('left'); // Swipe right = go left
+            } else {
+              onSwipeNavigation('right'); // Swipe left = go right
+            }
           }
           document.removeEventListener('touchmove', handleTouchMove);
           document.removeEventListener('touchend', handleTouchEnd);
@@ -166,7 +180,7 @@ export const FullscreenVideoPlayer = ({
         document.removeEventListener('keydown', handleKeyDown);
       };
     }
-  }, [currentIndex, comments.length]);
+  }, [currentIndex, comments.length, onSwipeNavigation]);
 
   const handleVideoClick = () => {
     setIsPlaying(!isPlaying);

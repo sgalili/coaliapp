@@ -297,8 +297,12 @@ const Index = () => {
         onFilterChange={setVoteFilter}
       />
       
-      {/* Vote Feed - Full Width Instagram Style */}
-      <VoteFeed filter={voteFilter} />
+        <VoteFeed 
+          filter={voteFilter} 
+          onFilterChange={setVoteFilter}
+          isMuted={isMuted}
+          onVolumeToggle={handleVolumeToggle}
+        />
 
       <Navigation zoozBalance={zoozBalance} />
 
