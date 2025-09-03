@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { VoteFeed } from "@/components/VoteFeed";
 import { VoteHeader } from "@/components/VoteHeader";
 import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
@@ -191,6 +192,13 @@ const Index = () => {
   const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
   const [showKycNotice, setShowKycNotice] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Swipe handling
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [startX, setStartX] = useState<number>(0);
+  const [startY, setStartY] = useState<number>(0);
+  
   const { toast } = useToast();
   
   const {
@@ -266,9 +274,59 @@ const Index = () => {
   const handleVolumeToggle = () => {
     setIsMuted(!isMuted);
   };
+
+  // Filter navigation with animation
+  const handleFilterChange = (newFilter: VoteFilterType) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setVoteFilter(newFilter);
+    setTimeout(() => setIsTransitioning(false), 300);
+  };
+
+  // Touch handlers for swipe
+  const handleTouchStart = (e: TouchEvent) => {
+    setStartX(e.touches[0].clientX);
+    setStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    handleSwipe(startX, startY, endX, endY);
+  };
+
+  // Common swipe logic
+  const handleSwipe = (startX: number, startY: number, endX: number, endY: number) => {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    
+    // Only trigger horizontal swipe if horizontal movement is significantly greater than vertical
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) * 2;
+    const threshold = 80;
+
+    if (isHorizontalSwipe && Math.abs(deltaX) > threshold && !isTransitioning) {
+      const filters: VoteFilterType[] = ['for-me', 'candidates', 'experts'];
+      const currentIndex = filters.indexOf(voteFilter);
+      
+      if (deltaX > 0) {
+        // Swipe right - go to next filter (right direction)
+        const nextIndex = (currentIndex + 1) % filters.length;
+        handleFilterChange(filters[nextIndex]);
+      } else {
+        // Swipe left - go to previous filter (left direction)
+        const prevIndex = currentIndex === 0 ? filters.length - 1 : currentIndex - 1;
+        handleFilterChange(filters[prevIndex]);
+      }
+    }
+  };
   
   return (
-    <div className="min-h-screen bg-background relative">
+    <div 
+      ref={containerRef}
+      className="min-h-screen bg-background relative"
+      onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
+      onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
+    >
       {/* Vote Header - only show for 'for-me' filter */}
       {voteFilter === 'for-me' && <VoteHeader />}
       
@@ -295,24 +353,41 @@ const Index = () => {
       {/* Vote Filters */}
       <VoteFilters 
         activeFilter={voteFilter}
-        onFilterChange={setVoteFilter}
+        onFilterChange={handleFilterChange}
       />
       
-      {/* Route between VoteFeed and VideoFeedPage based on filter */}
-      {voteFilter === 'for-me' ? (
-        <VoteFeed filter={voteFilter} />
-      ) : (
-        <VideoFeedPage
-          activeFilter={voteFilter}
-          onFilterChange={setVoteFilter}
-          onTrust={handleTrust}
-          onWatch={handleWatch}
-          onZooz={handleZooz}
-          userBalance={zoozBalance}
-          isMuted={isMuted}
-          onVolumeToggle={handleVolumeToggle}
-        />
-      )}
+      {/* Animated content container */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={voteFilter}
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            damping: 30,
+            duration: 0.3 
+          }}
+          className="min-h-screen"
+        >
+          {/* Route between VoteFeed and VideoFeedPage based on filter */}
+          {voteFilter === 'for-me' ? (
+            <VoteFeed filter={voteFilter} />
+          ) : (
+            <VideoFeedPage
+              activeFilter={voteFilter}
+              onFilterChange={handleFilterChange}
+              onTrust={handleTrust}
+              onWatch={handleWatch}
+              onZooz={handleZooz}
+              userBalance={zoozBalance}
+              isMuted={isMuted}
+              onVolumeToggle={handleVolumeToggle}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       <Navigation zoozBalance={zoozBalance} />
 
