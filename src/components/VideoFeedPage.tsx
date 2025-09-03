@@ -132,8 +132,9 @@ export const VideoFeedPage = ({
   onVolumeToggle 
 }: VideoFeedPageProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [touchStartX, setTouchStartX] = useState<number>(0);
-  const [touchStartY, setTouchStartY] = useState<number>(0);
+  const [startX, setStartX] = useState<number>(0);
+  const [startY, setStartY] = useState<number>(0);
+  const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
   // Get appropriate videos based on filter
   const getVideos = (): VideoPost[] => {
@@ -146,16 +147,38 @@ export const VideoFeedPage = ({
     return [...mockCandidateVideos, ...mockExpertVideos];
   };
 
+  // Touch handlers
   const handleTouchStart = (e: TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
-    setTouchStartY(e.touches[0].clientY);
+    setStartX(e.touches[0].clientX);
+    setStartY(e.touches[0].clientY);
   };
 
   const handleTouchEnd = (e: TouchEvent) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    handleSwipe(startX, startY, endX, endY);
+  };
+
+  // Mouse handlers
+  const handleMouseDown = (e: MouseEvent) => {
+    setIsMouseDown(true);
+    setStartX(e.clientX);
+    setStartY(e.clientY);
+  };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    if (isMouseDown) {
+      const endX = e.clientX;
+      const endY = e.clientY;
+      handleSwipe(startX, startY, endX, endY);
+      setIsMouseDown(false);
+    }
+  };
+
+  // Common swipe logic
+  const handleSwipe = (startX: number, startY: number, endX: number, endY: number) => {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
     
     // Only trigger horizontal swipe if horizontal movement is significantly greater than vertical
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) * 2;
@@ -184,6 +207,8 @@ export const VideoFeedPage = ({
       className="relative min-h-screen"
       onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
       onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
+      onMouseDown={(e) => handleMouseDown(e.nativeEvent)}
+      onMouseUp={(e) => handleMouseUp(e.nativeEvent)}
     >
       {/* Floating Filters */}
       <div className="fixed top-4 left-0 right-0 z-40 px-4">
