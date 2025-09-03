@@ -738,6 +738,10 @@ export const VoteFeed = ({ filter, onFilterChange, isMuted = true, onVolumeToggl
   }
 
   // Handle other filters (candidates, experts, all)
+  if (!filteredContent) {
+    return null; // Return nothing if filteredContent is null (handled by VideoFeedPage)
+  }
+  
   const { positions: filteredPositions, experts: filteredExperts, polls, organizationVotes } = filteredContent as any;
   const hasContent = filteredPositions?.length > 0 || filteredExperts?.length > 0 || polls?.length > 0 || organizationVotes?.length > 0;
 
