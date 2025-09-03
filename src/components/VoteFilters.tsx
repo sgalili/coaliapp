@@ -39,8 +39,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   const filters = [
     { id: 'for-me' as const, label: 'עבורי', icon: '👤' },
     { id: 'candidates' as const, label: 'מועמדים', icon: '🗳️' },
-    { id: 'experts' as const, label: 'מומחים', icon: '👨‍🎓' },
-    { id: 'all' as const, label: 'הכל', icon: '📋' }
+    { id: 'experts' as const, label: 'מומחים', icon: '👨‍🎓' }
   ];
 
   return (
