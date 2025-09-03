@@ -1,6 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { VideoFeed, VideoPost } from "@/components/VideoFeed";
 import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
+
+// Import profile images
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
+import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
 
 interface VideoFeedPageProps {
   activeFilter: VoteFilterType;
@@ -20,8 +26,8 @@ const mockCandidateVideos: VideoPost[] = [
     id: "cand-1",
     username: "בנימין נתניהו",
     handle: "@netanyahu",
-    profileImage: "/src/assets/netanyahu-profile.jpg",
-    videoUrl: "/videos/netanyahu-debate.mp4",
+    profileImage: netanyahuProfile,
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755817615/netanyahu-debate_fitgzh.mp4",
     caption: "עמדתי לגבי הרפורמה המשפטית ומה שצריך להיעשות עכשיו",
     trustCount: 234567,
     watchCount: 1200000,
@@ -44,8 +50,8 @@ const mockCandidateVideos: VideoPost[] = [
     id: "cand-2", 
     username: "יאיר לפיד",
     handle: "@yairlapid",
-    profileImage: "/src/assets/yaakov-profile.jpg",
-    videoUrl: "/videos/netanyahu-debate.mp4",
+    profileImage: yaakovProfile,
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818123/%D7%90%D7%96_%D7%9E%D7%94_%D7%90%D7%AA%D7%94_%D7%91%D7%A2%D7%A6%D7%9D_%D7%9E%D7%A6%D7%99%D7%A2__jb7xb0.mp4",
     caption: "הדרך שלנו לשינוי - מה צריך לעשות אחרת",
     trustCount: 156789,
     watchCount: 890000,
@@ -70,8 +76,8 @@ const mockExpertVideos: VideoPost[] = [
     id: "exp-1",
     username: "פרופ' יאיר זלקה",
     handle: "@yaronzelekha", 
-    profileImage: "/src/assets/yaron-zelekha-profile.jpg",
-    videoUrl: "/videos/netanyahu-debate.mp4",
+    profileImage: yaronProfile,
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818123/%D7%90%D7%96_%D7%9E%D7%94_%D7%90%D7%AA%D7%94_%D7%91%D7%A2%D7%A6%D7%9D_%D7%9E%D7%A6%D7%99%D7%A2__jb7xb0.mp4",
     caption: "ניתוח כלכלי של המצב הנוכחי והשלכותיו על העתיד",
     trustCount: 89012,
     watchCount: 450000,
@@ -93,8 +99,8 @@ const mockExpertVideos: VideoPost[] = [
     id: "exp-2",
     username: "ד״ר מאיה רוזן",
     handle: "@mayarosen",
-    profileImage: "/src/assets/maya-profile.jpg", 
-    videoUrl: "/videos/netanyahu-debate.mp4",
+    profileImage: mayaProfile, 
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818920/Warren_Buffett_-_Best_advice_ever_lhuq7u.mp4",
     caption: "השפעת הטכנולוגיה על החברה הישראלית - מבט מעמיק",
     trustCount: 67234,
     watchCount: 320000,
@@ -125,7 +131,9 @@ export const VideoFeedPage = ({
   isMuted,
   onVolumeToggle 
 }: VideoFeedPageProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [touchStartX, setTouchStartX] = useState<number>(0);
+  const [touchStartY, setTouchStartY] = useState<number>(0);
 
   // Get appropriate videos based on filter
   const getVideos = (): VideoPost[] => {
@@ -140,14 +148,20 @@ export const VideoFeedPage = ({
 
   const handleTouchStart = (e: TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
+    setTouchStartY(e.touches[0].clientY);
   };
 
   const handleTouchEnd = (e: TouchEvent) => {
     const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
     const deltaX = touchEndX - touchStartX;
-    const threshold = 100;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Only trigger horizontal swipe if horizontal movement is significantly greater than vertical
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY) * 2;
+    const threshold = 80;
 
-    if (Math.abs(deltaX) > threshold) {
+    if (isHorizontalSwipe && Math.abs(deltaX) > threshold) {
       if (deltaX > 0) {
         // Swipe right - go to previous filter
         if (activeFilter === 'experts') {
@@ -159,28 +173,20 @@ export const VideoFeedPage = ({
         // Swipe left - go to next filter  
         if (activeFilter === 'candidates') {
           onFilterChange('experts');
-        } else if (activeFilter === 'all') {
-          onFilterChange('candidates');
         }
       }
     }
   };
 
-  useEffect(() => {
-    const element = document.documentElement;
-    element.addEventListener('touchstart', handleTouchStart, { passive: true });
-    element.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      element.removeEventListener('touchstart', handleTouchStart);
-      element.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [touchStartX, activeFilter]);
-
   return (
-    <div className="relative min-h-screen">
+    <div 
+      ref={containerRef}
+      className="relative min-h-screen"
+      onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
+      onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
+    >
       {/* Floating Filters */}
-      <div className="fixed top-20 left-0 right-0 z-40 px-4">
+      <div className="fixed top-4 left-0 right-0 z-40 px-4">
         <VoteFilters 
           activeFilter={activeFilter}
           onFilterChange={onFilterChange}

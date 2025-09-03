@@ -269,11 +269,11 @@ const Index = () => {
   
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Vote Header */}
-      <VoteHeader />
+      {/* Vote Header - only show for 'for-me' filter */}
+      {voteFilter === 'for-me' && <VoteHeader />}
       
-      {/* KYC Notice */}
-      {showKycNotice && (
+      {/* KYC Notice - only show for 'for-me' filter */}
+      {showKycNotice && voteFilter === 'for-me' && (
         <div className="pt-[115px] px-3 pb-0 -mb-16">
           <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
             <button 
