@@ -652,17 +652,25 @@ export const VoteFeed = ({ filter, onFilterChange, isMuted = true, onVolumeToggl
                 {/* Trusted Experts */}
                 {experts.map((section) => (
                   <div key={section.id} className="w-full py-6">
-                    <FeedSection
-                      title={section.title}
-                      description={section.description}
-                      profiles={section.experts}
-                      onProfileClick={handleProfileClick}
-                      onVideoClick={handleProfileVideoClick}
-                      onTrust={handleTrust}
-                      onDismiss={handleDismissProfile}
-                      showTrustButton={true}
-                      actionLabel="אמון"
-                    />
+                    <div className="flex items-center gap-2 mb-4 px-4">
+                      <Crown className="w-5 h-5 text-trust" />
+                      <span className="text-sm font-semibold text-trust">{section.title}</span>
+                    </div>
+                    <div className="flex gap-4 overflow-x-auto px-4">
+                      {section.experts.map((expert: any) => (
+                        <div
+                          key={expert.id}
+                          className="min-w-[120px] cursor-pointer"
+                          onClick={() => handleProfileVideoClick(expert)}
+                        >
+                          <div className="w-24 h-24 rounded-full overflow-hidden mb-2">
+                            <img src={expert.avatar} alt={expert.name} className="w-full h-full object-cover" />
+                          </div>
+                          <p className="text-xs text-center font-medium">{expert.name}</p>
+                          <p className="text-xs text-center text-muted-foreground">{expert.stats.trustRate}% אמון</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
 

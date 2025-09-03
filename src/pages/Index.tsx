@@ -298,8 +298,7 @@ const Index = () => {
       />
       
         <VoteFeed 
-          filter={voteFilter} 
-          onFilterChange={setVoteFilter}
+          filter={voteFilter}
           isMuted={isMuted}
           onVolumeToggle={handleVolumeToggle}
         />

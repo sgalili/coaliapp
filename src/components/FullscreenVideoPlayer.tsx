@@ -180,7 +180,7 @@ export const FullscreenVideoPlayer = ({
         document.removeEventListener('keydown', handleKeyDown);
       };
     }
-  }, [currentIndex, comments.length, onSwipeNavigation]);
+  }, [currentIndex, comments.length]);
 
   const handleVideoClick = () => {
     setIsPlaying(!isPlaying);
