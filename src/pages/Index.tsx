@@ -5,6 +5,7 @@ import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
 import { Navigation } from "@/components/Navigation";
 import { KYCForm } from "@/components/KYCForm";
 import { VideoCreator } from "@/components/VideoCreator";
+import { VideoFeedPage } from "@/components/VideoFeedPage";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
 import { X } from "lucide-react";

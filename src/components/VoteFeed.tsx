@@ -713,7 +713,8 @@ export const VoteFeed = ({ filter, onFilterChange, isMuted = true, onVolumeToggl
             onComment={() => {}}
             onShare={() => {}}
             onZooz={() => {}}
-            onSwipeNavigation={handleSwipeNavigation}
+            userBalance={1000}
+            currentUserId="user123"
           />
         )}
 
@@ -820,7 +821,8 @@ export const VoteFeed = ({ filter, onFilterChange, isMuted = true, onVolumeToggl
           onComment={() => {}}
           onShare={() => {}}
           onZooz={() => {}}
-          onSwipeNavigation={handleSwipeNavigation}
+          userBalance={1000}
+          currentUserId="user123"
         />
       )}
 
