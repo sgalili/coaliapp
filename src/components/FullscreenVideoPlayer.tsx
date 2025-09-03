@@ -146,14 +146,7 @@ export const FullscreenVideoPlayer = ({
           document.removeEventListener('touchmove', handleTouchMove);
           document.removeEventListener('touchend', handleTouchEnd);
         } else if (Math.abs(deltaX) > 100 && Math.abs(deltaX) > Math.abs(deltaY)) {
-          // Horizontal swipe (filter navigation)
-          if (onSwipeNavigation) {
-            if (deltaX > 0) {
-              onSwipeNavigation('left'); // Swipe right = go left
-            } else {
-              onSwipeNavigation('right'); // Swipe left = go right
-            }
-          }
+          // Horizontal swipe disabled
           document.removeEventListener('touchmove', handleTouchMove);
           document.removeEventListener('touchend', handleTouchEnd);
         }

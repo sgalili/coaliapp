@@ -653,7 +653,7 @@ export const VoteFeed = ({ filter, onFilterChange, isMuted = true, onVolumeToggl
                 {experts.map((section) => (
                   <div key={section.id} className="w-full py-6">
                     <div className="flex items-center gap-2 mb-4 px-4">
-                      <Crown className="w-5 h-5 text-trust" />
+                      <Users className="w-5 h-5 text-trust" />
                       <span className="text-sm font-semibold text-trust">{section.title}</span>
                     </div>
                     <div className="flex gap-4 overflow-x-auto px-4">
