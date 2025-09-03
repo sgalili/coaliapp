@@ -298,11 +298,21 @@ const Index = () => {
         onFilterChange={setVoteFilter}
       />
       
-        <VoteFeed 
-          filter={voteFilter}
+      {/* Route between VoteFeed and VideoFeedPage based on filter */}
+      {voteFilter === 'for-me' ? (
+        <VoteFeed filter={voteFilter} />
+      ) : (
+        <VideoFeedPage
+          activeFilter={voteFilter}
+          onFilterChange={setVoteFilter}
+          onTrust={handleTrust}
+          onWatch={handleWatch}
+          onZooz={handleZooz}
+          userBalance={zoozBalance}
           isMuted={isMuted}
           onVolumeToggle={handleVolumeToggle}
         />
+      )}
 
       <Navigation zoozBalance={zoozBalance} />
 
