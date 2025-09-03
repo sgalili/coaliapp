@@ -6,6 +6,7 @@ import { FullscreenVideoPlayer } from "./FullscreenVideoPlayer";
 import { PollCard, Poll } from "./PollCard";
 import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
 import { FeedSection } from "./FeedSection";
+import { VideoFeed, VideoPost } from "./VideoFeed";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
 import { Building, MapPin, Flag, Users, GraduationCap, Home, AlertTriangle, BarChart3, MessageCircle } from "lucide-react";

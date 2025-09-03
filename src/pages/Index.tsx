@@ -189,6 +189,7 @@ const Index = () => {
   const [zoozBalance, setZoozBalance] = useState(1250);
   const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
   const [showKycNotice, setShowKycNotice] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
   const { toast } = useToast();
   
   const {
@@ -259,6 +260,10 @@ const Index = () => {
       description: `Your ${videoData.mode} content has been published successfully.`,
     });
     setShowVideoCreator(false);
+  };
+
+  const handleVolumeToggle = () => {
+    setIsMuted(!isMuted);
   };
   
   return (
