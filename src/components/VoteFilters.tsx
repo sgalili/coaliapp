@@ -12,6 +12,12 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   
+  // Reset scroll state when filter changes
+  useEffect(() => {
+    setIsVisible(true);
+    setLastScrollY(0);
+  }, [activeFilter]);
+
   // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
