@@ -22,18 +22,15 @@ export const VoteHeader = () => {
   // Scroll detection
   useEffect(() => {
     if (scrollY < 10) {
-      // Always show header at the top
+      // Always show header at the very top
       setIsHeaderVisible(true);
       setHeaderVisible(true);
     } else if (scrollY > lastScrollY && scrollY > 100) {
-      // Scrolling down and past 100px
+      // Scrolling down and past 100px - hide header
       setIsHeaderVisible(false);
       setHeaderVisible(false);
-    } else if (lastScrollY - scrollY > 5) {
-      // Scrolling up by at least 5px
-      setIsHeaderVisible(true);
-      setHeaderVisible(true);
     }
+    // Note: No else if for scroll up - header only reappears when back at top (scrollY < 10)
     
     setLastScrollY(scrollY);
   }, [scrollY, lastScrollY, setHeaderVisible]);
