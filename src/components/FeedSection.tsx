@@ -32,15 +32,15 @@ export const FeedSection = ({
   }
 
   // Calculate sticky position based on header and filter visibility
-  const getStickyTop = () => {
+  const getStickyTopValue = () => {
     if (isHeaderVisible && isFilterVisible) {
-      return "top-[130px]"; // Below header (73px) + filter (57px)
+      return 130; // Below header (73px) + filter (57px)
     } else if (isHeaderVisible && !isFilterVisible) {
-      return "top-[73px]"; // Below header only
+      return 73; // Below header only
     } else if (!isHeaderVisible && isFilterVisible) {
-      return "top-[57px]"; // Below filter only
+      return 57; // Below filter only
     } else {
-      return "top-0"; // At the very top
+      return 0; // At the very top
     }
   };
 
@@ -52,7 +52,7 @@ export const FeedSection = ({
         description={description}
         details={details}
         badge={badge}
-        stickyTop={getStickyTop()}
+        stickyTop={`${getStickyTopValue()}px`}
       />
       <div className="flex-1 overflow-y-auto animate-fade-in">
         {children}

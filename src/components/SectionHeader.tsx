@@ -19,10 +19,13 @@ export const SectionHeader = ({
   details,
   badge, 
   className = "",
-  stickyTop = "top-16"
+  stickyTop = "16px"
 }: SectionHeaderProps) => {
   return (
-    <div className={`w-full py-4 bg-background/95 backdrop-blur-sm border-b transition-colors sticky z-60 ${stickyTop} ${className}`}>
+    <div 
+      className={`w-full py-4 bg-background/95 backdrop-blur-sm border-b transition-all duration-300 sticky z-[60] ${className}`}
+      style={{ top: stickyTop }}
+    >
       <div className="flex items-center gap-3 px-4">
         <div className="p-2 rounded-lg bg-muted">
           <Icon className="w-5 h-5 text-primary" />
