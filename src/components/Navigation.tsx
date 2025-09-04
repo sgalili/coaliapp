@@ -48,6 +48,7 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
             <button
               key={tab.id}
               onClick={() => navigate(tab.path)}
+              data-tour-id={`${tab.id}-tab`}
               className={cn(
                 "flex flex-col items-center gap-1 py-2 px-3 min-w-0 flex-1 relative",
                 "transition-colors duration-200"

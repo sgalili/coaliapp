@@ -51,6 +51,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
           <button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
+            data-tour-id={filter.id === 'for-me' ? 'decisions-filter' : filter.id === 'candidates' ? 'circle-filter' : 'explore-filter'}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200",
               activeFilter === filter.id

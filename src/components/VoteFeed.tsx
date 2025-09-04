@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PollCard, Poll } from "./PollCard";
 import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
 import { FeedSection } from "./FeedSection";
+import { DecisionsOnboarding } from "./DecisionsOnboarding";
+import { GuidedTour } from "./GuidedTour";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
 import { Building, GraduationCap, Home, BarChart3 } from "lucide-react";
@@ -125,6 +127,19 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useKYC();
+  
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showGuidedTour, setShowGuidedTour] = useState(false);
+
+  // Check if user has seen onboarding
+  useEffect(() => {
+    if (filter === 'for-me') {
+      const hasSeenOnboarding = localStorage.getItem('hasSeenDecisionsOnboarding');
+      if (!hasSeenOnboarding) {
+        setShowOnboarding(true);
+      }
+    }
+  }, [filter]);
 
   const handlePollVote = (pollId: string, optionId: string) => {
     console.log(`Voted in poll ${pollId} for option: ${optionId}`);
@@ -132,6 +147,21 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
 
   const handleOrganizationVote = (voteId: string, optionId: string) => {
     console.log(`Voted in organization vote ${voteId} for option: ${optionId}`);
+  };
+
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('hasSeenDecisionsOnboarding', 'true');
+  };
+
+  const handleStartTour = () => {
+    setShowOnboarding(false);
+    setShowGuidedTour(true);
+    localStorage.setItem('hasSeenDecisionsOnboarding', 'true');
+  };
+
+  const handleCloseTour = () => {
+    setShowGuidedTour(false);
   };
 
   // Only handle 'for-me' filter in VoteFeed
@@ -205,9 +235,10 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full px-4 pb-24 pt-4 space-y-8">
-      {/* Hyper-Local Section */}
-      <div className="w-full space-y-6 mt-20">
+    <>
+      <div className="flex flex-col items-center w-full px-4 pb-24 pt-4 space-y-8">
+        {/* Hyper-Local Section */}
+        <div className="w-full space-y-6 mt-20">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold text-gray-900">היפר-מקומי</h2>
           <p className="text-gray-600 text-sm">כאן תוכל להצביע על החלטות פתוחות: בחירות, סקרים, האצלת סמכויות ועוד.</p>
@@ -291,5 +322,18 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
         ))}
       </div>
     </div>
+
+    {/* Onboarding Components */}
+    {showOnboarding && (
+      <DecisionsOnboarding 
+        onClose={handleCloseOnboarding}
+        onStartTour={handleStartTour}
+      />
+    )}
+    
+    {showGuidedTour && (
+      <GuidedTour onClose={handleCloseTour} />
+    )}
+  </>
   );
 };
