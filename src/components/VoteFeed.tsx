@@ -444,7 +444,7 @@ export const VoteFeed = ({
               {/* Municipal council elections */}
               <div className="w-full py-6">
                 <PositionCarousel
-                  title="בחירות למועצת העיר 2024"
+                  title="בחירות למועצת העיר 2026"
                   description="בחר את נציגיך במועצת העיר שיובילו את השינוי"
                   profiles={section.content.candidates}
                   type="candidate"
