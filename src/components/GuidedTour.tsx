@@ -177,8 +177,8 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Spotlight overlay for filter steps (first 3 steps) */}
-      {currentStep < 3 && targetElement ? (
+      {/* Spotlight overlay for all steps */}
+      {targetElement ? (
         <>
           {/* Top overlay */}
           <div 
@@ -248,7 +248,7 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
           />
         </>
       ) : (
-        /* Regular overlay for other steps */
+        /* Fallback overlay if target element not found */
         <div 
           className={cn(
             "absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300",
