@@ -6,6 +6,7 @@ interface SectionHeaderProps {
   icon: LucideIcon;
   title: string;
   description: string;
+  details?: string; // Additional details like building name, city, etc.
   badge?: number;
   className?: string;
 }
@@ -14,14 +15,20 @@ export const SectionHeader = ({
   icon: Icon, 
   title, 
   description, 
+  details,
   badge, 
   className = "" 
 }: SectionHeaderProps) => {
   return (
-    <div className={`w-full left-0 right-0 px-4 py-3 bg-blue-50/90 hover:bg-blue-50 transition-colors ${className}`}>
-      <div className="flex items-center gap-2">
+    <div className={`w-full py-3 bg-blue-50/90 hover:bg-blue-50 transition-colors ${className}`}>
+      <div className="flex items-center gap-2 px-4">
         <Icon className="w-3 h-3 text-muted-foreground" />
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{title}</h3>
+        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          {title}
+          {details && (
+            <span className="normal-case text-gray-700 font-semibold mr-1">: {details}</span>
+          )}
+        </h3>
         {badge !== undefined && badge > 0 && (
           <Badge variant="secondary" className="text-xs px-1.5 py-0.5 h-4">
             {badge}
