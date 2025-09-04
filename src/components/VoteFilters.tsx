@@ -14,6 +14,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   
   // Reset scroll state when filter changes
   useEffect(() => {
+    console.log('Filter changed to:', activeFilter, 'resetting scroll state');
     setIsVisible(true);
     setLastScrollY(0);
   }, [activeFilter]);
@@ -22,18 +23,25 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   useEffect(() => {
     const handleScroll = () => {
       const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
-      if (!scrollContainer) return;
+      if (!scrollContainer) {
+        console.log('No scroll container found');
+        return;
+      }
       
       const currentScrollY = scrollContainer.scrollTop;
+      console.log('Scroll detected:', { currentScrollY, lastScrollY, isVisible });
       
       if (currentScrollY < 10) {
         // Always show filter at the top
+        console.log('At top, showing filter');
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         // Scrolling down and past 100px
+        console.log('Scrolling down, hiding filter');
         setIsVisible(false);
       } else if (lastScrollY - currentScrollY > 5) {
         // Scrolling up by at least 5px
+        console.log('Scrolling up, showing filter');
         setIsVisible(true);
       }
       
@@ -41,10 +49,14 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
     };
 
     const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+    console.log('Setting up scroll listener, container found:', !!scrollContainer);
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
       
-      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+      return () => {
+        console.log('Cleaning up scroll listener');
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      };
     }
   }, [lastScrollY]);
 
