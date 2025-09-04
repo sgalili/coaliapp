@@ -37,9 +37,9 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   }, [lastScrollY]);
 
   const filters = [
-    { id: 'for-me' as const, label: 'עבורי', icon: '👤' },
-    { id: 'candidates' as const, label: 'מועמדים', icon: '🗳️' },
-    { id: 'experts' as const, label: 'מומחים', icon: '👨‍🎓' }
+    { id: 'for-me' as const, label: 'החלטות' },
+    { id: 'candidates' as const, label: 'המעגל שלי' },
+    { id: 'experts' as const, label: 'סייר' }
   ];
 
   return (
@@ -58,7 +58,6 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
             )}
           >
-            <span className="text-xs opacity-80">{filter.icon}</span>
             <span className="text-xs">{filter.label}</span>
           </button>
         ))}
