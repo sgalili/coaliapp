@@ -122,15 +122,16 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     
-    if (left < 10) left = 10;
-    if (left + 300 > viewportWidth - 10) left = viewportWidth - 310;
-    if (top < 10) top = 10;
-    if (top + 120 > viewportHeight - 10) top = viewportHeight - 130;
-
     // For steps 4-7 (navigation tabs), move tooltip closer to bottom menu
     if (currentStep >= 3) {
       top = viewportHeight - 280; // Position near bottom with more clearance
     }
+    
+    if (left < 10) left = 10;
+    if (left + 300 > viewportWidth - 10) left = viewportWidth - 310;
+    if (top < 10) top = 10;
+    // Don't adjust top position for steps 4-7 as they're already positioned correctly
+    if (currentStep < 3 && top + 120 > viewportHeight - 10) top = viewportHeight - 130;
 
     setTooltipPosition({ top, left });
   };
