@@ -169,7 +169,7 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
       {/* Highlighted element overlay */}
       {targetElement && (
         <div
-          className="absolute border-2 border-primary rounded-lg shadow-lg shadow-primary/30 transition-all duration-300"
+          className="absolute border-2 border-primary rounded-lg shadow-lg shadow-primary/30 transition-all duration-300 bg-background/95 backdrop-blur-md z-[9999]"
           style={{
             top: targetElement.getBoundingClientRect().top - 4,
             left: targetElement.getBoundingClientRect().left - 4,
