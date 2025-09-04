@@ -18,8 +18,8 @@ interface TourStep {
 const tourSteps: TourStep[] = [
   {
     id: "decisions",
-    title: "החלטות",
-    description: "החלטות שממתינות לקול שלך\nכאן תראה הצבעות פעילות בשכונה, בקהילה, בעיר או במדינה.\nמשתמשים שקיבלו אמון מהקהילה יכולים גם ליזום החלטות חדשות.",
+    title: "החלטות שממתינות לקול שלך",
+    description: "כאן תראה הצבעות פעילות בשכונה, בקהילה, בעיר או במדינה.\nמשתמשים שקיבלו אמון מהקהילה יכולים גם ליזום החלטות חדשות.",
     targetSelector: "[data-tour-id='decisions-filter']",
     position: "bottom"
   },
