@@ -243,7 +243,6 @@ export const NewsItemComponent = ({
       <div className="w-full px-2 pb-1 -mt-1">
         {/* Title positioned above everything */}
         <div className="flex items-center gap-1 mb-1">
-          <GraduationCap className="w-4 h-4 text-foreground" />
           <span className="font-medium text-foreground text-sm">
             {item.comments.length === 0 ? "היה הראשון לתת את דעתך כמומחה" : "דעת המומחים"}
           </span>
