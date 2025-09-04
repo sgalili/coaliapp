@@ -1,14 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PollCard, Poll } from "./PollCard";
 import { OrganizationVoteCard, OrganizationVote } from "./OrganizationVoteCard";
 import { FeedSection } from "./FeedSection";
 import { DecisionsOnboarding } from "./DecisionsOnboarding";
 import { GuidedTour } from "./GuidedTour";
-import { FullscreenVoteView } from "./FullscreenVoteView";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { Building, GraduationCap, Home, BarChart3 } from "lucide-react";
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 interface VoteFeedProps {
@@ -164,15 +162,6 @@ export const VoteFeed = ({
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuidedTour, setShowGuidedTour] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  
-  // Fullscreen state management
-  const [fullscreenVoteId, setFullscreenVoteId] = useState<string | null>(null);
-  const [autoFullscreenEnabled, setAutoFullscreenEnabled] = useState<{[key: string]: boolean}>({});
-  const [manuallyExited, setManuallyExited] = useState<{[key: string]: boolean}>({});
-  const cardRefs = useRef<{[key: string]: HTMLDivElement}>({});
-  
-  // Intersection observer for 60% visibility detection
-  const { entries, observe } = useIntersectionObserver({ threshold: 0.6 });
 
   // Toujours afficher l'onboarding au chargement initial de la page
   useEffect(() => {
@@ -181,62 +170,11 @@ export const VoteFeed = ({
       setIsInitialLoad(false);
     }
   }, [filter, isInitialLoad]);
-
-  // Handle intersection observer entries for auto-fullscreen
-  useEffect(() => {
-    entries.forEach(entry => {
-      const voteId = entry.target.getAttribute('data-vote-id');
-      if (!voteId) return;
-
-      const isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.6;
-      const canAutoActivate = autoFullscreenEnabled[voteId] !== false && !manuallyExited[voteId];
-
-      if (isVisible && canAutoActivate && !fullscreenVoteId) {
-        setFullscreenVoteId(voteId);
-      }
-    });
-  }, [entries, autoFullscreenEnabled, manuallyExited, fullscreenVoteId]);
   const handlePollVote = (pollId: string, optionId: string) => {
     console.log(`Voted in poll ${pollId} for option: ${optionId}`);
   };
   const handleOrganizationVote = (voteId: string, optionId: string) => {
     console.log(`Voted in organization vote ${voteId} for option: ${optionId}`);
-  };
-
-  // Handle card tap (for manual fullscreen toggle)
-  const handleCardTap = (voteId: string, isVoteButton: boolean) => {
-    if (isVoteButton) return; // Don't interfere with voting
-
-    if (fullscreenVoteId === voteId) {
-      // Exit fullscreen - mark as manually exited
-      setFullscreenVoteId(null);
-      setManuallyExited(prev => ({ ...prev, [voteId]: true }));
-      setAutoFullscreenEnabled(prev => ({ ...prev, [voteId]: false }));
-    } else if (manuallyExited[voteId]) {
-      // Re-enter fullscreen after manual exit
-      setFullscreenVoteId(voteId);
-    }
-  };
-
-  // Handle fullscreen navigation
-  const handleFullscreenNavigate = (direction: 'up' | 'down') => {
-    const allVotes = [...userCondoVotes, ...userSchoolVotes, ...userCityVotes];
-    const currentIndex = allVotes.findIndex(vote => vote.id === fullscreenVoteId);
-    
-    if (direction === 'up' && currentIndex < allVotes.length - 1) {
-      setFullscreenVoteId(allVotes[currentIndex + 1].id);
-    } else if (direction === 'down' && currentIndex > 0) {
-      setFullscreenVoteId(allVotes[currentIndex - 1].id);
-    }
-  };
-
-  // Register card refs for intersection observer
-  const registerCardRef = (voteId: string, element: HTMLDivElement | null) => {
-    if (element) {
-      cardRefs.current[voteId] = element;
-      element.setAttribute('data-vote-id', voteId);
-      observe(element);
-    }
   };
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
@@ -260,21 +198,17 @@ export const VoteFeed = ({
   const userCondoVotes = condoVotes.filter(vote => vote.targetPhones?.includes(user.phoneNumber || '') || vote.targetIds?.includes(user.idNumber || ''));
   const userSchoolVotes = schoolVotes.filter(vote => vote.targetPhones?.includes(user.phoneNumber || '') || vote.targetIds?.includes(user.idNumber || ''));
   const userCityVotes = cityVotes.filter(vote => vote.targetPhones?.includes(user.phoneNumber || '') || vote.targetIds?.includes(user.idNumber || ''));
-  // Get all votes for fullscreen navigation
-  const allVotes = [...userCondoVotes, ...userSchoolVotes, ...userCityVotes];
-  const currentFullscreenIndex = fullscreenVoteId ? allVotes.findIndex(vote => vote.id === fullscreenVoteId) : -1;
-  
   const content = {
     hyperLocal: [{
       id: "condo",
-      title: "בניין שלי : רמת אביב צפון 15",
+      title: "בניין שלי",
       description: "החלטות הנוגעות לדירה ולבניין",
       icon: Home,
       content: userCondoVotes,
       type: "organizationVote" as const
     }, {
       id: "school",
-      title: "בית הספר : יסודי ביאליק",
+      title: "בית הספר",
       description: "החלטות נוגעות לילדים ולמוסד החינוכי",
       icon: GraduationCap,
       content: userSchoolVotes,
@@ -314,17 +248,8 @@ export const VoteFeed = ({
         </div>
         
         {content.hyperLocal.map(section => <FeedSection key={section.id} title={section.title} description={section.description} icon={section.icon}>
-            {section.content.map(item => <div 
-              key={item.id} 
-              className="w-full flex justify-center py-4"
-              ref={(el) => registerCardRef(item.id, el)}
-            >
-                <OrganizationVoteCard 
-                  vote={item} 
-                  onVote={handleOrganizationVote}
-                  onCardTap={handleCardTap}
-                  isFullscreen={fullscreenVoteId === item.id}
-                />
+            {section.content.map(item => <div key={item.id} className="w-full flex justify-center py-4">
+                <OrganizationVoteCard vote={item} onVote={handleOrganizationVote} />
               </div>)}
           </FeedSection>)}
       </div>
@@ -351,21 +276,8 @@ export const VoteFeed = ({
         </div>
         
         {content.city.map(section => <FeedSection key={section.id} title={section.title} description={section.description} icon={section.icon}>
-            {section.content.map(item => <div 
-              key={item.id} 
-              className={section.type === 'organizationVote' ? 'w-full flex justify-center py-4' : 'w-full px-4 py-4'}
-              ref={section.type === 'organizationVote' ? (el) => registerCardRef(item.id, el) : undefined}
-            >
-                {section.type === 'organizationVote' ? (
-                  <OrganizationVoteCard 
-                    vote={item as OrganizationVote} 
-                    onVote={handleOrganizationVote}
-                    onCardTap={handleCardTap}
-                    isFullscreen={fullscreenVoteId === item.id}
-                  />
-                ) : (
-                  <PollCard poll={item as Poll} onVote={handlePollVote} />
-                )}
+            {section.content.map(item => <div key={item.id} className={section.type === 'organizationVote' ? 'w-full flex justify-center py-4' : 'w-full px-4 py-4'}>
+                {section.type === 'organizationVote' ? <OrganizationVoteCard vote={item as OrganizationVote} onVote={handleOrganizationVote} /> : <PollCard poll={item as Poll} onVote={handlePollVote} />}
               </div>)}
           </FeedSection>)}
       </div>
@@ -375,16 +287,5 @@ export const VoteFeed = ({
     {showOnboarding && <DecisionsOnboarding onClose={handleCloseOnboarding} onStartTour={handleStartTour} />}
     
     {showGuidedTour && <GuidedTour onClose={handleCloseTour} />}
-
-    {/* Fullscreen Vote View */}
-    {fullscreenVoteId && (
-      <FullscreenVoteView
-        votes={allVotes}
-        currentIndex={currentFullscreenIndex}
-        onClose={() => setFullscreenVoteId(null)}
-        onVote={handleOrganizationVote}
-        onNavigate={handleFullscreenNavigate}
-      />
-    )}
   </>;
 };
