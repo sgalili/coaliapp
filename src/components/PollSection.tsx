@@ -57,8 +57,7 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
                   handleTogglePoll();
                 }}
               >
-                <Vote className="h-3 w-3 ml-1" />
-                {hasUserVoted ? (newsId === 'news-4' ? 'הצבעתי' : '👀 ראה תוצאות') : '💬 הביע דעתך'}
+                {hasUserVoted ? (newsId === 'news-4' ? 'הצבעתי' : 'ראה תוצאות') : 'מה דעתך?'}
               </Button>
               {isExpanded ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
