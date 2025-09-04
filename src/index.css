@@ -67,6 +67,12 @@ All colors MUST be HSL.
     --zooz-foreground: 224 71% 4%;
     --zooz-glow: 45 100% 60%;
 
+    /* Fullscreen vote card gradients */
+    --vote-community: 221 83% 53%;
+    --vote-school: 142 71% 45%;
+    --vote-foundation: 262 83% 58%;
+    --vote-company: 214 32% 91%;
+
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;

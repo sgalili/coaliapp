@@ -33,10 +33,14 @@ export interface OrganizationVote {
 interface OrganizationVoteCardProps {
   vote: OrganizationVote;
   onVote: (voteId: string, optionId: string) => void;
+  onCardTap?: (voteId: string, isVoteButton: boolean) => void;
+  isFullscreen?: boolean;
 }
 export const OrganizationVoteCard = ({
   vote,
-  onVote
+  onVote,
+  onCardTap,
+  isFullscreen = false
 }: OrganizationVoteCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(vote.userVotedOption || null);
   const [isVoting, setIsVoting] = useState(false);
@@ -113,6 +117,30 @@ export const OrganizationVoteCard = ({
     }, 1000);
   };
 
+  // Handle card tap for fullscreen toggle
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const isVoteButton = target.closest('button')?.getAttribute('data-vote-button') === 'true';
+    
+    if (onCardTap && !isVoteButton) {
+      onCardTap(vote.id, false);
+    }
+  };
+
+  // Dynamic background for fullscreen mode
+  const getFullscreenBackground = () => {
+    switch (vote.organizationType) {
+      case 'community':
+        return 'from-blue-600/20 via-blue-500/10 to-blue-600/20';
+      case 'school':
+        return 'from-green-600/20 via-green-500/10 to-green-600/20';
+      case 'foundation':
+        return 'from-purple-600/20 via-purple-500/10 to-purple-600/20';
+      default:
+        return 'from-gray-600/20 via-gray-500/10 to-gray-600/20';
+    }
+  };
+
   // Confetti effect component
   const ConfettiEffect = () => (
     <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg">
@@ -155,7 +183,15 @@ export const OrganizationVoteCard = ({
       }} />
     </div>
   );
-  return <Card className="w-full max-w-2xl mx-4 mb-6 bg-card/90 backdrop-blur-sm relative overflow-hidden">
+  return <Card 
+    className={cn(
+      "relative overflow-hidden transition-all duration-500 cursor-pointer",
+      isFullscreen 
+        ? `w-full h-auto bg-gradient-to-br ${getFullscreenBackground()} backdrop-blur-md border-white/20 shadow-2xl`
+        : "w-full max-w-2xl mx-4 mb-6 bg-card/90 backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]"
+    )}
+    onClick={handleCardClick}
+  >
       {showConfetti && <ConfettiEffect />}
       
       {/* Points notification */}
@@ -169,10 +205,16 @@ export const OrganizationVoteCard = ({
         {/* Organization Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">{getOrganizationIcon()}</span>
+            <span className={cn("text-xl", isFullscreen && "text-2xl")}>{getOrganizationIcon()}</span>
             <div>
-              <h3 className="font-semibold text-foreground">{vote.organization}</h3>
-              <p className="text-xs text-muted-foreground">
+              <h3 className={cn(
+                "font-semibold",
+                isFullscreen ? "text-white text-lg" : "text-foreground"
+              )}>{vote.organization}</h3>
+              <p className={cn(
+                "text-xs",
+                isFullscreen ? "text-white/70" : "text-muted-foreground"
+              )}>
                 {vote.organizationType === 'foundation' ? 'עמותה' : vote.organizationType === 'company' ? 'חברה' : vote.organizationType === 'school' ? 'מוסד חינוך' : 'קהילה'}
               </p>
             </div>
@@ -181,7 +223,10 @@ export const OrganizationVoteCard = ({
           {/* Urgency & Time */}
           <div className="flex items-center gap-2">
             <div className={cn("w-2 h-2 rounded-full", getUrgencyColor())} />
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <div className={cn(
+              "flex items-center gap-1 text-xs",
+              isFullscreen ? "text-white/70" : "text-muted-foreground"
+            )}>
               <Clock className="w-3 h-3" />
               <span>{formatTimeLeft()}</span>
             </div>
@@ -190,18 +235,37 @@ export const OrganizationVoteCard = ({
 
         {/* Title & Description */}
         <div className="text-right">
-          <h2 className="text-lg font-bold text-foreground mb-2">{vote.title}</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">{vote.description}</p>
+          <h2 className={cn(
+            "font-bold mb-2",
+            isFullscreen ? "text-2xl text-white mb-4" : "text-lg text-foreground"
+          )}>{vote.title}</h2>
+          <p className={cn(
+            "leading-relaxed",
+            isFullscreen ? "text-white/80 text-base" : "text-sm text-muted-foreground"
+          )}>{vote.description}</p>
           
           {/* Financial Details */}
-          {vote.financialDetails && <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
+          {vote.financialDetails && <div className={cn(
+            "mt-3 p-3 rounded-lg border",
+            isFullscreen 
+              ? "bg-white/10 border-white/20 backdrop-blur-sm" 
+              : "bg-primary/5 border-primary/20"
+          )}>
               <div className="flex items-center justify-center gap-2">
-                <span className="text-2xl">💰</span>
+                <span className={cn("text-2xl", isFullscreen && "text-3xl")}>💰</span>
                 <div className="text-center">
-                  <p className="font-bold text-lg text-primary">
+                  <p className={cn(
+                    "font-bold",
+                    isFullscreen 
+                      ? "text-2xl text-white" 
+                      : "text-lg text-primary"
+                  )}>
                     {vote.financialDetails.amount} {vote.financialDetails.currency}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className={cn(
+                    "text-xs",
+                    isFullscreen ? "text-white/70" : "text-muted-foreground"
+                  )}>
                     {vote.financialDetails.type === 'profit' ? 'רווח משוער' : vote.financialDetails.type === 'cost' ? 'עלות משוערת' : 'השקעה נדרשת'}
                   </p>
                 </div>
@@ -212,7 +276,12 @@ export const OrganizationVoteCard = ({
 
       <CardContent className="pt-0">
         {/* Voting Options */}
-        <div className="space-y-3 mb-4">
+        <div className={cn(
+          "mb-4",
+          isFullscreen && vote.options.length === 2 
+            ? "space-y-6" // Vertical layout for fullscreen with 2 options
+            : "space-y-3"
+        )}>
           {vote.options.map(option => {
           const IconComponent = getOptionIcon(option.text);
           const isSelected = selectedOption === option.id;
@@ -221,12 +290,17 @@ export const OrganizationVoteCard = ({
             key={option.id} 
             onClick={() => handleVote(option.id)} 
             disabled={hasVoted || isVoting} 
+            data-vote-button="true"
             className={cn(
-              "w-full p-3 rounded-lg border transition-all duration-300 text-right relative overflow-hidden",
+              "w-full rounded-lg border transition-all duration-300 text-right relative overflow-hidden",
               hasVoted ? "cursor-not-allowed" : "hover:border-primary/50 cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
               isSelected && !hasVoted && "border-primary bg-primary/5 animate-pulse",
               isUserVote && "border-green-500 bg-green-50 ring-2 ring-green-200",
-              isVoting && selectedOption === option.id && "animate-pulse bg-primary/20"
+              isVoting && selectedOption === option.id && "animate-pulse bg-primary/20",
+              // Fullscreen specific styles
+              isFullscreen && vote.options.length === 2 
+                ? "p-6 min-h-[120px] flex items-center" 
+                : "p-3"
             )}
           >
             {/* Voting loading effect */}
@@ -241,16 +315,46 @@ export const OrganizationVoteCard = ({
                 <span>בחירתך</span>
               </div>
             )}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <IconComponent className={cn("w-4 h-4", option.text.includes('בעד') ? "text-green-500" : option.text.includes('נגד') ? "text-red-500" : "text-gray-500")} />
-                    <span className="text-xs font-medium">{option.percentage}%</span>
+                <div className={cn(
+                  "flex items-center",
+                  isFullscreen && vote.options.length === 2 
+                    ? "flex-col gap-4 text-center w-full" 
+                    : "justify-between"
+                )}>
+                  {/* Percentage and Icon */}
+                  <div className={cn(
+                    "flex items-center gap-2",
+                    isFullscreen && vote.options.length === 2 && "flex-col gap-3"
+                  )}>
+                    <IconComponent className={cn(
+                      option.text.includes('בעד') ? "text-green-500" : option.text.includes('נגד') ? "text-red-500" : "text-gray-500",
+                      isFullscreen ? "w-8 h-8" : "w-4 h-4"
+                    )} />
+                    <span className={cn(
+                      "font-bold",
+                      isFullscreen ? "text-4xl text-white" : "text-xs font-medium"
+                    )}>{option.percentage}%</span>
                   </div>
                   
-                  <div className="flex-1 text-right py-0 mx-[10px] my-0">
-                    <p className="font-medium text-sm">{option.text}</p>
-                    <div className="mt-1">
-                      <Progress value={option.percentage} className="h-1" />
+                  {/* Option Text and Progress */}
+                  <div className={cn(
+                    isFullscreen && vote.options.length === 2 
+                      ? "w-full text-center" 
+                      : "flex-1 text-right py-0 mx-[10px] my-0"
+                  )}>
+                    <p className={cn(
+                      "font-medium",
+                      isFullscreen ? "text-xl text-white mb-3" : "text-sm"
+                    )}>{option.text}</p>
+                    <div className={cn(
+                      isFullscreen && vote.options.length === 2 ? "mt-3" : "mt-1"
+                    )}>
+                      <Progress 
+                        value={option.percentage} 
+                        className={cn(
+                          isFullscreen ? "h-3" : "h-1"
+                        )} 
+                      />
                     </div>
                   </div>
                 </div>
@@ -259,8 +363,14 @@ export const OrganizationVoteCard = ({
         </div>
 
         {/* Vote Stats */}
-        <div className="flex items-center justify-between pt-3 border-t border-border/50">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <div className={cn(
+          "flex items-center justify-between pt-3 border-t",
+          isFullscreen ? "border-white/20" : "border-border/50"
+        )}>
+          <div className={cn(
+            "flex items-center gap-1 text-xs",
+            isFullscreen ? "text-white/70" : "text-muted-foreground"
+          )}>
             <Users className="w-3 h-3" />
             <span>{vote.totalVotes} הצביעו מתוך {vote.totalMembers}</span>
           </div>
