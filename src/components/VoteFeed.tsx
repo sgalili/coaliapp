@@ -130,16 +130,15 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showGuidedTour, setShowGuidedTour] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Check if user has seen onboarding
+  // Toujours afficher l'onboarding au chargement initial de la page
   useEffect(() => {
-    if (filter === 'for-me') {
-      const hasSeenOnboarding = localStorage.getItem('hasSeenDecisionsOnboarding');
-      if (!hasSeenOnboarding) {
-        setShowOnboarding(true);
-      }
+    if (filter === 'for-me' && isInitialLoad) {
+      setShowOnboarding(true);
+      setIsInitialLoad(false);
     }
-  }, [filter]);
+  }, [filter, isInitialLoad]);
 
   const handlePollVote = (pollId: string, optionId: string) => {
     console.log(`Voted in poll ${pollId} for option: ${optionId}`);
