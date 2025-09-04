@@ -207,7 +207,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   return (
     <div className="flex flex-col items-center w-full px-4 pb-24 pt-4 space-y-8">
       {/* Hyper-Local Section */}
-      <div className="w-full space-y-6">
+      <div className="w-full space-y-6 mt-20">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold text-gray-900">היפר-מקומי</h2>
           <p className="text-gray-600 text-sm">כאן תוכל להצביע על החלטות פתוחות: בחירות, סקרים, האצלת סמכויות ועוד.</p>
