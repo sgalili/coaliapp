@@ -102,49 +102,35 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
     let top = 0;
     let left = 0;
 
-    console.log(`Step ${currentStep + 1}: Positioning logic`, { currentStep, stepId: step.id });
+    console.log(`Step ${currentStep + 1}: Positioning for`, { stepId: step.id, position: step.position });
 
-    // For steps 4-7 (navigation tabs), use ONLY bottom positioning logic
-    if (currentStep >= 3) {
-      console.log(`Step ${currentStep + 1}: Using bottom navigation logic`);
-      top = viewportHeight - 280; // Fixed position near bottom for all navigation tabs
-      left = rect.left + (rect.width / 2) - 150; // Center the tooltip on the tab
-      
-      // Only adjust left to stay within viewport
-      if (left < 10) left = 10;
-      if (left + 300 > viewportWidth - 10) left = viewportWidth - 310;
-      
-      console.log(`Step ${currentStep + 1}: Final position`, { top, left, viewportHeight });
-    } else {
-      // For steps 1-3, use the switch statement
-      console.log(`Step ${currentStep + 1}: Using switch statement logic`);
-      switch (step.position) {
-        case 'bottom':
-          top = rect.bottom + 15;
-          left = rect.left + (rect.width / 2) - 150; // 150 is half tooltip width
-          break;
-        case 'top':
-          top = rect.top - 15;
-          left = rect.left + (rect.width / 2) - 150;
-          break;
-        case 'left':
-          top = rect.top + (rect.height / 2) - 60;
-          left = rect.left - 315; // 300 + 15 margin
-          break;
-        case 'right':
-          top = rect.top + (rect.height / 2) - 60;
-          left = rect.right + 15;
-          break;
-      }
-
-      // Viewport adjustments for steps 1-3
-      if (left < 10) left = 10;
-      if (left + 300 > viewportWidth - 10) left = viewportWidth - 310;
-      if (top < 10) top = 10;
-      if (top + 120 > viewportHeight - 10) top = viewportHeight - 130;
-      
-      console.log(`Step ${currentStep + 1}: Final position after switch`, { top, left });
+    // Use only switch statement based on step.position
+    switch (step.position) {
+      case 'bottom':
+        top = rect.bottom + 15;
+        left = rect.left + (rect.width / 2) - 150;
+        break;
+      case 'top':
+        top = rect.top - 140; // Position tooltip above element (for navigation tabs)
+        left = rect.left + (rect.width / 2) - 150;
+        break;
+      case 'left':
+        top = rect.top + (rect.height / 2) - 60;
+        left = rect.left - 315;
+        break;
+      case 'right':
+        top = rect.top + (rect.height / 2) - 60;
+        left = rect.right + 15;
+        break;
     }
+
+    // Keep tooltip within viewport bounds
+    if (left < 10) left = 10;
+    if (left + 300 > viewportWidth - 10) left = viewportWidth - 310;
+    if (top < 10) top = 10;
+    if (top + 140 > viewportHeight - 10) top = viewportHeight - 150;
+
+    console.log(`Step ${currentStep + 1}: Final position`, { top, left, position: step.position });
 
     setTooltipPosition({ top, left });
   };
