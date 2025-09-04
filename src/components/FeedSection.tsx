@@ -29,17 +29,18 @@ export const FeedSection = ({
   }
 
   return (
-    <div className={`w-full ${className}`}>
+    <section className={`w-full h-screen flex flex-col ${className}`}>
       <SectionHeader 
         icon={icon}
         title={title}
         description={description}
         details={details}
         badge={badge}
+        className="sticky top-0 z-10"
       />
-      <div className="animate-fade-in">
+      <div className="flex-1 overflow-y-auto animate-fade-in">
         {children}
       </div>
-    </div>
+    </section>
   );
 };

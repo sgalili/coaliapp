@@ -244,49 +244,31 @@ export const VoteFeed = ({
     }]
   };
   return <>
-      <div className="flex flex-col items-center w-full px-4 pb-24 pt-4 space-y-8">
-        {/* Hyper-Local Section */}
-        <div className="w-full space-y-6 mt-20">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900 mx-px px-0 my-[20px]">החלטות מקומיות</h2>
-          <p className="text-gray-600 text-sm">כאן תוכל להצביע על החלטות פתוחות: בחירות, סקרים, האצלת סמכויות ועוד.</p>
-        </div>
-        
-        {content.hyperLocal.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
-            {section.content.map(item => <div key={item.id} className="w-full py-4">
-                <OrganizationVoteCard vote={item} onVote={handleOrganizationVote} />
-              </div>)}
-          </FeedSection>)}
+      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
+        {/* All sections as full-height sticky sections */}
+        {[...content.hyperLocal, ...content.local, ...content.city].map(section => (
+          <FeedSection 
+            key={section.id} 
+            title={section.title} 
+            description={section.description} 
+            details={section.details} 
+            icon={section.icon}
+            className="snap-start"
+          >
+            <div className="h-full overflow-y-auto px-4 pb-24">
+              {section.content.map(item => (
+                <div key={item.id} className="w-full py-4">
+                  {section.type === 'organizationVote' ? (
+                    <OrganizationVoteCard vote={item as OrganizationVote} onVote={handleOrganizationVote} />
+                  ) : (
+                    <PollCard poll={item as Poll} onVote={handlePollVote} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </FeedSection>
+        ))}
       </div>
-
-      {/* Local Section */}
-      <div className="w-full space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900">מקומי</h2>
-          <p className="text-gray-600 text-sm">החלטות ברמה השכונתית</p>
-        </div>
-        
-        {content.local.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
-            {section.content.map(item => <div key={item.id} className="w-full px-4 py-4">
-                <PollCard poll={item} onVote={handlePollVote} />
-              </div>)}
-          </FeedSection>)}
-      </div>
-
-      {/* City Section */}
-      <div className="w-full space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900">עירוני</h2>
-          <p className="text-gray-600 text-sm">החלטות ברמה העירונית</p>
-        </div>
-        
-        {content.city.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
-            {section.content.map(item => <div key={item.id} className={section.type === 'organizationVote' ? 'w-full py-4' : 'w-full px-4 py-4'}>
-                {section.type === 'organizationVote' ? <OrganizationVoteCard vote={item as OrganizationVote} onVote={handleOrganizationVote} /> : <PollCard poll={item as Poll} onVote={handlePollVote} />}
-              </div>)}
-          </FeedSection>)}
-      </div>
-    </div>
 
     {/* Onboarding Components */}
     {showOnboarding && <DecisionsOnboarding onClose={handleCloseOnboarding} onStartTour={handleStartTour} />}
