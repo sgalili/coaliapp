@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ChevronRight, X, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronRight, ChevronLeft, X, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -295,7 +295,7 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {currentStep === tourSteps.length - 1 ? "סיים" : "הבא"}
-              <ChevronRight className="w-3 h-3 mr-1" />
+              <ChevronLeft className="w-3 h-3 mr-1" />
             </Button>
           </div>
         </div>
