@@ -38,7 +38,7 @@ export const FeedSection = ({
         badge={badge}
         className="sticky top-16 z-10"
       />
-      <div className="flex-1 overflow-y-auto animate-fade-in">
+      <div className="flex-1 overflow-y-auto animate-fade-in pt-20">
         {children}
       </div>
     </section>
