@@ -133,7 +133,7 @@ const VideoCommentPreview = ({
           {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-10 h-10 rounded-full object-cover" /> : <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
               <User className="w-5 h-5 text-slate-500" />
             </div>}
-           <KYCBadge level={comment.kycLevel} />
+           
         </div>
         
         <div className="flex-1 min-w-0">
@@ -264,10 +264,9 @@ export const NewsItemComponent = ({
               setActiveComment(comment.id);
             }
           }} className="relative flex-shrink-0">
-                    {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                     {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
                         <User className="w-6 h-6 text-slate-500" />
                       </div>}
-                     <KYCBadge level={comment.kycLevel} />
                   </button>)}
                 
                 {/* User Reply Button (Yaakov's photo with Plus icon) - At the end */}
@@ -307,10 +306,9 @@ export const NewsItemComponent = ({
                   setActiveComment(comment.id);
                 }
               }} className="relative flex-shrink-0">
-                        {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
-                            <User className="w-6 h-6 text-slate-500" />
-                          </div>}
-                         <KYCBadge level={comment.kycLevel} />
+                         {comment.userImage ? <img src={comment.userImage} alt={comment.username} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform" /> : <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow-sm hover:scale-110 transition-transform">
+                             <User className="w-6 h-6 text-slate-500" />
+                           </div>}
                       </button>)}
                   </div>
                 </div>
