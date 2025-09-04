@@ -8,19 +8,17 @@ export const VoteHeader = () => {
   const [selectedLocation, setSelectedLocation] = useState("תל אביב");
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  
   const {
     showKYC,
     triggerKYCCheck,
     handleKYCSuccess,
     handleKYCClose
   } = useKYC();
-  
+
   // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
       if (currentScrollY < 10) {
         // Always show header at the top
         setIsHeaderVisible(true);
@@ -31,22 +29,18 @@ export const VoteHeader = () => {
         // Scrolling up by at least 5px
         setIsHeaderVisible(true);
       }
-      
       setLastScrollY(currentScrollY);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
+    window.addEventListener('scroll', handleScroll, {
+      passive: true
+    });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
-
   const cities = ["תל אביב", "ירושלים", "חיפה", "באר שבע", "פתח תקווה", "נתניה", "אשדוד", "ראשון לציון", "הרצליה", "רעננה", "כפר סבא", "רחובות", "בת ים", "חולון", "גבעתיים", "קריית אונו"];
   return <>
       {/* Fixed Header */}
-      <div className={`fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-md border-b border-border transition-transform duration-300 ${
-        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
-      }`}>
-        <div className="flex items-center justify-between px-4 py-3">
+      <div className={`fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-md border-b border-border transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className="flex items-center justify-between px-[17px] py-[19px]">
           {/* Location Selector */}
           <button onClick={() => setShowCitySelector(true)} className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors">
             <MapPin className="w-4 h-4 text-primary" />
