@@ -7,7 +7,9 @@ import { DecisionsOnboarding } from "./DecisionsOnboarding";
 import { GuidedTour } from "./GuidedTour";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
-import { Building, GraduationCap, Home, BarChart3 } from "lucide-react";
+import { Building, GraduationCap, Home, BarChart3, MapPin } from "lucide-react";
+import { PositionCarousel } from "./PositionCarousel";
+import { Profile } from "./ProfileCard";
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 interface VoteFeedProps {
   filter: VoteFilterType;
@@ -149,6 +151,129 @@ const cityPolls: Poll[] = [{
   category: "עירוני",
   hasUserVoted: false
 }];
+
+// Mock data for municipal council candidates
+const municipalCandidates: Profile[] = [
+  {
+    id: "municipal1",
+    name: "אמיר כהן",
+    position: "מועמד למועצת העיר",
+    city: "תל אביב",
+    avatar: "/src/assets/amit-profile.jpg",
+    videoUrl: "/videos/candidate1.mp4",
+    expertise: ["תחבורה", "איכות סביבה", "דיור"],
+    voteCount: 1247,
+    hasUserVoted: false,
+    isVerified: true,
+    type: "candidate" as const,
+    trustRank: 8.4,
+    trustTrend: "up" as const
+  },
+  {
+    id: "municipal2", 
+    name: "שרה לוי",
+    position: "מועמדת למועצת העיר",
+    city: "תל אביב",
+    avatar: "/src/assets/sarah-profile.jpg",
+    videoUrl: "/videos/candidate2.mp4",
+    expertise: ["חינוך", "רווחה", "תרבות"],
+    voteCount: 892,
+    hasUserVoted: false,
+    isVerified: true,
+    type: "candidate" as const,
+    trustRank: 7.8,
+    trustTrend: "stable" as const
+  },
+  {
+    id: "municipal3",
+    name: "דוד רוזן",
+    position: "מועמד למועצת העיר", 
+    city: "תל אביב",
+    avatar: "/src/assets/david-profile.jpg",
+    videoUrl: "/videos/candidate3.mp4",
+    expertise: ["כלכלה", "עסקים", "פיתוח"],
+    voteCount: 1156,
+    hasUserVoted: false,
+    isVerified: true,
+    type: "candidate" as const,
+    trustRank: 7.2,
+    trustTrend: "up" as const
+  }
+];
+
+// Mock data for national candidates (PM)
+const nationalCandidates: Profile[] = [
+  {
+    id: "pm1",
+    name: "בנימין נתניהו",
+    position: "מועמד לראשות הממשלה",
+    city: "ירושלים",
+    avatar: "/src/assets/netanyahu-profile.jpg", 
+    videoUrl: "/videos/netanyahu-debate.mp4",
+    expertise: ["ביטחון", "כלכלה", "דיפלומטיה"],
+    voteCount: 875432,
+    hasUserVoted: false,
+    isVerified: true,
+    type: "candidate" as const,
+    trustRank: 6.2,
+    trustTrend: "down" as const
+  },
+  {
+    id: "pm2",
+    name: "יאיר לפיד",
+    position: "מועמד לראשות הממשלה",
+    city: "תל אביב",
+    avatar: "/src/assets/yaron-profile.jpg",
+    videoUrl: "/videos/candidate-yair.mp4", 
+    expertise: ["כלכלה", "חוץ", "חברה"],
+    voteCount: 623891,
+    hasUserVoted: false,
+    isVerified: true,
+    type: "candidate" as const,
+    trustRank: 7.1,
+    trustTrend: "up" as const
+  },
+  {
+    id: "pm3",
+    name: "בני גנץ",
+    position: "מועמד לראשות הממשלה",
+    city: "רמת גן",
+    avatar: "/src/assets/yaakov-profile.jpg",
+    videoUrl: "/videos/candidate-benny.mp4",
+    expertise: ["ביטחון", "הגנה", "מדיניות"],
+    voteCount: 456723,
+    hasUserVoted: false,
+    isVerified: true,
+    type: "candidate" as const,  
+    trustRank: 7.5,
+    trustTrend: "stable" as const
+  }
+];
+
+// Mock data for Palestinian state referendum
+const palestinianStateReferendum: Poll = {
+  id: "referendum1",
+  question: "האם אתה בעד הקמת מדינה פלסטינית?",
+  description: "משאל עם לכלל האזרחים בנוגע למדיניות ישראל כלפי הקמת מדינה פלסטינית",
+  options: [
+    {
+      id: "ref1-o1",
+      text: "בעד",
+      votes: 234567,
+      percentage: 42
+    },
+    {
+      id: "ref1-o2", 
+      text: "נגד",
+      votes: 325890,
+      percentage: 58
+    }
+  ],
+  totalVotes: 560457,
+  endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+  category: "משאל עם",
+  hasUserVoted: false
+};
 export const VoteFeed = ({
   filter
 }: VoteFeedProps) => {
@@ -189,6 +314,27 @@ export const VoteFeed = ({
     setShowGuidedTour(false);
   };
 
+  // Handle candidate video clicks  
+  const handleVideoClick = (profile: Profile) => {
+    console.log(`Playing video for candidate: ${profile.name}`);
+    // TODO: Open video player with profile.videoUrl
+  };
+
+  // Handle candidate votes
+  const handleCandidateVote = (profileId: string) => {
+    console.log(`Voted for candidate: ${profileId}`);
+    toast({
+      title: "הצבעה נשמרה",
+      description: "ההצבעה שלך נרשמה בהצלחה",
+    });
+  };
+
+  // Handle profile clicks
+  const handleProfileClick = (profileId: string) => {
+    console.log(`Viewing profile: ${profileId}`);
+    // TODO: Navigate to profile page
+  };
+
   // Only handle 'for-me' filter in VoteFeed
   if (filter !== 'for-me') {
     return null;
@@ -226,27 +372,35 @@ export const VoteFeed = ({
       type: "poll" as const
     }],
     city: [{
-      id: "city-votes",
+      id: "city-mixed",
       title: "העיר שלי",
-      description: "החלטות עירוניות חשובות לתושבים",
+      description: "החלטות עירוניות והצבעות למועצת העיר",
       details: "תל אביב יפו",
       icon: Building,
-      content: userCityVotes,
-      type: "organizationVote" as const
-    }, {
-      id: "city-polls",
-      title: "סקרי דעת קהל עירוניים",
-      description: "מה דעת התושבים על נושאים חשובים",
-      details: "תל אביב יפו",
-      icon: BarChart3,
-      content: cityPolls,
-      type: "poll" as const
+      content: {
+        votes: userCityVotes,
+        candidates: municipalCandidates,
+        polls: cityPolls
+      },
+      type: "mixed" as const
+    }],
+    country: [{
+      id: "country-referendum",
+      title: "המדינה שלי",
+      description: "משאלי עם והצבעות לראשות הממשלה",
+      details: "מדינת ישראל",
+      icon: MapPin,
+      content: {
+        referendum: palestinianStateReferendum,
+        nationalCandidates: nationalCandidates
+      },
+      type: "national" as const
     }]
   };
   return <>
       <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
-        {/* All sections as full-height sticky sections */}
-        {[...content.hyperLocal, ...content.local, ...content.city].map(section => (
+        {/* Hyperlocal and Local sections (unchanged) */}
+        {[...content.hyperLocal, ...content.local].map(section => (
           <FeedSection 
             key={section.id} 
             title={section.title} 
@@ -265,6 +419,79 @@ export const VoteFeed = ({
                   )}
                 </div>
               ))}
+            </div>
+          </FeedSection>
+        ))}
+
+        {/* City section (mixed content) */}
+        {content.city.map(section => (
+          <FeedSection 
+            key={section.id} 
+            title={section.title} 
+            description={section.description} 
+            details={section.details} 
+            icon={section.icon}
+            className="snap-start"
+          >
+            <div className="h-full overflow-y-auto px-4 pb-24">
+              {/* City votes */}
+              {section.content.votes.map(item => (
+                <div key={item.id} className="w-full py-4">
+                  <OrganizationVoteCard vote={item} onVote={handleOrganizationVote} />
+                </div>
+              ))}
+              
+              {/* Municipal council elections */}
+              <div className="w-full py-6">
+                <PositionCarousel
+                  title="בחירות למועצת העיר 2024"
+                  description="בחר את נציגיך במועצת העיר שיובילו את השינוי"
+                  profiles={section.content.candidates}
+                  type="candidate"
+                  onVideoClick={handleVideoClick}
+                  onVote={handleCandidateVote}
+                  onProfileClick={handleProfileClick}
+                />
+              </div>
+
+              {/* City polls */}
+              {section.content.polls.map(item => (
+                <div key={item.id} className="w-full py-4">
+                  <PollCard poll={item} onVote={handlePollVote} />
+                </div>
+              ))}
+            </div>
+          </FeedSection>
+        ))}
+
+        {/* Country section */}
+        {content.country.map(section => (
+          <FeedSection 
+            key={section.id} 
+            title={section.title} 
+            description={section.description} 
+            details={section.details} 
+            icon={section.icon}
+            className="snap-start"
+          >
+            <div className="h-full overflow-y-auto px-4 pb-24">
+              {/* Palestinian state referendum */}
+              <div className="w-full py-4">
+                <PollCard poll={section.content.referendum} onVote={handlePollVote} />
+              </div>
+              
+              {/* National PM elections */}
+              <div className="w-full py-6">
+                <PositionCarousel
+                  title="בחירות לראש הממשלה 2025"
+                  description="בחר את ראש הממשלה הבא של מדינת ישראל"
+                  profiles={section.content.nationalCandidates}
+                  type="candidate"
+                  onVideoClick={handleVideoClick}
+                  onVote={handleCandidateVote}
+                  onProfileClick={handleProfileClick}
+                />
+              </div>
             </div>
           </FeedSection>
         ))}
