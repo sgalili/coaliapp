@@ -20,7 +20,7 @@ export const SectionHeader = ({
   className = "" 
 }: SectionHeaderProps) => {
   return (
-    <div className={`w-full pb-4 pt-[31px] bg-background/95 backdrop-blur-sm border-b transition-colors ${className}`}>
+    <div className={`w-full pb-4 pt-[36px] bg-background/95 backdrop-blur-sm border-b transition-colors ${className}`}>
       <div className="flex items-center gap-3 px-4">
         <div className="p-2 rounded-lg bg-muted">
           <Icon className="w-5 h-5 text-primary" />
