@@ -60,11 +60,6 @@ export const PollCard = ({ poll, onVote }: PollCardProps) => {
         {/* Poll Header */}
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="w-5 h-5 text-primary" />
-              <span className="text-primary font-medium text-sm">{poll.category}</span>
-            </div>
-            
             <h3 className="font-bold text-foreground text-right text-lg mb-2">
               {poll.question}
             </h3>
