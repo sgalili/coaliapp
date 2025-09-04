@@ -9,7 +9,6 @@ import { VideoCreator } from "@/components/VideoCreator";
 import { VideoFeedPage } from "@/components/VideoFeedPage";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
-import { ScrollStateProvider } from "@/hooks/useScrollState";
 import { X } from "lucide-react";
 
 // Import profile images
@@ -322,13 +321,12 @@ const Index = () => {
   };
   
   return (
-    <ScrollStateProvider>
-      <div 
-        ref={containerRef}
-        className="min-h-screen bg-background relative"
-        onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
-        onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
-      >
+    <div 
+      ref={containerRef}
+      className="min-h-screen bg-background relative"
+      onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
+      onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
+    >
       {/* Vote Header - only show for 'for-me' filter */}
       {voteFilter === 'for-me' && <VoteHeader />}
       
@@ -410,9 +408,8 @@ const Index = () => {
           onClose={() => setShowVideoCreator(false)}
           onPublish={handleVideoPublish}
         />
-        )}
-      </div>
-    </ScrollStateProvider>
+      )}
+    </div>
   );
 };
 

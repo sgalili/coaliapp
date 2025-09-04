@@ -3,7 +3,6 @@ import { MapPin, Plus, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useKYC } from "@/hooks/useKYC";
 import { KYCForm } from "@/components/KYCForm";
-import { useScrollState } from "@/hooks/useScrollState";
 export const VoteHeader = () => {
   const [showCitySelector, setShowCitySelector] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("תל אביב");
@@ -17,23 +16,29 @@ export const VoteHeader = () => {
     handleKYCClose
   } = useKYC();
   
-  const { scrollY, setHeaderVisible } = useScrollState();
-  
   // Scroll detection
   useEffect(() => {
-    if (scrollY < 10) {
-      // Always show header at the very top
-      setIsHeaderVisible(true);
-      setHeaderVisible(true);
-    } else if (scrollY > lastScrollY && scrollY > 100) {
-      // Scrolling down and past 100px - hide header
-      setIsHeaderVisible(false);
-      setHeaderVisible(false);
-    }
-    // Note: No else if for scroll up - header only reappears when back at top (scrollY < 10)
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < 10) {
+        // Always show header at the top
+        setIsHeaderVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past 100px
+        setIsHeaderVisible(false);
+      } else if (lastScrollY - currentScrollY > 5) {
+        // Scrolling up by at least 5px
+        setIsHeaderVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
-    setLastScrollY(scrollY);
-  }, [scrollY, lastScrollY, setHeaderVisible]);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   const cities = ["תל אביב", "ירושלים", "חיפה", "באר שבע", "פתח תקווה", "נתניה", "אשדוד", "ראשון לציון", "הרצליה", "רעננה", "כפר סבא", "רחובות", "בת ים", "חולון", "גבעתיים", "קריית אונו"];
   return <>

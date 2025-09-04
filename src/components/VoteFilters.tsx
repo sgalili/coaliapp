@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { useScrollState } from "@/hooks/useScrollState";
 
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 
@@ -10,24 +9,38 @@ interface VoteFiltersProps {
 }
 
 export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) => {
+  const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const { scrollY, isHeaderVisible, isFilterVisible, setFilterVisible } = useScrollState();
   
   // Scroll detection
   useEffect(() => {
-    if (scrollY < 10) {
-      // Always show filter at the top (but below header)
-      setFilterVisible(true);
-    } else if (scrollY > lastScrollY && scrollY > 100) {
-      // Scrolling down and past 100px
-      setFilterVisible(false);
-    } else if (lastScrollY - scrollY > 5 && scrollY > 10) {
-      // Scrolling up by at least 5px, but not at very top
-      setFilterVisible(true);
+    const handleScroll = () => {
+      const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+      if (!scrollContainer) return;
+      
+      const currentScrollY = scrollContainer.scrollTop;
+      
+      if (currentScrollY < 10) {
+        // Always show filter at the top
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down and past 100px
+        setIsVisible(false);
+      } else if (lastScrollY - currentScrollY > 5) {
+        // Scrolling up by at least 5px
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }
-    
-    setLastScrollY(scrollY);
-  }, [scrollY, lastScrollY, setFilterVisible]);
+  }, [lastScrollY]);
 
   const filters = [
     { id: 'for-me' as const, label: 'החלטות' },
@@ -35,14 +48,10 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
     { id: 'experts' as const, label: 'סייר' }
   ];
 
-  const topPosition = isHeaderVisible ? 'top-[73px]' : 'top-4';
-
   return (
-    <div className={cn(
-      `fixed left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300`,
-      topPosition,
-      isFilterVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
-    )}>
+    <div className={`fixed top-[73px] left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+    }`}>
       <div className="flex items-center gap-1 bg-background/20 backdrop-blur-md rounded-full px-2 py-1 border border-border/20">
         {filters.map((filter) => (
           <button
