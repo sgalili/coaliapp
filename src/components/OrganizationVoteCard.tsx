@@ -154,16 +154,6 @@ export const OrganizationVoteCard = ({
       <CardHeader className="pb-3">
         {/* Organization Header */}
         <div className="flex items-center justify-between">
-          
-          
-          {/* Urgency & Time */}
-          <div className="flex items-center gap-2">
-            <div className={cn("w-2 h-2 rounded-full", getUrgencyColor())} />
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock className="w-3 h-3" />
-              <span>{formatTimeLeft()}</span>
-            </div>
-          </div>
         </div>
 
         {/* Title & Description */}
@@ -228,14 +218,25 @@ export const OrganizationVoteCard = ({
             <span>{vote.totalVotes} הצביעו מתוך {vote.totalMembers}</span>
           </div>
           
-          {hasVoted ? <div className="flex items-center gap-2 text-green-600 font-medium">
-              <CheckCircle className="w-4 h-4" />
-              <span>הצבעתך נרשמה בהצלחה!</span>
-              <Sparkles className="w-4 h-4 text-yellow-500" />
-            </div> : isVoting ? <div className="flex items-center gap-2 text-primary font-medium">
-              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <span>רושם הצבעה...</span>
-            </div> : null}
+          <div className="flex items-center gap-4">
+            {hasVoted ? <div className="flex items-center gap-2 text-green-600 font-medium">
+                <CheckCircle className="w-4 h-4" />
+                <span>הצבעתך נרשמה בהצלחה!</span>
+                <Sparkles className="w-4 h-4 text-yellow-500" />
+              </div> : isVoting ? <div className="flex items-center gap-2 text-primary font-medium">
+                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <span>רושם הצבעה...</span>
+              </div> : null}
+            
+            {/* Urgency & Time */}
+            <div className="flex items-center gap-2">
+              <div className={cn("w-2 h-2 rounded-full", getUrgencyColor())} />
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Clock className="w-3 h-3" />
+                <span>{formatTimeLeft()}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>;
