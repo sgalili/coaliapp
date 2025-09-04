@@ -40,7 +40,7 @@ export const VoteHeader = () => {
   return <>
       {/* Fixed Header */}
       <div className={`fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-md border-b border-border transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-        <div className="flex items-center justify-between px-[17px] py-[19px]">
+        <div className="flex items-center justify-between px-[17px] py-[12px]">
           {/* Location Selector */}
           <button onClick={() => setShowCitySelector(true)} className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors">
             <MapPin className="w-4 h-4 text-primary" />
