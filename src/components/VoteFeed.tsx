@@ -253,7 +253,7 @@ export const VoteFeed = ({
         </div>
         
         {content.hyperLocal.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
-            {section.content.map(item => <div key={item.id} className="w-full flex justify-center py-4">
+            {section.content.map(item => <div key={item.id} className="w-full py-4">
                 <OrganizationVoteCard vote={item} onVote={handleOrganizationVote} />
               </div>)}
           </FeedSection>)}
@@ -281,7 +281,7 @@ export const VoteFeed = ({
         </div>
         
         {content.city.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
-            {section.content.map(item => <div key={item.id} className={section.type === 'organizationVote' ? 'w-full flex justify-center py-4' : 'w-full px-4 py-4'}>
+            {section.content.map(item => <div key={item.id} className={section.type === 'organizationVote' ? 'w-full py-4' : 'w-full px-4 py-4'}>
                 {section.type === 'organizationVote' ? <OrganizationVoteCard vote={item as OrganizationVote} onVote={handleOrganizationVote} /> : <PollCard poll={item as Poll} onVote={handlePollVote} />}
               </div>)}
           </FeedSection>)}
