@@ -243,7 +243,7 @@ export const VoteFeed = ({
         {/* Hyper-Local Section */}
         <div className="w-full space-y-6 mt-20">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900">החלטות מקומיות</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mx-px px-0 my-[20px]">החלטות מקומיות</h2>
           <p className="text-gray-600 text-sm">כאן תוכל להצביע על החלטות פתוחות: בחירות, סקרים, האצלת סמכויות ועוד.</p>
         </div>
         
