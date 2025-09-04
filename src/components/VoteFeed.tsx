@@ -203,6 +203,7 @@ export const VoteFeed = ({
       id: "condo",
       title: "בניין שלי",
       description: "החלטות הנוגעות לדירה ולבניין",
+      details: userCondoVotes.length > 0 ? userCondoVotes[0].organization.replace("בניין ", "") : "רמת אביב צפון 15",
       icon: Home,
       content: userCondoVotes,
       type: "organizationVote" as const
@@ -210,6 +211,7 @@ export const VoteFeed = ({
       id: "school",
       title: "בית הספר",
       description: "החלטות נוגעות לילדים ולמוסד החינוכי",
+      details: userSchoolVotes.length > 0 ? userSchoolVotes[0].organization.replace("בי״ס יסודי ", "") : "ביאליק",
       icon: GraduationCap,
       content: userSchoolVotes,
       type: "organizationVote" as const
@@ -218,6 +220,7 @@ export const VoteFeed = ({
       id: "neighborhood",
       title: "השכונה שלי",
       description: "שיפורים ושינויים ברמה השכונתית",
+      details: "רמת אביב צפון",
       icon: Building,
       content: neighborhoodPolls,
       type: "poll" as const
@@ -226,6 +229,7 @@ export const VoteFeed = ({
       id: "city-votes",
       title: "העיר שלי",
       description: "החלטות עירוניות חשובות לתושבים",
+      details: "תל אביב יפו",
       icon: Building,
       content: userCityVotes,
       type: "organizationVote" as const
@@ -233,6 +237,7 @@ export const VoteFeed = ({
       id: "city-polls",
       title: "סקרי דעת קהל עירוניים",
       description: "מה דעת התושבים על נושאים חשובים",
+      details: "תל אביב יפו",
       icon: BarChart3,
       content: cityPolls,
       type: "poll" as const
@@ -247,7 +252,7 @@ export const VoteFeed = ({
           <p className="text-gray-600 text-sm">כאן תוכל להצביע על החלטות פתוחות: בחירות, סקרים, האצלת סמכויות ועוד.</p>
         </div>
         
-        {content.hyperLocal.map(section => <FeedSection key={section.id} title={section.title} description={section.description} icon={section.icon}>
+        {content.hyperLocal.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
             {section.content.map(item => <div key={item.id} className="w-full flex justify-center py-4">
                 <OrganizationVoteCard vote={item} onVote={handleOrganizationVote} />
               </div>)}
@@ -261,7 +266,7 @@ export const VoteFeed = ({
           <p className="text-gray-600 text-sm">החלטות ברמה השכונתית</p>
         </div>
         
-        {content.local.map(section => <FeedSection key={section.id} title={section.title} description={section.description} icon={section.icon}>
+        {content.local.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
             {section.content.map(item => <div key={item.id} className="w-full px-4 py-4">
                 <PollCard poll={item} onVote={handlePollVote} />
               </div>)}
@@ -275,7 +280,7 @@ export const VoteFeed = ({
           <p className="text-gray-600 text-sm">החלטות ברמה העירונית</p>
         </div>
         
-        {content.city.map(section => <FeedSection key={section.id} title={section.title} description={section.description} icon={section.icon}>
+        {content.city.map(section => <FeedSection key={section.id} title={section.title} description={section.description} details={section.details} icon={section.icon}>
             {section.content.map(item => <div key={item.id} className={section.type === 'organizationVote' ? 'w-full flex justify-center py-4' : 'w-full px-4 py-4'}>
                 {section.type === 'organizationVote' ? <OrganizationVoteCard vote={item as OrganizationVote} onVote={handleOrganizationVote} /> : <PollCard poll={item as Poll} onVote={handlePollVote} />}
               </div>)}

@@ -6,6 +6,7 @@ interface FeedSectionProps {
   icon: LucideIcon;
   title: string;
   description: string;
+  details?: string;
   badge?: number;
   children: ReactNode;
   isEmpty?: boolean;
@@ -16,6 +17,7 @@ export const FeedSection = ({
   icon, 
   title, 
   description, 
+  details,
   badge, 
   children, 
   isEmpty = false,
@@ -32,6 +34,7 @@ export const FeedSection = ({
         icon={icon}
         title={title}
         description={description}
+        details={details}
         badge={badge}
       />
       <div className="animate-fade-in">

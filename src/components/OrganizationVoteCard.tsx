@@ -166,12 +166,11 @@ export const OrganizationVoteCard = ({
         </div>
       )}
       <CardHeader className="pb-3">
-        {/* Organization Header */}
+        {/* Organization Header - Less prominent since it's in section header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">{getOrganizationIcon()}</span>
-            <div>
-              <h3 className="font-semibold text-foreground">{vote.organization}</h3>
+            <span className="text-lg opacity-60">{getOrganizationIcon()}</span>
+            <div className="opacity-60">
               <p className="text-xs text-muted-foreground">
                 {vote.organizationType === 'foundation' ? 'עמותה' : vote.organizationType === 'company' ? 'חברה' : vote.organizationType === 'school' ? 'מוסד חינוך' : 'קהילה'}
               </p>
