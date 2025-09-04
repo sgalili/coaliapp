@@ -210,7 +210,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
       <div className="w-full space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold text-gray-900">היפר-מקומי</h2>
-          <p className="text-gray-600 text-sm">החלטות שמשפיעות עליי ישירות</p>
+          <p className="text-gray-600 text-sm">כאן תוכל להצביע על החלטות פתוחות: בחירות, סקרים, האצלת סמכויות ועוד.</p>
         </div>
         
         {content.hyperLocal.map((section) => (
