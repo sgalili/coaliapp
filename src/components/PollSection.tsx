@@ -47,12 +47,6 @@ export const PollSection = ({ newsId }: PollSectionProps) => {
         >
           {/* Header with title and action */}
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 mr-2">
-              <span className="font-medium text-foreground text-sm">📢 קול הציבור</span>
-              {totalVotes > 0 && (
-                <span className="text-xs text-muted-foreground">({totalVotes.toLocaleString()} הצבעות)</span>
-              )}
-            </div>
             <div className="flex items-center gap-2 ml-2">
               <Button
                 variant="outline"
