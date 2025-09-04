@@ -244,7 +244,40 @@ export const VoteFeed = ({
     }]
   };
   return <>
-      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
+      <div className="overflow-y-scroll snap-y snap-mandatory">
+        {/* Intro Section - Non-sticky intro content */}
+        <div className="min-h-screen pt-20 px-4 pb-8 snap-start">
+          <div className="space-y-6">
+            <div className="text-center space-y-4">
+              <h1 className="text-2xl font-bold text-foreground">
+                ברוכים הבאים לפלטפורמת ההצבעות
+              </h1>
+              <p className="text-muted-foreground">
+                כאן תוכלו להשתתף בהחלטות חשובות ברמות השונות - מהבניין שלכם ועד לעיר
+              </p>
+            </div>
+            
+            {!user.isVerified && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 space-y-3">
+                <h3 className="font-semibold text-primary">השלימו את האימות שלכם</h3>
+                <p className="text-sm text-muted-foreground">
+                  כדי להשתתף בהצבעות ולהרוויח ZOOZ, יש להשלים את תהליך האימות (KYC)
+                </p>
+                <button 
+                  onClick={() => navigate('/wallet')}
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  השלימו אימות והרוויחו ZOOZ
+                </button>
+              </div>
+            )}
+            
+            <div className="text-center text-sm text-muted-foreground">
+              גללו למטה כדי לראות את ההצבעות הרלוונטיות עבורכם
+            </div>
+          </div>
+        </div>
+
         {/* All sections as full-height sticky sections */}
         {[...content.hyperLocal, ...content.local, ...content.city].map(section => (
           <FeedSection 
