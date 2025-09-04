@@ -483,7 +483,7 @@ export const VoteFeed = ({
               {/* National PM elections */}
               <div className="w-full py-6">
                 <PositionCarousel
-                  title="בחירות לראש הממשלה 2025"
+                  title="בחירות לראש הממשלה 2026"
                   description="בחר את ראש הממשלה הבא של מדינת ישראל"
                   profiles={section.content.nationalCandidates}
                   type="candidate"
