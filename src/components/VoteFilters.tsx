@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
@@ -10,55 +10,44 @@ interface VoteFiltersProps {
 
 export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
   
-  // Reset scroll state when filter changes
-  useEffect(() => {
-    console.log('Filter changed to:', activeFilter, 'resetting scroll state');
-    setIsVisible(true);
-    setLastScrollY(0);
-  }, [activeFilter]);
-
   // Scroll detection
   useEffect(() => {
+    // Reset scroll state when filter changes
+    setIsVisible(true);
+    lastScrollYRef.current = 0;
+    
     const handleScroll = () => {
       const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
-      if (!scrollContainer) {
-        console.log('No scroll container found');
-        return;
-      }
+      if (!scrollContainer) return;
       
       const currentScrollY = scrollContainer.scrollTop;
-      console.log('Scroll detected:', { currentScrollY, lastScrollY, isVisible });
+      const lastScrollY = lastScrollYRef.current;
       
       if (currentScrollY < 10) {
         // Always show filter at the top
-        console.log('At top, showing filter');
         setIsVisible(true);
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         // Scrolling down and past 100px
-        console.log('Scrolling down, hiding filter');
         setIsVisible(false);
       } else if (lastScrollY - currentScrollY > 5) {
         // Scrolling up by at least 5px
-        console.log('Scrolling up, showing filter');
         setIsVisible(true);
       }
       
-      setLastScrollY(currentScrollY);
+      lastScrollYRef.current = currentScrollY;
     };
 
     const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
-    console.log('Setting up scroll listener, container found:', !!scrollContainer);
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
       
       return () => {
-        console.log('Cleaning up scroll listener');
         scrollContainer.removeEventListener('scroll', handleScroll);
       };
     }
-  }, [lastScrollY]);
+  }, [activeFilter]);
 
   const filters = [
     { id: 'for-me' as const, label: 'החלטות' },
