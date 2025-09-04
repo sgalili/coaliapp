@@ -15,7 +15,10 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+      if (!scrollContainer) return;
+      
+      const currentScrollY = scrollContainer.scrollTop;
       
       if (currentScrollY < 10) {
         // Always show filter at the top
@@ -31,9 +34,12 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => window.removeEventListener('scroll', handleScroll);
+    const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      
+      return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }
   }, [lastScrollY]);
 
   const filters = [
