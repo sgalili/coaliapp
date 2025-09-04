@@ -158,24 +158,83 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* Semi-transparent overlay */}
-      <div 
-        className={cn(
-          "absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300",
-          isVisible ? "opacity-100" : "opacity-0"
-        )}
-      />
-      
-      {/* Highlighted element overlay */}
-      {targetElement && (
-        <div
-          className="absolute border-2 border-primary rounded-lg shadow-lg shadow-primary/30 transition-all duration-300 bg-background/95 backdrop-blur-md z-[9999]"
-          style={{
-            top: targetElement.getBoundingClientRect().top - 4,
-            left: targetElement.getBoundingClientRect().left - 4,
-            width: targetElement.getBoundingClientRect().width + 8,
-            height: targetElement.getBoundingClientRect().height + 8,
-          }}
+      {/* Spotlight overlay for filter steps (first 3 steps) */}
+      {currentStep < 3 && targetElement ? (
+        <>
+          {/* Top overlay */}
+          <div 
+            className={cn(
+              "absolute bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+              isVisible ? "opacity-100" : "opacity-0"
+            )}
+            style={{
+              top: 0,
+              left: 0,
+              right: 0,
+              height: targetElement.getBoundingClientRect().top - 8,
+            }}
+          />
+          
+          {/* Bottom overlay */}
+          <div 
+            className={cn(
+              "absolute bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+              isVisible ? "opacity-100" : "opacity-0"
+            )}
+            style={{
+              top: targetElement.getBoundingClientRect().bottom + 8,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          
+          {/* Left overlay */}
+          <div 
+            className={cn(
+              "absolute bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+              isVisible ? "opacity-100" : "opacity-0"
+            )}
+            style={{
+              top: targetElement.getBoundingClientRect().top - 8,
+              left: 0,
+              width: targetElement.getBoundingClientRect().left - 8,
+              height: targetElement.getBoundingClientRect().height + 16,
+            }}
+          />
+          
+          {/* Right overlay */}
+          <div 
+            className={cn(
+              "absolute bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+              isVisible ? "opacity-100" : "opacity-0"
+            )}
+            style={{
+              top: targetElement.getBoundingClientRect().top - 8,
+              left: targetElement.getBoundingClientRect().right + 8,
+              right: 0,
+              height: targetElement.getBoundingClientRect().height + 16,
+            }}
+          />
+          
+          {/* Glowing border around the spotlight */}
+          <div
+            className="absolute border-2 border-primary rounded-lg shadow-lg shadow-primary/50 transition-all duration-300 pointer-events-none"
+            style={{
+              top: targetElement.getBoundingClientRect().top - 8,
+              left: targetElement.getBoundingClientRect().left - 8,
+              width: targetElement.getBoundingClientRect().width + 16,
+              height: targetElement.getBoundingClientRect().height + 16,
+            }}
+          />
+        </>
+      ) : (
+        /* Regular overlay for other steps */
+        <div 
+          className={cn(
+            "absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300",
+            isVisible ? "opacity-100" : "opacity-0"
+          )}
         />
       )}
 
