@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { SectionHeader } from "./SectionHeader";
 import { LucideIcon } from "lucide-react";
+import { useScrollState } from "@/hooks/useScrollState";
 
 interface FeedSectionProps {
   icon: LucideIcon;
@@ -23,10 +24,25 @@ export const FeedSection = ({
   isEmpty = false,
   className = ""
 }: FeedSectionProps) => {
+  const { isHeaderVisible, isFilterVisible } = useScrollState();
+  
   // Don't render anything if section is empty
   if (isEmpty) {
     return null;
   }
+
+  // Calculate sticky position based on header and filter visibility
+  const getStickyTop = () => {
+    if (isHeaderVisible && isFilterVisible) {
+      return "top-[130px]"; // Below header (73px) + filter (57px)
+    } else if (isHeaderVisible && !isFilterVisible) {
+      return "top-[73px]"; // Below header only
+    } else if (!isHeaderVisible && isFilterVisible) {
+      return "top-[57px]"; // Below filter only
+    } else {
+      return "top-0"; // At the very top
+    }
+  };
 
   return (
     <section className={`w-full h-screen flex flex-col ${className}`}>
@@ -36,9 +52,9 @@ export const FeedSection = ({
         description={description}
         details={details}
         badge={badge}
-        className="sticky top-16 z-10"
+        stickyTop={getStickyTop()}
       />
-      <div className="flex-1 overflow-y-auto animate-fade-in pt-20">
+      <div className="flex-1 overflow-y-auto animate-fade-in">
         {children}
       </div>
     </section>

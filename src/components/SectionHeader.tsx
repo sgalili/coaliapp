@@ -9,6 +9,7 @@ interface SectionHeaderProps {
   details?: string; // Additional details like building name, city, etc.
   badge?: number;
   className?: string;
+  stickyTop?: string;
 }
 
 export const SectionHeader = ({ 
@@ -17,10 +18,11 @@ export const SectionHeader = ({
   description, 
   details,
   badge, 
-  className = "" 
+  className = "",
+  stickyTop = "top-16"
 }: SectionHeaderProps) => {
   return (
-    <div className={`w-full py-4 bg-background/95 backdrop-blur-sm border-b transition-colors ${className}`}>
+    <div className={`w-full py-4 bg-background/95 backdrop-blur-sm border-b transition-colors sticky z-60 ${stickyTop} ${className}`}>
       <div className="flex items-center gap-3 px-4">
         <div className="p-2 rounded-lg bg-muted">
           <Icon className="w-5 h-5 text-primary" />
