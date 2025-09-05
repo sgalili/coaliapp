@@ -51,7 +51,7 @@ const App = () => (
           <Route path="/language-settings" element={<LanguageSettingsPage />} />
           <Route path="/mygov" element={<MyGovPage />} />
           <Route path="/mygov/generate" element={<MyGovGeneratePage />} />
-          <Route path="/mygov/share/:govId" element={<MyGovSharePage />} />
+          <Route path="/mygov/share/:shareId" element={<MyGovSharePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

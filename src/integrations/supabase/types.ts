@@ -650,7 +650,6 @@ export type Database = {
           creator_name: string | null
           creator_user_id: string | null
           generated_image_url: string
-          gov_id: string
           id: string
           minister_1_avatar: string | null
           minister_1_name: string | null
@@ -678,13 +677,13 @@ export type Database = {
           minister_8_position: string | null
           pm_avatar: string | null
           pm_name: string
+          share_id: string
         }
         Insert: {
           created_at?: string
           creator_name?: string | null
           creator_user_id?: string | null
           generated_image_url: string
-          gov_id: string
           id?: string
           minister_1_avatar?: string | null
           minister_1_name?: string | null
@@ -712,13 +711,13 @@ export type Database = {
           minister_8_position?: string | null
           pm_avatar?: string | null
           pm_name: string
+          share_id: string
         }
         Update: {
           created_at?: string
           creator_name?: string | null
           creator_user_id?: string | null
           generated_image_url?: string
-          gov_id?: string
           id?: string
           minister_1_avatar?: string | null
           minister_1_name?: string | null
@@ -746,6 +745,7 @@ export type Database = {
           minister_8_position?: string | null
           pm_avatar?: string | null
           pm_name?: string
+          share_id?: string
         }
         Relationships: []
       }
@@ -1164,10 +1164,6 @@ export type Database = {
       create_trust_intent: {
         Args: { target_phone_hash: string; truster_id?: string }
         Returns: boolean
-      }
-      generate_gov_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
       }
       generate_referral_code: {
         Args: Record<PropertyKey, never>

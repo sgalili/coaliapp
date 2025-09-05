@@ -41,14 +41,14 @@ interface SharedGovernmentData {
 }
 
 export default function MyGovSharePage() {
-  const { govId } = useParams<{ govId: string }>();
+  const { shareId } = useParams<{ shareId: string }>();
   const [isLoading, setIsLoading] = useState(true);
   const [governmentData, setGovernmentData] = useState<SharedGovernmentData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadSharedGovernment = async () => {
-      if (!govId) {
+      if (!shareId) {
         setError("מזהה ממשלה לא תקין");
         setIsLoading(false);
         return;
@@ -58,7 +58,7 @@ export default function MyGovSharePage() {
         const { data, error } = await supabase
           .from('shared_governments')
           .select('*')
-          .eq('gov_id', govId)
+          .eq('share_id', shareId)
           .single();
 
         if (error) {
@@ -108,7 +108,7 @@ export default function MyGovSharePage() {
     };
 
     loadSharedGovernment();
-  }, [govId]);
+  }, [shareId]);
 
   const downloadImage = async () => {
     if (!governmentData?.generated_image_url) return;

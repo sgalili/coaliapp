@@ -193,20 +193,20 @@ export default function MyGovGeneratePage() {
     if (!generatedImage || !selectedCandidates) return;
     
     try {
-      // Generate a unique gov_id
-      const { data: govIdData, error: govIdError } = await supabase.rpc('generate_gov_id');
+      // Generate a unique share_id
+      const { data: shareIdData, error: shareIdError } = await supabase.rpc('generate_share_id');
       
-      if (govIdError) {
-        console.error('Error generating gov_id:', govIdError);
+      if (shareIdError) {
+        console.error('Error generating share_id:', shareIdError);
         toast.error("שגיאה ביצירת קישור השיתוף");
         return;
       }
 
-      const govId = govIdData;
+      const shareId = shareIdData;
 
       // Get current user info
       const { data: { user } } = await supabase.auth.getUser();
-      const creatorName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש';
+      const creatorName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'anonymous';
 
       // Prepare minister data
       const ministerData: Record<string, any> = {};
@@ -225,7 +225,7 @@ export default function MyGovGeneratePage() {
       const { error: insertError } = await supabase
         .from('shared_governments')
         .insert({
-          gov_id: govId,
+          share_id: shareId,
           creator_user_id: user?.id || null,
           creator_name: creatorName,
           pm_name: selectedCandidates.pm?.name || '',
@@ -240,10 +240,10 @@ export default function MyGovGeneratePage() {
         return;
       }
 
-      // Create share URL with affiliate ref
-      const affiliateRef = getAffiliateRef();
+      // Create share URL with affiliate ref (only if user is logged in)
+      const affiliateRef = user ? getAffiliateRef() : null;
       const baseUrl = window.location.origin;
-      const shareUrl = `${baseUrl}/mygov/share/${govId}${affiliateRef ? `?ref=${affiliateRef}` : ''}`;
+      const shareUrl = `${baseUrl}/mygov/share/${shareId}${affiliateRef ? `?ref=${affiliateRef}` : ''}`;
 
       // Share the URL
       if (navigator.share) {
