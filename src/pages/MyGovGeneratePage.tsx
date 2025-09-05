@@ -209,18 +209,17 @@ export default function MyGovGeneratePage() {
   const pmCandidate = selectedCandidates['pm'];
   return <div className="min-h-screen bg-background p-4 pb-20">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center mb-6">
         <Button variant="ghost" size="sm" onClick={() => navigate('/mygov')} className="p-2">
           <ArrowRight className="h-5 w-5" />
         </Button>
         <div className="flex-1 text-center">
           <h1 className="text-2xl font-bold">הממשלה שלי</h1>
-          {userProfile && (
-            <p className="text-sm text-muted-foreground mt-1">
-              נוצר על ידי: {userProfile.first_name} {userProfile.last_name}
-            </p>
-          )}
+          <p className="text-sm text-muted-foreground mt-1">
+            נוצר על ידי: {userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש'}
+          </p>
         </div>
+        <div className="w-10"></div> {/* Spacer for balance */}
       </div>
 
       {/* Selection Summary */}
