@@ -275,7 +275,7 @@ export default function MyGovGeneratePage() {
       {generatedImage && <Card className="mb-6">
           <CardHeader>
             <CardTitle className="text-lg text-center">
-              🎉 הממשלה שלך מוכנה!
+              🎉 תמונת הממשלה שלי!
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
