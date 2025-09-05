@@ -102,6 +102,39 @@ export type Database = {
           },
         ]
       }
+      government_images: {
+        Row: {
+          candidates_hash: string
+          created_at: string
+          id: string
+          image_url: string
+          prompt: string | null
+          seed: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          candidates_hash: string
+          created_at?: string
+          id?: string
+          image_url: string
+          prompt?: string | null
+          seed?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          candidates_hash?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          prompt?: string | null
+          seed?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       government_selections: {
         Row: {
           candidate_data: Json

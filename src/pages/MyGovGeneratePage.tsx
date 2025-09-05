@@ -5,18 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Download, RefreshCw, Share2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-interface CandidateData {
-  name: string;
-  avatar: string;
-  expertise: string;
-  party: string;
-  experience: string;
-}
-
-interface SelectedCandidates {
-  [key: string]: CandidateData;
-}
+import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
+import {
+  CandidateData,
+  SelectedCandidates,
+  saveGovernmentImage,
+  getExistingGovernmentImage,
+  saveImageToLocalStorage,
+  getImageFromLocalStorage
+} from "@/utils/governmentImageUtils";
 
 // Helper function to get ministry display names
 function getMinistryDisplayName(ministryId: string): string {
@@ -43,8 +40,10 @@ function getMinistryDisplayName(ministryId: string): string {
 export default function MyGovGeneratePage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { getAffiliateRef } = useAffiliateLinks();
   const [selectedCandidates, setSelectedCandidates] = useState<SelectedCandidates>({});
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -75,17 +74,59 @@ export default function MyGovGeneratePage() {
   }, [location.state, navigate]);
 
   useEffect(() => {
-    // Auto-generate when candidates are loaded
-    if (Object.keys(selectedCandidates).length > 0 && !generatedImage && !isGenerating) {
-      generateImage();
-    }
-  }, [selectedCandidates, generatedImage, isGenerating]);
+    // Load existing image or generate new one when candidates are loaded
+    const loadOrGenerateImage = async () => {
+      if (Object.keys(selectedCandidates).length === 0) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Try to get existing image from database first
+        const existingImage = await getExistingGovernmentImage(selectedCandidates);
+        
+        if (existingImage) {
+          console.log('Found existing image in database:', existingImage.image_url);
+          setGeneratedImage(existingImage.image_url);
+          setPrompt(existingImage.prompt || '');
+          setIsLoading(false);
+          return;
+        }
+        
+        // If not found in database, try localStorage
+        const localImage = getImageFromLocalStorage(selectedCandidates);
+        if (localImage) {
+          console.log('Found existing image in localStorage:', localImage.imageUrl);
+          setGeneratedImage(localImage.imageUrl);
+          setPrompt(localImage.prompt);
+          setIsLoading(false);
+          return;
+        }
+        
+        // No existing image found, generate a new one
+        await generateImage(false);
+        
+      } catch (error) {
+        console.error('Error loading existing image:', error);
+        // If there's an error loading, try to generate a new image
+        await generateImage(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const generateImage = async () => {
+    loadOrGenerateImage();
+  }, [selectedCandidates]);
+
+  const generateImage = async (forceRegenerate = false) => {
     setIsGenerating(true);
     setError(null);
     
     try {
+      if (forceRegenerate) {
+        toast.info("יוצר תמונה חדשה...");
+      }
+      
       console.log('Calling generate-government-image function with:', selectedCandidates);
       
       const { data, error } = await supabase.functions.invoke('generate-government-image', {
@@ -103,6 +144,16 @@ export default function MyGovGeneratePage() {
 
       setGeneratedImage(data.imageUrl);
       setPrompt(data.prompt || '');
+      
+      // Save the generated image
+      try {
+        await saveGovernmentImage(selectedCandidates, data.imageUrl, data.prompt || '', data.seed);
+        console.log('Image saved to database');
+      } catch (saveError) {
+        console.warn('Failed to save to database, saving to localStorage:', saveError);
+        saveImageToLocalStorage(selectedCandidates, data.imageUrl, data.prompt || '', data.seed);
+      }
+      
       toast.success("התמונה נוצרה בהצלחה!");
       
     } catch (error) {
@@ -207,25 +258,30 @@ export default function MyGovGeneratePage() {
       </Card>
 
       {/* Generation Status */}
-      {isGenerating && (
+      {(isGenerating || isLoading) && (
         <Card className="mb-6">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-            <h3 className="text-lg font-medium mb-2">יוצר את הממשלה שלך...</h3>
+            <h3 className="text-lg font-medium mb-2">
+              {isGenerating ? "יוצר את הממשלה שלך..." : "טוען תמונה קיימת..."}
+            </h3>
             <p className="text-muted-foreground text-center">
-              זה עלול לקחת כמה רגעים. אנחנו יוצרים תמונה מקצועית של הממשלה שבחרת באמצעות בינה מלאכותית.
+              {isGenerating 
+                ? "זה עלול לקחת כמה רגעים. אנחנו יוצרים תמונה מקצועית של הממשלה שבחרת באמצעות בינה מלאכותית."
+                : "בודק אם יש תמונה קיימת עבור הבחירה שלך..."
+              }
             </p>
           </CardContent>
         </Card>
       )}
 
       {/* Error State */}
-      {error && !isGenerating && (
+      {error && !isGenerating && !isLoading && (
         <Card className="mb-6 border-destructive">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="text-destructive text-lg mb-4">⚠️ שגיאה</div>
             <p className="text-center mb-4">{error}</p>
-            <Button onClick={generateImage} variant="outline">
+            <Button onClick={() => generateImage(true)} variant="outline">
               <RefreshCw className="h-4 w-4 mr-2" />
               נסה שוב
             </Button>
@@ -261,7 +317,7 @@ export default function MyGovGeneratePage() {
                 <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="text-xs sm:text-sm">שתף</span>
               </Button>
-              <Button onClick={generateImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+              <Button onClick={() => generateImage(true)} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
                 <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="text-xs sm:text-sm">צור מחדש</span>
               </Button>
