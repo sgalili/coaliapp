@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Download, RefreshCw, Share2, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ArrowLeft, Download, RefreshCw, Share2, Loader2, Copy, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
@@ -53,16 +54,37 @@ export default function MyGovGeneratePage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [sharedGovernment, setSharedGovernment] = useState<SharedGovernment | null>(null);
   const [isViewingShare, setIsViewingShare] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string>("");
 
   useEffect(() => {
     // Check for share_id in URL params and get current user
     const loadInitialData = async () => {
       const urlParams = new URLSearchParams(location.search);
       const shareId = urlParams.get('share');
+      const isPreview = urlParams.get('preview') === 'true';
       
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       setCurrentUser(user);
+      
+      // If user is logged in and has selections, and not forced preview mode, prioritize their view
+      if (user && !isPreview) {
+        const saved = localStorage.getItem('myGovSelections');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (Object.keys(parsed).length > 0) {
+              // User has their own selections, ignore share parameter unless preview=true
+              setSelectedCandidates(parsed);
+              setIsLoading(false);
+              return;
+            }
+          } catch (error) {
+            console.error('Error parsing saved selections:', error);
+          }
+        }
+      }
       
       if (shareId) {
         // Load shared government
@@ -242,21 +264,29 @@ export default function MyGovGeneratePage() {
       );
       
       const shareUrl = `${window.location.origin}/mygov/generate?share=${shareId}`;
-      
-      if (navigator.share) {
-        await navigator.share({
-          title: 'הממשלה שלי',
-          text: 'הממשלה שיצרתי באפליקציה',
-          url: shareUrl
-        });
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        toast.success("קישור לממשלה הועתק ללוח");
-      }
+      setShareUrl(shareUrl);
+      setShowShareModal(true);
     } catch (error) {
       console.error('Error sharing government:', error);
       toast.error("שגיאה בשיתוף הממשלה");
     }
+  };
+
+  const copyShareLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("קישור הועתק ללוח");
+      setShowShareModal(false);
+    } catch (error) {
+      console.error('Error copying link:', error);
+      toast.error("שגיאה בהעתקת הקישור");
+    }
+  };
+
+  const viewPreview = () => {
+    const previewUrl = shareUrl + "&preview=true";
+    window.open(previewUrl, '_blank');
+    setShowShareModal(false);
   };
 
   const candidateCount = Object.keys(selectedCandidates).length;
@@ -420,6 +450,35 @@ export default function MyGovGeneratePage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Share Modal */}
+      <Dialog open={showShareModal} onOpenChange={setShowShareModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">שתף את הממשלה שלך</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="bg-muted p-3 rounded-lg">
+              <p className="text-sm text-muted-foreground mb-2">קישור לשיתוף:</p>
+              <p className="text-xs font-mono bg-background p-2 rounded border break-all">
+                {shareUrl}
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <Button onClick={copyShareLink} className="w-full">
+                <Copy className="h-4 w-4 mr-2" />
+                העתק קישור
+              </Button>
+              
+              <Button onClick={viewPreview} variant="outline" className="w-full">
+                <Eye className="h-4 w-4 mr-2" />
+                צפה בתצוגה מקדימה
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
