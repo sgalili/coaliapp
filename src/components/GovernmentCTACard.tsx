@@ -20,7 +20,7 @@ export const GovernmentCTACard = ({
         </button>
 
         {/* Subtitle below button */}
-        <p className="text-xs text-muted-foreground text-center leading-relaxed px-[4px]">בחרו בטובים ביותר - לתפקידים הנכונים והמתאימים ביותר!</p>
+        <p className="text-xs text-muted-foreground text-center leading-relaxed px-[4px]">בחרו בטובים ביותר - לתפקידים המתאימים ביותר!</p>
       </div>
     </div>;
 };
