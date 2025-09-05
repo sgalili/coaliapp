@@ -12,7 +12,10 @@ import {
   saveGovernmentImage,
   getExistingGovernmentImage,
   saveImageToLocalStorage,
-  getImageFromLocalStorage
+  getImageFromLocalStorage,
+  createGovernmentShare,
+  getSharedGovernment,
+  SharedGovernment
 } from "@/utils/governmentImageUtils";
 
 // Helper function to get ministry display names
@@ -47,36 +50,76 @@ export default function MyGovGeneratePage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [sharedGovernment, setSharedGovernment] = useState<SharedGovernment | null>(null);
+  const [isViewingShare, setIsViewingShare] = useState(false);
 
   useEffect(() => {
-    // Try to get candidates from navigation state first
-    if (location.state?.selectedCandidates) {
-      setSelectedCandidates(location.state.selectedCandidates);
-    } else {
-      // Fallback to localStorage
-      const saved = localStorage.getItem('myGovSelections');
-      if (saved) {
+    // Check for share_id in URL params and get current user
+    const loadInitialData = async () => {
+      const urlParams = new URLSearchParams(location.search);
+      const shareId = urlParams.get('share');
+      
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUser(user);
+      
+      if (shareId) {
+        // Load shared government
+        setIsViewingShare(true);
         try {
-          const parsed = JSON.parse(saved);
-          setSelectedCandidates(parsed);
+          const shared = await getSharedGovernment(shareId);
+          if (shared) {
+            setSharedGovernment(shared);
+            setSelectedCandidates(shared.selected_candidates);
+            setGeneratedImage(shared.image_url);
+            setPrompt(shared.prompt || '');
+            setIsLoading(false);
+            return;
+          } else {
+            toast.error("הממשלה המשותפת לא נמצאה");
+            navigate('/mygov');
+            return;
+          }
         } catch (error) {
-          console.error('Error parsing saved selections:', error);
-          toast.error("אירעה שגיאה בטעינת הבחירות");
+          console.error('Error loading shared government:', error);
+          toast.error("שגיאה בטעינת הממשלה המשותפת");
           navigate('/mygov');
           return;
         }
-      } else {
-        toast.error("לא נמצאו בחירות. אנא בחר מועמדים תחילה");
-        navigate('/mygov');
-        return;
       }
-    }
-  }, [location.state, navigate]);
+      
+      // Regular flow: Try to get candidates from navigation state first
+      if (location.state?.selectedCandidates) {
+        setSelectedCandidates(location.state.selectedCandidates);
+      } else {
+        // Fallback to localStorage
+        const saved = localStorage.getItem('myGovSelections');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            setSelectedCandidates(parsed);
+          } catch (error) {
+            console.error('Error parsing saved selections:', error);
+            toast.error("אירעה שגיאה בטעינת הבחירות");
+            navigate('/mygov');
+            return;
+          }
+        } else {
+          toast.error("לא נמצאו בחירות. אנא בחר מועמדים תחילה");
+          navigate('/mygov');
+          return;
+        }
+      }
+    };
+    
+    loadInitialData();
+  }, [location.state, location.search, navigate]);
 
   useEffect(() => {
     // Load existing image or generate new one when candidates are loaded
     const loadOrGenerateImage = async () => {
-      if (Object.keys(selectedCandidates).length === 0) return;
+      if (Object.keys(selectedCandidates).length === 0 || isViewingShare) return;
       
       setIsLoading(true);
       setError(null);
@@ -116,7 +159,7 @@ export default function MyGovGeneratePage() {
     };
 
     loadOrGenerateImage();
-  }, [selectedCandidates]);
+  }, [selectedCandidates, isViewingShare]);
 
   const generateImage = async (forceRegenerate = false) => {
     setIsGenerating(true);
@@ -187,44 +230,58 @@ export default function MyGovGeneratePage() {
   };
 
   const shareImage = async () => {
-    if (!generatedImage) return;
+    if (!generatedImage || !currentUser) return;
     
     try {
+      // Create a shareable link
+      const shareId = await createGovernmentShare(
+        selectedCandidates, 
+        generatedImage, 
+        prompt,
+        undefined // seed - we don't track it currently
+      );
+      
+      const shareUrl = `${window.location.origin}/mygov/generate?share=${shareId}`;
+      
       if (navigator.share) {
         await navigator.share({
           title: 'הממשלה שלי',
           text: 'הממשלה שיצרתי באפליקציה',
-          url: generatedImage
+          url: shareUrl
         });
       } else {
-        await navigator.clipboard.writeText(generatedImage);
-        toast.success("קישור התמונה הועתק ללוח");
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("קישור לממשלה הועתק ללוח");
       }
     } catch (error) {
-      console.error('Error sharing image:', error);
-      toast.error("שגיאה בשיתוף התמונה");
+      console.error('Error sharing government:', error);
+      toast.error("שגיאה בשיתוף הממשלה");
     }
   };
 
   const candidateCount = Object.keys(selectedCandidates).length;
   const pmCandidate = selectedCandidates['pm'];
+  const isCreator = currentUser && sharedGovernment?.creator_user_id === currentUser.id;
+  const canEdit = currentUser && (isCreator || !isViewingShare);
 
   return (
-    <div className="min-h-screen bg-background p-4 pb-20">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate('/mygov')}
-          className="p-2"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-2xl font-bold text-center flex-1">
-          🎨 יצירת הממשלה שלי
-        </h1>
-      </div>
+      <div className="min-h-screen bg-background p-4 pb-20">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(isViewingShare ? '/' : '/mygov')}
+            className="p-2"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold text-center flex-1">
+            🎨 {isViewingShare && sharedGovernment?.creator_name 
+                  ? `הממשלה של ${sharedGovernment.creator_name}` 
+                  : 'יצירת הממשלה שלי'}
+          </h1>
+        </div>
 
       {/* Selection Summary */}
       <Card className="mb-6">
@@ -313,25 +370,40 @@ export default function MyGovGeneratePage() {
                 <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="text-xs sm:text-sm">הורד</span>
               </Button>
-              <Button onClick={shareImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
-                <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="text-xs sm:text-sm">שתף</span>
-              </Button>
-              <Button onClick={() => generateImage(true)} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
-                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="text-xs sm:text-sm">צור מחדש</span>
-              </Button>
+              
+              {currentUser && (
+                <Button onClick={shareImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+                  <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="text-xs sm:text-sm">שתף</span>
+                </Button>
+              )}
+
+              {canEdit && (
+                <Button onClick={() => generateImage(true)} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+                  <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="text-xs sm:text-sm">צור מחדש</span>
+                </Button>
+              )}
             </div>
 
-            {/* Back to Selection */}
+            {/* Navigation Buttons */}
             <div className="text-center pt-4">
-              <Button 
-                onClick={() => navigate('/mygov')} 
-                variant="ghost"
-                className="text-muted-foreground"
-              >
-                חזור לבחירת מועמדים
-              </Button>
+              {canEdit ? (
+                <Button 
+                  onClick={() => navigate('/mygov')} 
+                  variant="ghost"
+                  className="text-muted-foreground"
+                >
+                  חזור לבחירת מועמדים
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => navigate('/mygov')} 
+                  className="w-full"
+                >
+                  צור את הממשלה שלך
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
