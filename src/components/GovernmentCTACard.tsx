@@ -1,5 +1,3 @@
-import { Users } from "lucide-react";
-
 interface GovernmentCTACardProps {
   onClick?: () => void;
 }
@@ -13,10 +11,7 @@ export const GovernmentCTACard = ({ onClick }: GovernmentCTACardProps) => {
           onClick={onClick}
           className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
         >
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-              <Users className="w-5 h-5" />
-            </div>
+          <div className="flex items-center justify-center mb-2">
             <h3 className="text-xl font-bold">
               הממשלה שלי
             </h3>
