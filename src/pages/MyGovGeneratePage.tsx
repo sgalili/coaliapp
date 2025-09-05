@@ -41,27 +41,29 @@ export default function MyGovGeneratePage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<{first_name: string, last_name: string} | null>(null);
+  const [userProfile, setUserProfile] = useState<{
+    first_name: string;
+    last_name: string;
+  } | null>(null);
   useEffect(() => {
     // Load user profile
     const loadUserProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('first_name, last_name')
-          .eq('user_id', user.id)
-          .single();
-        
+        const {
+          data: profile
+        } = await supabase.from('profiles').select('first_name, last_name').eq('user_id', user.id).single();
         if (profile) {
           setUserProfile(profile);
         }
       }
     };
-    
     loadUserProfile();
   }, []);
-
   useEffect(() => {
     // Try to get candidates from navigation state first
     if (location.state?.selectedCandidates) {
@@ -226,7 +228,7 @@ export default function MyGovGeneratePage() {
       <Card className="mb-6">
         <CardContent>
           <div className="space-y-3 text-sm">
-            {pmCandidate && <div className="font-medium border-b border-border/50 pb-2">
+            {pmCandidate && <div className="font-medium border-b border-border/50 pb-2 py-[14px]">
                 🏛️ ראש הממשלה: {pmCandidate.name}
               </div>}
             
