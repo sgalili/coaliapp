@@ -224,9 +224,6 @@ export default function MyGovGeneratePage() {
 
       {/* Selection Summary */}
       <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-lg">סיכום הבחירות</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="space-y-3 text-sm">
             {pmCandidate && <div className="font-medium border-b border-border/50 pb-2">
