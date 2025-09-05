@@ -19,7 +19,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
     lastScrollYRef.current = 0;
     
     const handleScroll = () => {
-      const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+      const scrollContainer = document.querySelector('[class*="h-screen"][class*="overflow-y-scroll"]');
       if (!scrollContainer) return;
       
       const currentScrollY = scrollContainer.scrollTop;
@@ -39,7 +39,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
       lastScrollYRef.current = currentScrollY;
     };
 
-    const scrollContainer = document.querySelector('.h-screen.overflow-y-scroll');
+    const scrollContainer = document.querySelector('[class*="h-screen"][class*="overflow-y-scroll"]');
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
       
