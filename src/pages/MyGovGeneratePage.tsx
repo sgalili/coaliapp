@@ -190,20 +190,75 @@ export default function MyGovGeneratePage() {
     }
   };
   const shareImage = async () => {
-    if (!generatedImage) return;
+    if (!generatedImage || !selectedCandidates) return;
+    
     try {
+      // Generate a unique gov_id
+      const { data: govIdData, error: govIdError } = await supabase.rpc('generate_gov_id');
+      
+      if (govIdError) {
+        console.error('Error generating gov_id:', govIdError);
+        toast.error("שגיאה ביצירת קישור השיתוף");
+        return;
+      }
+
+      const govId = govIdData;
+
+      // Get current user info
+      const { data: { user } } = await supabase.auth.getUser();
+      const creatorName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש';
+
+      // Prepare minister data
+      const ministerData: Record<string, any> = {};
+      let ministerIndex = 1;
+
+      Object.entries(selectedCandidates).forEach(([ministryId, candidate]) => {
+        if (ministryId !== 'pm' && ministerIndex <= 8) {
+          ministerData[`minister_${ministerIndex}_name`] = candidate.name;
+          ministerData[`minister_${ministerIndex}_position`] = ministryId;
+          ministerData[`minister_${ministerIndex}_avatar`] = candidate.avatar;
+          ministerIndex++;
+        }
+      });
+
+      // Save to shared_governments table
+      const { error: insertError } = await supabase
+        .from('shared_governments')
+        .insert({
+          gov_id: govId,
+          creator_user_id: user?.id || null,
+          creator_name: creatorName,
+          pm_name: selectedCandidates.pm?.name || '',
+          pm_avatar: selectedCandidates.pm?.avatar || null,
+          ...ministerData,
+          generated_image_url: generatedImage
+        });
+
+      if (insertError) {
+        console.error('Error saving shared government:', insertError);
+        toast.error("שגיאה בשמירת הממשלה לשיתוף");
+        return;
+      }
+
+      // Create share URL with affiliate ref
+      const affiliateRef = getAffiliateRef();
+      const baseUrl = window.location.origin;
+      const shareUrl = `${baseUrl}/mygov/share/${govId}${affiliateRef ? `?ref=${affiliateRef}` : ''}`;
+
+      // Share the URL
       if (navigator.share) {
         await navigator.share({
           title: 'הממשלה שלי',
           text: 'הממשלה שיצרתי באפליקציה',
-          url: generatedImage
+          url: shareUrl
         });
       } else {
-        await navigator.clipboard.writeText(generatedImage);
-        toast.success("קישור התמונה הועתק ללוח");
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("קישור השיתוף הועתק ללוח");
       }
+
     } catch (error) {
-      console.error('Error sharing image:', error);
+      console.error('Error sharing:', error);
       toast.error("שגיאה בשיתוף התמונה");
     }
   };

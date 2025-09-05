@@ -162,6 +162,45 @@ export type Database = {
         }
         Relationships: []
       }
+      government_shares: {
+        Row: {
+          created_at: string
+          creator_name: string | null
+          creator_user_id: string | null
+          id: string
+          image_url: string
+          prompt: string | null
+          seed: number | null
+          selected_candidates: Json
+          share_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_name?: string | null
+          creator_user_id?: string | null
+          id?: string
+          image_url: string
+          prompt?: string | null
+          seed?: number | null
+          selected_candidates: Json
+          share_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_name?: string | null
+          creator_user_id?: string | null
+          id?: string
+          image_url?: string
+          prompt?: string | null
+          seed?: number | null
+          selected_candidates?: Json
+          share_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       kyc_verifications: {
         Row: {
           created_at: string
@@ -605,6 +644,111 @@ export type Database = {
           },
         ]
       }
+      shared_governments: {
+        Row: {
+          created_at: string
+          creator_name: string | null
+          creator_user_id: string | null
+          generated_image_url: string
+          gov_id: string
+          id: string
+          minister_1_avatar: string | null
+          minister_1_name: string | null
+          minister_1_position: string | null
+          minister_2_avatar: string | null
+          minister_2_name: string | null
+          minister_2_position: string | null
+          minister_3_avatar: string | null
+          minister_3_name: string | null
+          minister_3_position: string | null
+          minister_4_avatar: string | null
+          minister_4_name: string | null
+          minister_4_position: string | null
+          minister_5_avatar: string | null
+          minister_5_name: string | null
+          minister_5_position: string | null
+          minister_6_avatar: string | null
+          minister_6_name: string | null
+          minister_6_position: string | null
+          minister_7_avatar: string | null
+          minister_7_name: string | null
+          minister_7_position: string | null
+          minister_8_avatar: string | null
+          minister_8_name: string | null
+          minister_8_position: string | null
+          pm_avatar: string | null
+          pm_name: string
+        }
+        Insert: {
+          created_at?: string
+          creator_name?: string | null
+          creator_user_id?: string | null
+          generated_image_url: string
+          gov_id: string
+          id?: string
+          minister_1_avatar?: string | null
+          minister_1_name?: string | null
+          minister_1_position?: string | null
+          minister_2_avatar?: string | null
+          minister_2_name?: string | null
+          minister_2_position?: string | null
+          minister_3_avatar?: string | null
+          minister_3_name?: string | null
+          minister_3_position?: string | null
+          minister_4_avatar?: string | null
+          minister_4_name?: string | null
+          minister_4_position?: string | null
+          minister_5_avatar?: string | null
+          minister_5_name?: string | null
+          minister_5_position?: string | null
+          minister_6_avatar?: string | null
+          minister_6_name?: string | null
+          minister_6_position?: string | null
+          minister_7_avatar?: string | null
+          minister_7_name?: string | null
+          minister_7_position?: string | null
+          minister_8_avatar?: string | null
+          minister_8_name?: string | null
+          minister_8_position?: string | null
+          pm_avatar?: string | null
+          pm_name: string
+        }
+        Update: {
+          created_at?: string
+          creator_name?: string | null
+          creator_user_id?: string | null
+          generated_image_url?: string
+          gov_id?: string
+          id?: string
+          minister_1_avatar?: string | null
+          minister_1_name?: string | null
+          minister_1_position?: string | null
+          minister_2_avatar?: string | null
+          minister_2_name?: string | null
+          minister_2_position?: string | null
+          minister_3_avatar?: string | null
+          minister_3_name?: string | null
+          minister_3_position?: string | null
+          minister_4_avatar?: string | null
+          minister_4_name?: string | null
+          minister_4_position?: string | null
+          minister_5_avatar?: string | null
+          minister_5_name?: string | null
+          minister_5_position?: string | null
+          minister_6_avatar?: string | null
+          minister_6_name?: string | null
+          minister_6_position?: string | null
+          minister_7_avatar?: string | null
+          minister_7_name?: string | null
+          minister_7_position?: string | null
+          minister_8_avatar?: string | null
+          minister_8_name?: string | null
+          minister_8_position?: string | null
+          pm_avatar?: string | null
+          pm_name?: string
+        }
+        Relationships: []
+      }
       trust_intents: {
         Row: {
           consumed_at: string | null
@@ -1021,7 +1165,15 @@ export type Database = {
         Args: { target_phone_hash: string; truster_id?: string }
         Returns: boolean
       }
+      generate_gov_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_share_id: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
