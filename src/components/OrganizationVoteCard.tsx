@@ -143,7 +143,7 @@ export const OrganizationVoteCard = ({
         `
     }} />
     </div>;
-  return <div className="w-full bg-background border border-border rounded-xl shadow-sm mx-0 relative overflow-hidden">
+  return <Card className="w-full mb-6 bg-card/90 backdrop-blur-sm relative overflow-hidden">
       {showConfetti && <ConfettiEffect />}
       
       {/* Points notification */}
@@ -151,7 +151,7 @@ export const OrganizationVoteCard = ({
           <Trophy className="w-4 h-4" />
           +{earnedPoints} ZooZ!
         </div>}
-      <div className="flex flex-col space-y-1.5 p-6 pb-3">
+      <CardHeader className="pb-3">
         {/* Organization Header */}
         <div className="flex items-center justify-between">
         </div>
@@ -176,9 +176,9 @@ export const OrganizationVoteCard = ({
               </div>
             </div>}
         </div>
-      </div>
+      </CardHeader>
 
-      <div className="p-6 pt-0">
+      <CardContent className="pt-0">
         {/* Voting Options */}
         <div className="space-y-3 mb-4">
           {vote.options.map(option => {
@@ -238,6 +238,6 @@ export const OrganizationVoteCard = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>;
+      </CardContent>
+    </Card>;
 };

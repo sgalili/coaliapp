@@ -7,7 +7,6 @@ import { DecisionsOnboarding } from "./DecisionsOnboarding";
 import { GuidedTour } from "./GuidedTour";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
-import { SwipeableCard } from "./SwipeableCard";
 import { Building, GraduationCap, Home, BarChart3, MapPin } from "lucide-react";
 import { PositionCarousel } from "./PositionCarousel";
 import { Profile } from "./ProfileCard";
@@ -349,22 +348,6 @@ export const VoteFeed = ({
     // TODO: Navigate to profile page
   };
 
-  // Handle card dismissal
-  const handleCardDismiss = (cardId: string, cardType: string) => {
-    console.log(`Dismissed ${cardType} card: ${cardId}`);
-  };
-
-  // Handle card swipe actions
-  const handleCardSwipeLeft = (cardId: string) => {
-    console.log(`Swiped left on card: ${cardId}`);
-    // Could implement "dismiss" or "not interested" action
-  };
-
-  const handleCardSwipeRight = (cardId: string) => {
-    console.log(`Swiped right on card: ${cardId}`);
-    // Could implement "like" or "interested" action
-  };
-
   // Only handle 'for-me' filter in VoteFeed
   if (filter !== 'for-me') {
     return null;
@@ -428,8 +411,8 @@ export const VoteFeed = ({
     }]
   };
   return <>
-      <div className="h-screen snap-y snap-mandatory">
-        {/* Hyperlocal and Local sections */}
+      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
+        {/* Hyperlocal and Local sections (unchanged) */}
         {[...content.hyperLocal, ...content.local].map(section => (
           <FeedSection 
             key={section.id} 
@@ -439,20 +422,15 @@ export const VoteFeed = ({
             icon={section.icon}
             className="snap-start"
           >
-            <div className="h-full px-4 pb-24">
+            <div className="h-full overflow-y-auto px-4 pb-24">
               {section.content.map(item => (
-                <SwipeableCard
-                  key={item.id}
-                  onSwipeLeft={() => handleCardSwipeLeft(item.id)}
-                  onSwipeRight={() => handleCardSwipeRight(item.id)}
-                  className="w-full py-4"
-                >
+                <div key={item.id} className="w-full py-4">
                   {section.type === 'organizationVote' ? (
                     <OrganizationVoteCard vote={item as OrganizationVote} onVote={handleOrganizationVote} />
                   ) : (
                     <PollCard poll={item as Poll} onVote={handlePollVote} />
                   )}
-                </SwipeableCard>
+                </div>
               ))}
             </div>
           </FeedSection>
@@ -468,25 +446,16 @@ export const VoteFeed = ({
             icon={section.icon}
             className="snap-start"
           >
-            <div className="h-full px-4 pb-24">
+            <div className="h-full overflow-y-auto px-4 pb-24">
               {/* City votes */}
               {section.content.votes.map(item => (
-                <SwipeableCard
-                  key={item.id}
-                  onSwipeLeft={() => handleCardSwipeLeft(item.id)}
-                  onSwipeRight={() => handleCardSwipeRight(item.id)}
-                  className="w-full py-4"
-                >
+                <div key={item.id} className="w-full py-4">
                   <OrganizationVoteCard vote={item} onVote={handleOrganizationVote} />
-                </SwipeableCard>
+                </div>
               ))}
               
               {/* Municipal council elections */}
-              <SwipeableCard
-                onSwipeLeft={() => handleCardSwipeLeft('municipal-carousel')}
-                onSwipeRight={() => handleCardSwipeRight('municipal-carousel')}
-                className="w-full py-6"
-              >
+              <div className="w-full py-6">
                 <PositionCarousel
                   title="בחירות למועצת העיר 2026"
                   description="בחר את נציגיך במועצת העיר שיובילו את השינוי"
@@ -496,18 +465,13 @@ export const VoteFeed = ({
                   onVote={handleCandidateVote}
                   onProfileClick={handleProfileClick}
                 />
-              </SwipeableCard>
+              </div>
 
               {/* City polls */}
               {section.content.polls.map(item => (
-                <SwipeableCard
-                  key={item.id}
-                  onSwipeLeft={() => handleCardSwipeLeft(item.id)}
-                  onSwipeRight={() => handleCardSwipeRight(item.id)}
-                  className="w-full py-4"
-                >
+                <div key={item.id} className="w-full py-4">
                   <PollCard poll={item} onVote={handlePollVote} />
-                </SwipeableCard>
+                </div>
               ))}
             </div>
           </FeedSection>
@@ -523,22 +487,14 @@ export const VoteFeed = ({
             icon={section.icon}
             className="snap-start"
           >
-            <div className="h-full px-4 pb-24">
+            <div className="h-full overflow-y-auto px-4 pb-24">
               {/* Palestinian state referendum */}
-              <SwipeableCard
-                onSwipeLeft={() => handleCardSwipeLeft('referendum1')}
-                onSwipeRight={() => handleCardSwipeRight('referendum1')}
-                className="w-full py-4"
-              >
+              <div className="w-full py-4">
                 <PollCard poll={section.content.referendum} onVote={handlePollVote} />
-              </SwipeableCard>
+              </div>
               
               {/* National PM elections */}
-              <SwipeableCard
-                onSwipeLeft={() => handleCardSwipeLeft('national-carousel')}
-                onSwipeRight={() => handleCardSwipeRight('national-carousel')}
-                className="w-full py-6"
-              >
+              <div className="w-full py-6">
                 <PositionCarousel
                   title="בחירות לראש הממשלה 2026"
                   description="בחר את ראש הממשלה הבא של מדינת ישראל"
@@ -548,7 +504,7 @@ export const VoteFeed = ({
                   onVote={handleCandidateVote}
                   onProfileClick={handleProfileClick}
                 />
-              </SwipeableCard>
+              </div>
             </div>
           </FeedSection>
         ))}
