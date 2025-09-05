@@ -133,24 +133,51 @@ export default function MyGovPage() {
       setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (!user) return;
+      if (user) {
+        // Try to load from Supabase if user is logged in
+        const { data: selections, error } = await supabase
+          .from('government_selections')
+          .select('ministry_id, candidate_data')
+          .eq('user_id', user.id);
 
-      const { data: selections, error } = await supabase
-        .from('government_selections')
-        .select('ministry_id, candidate_data')
-        .eq('user_id', user.id);
+        if (error) throw error;
 
-      if (error) throw error;
-
-      if (selections) {
-        const loadedSelections: SelectedCandidate = {};
-        selections.forEach(selection => {
-          loadedSelections[selection.ministry_id] = selection.candidate_data as unknown as Candidate;
-        });
-        setSelectedCandidates(loadedSelections);
+        if (selections && selections.length > 0) {
+          const loadedSelections: SelectedCandidate = {};
+          selections.forEach(selection => {
+            loadedSelections[selection.ministry_id] = selection.candidate_data as unknown as Candidate;
+          });
+          setSelectedCandidates(loadedSelections);
+          return;
+        }
       }
+      
+      // Fallback to localStorage if no user or no Supabase data
+      const saved = localStorage.getItem('myGovSelections');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setSelectedCandidates(parsed);
+          console.log('Loaded from localStorage:', parsed);
+        } catch (parseError) {
+          console.error('Error parsing localStorage data:', parseError);
+        }
+      }
+      
     } catch (error) {
       console.error('Error loading government selections:', error);
+      
+      // Try localStorage as fallback on error
+      const saved = localStorage.getItem('myGovSelections');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setSelectedCandidates(parsed);
+        } catch (parseError) {
+          console.error('Error parsing localStorage fallback:', parseError);
+        }
+      }
+      
       toast({
         title: "שגיאה בטעינה",
         description: "לא הצלחנו לטעון את הבחירות שלך",
@@ -158,6 +185,74 @@ export default function MyGovPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const saveToLocalStorage = () => {
+    try {
+      localStorage.setItem('myGovSelections', JSON.stringify(selectedCandidates));
+      console.log('Saved to localStorage:', selectedCandidates);
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  };
+
+  const navigateToGeneration = async () => {
+    try {
+      setIsSaving(true);
+      
+      // Always save to localStorage for persistence
+      saveToLocalStorage();
+      
+      // If user is logged in, also save to Supabase in background
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        try {
+          // Delete existing selections for this user
+          await supabase
+            .from('government_selections')
+            .delete()
+            .eq('user_id', user.id);
+
+          // Insert new selections
+          const selectionsToSave = Object.entries(selectedCandidates).map(([ministryId, candidate]) => ({
+            user_id: user.id,
+            ministry_id: ministryId,
+            candidate_data: candidate as unknown as any
+          }));
+
+          if (selectionsToSave.length > 0) {
+            const { error } = await supabase
+              .from('government_selections')
+              .insert(selectionsToSave);
+
+            if (error) {
+              console.error('Background save error:', error);
+              // Don't block navigation on Supabase error
+            } else {
+              console.log('Successfully saved to Supabase');
+            }
+          }
+        } catch (error) {
+          console.error('Background save error:', error);
+          // Don't block navigation
+        }
+      }
+
+      // Navigate to generation page with candidates data
+      navigate('/mygov/generate', { 
+        state: { selectedCandidates }
+      });
+      
+    } catch (error) {
+      console.error('Error in navigation:', error);
+      toast({
+        title: "שגיאה",
+        description: "אירעה שגיאה. מנסה שוב...",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -354,11 +449,11 @@ export default function MyGovPage() {
       {hasMinimumSelections() && (
         <div className="fixed bottom-0 left-0 right-0 p-2 z-50">
           <Button 
-            onClick={saveGovernmentSelections}
+            onClick={navigateToGeneration}
             disabled={isSaving}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm py-2 px-4 rounded-md"
           >
-            {isSaving ? "שומר..." : "סיימתי ! צור את הממשלה שלי"}
+            {isSaving ? "יוצר..." : "סיימתי ! צור את הממשלה שלי"}
           </Button>
         </div>
       )}

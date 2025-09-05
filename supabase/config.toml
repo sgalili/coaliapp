@@ -1,1 +1,4 @@
 project_id = "hcqygoupvgcsdxtzyest"
+
+[functions.generate-government-image]
+verify_jwt = false
