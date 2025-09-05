@@ -17,6 +17,7 @@ import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import InviteFriendsPage from "./pages/InviteFriendsPage";
 import MyStatsPage from "./pages/MyStatsPage";
 import LanguageSettingsPage from "./pages/LanguageSettingsPage";
+import MyGovPage from "./pages/MyGovPage";
 import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/invite-friends" element={<InviteFriendsPage />} />
           <Route path="/my-stats" element={<MyStatsPage />} />
           <Route path="/language-settings" element={<LanguageSettingsPage />} />
+          <Route path="/mygov" element={<MyGovPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
