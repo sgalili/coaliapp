@@ -18,6 +18,28 @@ interface SelectedCandidates {
   [key: string]: CandidateData;
 }
 
+// Helper function to get ministry display names
+function getMinistryDisplayName(ministryId: string): string {
+  const ministryNames: Record<string, string> = {
+    'defense': 'ביטחון',
+    'finance': 'אוצר', 
+    'education': 'חינוך',
+    'health': 'בריאות',
+    'justice': 'משפטים',
+    'transport': 'תחבורה',
+    'housing': 'בינוי ודיור',
+    'economy': 'כלכלה',
+    'interior': 'פנים',
+    'foreign': 'חוץ',
+    'culture': 'תרבות וספורט',
+    'science': 'מדע וטכנולוגיה',
+    'immigration': 'קליטת עלייה',
+    'agriculture': 'חקלאות',
+    'tourism': 'תיירות'
+  };
+  return ministryNames[ministryId] || 'משרד';
+}
+
 export default function MyGovGeneratePage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -159,17 +181,26 @@ export default function MyGovGeneratePage() {
           <CardTitle className="text-lg">סיכום הבחירות</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-3 text-sm">
             {pmCandidate && (
-              <div className="font-medium">
+              <div className="font-medium border-b border-border/50 pb-2">
                 🏛️ ראש הממשלה: {pmCandidate.name}
               </div>
             )}
-            <div>
-              👥 מספר שרים: {candidateCount - 1}
-            </div>
-            <div className="text-muted-foreground">
-              סה"כ {candidateCount} מועמדים נבחרו
+            
+            {/* Liste des ministres */}
+            <div className="space-y-1">
+              <div className="font-medium text-xs text-muted-foreground uppercase tracking-wide">
+                שרים ({candidateCount - 1})
+              </div>
+              {Object.entries(selectedCandidates)
+                .filter(([key]) => key !== 'pm')
+                .map(([ministryId, candidate]) => (
+                  <div key={ministryId} className="flex justify-between items-center text-xs py-1">
+                    <span className="font-medium">{candidate.name}</span>
+                    <span className="text-muted-foreground">{getMinistryDisplayName(ministryId)}</span>
+                  </div>
+                ))}
             </div>
           </div>
         </CardContent>
