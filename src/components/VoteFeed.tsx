@@ -10,6 +10,19 @@ import { useKYC } from "@/hooks/useKYC";
 import { Building, GraduationCap, Home, BarChart3, MapPin } from "lucide-react";
 import { PositionCarousel } from "./PositionCarousel";
 import { Profile } from "./ProfileCard";
+
+// Profile images
+import amitProfile from "@/assets/amit-profile.jpg";
+import davidProfile from "@/assets/david-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
+import rachelProfile from "@/assets/rachel-profile.jpg";
+import sarahProfile from "@/assets/sarah-profile.jpg";
+import warrenBuffettProfile from "@/assets/warren-buffett-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
+import yaronProfile from "@/assets/yaron-profile.jpg";
+import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 interface VoteFeedProps {
   filter: VoteFilterType;
@@ -159,7 +172,7 @@ const municipalCandidates: Profile[] = [
     name: "אמיר כהן",
     position: "מועמד למועצת העיר",
     city: "תל אביב",
-    avatar: "/src/assets/amit-profile.jpg",
+    avatar: amitProfile,
     videoUrl: "/videos/candidate1.mp4",
     expertise: ["תחבורה", "איכות סביבה", "דיור"],
     voteCount: 1247,
@@ -174,7 +187,7 @@ const municipalCandidates: Profile[] = [
     name: "שרה לוי",
     position: "מועמדת למועצת העיר",
     city: "תל אביב",
-    avatar: "/src/assets/sarah-profile.jpg",
+    avatar: sarahProfile,
     videoUrl: "/videos/candidate2.mp4",
     expertise: ["חינוך", "רווחה", "תרבות"],
     voteCount: 892,
@@ -189,7 +202,7 @@ const municipalCandidates: Profile[] = [
     name: "דוד רוזן",
     position: "מועמד למועצת העיר", 
     city: "תל אביב",
-    avatar: "/src/assets/david-profile.jpg",
+    avatar: davidProfile,
     videoUrl: "/videos/candidate3.mp4",
     expertise: ["כלכלה", "עסקים", "פיתוח"],
     voteCount: 1156,
@@ -208,7 +221,7 @@ const nationalCandidates: Profile[] = [
     name: "בנימין נתניהו",
     position: "מועמד לראשות הממשלה",
     city: "ירושלים",
-    avatar: "/src/assets/netanyahu-profile.jpg", 
+    avatar: netanyahuProfile, 
     videoUrl: "/videos/netanyahu-debate.mp4",
     expertise: ["ביטחון", "כלכלה", "דיפלומטיה"],
     voteCount: 875432,
@@ -223,7 +236,7 @@ const nationalCandidates: Profile[] = [
     name: "יאיר לפיד",
     position: "מועמד לראשות הממשלה",
     city: "תל אביב",
-    avatar: "/src/assets/yaron-profile.jpg",
+    avatar: yaronProfile,
     videoUrl: "/videos/candidate-yair.mp4", 
     expertise: ["כלכלה", "חוץ", "חברה"],
     voteCount: 623891,
@@ -238,7 +251,7 @@ const nationalCandidates: Profile[] = [
     name: "בני גנץ",
     position: "מועמד לראשות הממשלה",
     city: "רמת גן",
-    avatar: "/src/assets/yaakov-profile.jpg",
+    avatar: yaakovProfile,
     videoUrl: "/videos/candidate-benny.mp4",
     expertise: ["ביטחון", "הגנה", "מדיניות"],
     voteCount: 456723,
