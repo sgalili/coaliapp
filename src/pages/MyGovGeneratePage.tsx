@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Download, RefreshCw, Share2, Loader2 } from "lucide-react";
+import { ArrowRight, Download, RefreshCw, Share2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
@@ -190,7 +190,7 @@ export default function MyGovGeneratePage() {
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" size="sm" onClick={() => navigate('/mygov')} className="p-2">
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowRight className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-bold text-center flex-1">הממשלה שלי</h1>
       </div>
