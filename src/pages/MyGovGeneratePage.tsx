@@ -252,18 +252,18 @@ export default function MyGovGeneratePage() {
             </div>
             
             {/* Action Buttons */}
-            <div className="flex gap-2 justify-center">
-              <Button onClick={downloadImage} variant="default">
-                <Download className="h-4 w-4 mr-2" />
-                הורד תמונה
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+              <Button onClick={downloadImage} variant="default" size="sm" className="flex-1 sm:flex-none min-w-0">
+                <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">הורד</span>
               </Button>
-              <Button onClick={shareImage} variant="outline">
-                <Share2 className="h-4 w-4 mr-2" />
-                שתף
+              <Button onClick={shareImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+                <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">שתף</span>
               </Button>
-              <Button onClick={generateImage} variant="outline">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                צור מחדש
+              <Button onClick={generateImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">צור מחדש</span>
               </Button>
             </div>
 
