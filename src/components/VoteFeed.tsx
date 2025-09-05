@@ -411,7 +411,7 @@ export const VoteFeed = ({
     }]
   };
   return <>
-      <div className="h-screen overflow-y-scroll snap-y snap-mandatory bg-slate-900">
+      <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
         {/* Hyperlocal and Local sections (unchanged) */}
         {[...content.hyperLocal, ...content.local].map(section => (
           <FeedSection 
