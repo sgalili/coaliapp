@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Download, RefreshCw, Share2, Loader2, Copy, Eye } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, Share2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
@@ -13,10 +12,7 @@ import {
   saveGovernmentImage,
   getExistingGovernmentImage,
   saveImageToLocalStorage,
-  getImageFromLocalStorage,
-  createGovernmentShare,
-  getSharedGovernment,
-  SharedGovernment
+  getImageFromLocalStorage
 } from "@/utils/governmentImageUtils";
 
 // Helper function to get ministry display names
@@ -51,99 +47,36 @@ export default function MyGovGeneratePage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [sharedGovernment, setSharedGovernment] = useState<SharedGovernment | null>(null);
-  const [isViewingShare, setIsViewingShare] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string>("");
 
   useEffect(() => {
-    // Check for share_id in URL params and get current user
-    const loadInitialData = async () => {
-      const urlParams = new URLSearchParams(location.search);
-      const shareId = urlParams.get('share');
-      const isPreview = urlParams.get('preview') === 'true';
-      
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUser(user);
-      
-      // PRIORITY 1: If user is logged in and not in preview mode, load their selections
-      if (user && !isPreview) {
-        // Try to get candidates from navigation state first
-        if (location.state?.selectedCandidates) {
-          setSelectedCandidates(location.state.selectedCandidates);
-          setIsViewingShare(false);
-          setIsLoading(false);
-          // Clean URL from share parameters for logged user
-          if (shareId) {
-            navigate('/mygov/generate', { replace: true });
-          }
+    // Try to get candidates from navigation state first
+    if (location.state?.selectedCandidates) {
+      setSelectedCandidates(location.state.selectedCandidates);
+    } else {
+      // Fallback to localStorage
+      const saved = localStorage.getItem('myGovSelections');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setSelectedCandidates(parsed);
+        } catch (error) {
+          console.error('Error parsing saved selections:', error);
+          toast.error("אירעה שגיאה בטעינת הבחירות");
+          navigate('/mygov');
           return;
-        } 
-        
-        // Fallback to localStorage
-        const saved = localStorage.getItem('myGovSelections');
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            if (Object.keys(parsed).length > 0) {
-              setSelectedCandidates(parsed);
-              setIsViewingShare(false);
-              setIsLoading(false);
-              // Clean URL from share parameters for logged user
-              if (shareId) {
-                navigate('/mygov/generate', { replace: true });
-              }
-              return;
-            }
-          } catch (error) {
-            console.error('Error parsing saved selections:', error);
-          }
         }
-        
-        // If logged in user has no selections, redirect to selection page
+      } else {
         toast.error("לא נמצאו בחירות. אנא בחר מועמדים תחילה");
         navigate('/mygov');
         return;
       }
-      
-      // PRIORITY 2: Handle share mode (for non-logged users or preview mode)
-      if (shareId) {
-        setIsViewingShare(true);
-        try {
-          const shared = await getSharedGovernment(shareId);
-          if (shared) {
-            setSharedGovernment(shared);
-            setSelectedCandidates(shared.selected_candidates);
-            setGeneratedImage(shared.image_url);
-            setPrompt(shared.prompt || '');
-            setIsLoading(false);
-            return;
-          } else {
-            toast.error("הממשלה המשותפת לא נמצאה");
-            navigate('/mygov');
-            return;
-          }
-        } catch (error) {
-          console.error('Error loading shared government:', error);
-          toast.error("שגיאה בטעינת הממשלה המשותפת");
-          navigate('/mygov');
-          return;
-        }
-      }
-      
-      // PRIORITY 3: No user, no share - redirect to main page
-      navigate('/mygov');
-    };
-    
-    loadInitialData();
-  }, [location.state, location.search, navigate]);
+    }
+  }, [location.state, navigate]);
 
   useEffect(() => {
     // Load existing image or generate new one when candidates are loaded
     const loadOrGenerateImage = async () => {
-      if (Object.keys(selectedCandidates).length === 0 || isViewingShare) return;
+      if (Object.keys(selectedCandidates).length === 0) return;
       
       setIsLoading(true);
       setError(null);
@@ -183,7 +116,7 @@ export default function MyGovGeneratePage() {
     };
 
     loadOrGenerateImage();
-  }, [selectedCandidates, isViewingShare]);
+  }, [selectedCandidates]);
 
   const generateImage = async (forceRegenerate = false) => {
     setIsGenerating(true);
@@ -254,66 +187,44 @@ export default function MyGovGeneratePage() {
   };
 
   const shareImage = async () => {
-    if (!generatedImage || !currentUser) return;
+    if (!generatedImage) return;
     
     try {
-      // Create a shareable link
-      const shareId = await createGovernmentShare(
-        selectedCandidates, 
-        generatedImage, 
-        prompt,
-        undefined // seed - we don't track it currently
-      );
-      
-      const shareUrl = `${window.location.origin}/mygov/generate?share=${shareId}`;
-      setShareUrl(shareUrl);
-      setShowShareModal(true);
+      if (navigator.share) {
+        await navigator.share({
+          title: 'הממשלה שלי',
+          text: 'הממשלה שיצרתי באפליקציה',
+          url: generatedImage
+        });
+      } else {
+        await navigator.clipboard.writeText(generatedImage);
+        toast.success("קישור התמונה הועתק ללוח");
+      }
     } catch (error) {
-      console.error('Error sharing government:', error);
-      toast.error("שגיאה בשיתוף הממשלה");
+      console.error('Error sharing image:', error);
+      toast.error("שגיאה בשיתוף התמונה");
     }
-  };
-
-  const copyShareLink = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("קישור הועתק ללוח");
-      setShowShareModal(false);
-    } catch (error) {
-      console.error('Error copying link:', error);
-      toast.error("שגיאה בהעתקת הקישור");
-    }
-  };
-
-  const viewPreview = () => {
-    const previewUrl = shareUrl + "&preview=true";
-    window.open(previewUrl, '_blank');
-    setShowShareModal(false);
   };
 
   const candidateCount = Object.keys(selectedCandidates).length;
   const pmCandidate = selectedCandidates['pm'];
-  const isCreator = currentUser && sharedGovernment?.creator_user_id === currentUser.id;
-  const canEdit = currentUser && (isCreator || !isViewingShare);
 
   return (
-      <div className="min-h-screen bg-background p-4 pb-20">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(isViewingShare ? '/' : '/mygov')}
-            className="p-2"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-2xl font-bold text-center flex-1">
-            🎨 {isViewingShare && sharedGovernment?.creator_name 
-                  ? `הממשלה של ${sharedGovernment.creator_name}` 
-                  : 'יצירת הממשלה שלי'}
-          </h1>
-        </div>
+    <div className="min-h-screen bg-background p-4 pb-20">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/mygov')}
+          className="p-2"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold text-center flex-1">
+          🎨 יצירת הממשלה שלי
+        </h1>
+      </div>
 
       {/* Selection Summary */}
       <Card className="mb-6">
@@ -402,40 +313,25 @@ export default function MyGovGeneratePage() {
                 <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="text-xs sm:text-sm">הורד</span>
               </Button>
-              
-              {currentUser && (
-                <Button onClick={shareImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
-                  <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm">שתף</span>
-                </Button>
-              )}
-
-              {canEdit && (
-                <Button onClick={() => generateImage(true)} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
-                  <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  <span className="text-xs sm:text-sm">צור מחדש</span>
-                </Button>
-              )}
+              <Button onClick={shareImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+                <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">שתף</span>
+              </Button>
+              <Button onClick={() => generateImage(true)} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
+                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">צור מחדש</span>
+              </Button>
             </div>
 
-            {/* Navigation Buttons */}
+            {/* Back to Selection */}
             <div className="text-center pt-4">
-              {canEdit ? (
-                <Button 
-                  onClick={() => navigate('/mygov')} 
-                  variant="ghost"
-                  className="text-muted-foreground"
-                >
-                  חזור לבחירת מועמדים
-                </Button>
-              ) : (
-                <Button 
-                  onClick={() => navigate('/mygov')} 
-                  className="w-full"
-                >
-                  צור את הממשלה שלך
-                </Button>
-              )}
+              <Button 
+                onClick={() => navigate('/mygov')} 
+                variant="ghost"
+                className="text-muted-foreground"
+              >
+                חזור לבחירת מועמדים
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -452,35 +348,6 @@ export default function MyGovGeneratePage() {
           </CardContent>
         </Card>
       )}
-
-      {/* Share Modal */}
-      <Dialog open={showShareModal} onOpenChange={setShowShareModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center">שתף את הממשלה שלך</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="bg-muted p-3 rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">קישור לשיתוף:</p>
-              <p className="text-xs font-mono bg-background p-2 rounded border break-all">
-                {shareUrl}
-              </p>
-            </div>
-            
-            <div className="flex flex-col gap-2">
-              <Button onClick={copyShareLink} className="w-full">
-                <Copy className="h-4 w-4 mr-2" />
-                העתק קישור
-              </Button>
-              
-              <Button onClick={viewPreview} variant="outline" className="w-full">
-                <Eye className="h-4 w-4 mr-2" />
-                צפה בתצוגה מקדימה
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

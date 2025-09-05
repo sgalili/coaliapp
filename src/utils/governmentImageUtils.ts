@@ -24,19 +24,6 @@ export interface SavedGovernmentImage {
   updated_at: string;
 }
 
-export interface SharedGovernment {
-  id: string;
-  share_id: string;
-  creator_name: string | null;
-  creator_user_id: string | null;
-  selected_candidates: SelectedCandidates;
-  image_url: string;
-  prompt: string | null;
-  seed: number | null;
-  created_at: string;
-  updated_at: string;
-}
-
 // Generate a hash from selected candidates to identify unique combinations
 export function generateCandidatesHash(candidates: SelectedCandidates): string {
   // Create a deterministic string from candidates
@@ -160,78 +147,4 @@ export function getImageFromLocalStorage(candidates: SelectedCandidates): {
   } catch {
     return null;
   }
-}
-
-// Sharing functions
-export async function createGovernmentShare(
-  candidates: SelectedCandidates,
-  imageUrl: string,
-  prompt: string,
-  seed?: number
-): Promise<string> {
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  // Get user's profile for creator name
-  let creatorName = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('first_name, last_name')
-      .eq('user_id', user.id)
-      .single();
-    
-    if (profile) {
-      creatorName = `${profile.first_name} ${profile.last_name}`.trim();
-    }
-  }
-
-  // Generate unique share_id
-  const { data: shareId, error: shareIdError } = await supabase
-    .rpc('generate_share_id');
-  
-  if (shareIdError) {
-    console.error('Error generating share ID:', shareIdError);
-    throw shareIdError;
-  }
-
-  // Save to government_shares table
-  const { error } = await supabase
-    .from('government_shares')
-    .insert({
-      share_id: shareId,
-      creator_name: creatorName,
-      creator_user_id: user?.id || null,
-      selected_candidates: candidates as any,
-      image_url: imageUrl,
-      prompt,
-      seed
-    });
-
-  if (error) {
-    console.error('Error creating government share:', error);
-    throw error;
-  }
-
-  return shareId;
-}
-
-export async function getSharedGovernment(shareId: string): Promise<SharedGovernment | null> {
-  const { data, error } = await supabase
-    .from('government_shares')
-    .select('*')
-    .eq('share_id', shareId)
-    .single();
-
-  if (error) {
-    if (error.code === 'PGRST116') { // Not found
-      return null;
-    }
-    console.error('Error fetching shared government:', error);
-    throw error;
-  }
-
-  return {
-    ...data,
-    selected_candidates: data.selected_candidates as unknown as SelectedCandidates
-  };
 }
