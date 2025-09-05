@@ -29,9 +29,9 @@ export const PositionCarousel = ({
 }: PositionCarouselProps) => {
   
   return (
-    <div className="w-full py-6 border-b border-border/30">
+    <div className="bg-background border border-border rounded-xl p-4 shadow-sm mx-4 mb-4">
       {/* Section Header */}
-      <div className="px-4 mb-4">
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1 text-right">
             <h2 className="text-lg font-bold text-foreground">{title}</h2>
@@ -64,8 +64,8 @@ export const PositionCarousel = ({
       </div>
 
       {/* Horizontal Carousel */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-4 px-4 pb-2">
+      <div className="overflow-x-auto -mx-2">
+        <div className="flex gap-4 px-2 pb-2">
           {profiles.length === 0 ? (
             <div className="flex-shrink-0 w-48 h-64 bg-muted/30 border-2 border-dashed border-muted-foreground/30 rounded-xl flex flex-col items-center justify-center text-center p-4">
               <div className="text-4xl mb-2">
