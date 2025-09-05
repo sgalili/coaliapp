@@ -352,14 +352,13 @@ export default function MyGovPage() {
 
       {/* Fixed Generate Government Button */}
       {hasMinimumSelections() && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50">
+        <div className="fixed bottom-0 left-0 right-0 p-2 z-50">
           <Button 
             onClick={saveGovernmentSelections}
             disabled={isSaving}
-            size="lg"
-            className="w-full max-w-md mx-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base py-3 h-auto whitespace-pre-line"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm py-2 px-4 rounded-md"
           >
-            {isSaving ? "שומר..." : `סיימתי !\nצור את הממשלה שלי`}
+            {isSaving ? "שומר..." : "סיימתי ! צור את הממשלה שלי"}
           </Button>
         </div>
       )}
