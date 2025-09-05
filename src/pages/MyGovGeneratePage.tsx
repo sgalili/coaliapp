@@ -68,26 +68,48 @@ export default function MyGovGeneratePage() {
       const { data: { user } } = await supabase.auth.getUser();
       setCurrentUser(user);
       
-      // If user is logged in and has selections, and not forced preview mode, prioritize their view
+      // PRIORITY 1: If user is logged in and not in preview mode, load their selections
       if (user && !isPreview) {
+        // Try to get candidates from navigation state first
+        if (location.state?.selectedCandidates) {
+          setSelectedCandidates(location.state.selectedCandidates);
+          setIsViewingShare(false);
+          setIsLoading(false);
+          // Clean URL from share parameters for logged user
+          if (shareId) {
+            navigate('/mygov/generate', { replace: true });
+          }
+          return;
+        } 
+        
+        // Fallback to localStorage
         const saved = localStorage.getItem('myGovSelections');
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
             if (Object.keys(parsed).length > 0) {
-              // User has their own selections, ignore share parameter unless preview=true
               setSelectedCandidates(parsed);
+              setIsViewingShare(false);
               setIsLoading(false);
+              // Clean URL from share parameters for logged user
+              if (shareId) {
+                navigate('/mygov/generate', { replace: true });
+              }
               return;
             }
           } catch (error) {
             console.error('Error parsing saved selections:', error);
           }
         }
+        
+        // If logged in user has no selections, redirect to selection page
+        toast.error("לא נמצאו בחירות. אנא בחר מועמדים תחילה");
+        navigate('/mygov');
+        return;
       }
       
+      // PRIORITY 2: Handle share mode (for non-logged users or preview mode)
       if (shareId) {
-        // Load shared government
         setIsViewingShare(true);
         try {
           const shared = await getSharedGovernment(shareId);
@@ -111,28 +133,8 @@ export default function MyGovGeneratePage() {
         }
       }
       
-      // Regular flow: Try to get candidates from navigation state first
-      if (location.state?.selectedCandidates) {
-        setSelectedCandidates(location.state.selectedCandidates);
-      } else {
-        // Fallback to localStorage
-        const saved = localStorage.getItem('myGovSelections');
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            setSelectedCandidates(parsed);
-          } catch (error) {
-            console.error('Error parsing saved selections:', error);
-            toast.error("אירעה שגיאה בטעינת הבחירות");
-            navigate('/mygov');
-            return;
-          }
-        } else {
-          toast.error("לא נמצאו בחירות. אנא בחר מועמדים תחילה");
-          navigate('/mygov');
-          return;
-        }
-      }
+      // PRIORITY 3: No user, no share - redirect to main page
+      navigate('/mygov');
     };
     
     loadInitialData();
