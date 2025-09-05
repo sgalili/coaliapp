@@ -41,6 +41,27 @@ export default function MyGovGeneratePage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<{first_name: string, last_name: string} | null>(null);
+  useEffect(() => {
+    // Load user profile
+    const loadUserProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile) {
+          setUserProfile(profile);
+        }
+      }
+    };
+    
+    loadUserProfile();
+  }, []);
+
   useEffect(() => {
     // Try to get candidates from navigation state first
     if (location.state?.selectedCandidates) {
@@ -192,7 +213,14 @@ export default function MyGovGeneratePage() {
         <Button variant="ghost" size="sm" onClick={() => navigate('/mygov')} className="p-2">
           <ArrowRight className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold text-center flex-1">הממשלה שלי</h1>
+        <div className="flex-1 text-center">
+          <h1 className="text-2xl font-bold">הממשלה שלי</h1>
+          {userProfile && (
+            <p className="text-sm text-muted-foreground mt-1">
+              נוצר על ידי: {userProfile.first_name} {userProfile.last_name}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Selection Summary */}
