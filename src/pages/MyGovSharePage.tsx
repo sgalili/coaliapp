@@ -54,21 +54,26 @@ export default function MyGovSharePage() {
         return;
       }
 
+      console.log('Loading shared government with shareId:', shareId);
+
       try {
         const { data, error } = await supabase
           .from('shared_governments')
           .select('*')
           .eq('share_id', shareId)
-          .single();
+          .maybeSingle();
+
+        console.log('Supabase response:', { data, error });
 
         if (error) {
-          console.error('Error loading shared government:', error);
-          setError("ממשלה לא נמצאה");
+          console.error('Database error loading shared government:', error);
+          setError("שגיאה בטעינת הממשלה מהמסד נתונים");
           setIsLoading(false);
           return;
         }
 
         if (!data) {
+          console.log('No data found for shareId:', shareId);
           setError("ממשלה לא נמצאה");
           setIsLoading(false);
           return;
