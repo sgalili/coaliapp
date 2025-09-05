@@ -38,6 +38,7 @@ interface SharedGovernmentData {
   }>;
   generated_image_url: string;
   creator_name?: string;
+  share_url: string;
 }
 
 export default function MyGovSharePage() {
@@ -101,7 +102,8 @@ export default function MyGovSharePage() {
           pm_avatar: data.pm_avatar || undefined,
           ministers,
           generated_image_url: data.generated_image_url,
-          creator_name: data.creator_name || undefined
+          creator_name: data.creator_name || undefined,
+          share_url: data.share_url || `${window.location.origin}/mygov/share/${shareId}`
         });
 
       } catch (error) {
@@ -137,17 +139,17 @@ export default function MyGovSharePage() {
   };
 
   const shareImage = async () => {
-    const currentUrl = window.location.href;
+    if (!governmentData?.share_url) return;
     
     try {
       if (navigator.share) {
         await navigator.share({
           title: 'הממשלה שלי',
           text: 'הממשלה שיצרתי באפליקציה',
-          url: currentUrl
+          url: governmentData.share_url
         });
       } else {
-        await navigator.clipboard.writeText(currentUrl);
+        await navigator.clipboard.writeText(governmentData.share_url);
         toast.success("קישור התמונה הועתק ללוח");
       }
     } catch (error) {

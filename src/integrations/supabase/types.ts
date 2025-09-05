@@ -678,6 +678,7 @@ export type Database = {
           pm_avatar: string | null
           pm_name: string
           share_id: string
+          share_url: string | null
         }
         Insert: {
           created_at?: string
@@ -712,6 +713,7 @@ export type Database = {
           pm_avatar?: string | null
           pm_name: string
           share_id: string
+          share_url?: string | null
         }
         Update: {
           created_at?: string
@@ -746,6 +748,7 @@ export type Database = {
           pm_avatar?: string | null
           pm_name?: string
           share_id?: string
+          share_url?: string | null
         }
         Relationships: []
       }

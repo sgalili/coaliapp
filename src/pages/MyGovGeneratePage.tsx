@@ -221,6 +221,11 @@ export default function MyGovGeneratePage() {
         }
       });
 
+      // Create share URL with affiliate ref (only if user is logged in)
+      const affiliateRef = user ? getAffiliateRef() : null;
+      const baseUrl = window.location.origin;
+      const shareUrl = `${baseUrl}/mygov/share/${shareId}${affiliateRef ? `?ref=${affiliateRef}` : ''}`;
+
       // Save to shared_governments table
       const { error: insertError } = await supabase
         .from('shared_governments')
@@ -231,7 +236,8 @@ export default function MyGovGeneratePage() {
           pm_name: selectedCandidates.pm?.name || '',
           pm_avatar: selectedCandidates.pm?.avatar || null,
           ...ministerData,
-          generated_image_url: generatedImage
+          generated_image_url: generatedImage,
+          share_url: shareUrl
         });
 
       if (insertError) {
@@ -239,11 +245,6 @@ export default function MyGovGeneratePage() {
         toast.error("שגיאה בשמירת הממשלה לשיתוף");
         return;
       }
-
-      // Create share URL with affiliate ref (only if user is logged in)
-      const affiliateRef = user ? getAffiliateRef() : null;
-      const baseUrl = window.location.origin;
-      const shareUrl = `${baseUrl}/mygov/share/${shareId}${affiliateRef ? `?ref=${affiliateRef}` : ''}`;
 
       // Share the URL
       if (navigator.share) {
