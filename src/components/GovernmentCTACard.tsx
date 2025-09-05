@@ -1,5 +1,4 @@
 import { Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface GovernmentCTACardProps {
   onClick?: () => void;
@@ -7,35 +6,31 @@ interface GovernmentCTACardProps {
 
 export const GovernmentCTACard = ({ onClick }: GovernmentCTACardProps) => {
   return (
-    <div className="bg-background border-b border-border p-4">
-      <div className="flex items-start gap-4 text-right">
-        <div className="flex-1">
-          <div className="flex items-center justify-end gap-2 mb-2">
-            <h3 className="text-lg font-semibold text-foreground">
+    <div className="px-4 pb-4">
+      <div className="space-y-3 text-right">
+        {/* Main CTA Button */}
+        <button
+          onClick={onClick}
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+              <Users className="w-5 h-5" />
+            </div>
+            <h3 className="text-xl font-bold">
               הממשלה שלי
             </h3>
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-primary" />
-            </div>
           </div>
           
-          <p className="text-sm font-medium text-foreground mb-2">
+          <p className="text-lg font-semibold opacity-95">
             הרכיבו את הממשלה שלכם בקליק!
           </p>
-          
-          <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-            בחרו בטובים ביותר - לתפקידים הנכונים והמתאימים ביותר !
-          </p>
-          
-          <div className="flex justify-end">
-            <Button 
-              onClick={onClick}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-6"
-            >
-              בואו נתחיל!
-            </Button>
-          </div>
-        </div>
+        </button>
+
+        {/* Subtitle below button */}
+        <p className="text-xs text-muted-foreground text-center px-2 leading-relaxed">
+          בחרו בטובים ביותר - לתפקידים הנכונים והמתאימים ביותר !
+        </p>
       </div>
     </div>
   );
