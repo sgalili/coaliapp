@@ -55,7 +55,7 @@ export const PollCard = ({ poll, onVote }: PollCardProps) => {
   };
 
   return (
-    <div className="w-full bg-background border-b border-border">
+    <div className="w-full bg-background border border-border rounded-xl shadow-sm mx-0">
       <div className="p-4 space-y-4">
         {/* Poll Header */}
         <div className="flex items-start justify-between">
