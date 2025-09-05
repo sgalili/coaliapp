@@ -162,6 +162,45 @@ export type Database = {
         }
         Relationships: []
       }
+      government_shares: {
+        Row: {
+          created_at: string
+          creator_name: string | null
+          creator_user_id: string | null
+          id: string
+          image_url: string
+          prompt: string | null
+          seed: number | null
+          selected_candidates: Json
+          share_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_name?: string | null
+          creator_user_id?: string | null
+          id?: string
+          image_url: string
+          prompt?: string | null
+          seed?: number | null
+          selected_candidates: Json
+          share_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_name?: string | null
+          creator_user_id?: string | null
+          id?: string
+          image_url?: string
+          prompt?: string | null
+          seed?: number | null
+          selected_candidates?: Json
+          share_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       kyc_verifications: {
         Row: {
           created_at: string
@@ -1022,6 +1061,10 @@ export type Database = {
         Returns: boolean
       }
       generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_share_id: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
