@@ -10,6 +10,7 @@ import { useKYC } from "@/hooks/useKYC";
 import { Building, GraduationCap, Home, BarChart3, MapPin } from "lucide-react";
 import { PositionCarousel } from "./PositionCarousel";
 import { Profile } from "./ProfileCard";
+import { GovernmentCTACard } from "./GovernmentCTACard";
 
 // Profile images
 import amitProfile from "@/assets/amit-profile.jpg";
@@ -348,6 +349,15 @@ export const VoteFeed = ({
     // TODO: Navigate to profile page
   };
 
+  // Handle government CTA click
+  const handleGovernmentCTAClick = () => {
+    console.log("Government CTA clicked");
+    toast({
+      title: "הממשלה שלי", 
+      description: "תכונה זו תהיה זמינה בקרוב",
+    });
+  };
+
   // Only handle 'for-me' filter in VoteFeed
   if (filter !== 'for-me') {
     return null;
@@ -504,6 +514,11 @@ export const VoteFeed = ({
                   onVote={handleCandidateVote}
                   onProfileClick={handleProfileClick}
                 />
+              </div>
+
+              {/* Government CTA Card */}
+              <div className="w-full py-4">
+                <GovernmentCTACard onClick={handleGovernmentCTAClick} />
               </div>
             </div>
           </FeedSection>
