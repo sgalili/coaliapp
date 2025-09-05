@@ -1,10 +1,12 @@
 import { ArrowRight, User, Shield, DollarSign, GraduationCap, Heart, Leaf, Scale, Car, Home, Globe, Palette, Beaker, Users, Wheat, Camera, LucideIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CandidateSelectionModal, Candidate } from "@/components/CandidateSelectionModal";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 // Import profile images
 import amitProfile from "@/assets/amit-profile.jpg";
@@ -118,6 +120,104 @@ export default function MyGovPage() {
   const [selectedCandidates, setSelectedCandidates] = useState<SelectedCandidate>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMinistry, setSelectedMinistry] = useState<Ministry | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Load existing government selections on component mount
+  useEffect(() => {
+    loadGovernmentSelections();
+  }, []);
+
+  const loadGovernmentSelections = async () => {
+    try {
+      setIsLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
+
+      const { data: selections, error } = await supabase
+        .from('government_selections')
+        .select('ministry_id, candidate_data')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      if (selections) {
+        const loadedSelections: SelectedCandidate = {};
+        selections.forEach(selection => {
+          loadedSelections[selection.ministry_id] = selection.candidate_data as unknown as Candidate;
+        });
+        setSelectedCandidates(loadedSelections);
+      }
+    } catch (error) {
+      console.error('Error loading government selections:', error);
+      toast({
+        title: "שגיאה בטעינה",
+        description: "לא הצלחנו לטעון את הבחירות שלך",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveGovernmentSelections = async () => {
+    try {
+      setIsSaving(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "שגיאה",
+          description: "עליך להתחבר כדי לשמור את הבחירות",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Delete existing selections for this user
+      await supabase
+        .from('government_selections')
+        .delete()
+        .eq('user_id', user.id);
+
+      // Insert new selections
+      const selectionsToSave = Object.entries(selectedCandidates).map(([ministryId, candidate]) => ({
+        user_id: user.id,
+        ministry_id: ministryId,
+        candidate_data: candidate as unknown as any
+      }));
+
+      if (selectionsToSave.length > 0) {
+        const { error } = await supabase
+          .from('government_selections')
+          .insert(selectionsToSave);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: "נשמר בהצלחה!",
+        description: "הממשלה שלך נשמרה בהצלחה",
+      });
+    } catch (error) {
+      console.error('Error saving government selections:', error);
+      toast({
+        title: "שגיאה בשמירה",
+        description: "לא הצלחנו לשמור את הבחירות שלך",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Check if we have enough selections to show the save button
+  const hasMinimumSelections = () => {
+    const hasPM = selectedCandidates["pm"];
+    const ministerCount = Object.keys(selectedCandidates).filter(key => key !== "pm").length;
+    return hasPM && ministerCount >= 2;
+  };
 
   const handleMinistryClick = (ministry: Ministry) => {
     setSelectedMinistry(ministry);
@@ -247,6 +347,20 @@ export default function MyGovPage() {
             );
           })}
         </div>
+
+        {/* Generate Government Button */}
+        {hasMinimumSelections() && (
+          <div className="flex justify-center pt-8 pb-4">
+            <Button 
+              onClick={saveGovernmentSelections}
+              disabled={isSaving}
+              size="lg"
+              className="w-full max-w-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg py-6 h-auto whitespace-pre-line"
+            >
+              {isSaving ? "שומר..." : `סיימתי !\nצור את הממשלה שלי`}
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Candidate Selection Modal */}
