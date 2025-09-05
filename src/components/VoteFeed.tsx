@@ -352,10 +352,7 @@ export const VoteFeed = ({
   // Handle government CTA click
   const handleGovernmentCTAClick = () => {
     console.log("Government CTA clicked");
-    toast({
-      title: "הממשלה שלי", 
-      description: "תכונה זו תהיה זמינה בקרוב",
-    });
+    navigate('/mygov');
   };
 
   // Only handle 'for-me' filter in VoteFeed
