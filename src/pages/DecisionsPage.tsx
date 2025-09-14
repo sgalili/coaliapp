@@ -119,20 +119,22 @@ const DecisionsPage = () => {
         <Plus className="w-5 h-5" />
       </Button>
 
-      {/* Stories Container with Tap Zones */}
-      <div className="h-screen overflow-auto relative">
-        {/* Left Tap Zone (70% - Next in RTL) */}
-        <div 
-          className="absolute top-0 left-0 w-[70%] h-full z-30 cursor-pointer"
-          onClick={handleNextStory}
-        />
-        
-        {/* Right Tap Zone (30% - Previous in RTL) */}
-        <div 
-          className="absolute top-0 right-0 w-[30%] h-full z-30 cursor-pointer"
-          onClick={handlePreviousStory}
-        />
-        
+      {/* Stories Container with Global Tap Handler */}
+      <div 
+        className="h-screen overflow-auto relative cursor-pointer"
+        onClick={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const containerWidth = rect.width;
+          
+          // In RTL: right 30% is for previous, left 70% is for next
+          if (clickX > containerWidth * 0.7) {
+            handlePreviousStory();
+          } else {
+            handleNextStory();
+          }
+        }}
+      >
         <PollStoryCard
           story={currentStory}
           onVote={handleVote}

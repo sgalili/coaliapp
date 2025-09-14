@@ -148,8 +148,8 @@ export const PollStoryCard = ({
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/40" />
       
-        {/* Content */}
-        <div className="relative z-50 flex flex-col h-full pointer-events-auto">
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full">
         
         {/* Top controls */}
         <div className="flex items-center justify-between p-4 pt-16">
@@ -162,7 +162,10 @@ export const PollStoryCard = ({
             <Button
               size="icon"
               variant="ghost"
-              onClick={playNarration}
+              onClick={(e) => {
+                e.stopPropagation();
+                playNarration();
+              }}
               className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
               disabled={isNarrationPlaying}
             >
@@ -176,7 +179,10 @@ export const PollStoryCard = ({
             <Button
               size="icon"
               variant="ghost"
-              onClick={onToggleMute}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleMute();
+              }}
               className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
             >
               {isMuted ? (
@@ -238,7 +244,10 @@ export const PollStoryCard = ({
                 ) : (
                   // Voting View - Instagram Stories style
                   <button
-                    onClick={() => setSelectedOption(option.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedOption(option.id);
+                    }}
                     className={cn(
                       "w-full p-4 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2",
                       selectedOption === option.id
@@ -257,7 +266,10 @@ export const PollStoryCard = ({
           {!showResults && (
             <div className="mt-8 max-w-md mx-auto w-full">
               <Button
-                onClick={handleVote}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleVote();
+                }}
                 disabled={!selectedOption || isVoting}
                 className={cn(
                   "w-full py-4 text-lg font-bold rounded-2xl transition-all duration-200",
