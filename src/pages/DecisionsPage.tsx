@@ -98,7 +98,7 @@ const DecisionsPage = () => {
     setStoryProgress(0);
   };
 
-  // Swipe and navigation logic - same as FullscreenVideoPlayer
+  // Block-based navigation - one swipe = one card movement
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -126,7 +126,7 @@ const DecisionsPage = () => {
         const deltaX = e.touches[0].clientX - startX;
         
         if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
-          // Vertical swipe (story navigation)
+          // Vertical swipe (story navigation) - block-based, one movement per swipe
           if (deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
             handleNextStory();
           } else if (deltaY < 0 && currentStoryIndex > 0) {
