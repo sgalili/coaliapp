@@ -6,17 +6,22 @@ import { StoriesProgressBar } from "@/components/StoriesProgressBar";
 import { Button } from "@/components/ui/button";
 import { mockPollStories } from "@/data/mockPollStories";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const DecisionsPage = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [storyProgress, setStoryProgress] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isReadingText, setIsReadingText] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout>();
+  const [touchStart, setTouchStart] = useState<{ y: number; time: number } | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Auto-progress story
   useEffect(() => {
-    if (currentStoryIndex >= mockPollStories.length) return;
+    if (currentStoryIndex >= mockPollStories.length || isPaused) return;
     
     const currentStory = mockPollStories[currentStoryIndex];
     if (currentStory.hasUserVoted) {
@@ -48,7 +53,7 @@ const DecisionsPage = () => {
         clearInterval(progressIntervalRef.current);
       }
     };
-  }, [currentStoryIndex]);
+  }, [currentStoryIndex, isPaused]);
 
   const handleNextStory = () => {
     if (currentStoryIndex < mockPollStories.length - 1) {
@@ -84,8 +89,6 @@ const DecisionsPage = () => {
     // Reset progress to show results
     setStoryProgress(0);
   };
-
-  const [touchStart, setTouchStart] = useState<{ y: number; time: number } | null>(null);
 
   const handleTouchStart = (event: React.TouchEvent) => {
     setTouchStart({
@@ -124,6 +127,56 @@ const DecisionsPage = () => {
     
     setTouchStart(null);
   };
+
+  const handleClick = (event: React.MouseEvent) => {
+    // Toggle pause on click/tap
+    setIsPaused(!isPaused);
+  };
+
+  const readPollText = async (text: string) => {
+    try {
+      setIsReadingText(true);
+      
+      const { data, error } = await supabase.functions.invoke('text-to-speech', {
+        body: { 
+          text: text,
+          voice: 'alloy' // Use OpenAI voice since we don't have ElevenLabs setup
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.audioContent) {
+        // Stop current audio if playing
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+
+        // Create new audio element
+        const audio = new Audio();
+        audio.src = `data:audio/mp3;base64,${data.audioContent}`;
+        audioRef.current = audio;
+        
+        audio.onended = () => setIsReadingText(false);
+        audio.onerror = () => setIsReadingText(false);
+        
+        await audio.play();
+      }
+    } catch (error) {
+      console.error('Error reading text:', error);
+      setIsReadingText(false);
+    }
+  };
+
+  // Auto-read poll text when story changes
+  useEffect(() => {
+    if (!isMuted && currentStoryIndex < mockPollStories.length) {
+      const currentStory = mockPollStories[currentStoryIndex];
+      const textToRead = `${currentStory.question}. ${currentStory.description}`;
+      readPollText(textToRead);
+    }
+  }, [currentStoryIndex, isMuted]);
 
   const currentStory = mockPollStories[currentStoryIndex];
 
@@ -168,10 +221,11 @@ const DecisionsPage = () => {
       {/* Stories Container */}
       <div 
         ref={containerRef}
-        className="h-screen overflow-hidden touch-none"
+        className="h-screen overflow-hidden touch-none cursor-pointer"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onClick={handleClick}
       >
         <PollStoryCard
           story={currentStory}
