@@ -16,11 +16,7 @@ const DecisionsPage = () => {
   const [isReadingText, setIsReadingText] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout>();
-  const [touchStart, setTouchStart] = useState<{ y: number; time: number } | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [debugInfo, setDebugInfo] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const dragTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Auto-progress story
   useEffect(() => {
@@ -93,140 +89,67 @@ const DecisionsPage = () => {
     setStoryProgress(0);
   };
 
-  const handleTouchStart = (event: React.TouchEvent) => {
-    event.preventDefault();
-    const startData = {
-      y: event.touches[0].clientY,
-      time: Date.now()
-    };
-    setTouchStart(startData);
-    setIsDragging(false);
-    setDebugInfo(`Touch Start: ${startData.y}px`);
-    
-    // Timeout pour considérer que c'est un drag après 100ms
-    dragTimeoutRef.current = setTimeout(() => {
-      setIsDragging(true);
-    }, 100);
-  };
-
-  const handleMouseDown = (event: React.MouseEvent) => {
-    // Ne pas preventDefault sur mouseDown pour éviter les conflits
-    const startData = {
-      y: event.clientY,
-      time: Date.now()
-    };
-    setTouchStart(startData);
-    setIsDragging(false);
-    setDebugInfo(`Mouse Start: ${startData.y}px`);
-    
-    // Timeout pour considérer que c'est un drag après 150ms (plus long pour trackpad)
-    dragTimeoutRef.current = setTimeout(() => {
-      setIsDragging(true);
-    }, 150);
-  };
-
-  const handleTouchMove = (event: React.TouchEvent) => {
-    if (!touchStart) return;
-    event.preventDefault();
-    
-    const currentY = event.touches[0].clientY;
-    const deltaY = touchStart.y - currentY;
-    setDebugInfo(`Touch Move: ${currentY}px, Δ${deltaY}px`);
-  };
-
-  const handleMouseMove = (event: React.MouseEvent) => {
-    if (!touchStart) return;
-    // Ne pas preventDefault sur mouseMove sauf si on est en train de dragger
-    if (isDragging) {
-      event.preventDefault();
-    }
-    
-    const currentY = event.clientY;
-    const deltaY = touchStart.y - currentY;
-    setDebugInfo(`Mouse Move: ${currentY}px, Δ${deltaY}px, Dragging: ${isDragging}`);
-  };
-
-  const handleTouchEnd = (event: React.TouchEvent) => {
-    if (!touchStart) return;
-    
-    // Clear timeout
-    if (dragTimeoutRef.current) {
-      clearTimeout(dragTimeoutRef.current);
-    }
-    
-    const endY = event.changedTouches[0].clientY;
-    const endTime = Date.now();
-    
-    const deltaY = touchStart.y - endY;
-    const deltaTime = endTime - touchStart.time;
-    const velocity = Math.abs(deltaY) / deltaTime;
-    
-    // Seuils adaptés pour touch
-    const minDistance = 30;
-    const minVelocity = 0.15;
-    
-    setDebugInfo(`Touch End: Δ${deltaY}px, v${velocity.toFixed(2)}, isDrag: ${isDragging}`);
-    
-    if (isDragging && (Math.abs(deltaY) > minDistance || velocity > minVelocity)) {
-      if (deltaY > 0) {
+  // Swipe and navigation logic - same as FullscreenVideoPlayer
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
         handleNextStory();
-      } else {
+      } else if (e.deltaY < 0 && currentStoryIndex > 0) {
         handlePreviousStory();
       }
-    }
-    
-    setTouchStart(null);
-    setIsDragging(false);
-    
-    // Clear debug info after 2 seconds
-    setTimeout(() => setDebugInfo(''), 2000);
-  };
+    };
 
-  const handleMouseUp = (event: React.MouseEvent) => {
-    if (!touchStart) return;
-    
-    // Clear timeout
-    if (dragTimeoutRef.current) {
-      clearTimeout(dragTimeoutRef.current);
-    }
-    
-    const endY = event.clientY;
-    const endTime = Date.now();
-    
-    const deltaY = touchStart.y - endY;
-    const deltaTime = endTime - touchStart.time;
-    const velocity = Math.abs(deltaY) / deltaTime;
-    
-    // Seuils plus petits pour trackpad MacBook
-    const minDistance = 20; // Plus petit pour trackpad
-    const minVelocity = 0.08; // Plus petit pour trackpad
-    
-    setDebugInfo(`Mouse End: Δ${deltaY}px, v${velocity.toFixed(2)}, isDrag: ${isDragging}, time: ${deltaTime}ms`);
-    
-    // Vérifier si c'est un swipe valide
-    if (isDragging && (Math.abs(deltaY) > minDistance || velocity > minVelocity)) {
-      if (deltaY > 0) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' && currentStoryIndex < mockPollStories.length - 1) {
         handleNextStory();
-      } else {
+      } else if (e.key === 'ArrowUp' && currentStoryIndex > 0) {
         handlePreviousStory();
       }
-    }
-    
-    setTouchStart(null);
-    setIsDragging(false);
-    
-    // Clear debug info after 2 seconds
-    setTimeout(() => setDebugInfo(''), 2000);
-  };
+    };
 
-  const handleClick = (event: React.MouseEvent) => {
-    // Ne toggle pause que si ce n'est pas un drag
-    if (!isDragging && !touchStart) {
-      setIsPaused(!isPaused);
-      setDebugInfo('Click: Pause toggled');
-      setTimeout(() => setDebugInfo(''), 1000);
+    const handleTouchStart = (e: TouchEvent) => {
+      const startY = e.touches[0].clientY;
+      const startX = e.touches[0].clientX;
+      
+      const handleTouchMove = (e: TouchEvent) => {
+        const deltaY = startY - e.touches[0].clientY;
+        const deltaX = e.touches[0].clientX - startX;
+        
+        if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
+          // Vertical swipe (story navigation)
+          if (deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
+            handleNextStory();
+          } else if (deltaY < 0 && currentStoryIndex > 0) {
+            handlePreviousStory();
+          }
+          document.removeEventListener('touchmove', handleTouchMove);
+          document.removeEventListener('touchend', handleTouchEnd);
+        }
+      };
+      
+      const handleTouchEnd = () => {
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+      
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', handleTouchEnd);
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false });
+      container.addEventListener('touchstart', handleTouchStart);
+      document.addEventListener('keydown', handleKeyDown);
+      
+      return () => {
+        container.removeEventListener('wheel', handleWheel);
+        container.removeEventListener('touchstart', handleTouchStart);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
     }
-  };
+  }, [currentStoryIndex, mockPollStories.length]);
 
   const readPollText = async (text: string) => {
     try {
@@ -305,32 +228,11 @@ const DecisionsPage = () => {
         <Plus className="w-5 h-5" />
       </Button>
 
-      {/* Debug Info */}
-      {debugInfo && (
-        <div className="fixed top-16 left-4 z-50 bg-black/80 text-white px-3 py-2 rounded-lg text-sm font-mono backdrop-blur-sm">
-          {debugInfo}
-        </div>
-      )}
-
-      {/* Visual swipe indicators */}
-      <div className="fixed top-1/2 left-4 transform -translate-y-1/2 z-40 text-white/50 text-xs">
-        ↑ Next Story
-      </div>
-      <div className="fixed top-1/2 left-4 transform -translate-y-1/2 mt-8 z-40 text-white/50 text-xs">
-        ↓ Previous Story
-      </div>
-
       {/* Stories Container */}
       <div 
         ref={containerRef}
         className="h-screen overflow-hidden touch-none cursor-pointer select-none"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onClick={handleClick}
+        onClick={() => setIsPaused(!isPaused)}
       >
         <PollStoryCard
           story={currentStory}
