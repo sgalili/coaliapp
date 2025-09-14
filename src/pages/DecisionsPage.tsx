@@ -91,14 +91,28 @@ const DecisionsPage = () => {
   };
 
   const handleTouchStart = (event: React.TouchEvent) => {
+    event.preventDefault();
     setTouchStart({
       y: event.touches[0].clientY,
       time: Date.now()
     });
   };
 
+  const handleMouseDown = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setTouchStart({
+      y: event.clientY,
+      time: Date.now()
+    });
+  };
+
   const handleTouchMove = (event: React.TouchEvent) => {
     event.preventDefault(); // Prevent native scrolling
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (!touchStart) return;
+    event.preventDefault();
   };
 
   const handleTouchEnd = (event: React.TouchEvent) => {
@@ -111,9 +125,36 @@ const DecisionsPage = () => {
     const deltaTime = endTime - touchStart.time;
     const velocity = Math.abs(deltaY) / deltaTime;
     
-    // Require minimum distance (80px) OR high velocity
-    const minDistance = 80;
-    const minVelocity = 0.3;
+    // Require minimum distance (50px) OR high velocity
+    const minDistance = 50;
+    const minVelocity = 0.2;
+    
+    if (Math.abs(deltaY) > minDistance || velocity > minVelocity) {
+      if (deltaY > 0) {
+        // Swipe up - next story
+        handleNextStory();
+      } else {
+        // Swipe down - previous story  
+        handlePreviousStory();
+      }
+    }
+    
+    setTouchStart(null);
+  };
+
+  const handleMouseUp = (event: React.MouseEvent) => {
+    if (!touchStart) return;
+    
+    const endY = event.clientY;
+    const endTime = Date.now();
+    
+    const deltaY = touchStart.y - endY;
+    const deltaTime = endTime - touchStart.time;
+    const velocity = Math.abs(deltaY) / deltaTime;
+    
+    // Require minimum distance (50px) OR high velocity
+    const minDistance = 50;
+    const minVelocity = 0.2;
     
     if (Math.abs(deltaY) > minDistance || velocity > minVelocity) {
       if (deltaY > 0) {
@@ -129,39 +170,33 @@ const DecisionsPage = () => {
   };
 
   const handleClick = (event: React.MouseEvent) => {
-    // Toggle pause on click/tap
-    setIsPaused(!isPaused);
+    // Ne pas toggle pause si c'est un swipe
+    if (!touchStart) {
+      setIsPaused(!isPaused);
+    }
   };
 
   const readPollText = async (text: string) => {
     try {
       setIsReadingText(true);
       
-      const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { 
-          text: text,
-          voice: 'alloy' // Use OpenAI voice since we don't have ElevenLabs setup
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.audioContent) {
-        // Stop current audio if playing
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-        }
-
-        // Create new audio element
-        const audio = new Audio();
-        audio.src = `data:audio/mp3;base64,${data.audioContent}`;
-        audioRef.current = audio;
+      // Utiliser Web Speech API au lieu de l'API OpenAI qui a atteint sa limite
+      if ('speechSynthesis' in window) {
+        // Arrêter toute lecture en cours
+        window.speechSynthesis.cancel();
         
-        audio.onended = () => setIsReadingText(false);
-        audio.onerror = () => setIsReadingText(false);
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'he-IL'; // Hébreu
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
         
-        await audio.play();
+        utterance.onend = () => setIsReadingText(false);
+        utterance.onerror = () => setIsReadingText(false);
+        
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.log('Speech synthesis not supported');
+        setIsReadingText(false);
       }
     } catch (error) {
       console.error('Error reading text:', error);
@@ -221,10 +256,13 @@ const DecisionsPage = () => {
       {/* Stories Container */}
       <div 
         ref={containerRef}
-        className="h-screen overflow-hidden touch-none cursor-pointer"
+        className="h-screen overflow-hidden touch-none cursor-pointer select-none"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
         onClick={handleClick}
       >
         <PollStoryCard
