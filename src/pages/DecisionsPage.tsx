@@ -14,6 +14,7 @@ const DecisionsPage = () => {
   const [isReadingText, setIsReadingText] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isNavigatingRef = useRef(false);
 
 
   const handleNextStory = () => {
@@ -50,22 +51,36 @@ const DecisionsPage = () => {
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
+      if (isNavigatingRef.current) return;
+      
       if (e.deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
-        handleNextStory();
+        isNavigatingRef.current = true;
+        setCurrentStoryIndex(prev => prev + 1);
+        setTimeout(() => { isNavigatingRef.current = false; }, 200);
       } else if (e.deltaY < 0 && currentStoryIndex > 0) {
-        handlePreviousStory();
+        isNavigatingRef.current = true;
+        setCurrentStoryIndex(prev => prev - 1);
+        setTimeout(() => { isNavigatingRef.current = false; }, 200);
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isNavigatingRef.current) return;
+      
       if (e.key === 'ArrowDown' && currentStoryIndex < mockPollStories.length - 1) {
-        handleNextStory();
+        isNavigatingRef.current = true;
+        setCurrentStoryIndex(prev => prev + 1);
+        setTimeout(() => { isNavigatingRef.current = false; }, 200);
       } else if (e.key === 'ArrowUp' && currentStoryIndex > 0) {
-        handlePreviousStory();
+        isNavigatingRef.current = true;
+        setCurrentStoryIndex(prev => prev - 1);
+        setTimeout(() => { isNavigatingRef.current = false; }, 200);
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
+      if (isNavigatingRef.current) return;
+      
       const startY = e.touches[0].clientY;
       const startX = e.touches[0].clientX;
       
@@ -76,9 +91,13 @@ const DecisionsPage = () => {
         if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
           // Vertical swipe (story navigation) - block-based, one movement per swipe
           if (deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
-            handleNextStory();
+            isNavigatingRef.current = true;
+            setCurrentStoryIndex(prev => prev + 1);
+            setTimeout(() => { isNavigatingRef.current = false; }, 200);
           } else if (deltaY < 0 && currentStoryIndex > 0) {
-            handlePreviousStory();
+            isNavigatingRef.current = true;
+            setCurrentStoryIndex(prev => prev - 1);
+            setTimeout(() => { isNavigatingRef.current = false; }, 200);
           }
           document.removeEventListener('touchmove', handleTouchMove);
           document.removeEventListener('touchend', handleTouchEnd);
