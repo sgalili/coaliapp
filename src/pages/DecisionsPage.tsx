@@ -11,6 +11,7 @@ const DecisionsPage = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
+  const [votedStories, setVotedStories] = useState<Record<string, string>>({});
 
 
   const handleNextStory = () => {
@@ -32,15 +33,13 @@ const DecisionsPage = () => {
   };
 
   const handleVote = (storyId: string, optionId: string) => {
-    // Here you would normally update the backend
     console.log("Voted:", { storyId, optionId });
     
-    // Update local state to show results
-    const updatedStories = mockPollStories.map(story => 
-      story.id === storyId 
-        ? { ...story, hasUserVoted: true, userVotedOption: optionId }
-        : story
-    );
+    // Update local state to track this vote
+    setVotedStories(prev => ({
+      ...prev,
+      [storyId]: optionId
+    }));
   };
 
   const handleToggleMute = () => {
@@ -185,7 +184,11 @@ const DecisionsPage = () => {
         }}
       >
         <PollStoryCard
-          story={currentStory}
+          story={{
+            ...currentStory,
+            hasUserVoted: !!votedStories[currentStory.id],
+            userVotedOption: votedStories[currentStory.id]
+          }}
           onVote={handleVote}
           onNext={handleNextStory}
           isMuted={isMuted}
