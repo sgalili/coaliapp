@@ -175,8 +175,8 @@ const DecisionsPage = () => {
           const clickX = e.clientX - rect.left;
           const containerWidth = rect.width;
           
-          // In RTL: right 30% is for previous, left 70% is for next
-          if (clickX > containerWidth * 0.7) {
+          // In RTL: right 40% is for previous, left 60% is for next
+          if (clickX > containerWidth * 0.6) {
             handlePreviousStory();
           } else {
             handleNextStory();
