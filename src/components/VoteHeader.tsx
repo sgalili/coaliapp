@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { MapPin, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useKYC } from "@/hooks/useKYC";
 import { KYCForm } from "@/components/KYCForm";
+import { SectionHeader } from "@/components/SectionHeader";
+import { Vote } from "lucide-react";
 export const VoteHeader = () => {
-  const [showCitySelector, setShowCitySelector] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState("תל אביב");
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const {
@@ -36,49 +36,27 @@ export const VoteHeader = () => {
     });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
-  const cities = ["תל אביב", "ירושלים", "חיפה", "באר שבע", "פתח תקווה", "נתניה", "אשדוד", "ראשון לציון", "הרצליה", "רעננה", "כפר סבא", "רחובות", "בת ים", "חולון", "גבעתיים", "קריית אונו"];
+
   return <>
       {/* Fixed Header */}
       <div className={`fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-md border-b border-border transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-        <div className="flex items-center justify-between px-[17px] py-[12px]">
-          {/* Location Selector */}
-          <button onClick={() => setShowCitySelector(true)} className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted hover:bg-muted/80 transition-colors">
-            <MapPin className="w-4 h-4 text-primary" />
-            <span className="font-medium text-sm">{selectedLocation}</span>
-          </button>
+        <div className="flex items-center justify-between pr-4">
+          {/* Section Header */}
+          <div className="flex-1">
+            <SectionHeader 
+              icon={Vote}
+              title="החלטות"
+              description="הצבע על הנושאים החשובים לך"
+              className="pt-3 pb-3 border-b-0"
+            />
+          </div>
 
           {/* Create Vote Button */}
-          <button className="w-10 h-10 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center">
+          <button className="w-10 h-10 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center ml-2">
             <Plus className="w-5 h-5" />
           </button>
         </div>
-
       </div>
-
-      {/* City Selector Modal */}
-      <Dialog open={showCitySelector} onOpenChange={setShowCitySelector}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-right">בחירת עיר</DialogTitle>
-              <button onClick={() => setShowCitySelector(false)} className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </DialogHeader>
-          
-          <div className="max-h-80 overflow-y-auto">
-            <div className="space-y-1">
-              {cities.map(city => <button key={city} onClick={() => {
-              setSelectedLocation(city);
-              setShowCitySelector(false);
-            }} className="w-full text-right p-3 hover:bg-muted rounded-lg transition-colors border-b border-border last:border-b-0">
-                  {city}
-                </button>)}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* KYC Dialog */}
       {showKYC && <Dialog open={showKYC} onOpenChange={handleKYCClose}>
