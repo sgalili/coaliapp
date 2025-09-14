@@ -148,8 +148,8 @@ export const PollStoryCard = ({
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/40" />
       
-      {/* Content */}
-      <div className="relative z-10 flex flex-col h-full">
+        {/* Content */}
+        <div className="relative z-50 flex flex-col h-full pointer-events-auto">
         
         {/* Top controls */}
         <div className="flex items-center justify-between p-4 pt-16">

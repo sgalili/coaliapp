@@ -123,13 +123,13 @@ const DecisionsPage = () => {
       <div className="h-screen overflow-auto relative">
         {/* Left Tap Zone (70% - Next in RTL) */}
         <div 
-          className="absolute top-0 left-0 w-[70%] h-full z-0 cursor-pointer"
+          className="absolute top-0 left-0 w-[70%] h-full z-30 cursor-pointer"
           onClick={handleNextStory}
         />
         
         {/* Right Tap Zone (30% - Previous in RTL) */}
         <div 
-          className="absolute top-0 right-0 w-[30%] h-full z-0 cursor-pointer"
+          className="absolute top-0 right-0 w-[30%] h-full z-30 cursor-pointer"
           onClick={handlePreviousStory}
         />
         
