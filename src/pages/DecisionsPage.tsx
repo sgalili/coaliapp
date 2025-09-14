@@ -11,11 +11,6 @@ const DecisionsPage = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const indexRef = useRef(0);
-  const isNavigatingRef = useRef(false);
-  const wheelEndTimerRef = useRef<number | null>(null);
-  const swipeHandledRef = useRef(false);
 
 
   const handleNextStory = () => {
@@ -48,99 +43,6 @@ const DecisionsPage = () => {
     );
   };
 
-  // Sync indexRef with currentStoryIndex
-  useEffect(() => { 
-    indexRef.current = currentStoryIndex; 
-  }, [currentStoryIndex]);
-
-  // Event listeners setup - only once
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (isNavigatingRef.current) return;
-
-      // 1 seul +1 / -1 par "rafale" de wheel
-      if (e.deltaY > 0 && indexRef.current < mockPollStories.length - 1) {
-        isNavigatingRef.current = true;
-        setCurrentStoryIndex(i => i + 1);
-      } else if (e.deltaY < 0 && indexRef.current > 0) {
-        isNavigatingRef.current = true;
-        setCurrentStoryIndex(i => i - 1);
-      }
-
-      // on relâche le lock seulement quand la rafale est VRAIMENT finie
-      if (wheelEndTimerRef.current) clearTimeout(wheelEndTimerRef.current);
-      wheelEndTimerRef.current = window.setTimeout(() => {
-        isNavigatingRef.current = false;
-      }, 350);
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isNavigatingRef.current) return;
-      if (e.key === 'ArrowDown' && indexRef.current < mockPollStories.length - 1) {
-        isNavigatingRef.current = true; 
-        setCurrentStoryIndex(i => i + 1);
-      } else if (e.key === 'ArrowUp' && indexRef.current > 0) {
-        isNavigatingRef.current = true; 
-        setCurrentStoryIndex(i => i - 1);
-      }
-      if (isNavigatingRef.current) {
-        // petit debounce pour éviter répétitions OS
-        setTimeout(() => { isNavigatingRef.current = false; }, 250);
-      }
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (isNavigatingRef.current) return;
-
-      const startY = e.touches[0].clientY;
-      const startX = e.touches[0].clientX;
-      swipeHandledRef.current = false;
-
-      const handleTouchMove = (e: TouchEvent) => {
-        if (swipeHandledRef.current) return;
-
-        const deltaY = startY - e.touches[0].clientY;
-        const deltaX = e.touches[0].clientX - startX;
-
-        if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
-          // 1 seul changement par swipe
-          if (deltaY > 0 && indexRef.current < mockPollStories.length - 1) {
-            isNavigatingRef.current = true;
-            setCurrentStoryIndex(i => i + 1);
-          } else if (deltaY < 0 && indexRef.current > 0) {
-            isNavigatingRef.current = true;
-            setCurrentStoryIndex(i => i - 1);
-          }
-          swipeHandledRef.current = true;
-        }
-      };
-
-      const handleTouchEnd = () => {
-        // libère le lock à la FIN du geste (pas sur timer arbitraire)
-        isNavigatingRef.current = false;
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-      };
-
-      document.addEventListener('touchmove', handleTouchMove, { passive: true });
-      document.addEventListener('touchend', handleTouchEnd, { passive: true });
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('wheel', handleWheel, { passive: false });
-      container.addEventListener('touchstart', handleTouchStart);
-      document.addEventListener('keydown', handleKeyDown);
-      
-      return () => {
-        container.removeEventListener('wheel', handleWheel);
-        container.removeEventListener('touchstart', handleTouchStart);
-        document.removeEventListener('keydown', handleKeyDown);
-        if (wheelEndTimerRef.current) clearTimeout(wheelEndTimerRef.current);
-      };
-    }
-  }, []);
 
   const readPollText = async (text: string) => {
     try {
@@ -217,11 +119,20 @@ const DecisionsPage = () => {
         <Plus className="w-5 h-5" />
       </Button>
 
-      {/* Stories Container */}
-      <div 
-        ref={containerRef}
-        className="h-screen overflow-hidden touch-pan-y select-none"
-      >
+      {/* Stories Container with Tap Zones */}
+      <div className="h-screen overflow-auto relative">
+        {/* Left Tap Zone (70% - Next in RTL) */}
+        <div 
+          className="absolute top-0 left-0 w-[70%] h-full z-30 cursor-pointer"
+          onClick={handleNextStory}
+        />
+        
+        {/* Right Tap Zone (30% - Previous in RTL) */}
+        <div 
+          className="absolute top-0 right-0 w-[30%] h-full z-30 cursor-pointer"
+          onClick={handlePreviousStory}
+        />
+        
         <PollStoryCard
           story={currentStory}
           onVote={handleVote}
