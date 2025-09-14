@@ -43,6 +43,17 @@ const DecisionsPage = () => {
     );
   };
 
+  const handleToggleMute = () => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    // If muting, immediately stop any ongoing speech synthesis
+    if (newMutedState && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsReadingText(false);
+    }
+  };
+
 
   const readPollText = async (text: string) => {
     try {
@@ -140,7 +151,7 @@ const DecisionsPage = () => {
           onVote={handleVote}
           onNext={handleNextStory}
           isMuted={isMuted}
-          onToggleMute={() => setIsMuted(!isMuted)}
+          onToggleMute={handleToggleMute}
           isActive={true}
         />
       </div>
