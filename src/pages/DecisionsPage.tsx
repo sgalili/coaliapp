@@ -6,14 +6,13 @@ import { StoriesProgressBar } from "@/components/StoriesProgressBar";
 import { Button } from "@/components/ui/button";
 import { mockPollStories } from "@/data/mockPollStories";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 const DecisionsPage = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const indexRef = useRef(0);
   const isNavigatingRef = useRef(false);
   const wheelEndTimerRef = useRef<number | null>(null);
   const swipeHandledRef = useRef(false);
@@ -49,34 +48,39 @@ const DecisionsPage = () => {
     );
   };
 
-  // Block-based navigation - one swipe = one card movement
+  // Sync indexRef with currentStoryIndex
+  useEffect(() => { 
+    indexRef.current = currentStoryIndex; 
+  }, [currentStoryIndex]);
+
+  // Event listeners setup - only once
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (isNavigatingRef.current) return;
 
       // 1 seul +1 / -1 par "rafale" de wheel
-      if (e.deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
+      if (e.deltaY > 0 && indexRef.current < mockPollStories.length - 1) {
         isNavigatingRef.current = true;
         setCurrentStoryIndex(i => i + 1);
-      } else if (e.deltaY < 0 && currentStoryIndex > 0) {
+      } else if (e.deltaY < 0 && indexRef.current > 0) {
         isNavigatingRef.current = true;
         setCurrentStoryIndex(i => i - 1);
       }
 
       // on relâche le lock seulement quand la rafale est VRAIMENT finie
-      if (wheelEndTimerRef.current) window.clearTimeout(wheelEndTimerRef.current);
+      if (wheelEndTimerRef.current) clearTimeout(wheelEndTimerRef.current);
       wheelEndTimerRef.current = window.setTimeout(() => {
         isNavigatingRef.current = false;
-      }, 350); // adapte 300–450ms si besoin
+      }, 350);
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isNavigatingRef.current) return;
-      if (e.key === 'ArrowDown' && currentStoryIndex < mockPollStories.length - 1) {
+      if (e.key === 'ArrowDown' && indexRef.current < mockPollStories.length - 1) {
         isNavigatingRef.current = true; 
         setCurrentStoryIndex(i => i + 1);
-      } else if (e.key === 'ArrowUp' && currentStoryIndex > 0) {
+      } else if (e.key === 'ArrowUp' && indexRef.current > 0) {
         isNavigatingRef.current = true; 
         setCurrentStoryIndex(i => i - 1);
       }
@@ -101,10 +105,10 @@ const DecisionsPage = () => {
 
         if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
           // 1 seul changement par swipe
-          if (deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
+          if (deltaY > 0 && indexRef.current < mockPollStories.length - 1) {
             isNavigatingRef.current = true;
             setCurrentStoryIndex(i => i + 1);
-          } else if (deltaY < 0 && currentStoryIndex > 0) {
+          } else if (deltaY < 0 && indexRef.current > 0) {
             isNavigatingRef.current = true;
             setCurrentStoryIndex(i => i - 1);
           }
@@ -133,9 +137,10 @@ const DecisionsPage = () => {
         container.removeEventListener('wheel', handleWheel);
         container.removeEventListener('touchstart', handleTouchStart);
         document.removeEventListener('keydown', handleKeyDown);
+        if (wheelEndTimerRef.current) clearTimeout(wheelEndTimerRef.current);
       };
     }
-  }, [currentStoryIndex, mockPollStories.length]);
+  }, []);
 
   const readPollText = async (text: string) => {
     try {
@@ -215,7 +220,7 @@ const DecisionsPage = () => {
       {/* Stories Container */}
       <div 
         ref={containerRef}
-        className="h-screen overflow-hidden touch-none select-none"
+        className="h-screen overflow-hidden touch-pan-y select-none"
       >
         <PollStoryCard
           story={currentStory}
