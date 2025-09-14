@@ -48,9 +48,8 @@ export const VoteHeader = () => {
           </button>
 
           {/* Create Vote Button */}
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
-            <Plus className="w-4 h-4" />
-            <span className="font-medium text-sm">יצירת הצבעה</span>
+          <button className="w-10 h-10 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center">
+            <Plus className="w-5 h-5" />
           </button>
         </div>
 
