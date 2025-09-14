@@ -17,7 +17,10 @@ const DecisionsPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout>();
   const [touchStart, setTouchStart] = useState<{ y: number; time: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const dragTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Auto-progress story
   useEffect(() => {
@@ -92,31 +95,64 @@ const DecisionsPage = () => {
 
   const handleTouchStart = (event: React.TouchEvent) => {
     event.preventDefault();
-    setTouchStart({
+    const startData = {
       y: event.touches[0].clientY,
       time: Date.now()
-    });
+    };
+    setTouchStart(startData);
+    setIsDragging(false);
+    setDebugInfo(`Touch Start: ${startData.y}px`);
+    
+    // Timeout pour considérer que c'est un drag après 100ms
+    dragTimeoutRef.current = setTimeout(() => {
+      setIsDragging(true);
+    }, 100);
   };
 
   const handleMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault();
-    setTouchStart({
+    // Ne pas preventDefault sur mouseDown pour éviter les conflits
+    const startData = {
       y: event.clientY,
       time: Date.now()
-    });
+    };
+    setTouchStart(startData);
+    setIsDragging(false);
+    setDebugInfo(`Mouse Start: ${startData.y}px`);
+    
+    // Timeout pour considérer que c'est un drag après 150ms (plus long pour trackpad)
+    dragTimeoutRef.current = setTimeout(() => {
+      setIsDragging(true);
+    }, 150);
   };
 
   const handleTouchMove = (event: React.TouchEvent) => {
-    event.preventDefault(); // Prevent native scrolling
+    if (!touchStart) return;
+    event.preventDefault();
+    
+    const currentY = event.touches[0].clientY;
+    const deltaY = touchStart.y - currentY;
+    setDebugInfo(`Touch Move: ${currentY}px, Δ${deltaY}px`);
   };
 
   const handleMouseMove = (event: React.MouseEvent) => {
     if (!touchStart) return;
-    event.preventDefault();
+    // Ne pas preventDefault sur mouseMove sauf si on est en train de dragger
+    if (isDragging) {
+      event.preventDefault();
+    }
+    
+    const currentY = event.clientY;
+    const deltaY = touchStart.y - currentY;
+    setDebugInfo(`Mouse Move: ${currentY}px, Δ${deltaY}px, Dragging: ${isDragging}`);
   };
 
   const handleTouchEnd = (event: React.TouchEvent) => {
     if (!touchStart) return;
+    
+    // Clear timeout
+    if (dragTimeoutRef.current) {
+      clearTimeout(dragTimeoutRef.current);
+    }
     
     const endY = event.changedTouches[0].clientY;
     const endTime = Date.now();
@@ -125,25 +161,34 @@ const DecisionsPage = () => {
     const deltaTime = endTime - touchStart.time;
     const velocity = Math.abs(deltaY) / deltaTime;
     
-    // Require minimum distance (50px) OR high velocity
-    const minDistance = 50;
-    const minVelocity = 0.2;
+    // Seuils adaptés pour touch
+    const minDistance = 30;
+    const minVelocity = 0.15;
     
-    if (Math.abs(deltaY) > minDistance || velocity > minVelocity) {
+    setDebugInfo(`Touch End: Δ${deltaY}px, v${velocity.toFixed(2)}, isDrag: ${isDragging}`);
+    
+    if (isDragging && (Math.abs(deltaY) > minDistance || velocity > minVelocity)) {
       if (deltaY > 0) {
-        // Swipe up - next story
         handleNextStory();
       } else {
-        // Swipe down - previous story  
         handlePreviousStory();
       }
     }
     
     setTouchStart(null);
+    setIsDragging(false);
+    
+    // Clear debug info after 2 seconds
+    setTimeout(() => setDebugInfo(''), 2000);
   };
 
   const handleMouseUp = (event: React.MouseEvent) => {
     if (!touchStart) return;
+    
+    // Clear timeout
+    if (dragTimeoutRef.current) {
+      clearTimeout(dragTimeoutRef.current);
+    }
     
     const endY = event.clientY;
     const endTime = Date.now();
@@ -152,27 +197,34 @@ const DecisionsPage = () => {
     const deltaTime = endTime - touchStart.time;
     const velocity = Math.abs(deltaY) / deltaTime;
     
-    // Require minimum distance (50px) OR high velocity
-    const minDistance = 50;
-    const minVelocity = 0.2;
+    // Seuils plus petits pour trackpad MacBook
+    const minDistance = 20; // Plus petit pour trackpad
+    const minVelocity = 0.08; // Plus petit pour trackpad
     
-    if (Math.abs(deltaY) > minDistance || velocity > minVelocity) {
+    setDebugInfo(`Mouse End: Δ${deltaY}px, v${velocity.toFixed(2)}, isDrag: ${isDragging}, time: ${deltaTime}ms`);
+    
+    // Vérifier si c'est un swipe valide
+    if (isDragging && (Math.abs(deltaY) > minDistance || velocity > minVelocity)) {
       if (deltaY > 0) {
-        // Swipe up - next story
         handleNextStory();
       } else {
-        // Swipe down - previous story  
         handlePreviousStory();
       }
     }
     
     setTouchStart(null);
+    setIsDragging(false);
+    
+    // Clear debug info after 2 seconds
+    setTimeout(() => setDebugInfo(''), 2000);
   };
 
   const handleClick = (event: React.MouseEvent) => {
-    // Ne pas toggle pause si c'est un swipe
-    if (!touchStart) {
+    // Ne toggle pause que si ce n'est pas un drag
+    if (!isDragging && !touchStart) {
       setIsPaused(!isPaused);
+      setDebugInfo('Click: Pause toggled');
+      setTimeout(() => setDebugInfo(''), 1000);
     }
   };
 
@@ -252,6 +304,21 @@ const DecisionsPage = () => {
       >
         <Plus className="w-5 h-5" />
       </Button>
+
+      {/* Debug Info */}
+      {debugInfo && (
+        <div className="fixed top-16 left-4 z-50 bg-black/80 text-white px-3 py-2 rounded-lg text-sm font-mono backdrop-blur-sm">
+          {debugInfo}
+        </div>
+      )}
+
+      {/* Visual swipe indicators */}
+      <div className="fixed top-1/2 left-4 transform -translate-y-1/2 z-40 text-white/50 text-xs">
+        ↑ Next Story
+      </div>
+      <div className="fixed top-1/2 left-4 transform -translate-y-1/2 mt-8 z-40 text-white/50 text-xs">
+        ↓ Previous Story
+      </div>
 
       {/* Stories Container */}
       <div 
