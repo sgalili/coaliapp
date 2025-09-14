@@ -21,6 +21,7 @@ import MyGovPage from "./pages/MyGovPage";
 import MyGovGeneratePage from "./pages/MyGovGeneratePage";
 import MyGovSharePage from "./pages/MyGovSharePage";
 import { AuthPage } from "./pages/AuthPage";
+import DecisionsPage from "./pages/DecisionsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
           <Route path="/mygov" element={<MyGovPage />} />
           <Route path="/mygov/generate" element={<MyGovGeneratePage />} />
           <Route path="/mygov/share/:shareId" element={<MyGovSharePage />} />
+          <Route path="/decisions" element={<DecisionsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
