@@ -85,27 +85,44 @@ const DecisionsPage = () => {
     setStoryProgress(0);
   };
 
-  const handleSwipe = (event: React.TouchEvent) => {
-    const startY = event.touches[0].clientY;
+  const [touchStart, setTouchStart] = useState<{ y: number; time: number } | null>(null);
+
+  const handleTouchStart = (event: React.TouchEvent) => {
+    setTouchStart({
+      y: event.touches[0].clientY,
+      time: Date.now()
+    });
+  };
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    event.preventDefault(); // Prevent native scrolling
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    if (!touchStart) return;
     
-    const handleTouchEnd = (endEvent: TouchEvent) => {
-      const endY = endEvent.changedTouches[0].clientY;
-      const deltaY = startY - endY;
-      
-      if (Math.abs(deltaY) > 50) { // Minimum swipe distance
-        if (deltaY > 0) {
-          // Swipe up - next story
-          handleNextStory();
-        } else {
-          // Swipe down - previous story
-          handlePreviousStory();
-        }
+    const endY = event.changedTouches[0].clientY;
+    const endTime = Date.now();
+    
+    const deltaY = touchStart.y - endY;
+    const deltaTime = endTime - touchStart.time;
+    const velocity = Math.abs(deltaY) / deltaTime;
+    
+    // Require minimum distance (80px) OR high velocity
+    const minDistance = 80;
+    const minVelocity = 0.3;
+    
+    if (Math.abs(deltaY) > minDistance || velocity > minVelocity) {
+      if (deltaY > 0) {
+        // Swipe up - next story
+        handleNextStory();
+      } else {
+        // Swipe down - previous story  
+        handlePreviousStory();
       }
-      
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
+    }
     
-    document.addEventListener('touchend', handleTouchEnd);
+    setTouchStart(null);
   };
 
   const currentStory = mockPollStories[currentStoryIndex];
@@ -151,8 +168,10 @@ const DecisionsPage = () => {
       {/* Stories Container */}
       <div 
         ref={containerRef}
-        className="h-screen overflow-hidden"
-        onTouchStart={handleSwipe}
+        className="h-screen overflow-hidden touch-none"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <PollStoryCard
           story={currentStory}
