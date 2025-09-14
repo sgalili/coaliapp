@@ -93,9 +93,12 @@ const DecisionsPage = () => {
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
+      // Fixed direction logic: scroll down → next, scroll up → previous
       if (e.deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
+        // Scroll down → next story
         handleNextStory();
       } else if (e.deltaY < 0 && currentStoryIndex > 0) {
+        // Scroll up → previous story
         handlePreviousStory();
       }
     };
@@ -112,21 +115,24 @@ const DecisionsPage = () => {
       const startY = e.touches[0].clientY;
       const startX = e.touches[0].clientX;
       
-      const handleTouchMove = (e: TouchEvent) => {
-        const deltaY = startY - e.touches[0].clientY;
-        const deltaX = e.touches[0].clientX - startX;
-        
-        if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
-          // Vertical swipe (story navigation)
-          if (deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
-            handleNextStory();
-          } else if (deltaY < 0 && currentStoryIndex > 0) {
-            handlePreviousStory();
-          }
-          document.removeEventListener('touchmove', handleTouchMove);
-          document.removeEventListener('touchend', handleTouchEnd);
+    const handleTouchMove = (e: TouchEvent) => {
+      const deltaY = startY - e.touches[0].clientY;
+      const deltaX = e.touches[0].clientX - startX;
+      
+      if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
+        e.preventDefault();
+        // Vertical swipe (story navigation) - Fixed direction logic
+        if (deltaY < 0 && currentStoryIndex < mockPollStories.length - 1) {
+          // Swipe down (deltaY < 0) → next story
+          handleNextStory();
+        } else if (deltaY > 0 && currentStoryIndex > 0) {
+          // Swipe up (deltaY > 0) → previous story
+          handlePreviousStory();
         }
-      };
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
       
       const handleTouchEnd = () => {
         document.removeEventListener('touchmove', handleTouchMove);
