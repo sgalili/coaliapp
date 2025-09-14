@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
@@ -9,45 +8,6 @@ interface VoteFiltersProps {
 }
 
 export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) => {
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollYRef = useRef(0);
-  
-  // Scroll detection
-  useEffect(() => {
-    // Reset scroll state when filter changes
-    setIsVisible(true);
-    lastScrollYRef.current = 0;
-    
-    const handleScroll = () => {
-      const scrollContainer = document.querySelector('[class*="h-screen"][class*="overflow-y-scroll"]');
-      if (!scrollContainer) return;
-      
-      const currentScrollY = scrollContainer.scrollTop;
-      const lastScrollY = lastScrollYRef.current;
-      
-      if (currentScrollY < 10) {
-        // Always show filter at the top
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down and past 100px
-        setIsVisible(false);
-      } else if (lastScrollY - currentScrollY > 5) {
-        // Scrolling up by at least 5px
-        setIsVisible(true);
-      }
-      
-      lastScrollYRef.current = currentScrollY;
-    };
-
-    const scrollContainer = document.querySelector('[class*="h-screen"][class*="overflow-y-scroll"]');
-    if (scrollContainer) {
-      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-      
-      return () => {
-        scrollContainer.removeEventListener('scroll', handleScroll);
-      };
-    }
-  }, [activeFilter]);
 
   const filters = [
     { id: 'for-me' as const, label: 'החלטות' },
@@ -56,9 +16,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
   ];
 
   return (
-    <div className={`fixed top-[68px] left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
-    }`}>
+    <div className="fixed top-[68px] left-1/2 transform -translate-x-1/2 z-50">
       <div className="flex items-center gap-1 px-2 py-1">
         {filters.map((filter) => (
           <button
