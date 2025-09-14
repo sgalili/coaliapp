@@ -55,19 +55,58 @@ const DecisionsPage = () => {
   };
 
 
-  const readPollText = async (text: string) => {
+  const constructIntelligentText = (story: any) => {
+    let text = `השאלה היא: ${story.question}. `;
+    text += `${story.description}. `;
+    
+    // Add options based on poll type
+    if (story.pollType === "simple") {
+      // For simple polls (usually 2 options)
+      const option1 = story.options[0]?.text || "";
+      const option2 = story.options[1]?.text || "";
+      text += `האפשרויות הן: ${option1} או ${option2}.`;
+    } else if (story.pollType === "expert") {
+      // For expert/candidate polls
+      text += "המועמדים הם: ";
+      story.options.forEach((option: any, index: number) => {
+        if (index === story.options.length - 1) {
+          text += `ו${option.text}.`;
+        } else if (index === story.options.length - 2) {
+          text += `${option.text} `;
+        } else {
+          text += `${option.text}, `;
+        }
+      });
+    } else {
+      // For multiple choice polls
+      text += "האפשרויות כוללות: ";
+      story.options.forEach((option: any, index: number) => {
+        if (index === 0) {
+          text += `${option.text}`;
+        } else if (index === story.options.length - 1) {
+          text += ` ו${option.text}.`;
+        } else {
+          text += `, ${option.text}`;
+        }
+      });
+    }
+    
+    return text;
+  };
+
+  const readPollText = async (story: any) => {
     try {
       setIsReadingText(true);
       
-      // Utiliser Web Speech API au lieu de l'API OpenAI qui a atteint sa limite
       if ('speechSynthesis' in window) {
-        // Arrêter toute lecture en cours
+        // Stop any ongoing speech
         window.speechSynthesis.cancel();
         
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'he-IL'; // Hébreu
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
+        const intelligentText = constructIntelligentText(story);
+        const utterance = new SpeechSynthesisUtterance(intelligentText);
+        utterance.lang = 'he-IL';
+        utterance.rate = 0.8; // Slightly slower for better comprehension
+        utterance.pitch = 1.1; // Slightly higher pitch for more professional tone
         
         utterance.onend = () => setIsReadingText(false);
         utterance.onerror = () => setIsReadingText(false);
@@ -87,8 +126,7 @@ const DecisionsPage = () => {
   useEffect(() => {
     if (!isMuted && currentStoryIndex < mockPollStories.length) {
       const currentStory = mockPollStories[currentStoryIndex];
-      const textToRead = `${currentStory.question}. ${currentStory.description}`;
-      readPollText(textToRead);
+      readPollText(currentStory);
     }
   }, [currentStoryIndex, isMuted]);
 
