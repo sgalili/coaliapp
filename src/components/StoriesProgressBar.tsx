@@ -3,13 +3,11 @@ import { cn } from "@/lib/utils";
 interface StoriesProgressBarProps {
   totalStories: number;
   currentStoryIndex: number;
-  currentProgress: number; // 0-100
 }
 
 export const StoriesProgressBar = ({ 
   totalStories, 
-  currentStoryIndex, 
-  currentProgress 
+  currentStoryIndex
 }: StoriesProgressBarProps) => {
   return (
     <div className="fixed top-4 left-4 right-4 z-50 flex gap-1">
@@ -21,16 +19,10 @@ export const StoriesProgressBar = ({
           <div 
             className={cn(
               "h-full transition-all duration-300 ease-linear rounded-full",
-              index < currentStoryIndex 
+              index <= currentStoryIndex 
                 ? "w-full bg-white" 
-                : index === currentStoryIndex
-                ? "bg-white"
                 : "w-0 bg-white/50"
             )}
-            style={{
-              width: index === currentStoryIndex ? `${currentProgress}%` : 
-                     index < currentStoryIndex ? '100%' : '0%'
-            }}
           />
         </div>
       ))}

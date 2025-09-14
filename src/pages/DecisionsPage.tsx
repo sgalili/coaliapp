@@ -10,59 +10,15 @@ import { supabase } from "@/integrations/supabase/client";
 
 const DecisionsPage = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-  const [storyProgress, setStoryProgress] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
   const [isReadingText, setIsReadingText] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout>();
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const lastNavigationTime = useRef<number>(0);
 
-  // Auto-progress story
-  useEffect(() => {
-    if (currentStoryIndex >= mockPollStories.length || isPaused) return;
-    
-    const currentStory = mockPollStories[currentStoryIndex];
-    if (currentStory.hasUserVoted) {
-      // Skip already voted stories faster
-      progressIntervalRef.current = setInterval(() => {
-        setStoryProgress(prev => {
-          if (prev >= 100) {
-            handleNextStory();
-            return 0;
-          }
-          return prev + 2; // Faster progression for voted stories
-        });
-      }, 50);
-    } else {
-      // Normal progression for new stories
-      progressIntervalRef.current = setInterval(() => {
-        setStoryProgress(prev => {
-          if (prev >= 100) {
-            handleNextStory();
-            return 0;
-          }
-          return prev + 0.5; // Slower progression to allow reading and voting
-        });
-      }, 100);
-    }
-
-    return () => {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-    };
-  }, [currentStoryIndex, isPaused]);
 
   const handleNextStory = () => {
-    const now = Date.now();
-    if (now - lastNavigationTime.current < 300) return; // Throttle to 300ms
-    lastNavigationTime.current = now;
-    
     if (currentStoryIndex < mockPollStories.length - 1) {
       setCurrentStoryIndex(prev => prev + 1);
-      setStoryProgress(0);
     } else {
       // End of stories - show completion message
       toast.success("סיימת את כל ההצבעות! 🎉", {
@@ -73,13 +29,8 @@ const DecisionsPage = () => {
   };
 
   const handlePreviousStory = () => {
-    const now = Date.now();
-    if (now - lastNavigationTime.current < 300) return; // Throttle to 300ms
-    lastNavigationTime.current = now;
-    
     if (currentStoryIndex > 0) {
       setCurrentStoryIndex(prev => prev - 1);
-      setStoryProgress(0);
     }
   };
 
@@ -93,9 +44,6 @@ const DecisionsPage = () => {
         ? { ...story, hasUserVoted: true, userVotedOption: optionId }
         : story
     );
-    
-    // Reset progress to show results
-    setStoryProgress(0);
   };
 
   // Block-based navigation - one swipe = one card movement
@@ -207,7 +155,6 @@ const DecisionsPage = () => {
           <Button 
             onClick={() => {
               setCurrentStoryIndex(0);
-              setStoryProgress(0);
             }}
             className="bg-white text-primary hover:bg-white/90"
           >
@@ -225,7 +172,6 @@ const DecisionsPage = () => {
       <StoriesProgressBar 
         totalStories={mockPollStories.length}
         currentStoryIndex={currentStoryIndex}
-        currentProgress={storyProgress}
       />
 
       {/* Add Poll Button */}
@@ -240,8 +186,7 @@ const DecisionsPage = () => {
       {/* Stories Container */}
       <div 
         ref={containerRef}
-        className="h-screen overflow-hidden touch-none cursor-pointer select-none"
-        onClick={() => setIsPaused(!isPaused)}
+        className="h-screen overflow-hidden touch-none select-none"
       >
         <PollStoryCard
           story={currentStory}
