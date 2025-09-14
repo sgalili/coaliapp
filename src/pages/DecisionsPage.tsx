@@ -15,6 +15,8 @@ const DecisionsPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isNavigatingRef = useRef(false);
+  const wheelEndTimerRef = useRef<number | null>(null);
+  const swipeHandledRef = useRef(false);
 
 
   const handleNextStory = () => {
@@ -52,65 +54,73 @@ const DecisionsPage = () => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (isNavigatingRef.current) return;
-      
+
+      // 1 seul +1 / -1 par "rafale" de wheel
       if (e.deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
         isNavigatingRef.current = true;
-        setCurrentStoryIndex(prev => prev + 1);
-        setTimeout(() => { isNavigatingRef.current = false; }, 200);
+        setCurrentStoryIndex(i => i + 1);
       } else if (e.deltaY < 0 && currentStoryIndex > 0) {
         isNavigatingRef.current = true;
-        setCurrentStoryIndex(prev => prev - 1);
-        setTimeout(() => { isNavigatingRef.current = false; }, 200);
+        setCurrentStoryIndex(i => i - 1);
       }
+
+      // on relâche le lock seulement quand la rafale est VRAIMENT finie
+      if (wheelEndTimerRef.current) window.clearTimeout(wheelEndTimerRef.current);
+      wheelEndTimerRef.current = window.setTimeout(() => {
+        isNavigatingRef.current = false;
+      }, 350); // adapte 300–450ms si besoin
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isNavigatingRef.current) return;
-      
       if (e.key === 'ArrowDown' && currentStoryIndex < mockPollStories.length - 1) {
-        isNavigatingRef.current = true;
-        setCurrentStoryIndex(prev => prev + 1);
-        setTimeout(() => { isNavigatingRef.current = false; }, 200);
+        isNavigatingRef.current = true; 
+        setCurrentStoryIndex(i => i + 1);
       } else if (e.key === 'ArrowUp' && currentStoryIndex > 0) {
-        isNavigatingRef.current = true;
-        setCurrentStoryIndex(prev => prev - 1);
-        setTimeout(() => { isNavigatingRef.current = false; }, 200);
+        isNavigatingRef.current = true; 
+        setCurrentStoryIndex(i => i - 1);
+      }
+      if (isNavigatingRef.current) {
+        // petit debounce pour éviter répétitions OS
+        setTimeout(() => { isNavigatingRef.current = false; }, 250);
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
       if (isNavigatingRef.current) return;
-      
+
       const startY = e.touches[0].clientY;
       const startX = e.touches[0].clientX;
-      
+      swipeHandledRef.current = false;
+
       const handleTouchMove = (e: TouchEvent) => {
+        if (swipeHandledRef.current) return;
+
         const deltaY = startY - e.touches[0].clientY;
         const deltaX = e.touches[0].clientX - startX;
-        
-        if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) { 
-          // Vertical swipe (story navigation) - block-based, one movement per swipe
+
+        if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+          // 1 seul changement par swipe
           if (deltaY > 0 && currentStoryIndex < mockPollStories.length - 1) {
             isNavigatingRef.current = true;
-            setCurrentStoryIndex(prev => prev + 1);
-            setTimeout(() => { isNavigatingRef.current = false; }, 200);
+            setCurrentStoryIndex(i => i + 1);
           } else if (deltaY < 0 && currentStoryIndex > 0) {
             isNavigatingRef.current = true;
-            setCurrentStoryIndex(prev => prev - 1);
-            setTimeout(() => { isNavigatingRef.current = false; }, 200);
+            setCurrentStoryIndex(i => i - 1);
           }
-          document.removeEventListener('touchmove', handleTouchMove);
-          document.removeEventListener('touchend', handleTouchEnd);
+          swipeHandledRef.current = true;
         }
       };
-      
+
       const handleTouchEnd = () => {
+        // libère le lock à la FIN du geste (pas sur timer arbitraire)
+        isNavigatingRef.current = false;
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
       };
-      
-      document.addEventListener('touchmove', handleTouchMove);
-      document.addEventListener('touchend', handleTouchEnd);
+
+      document.addEventListener('touchmove', handleTouchMove, { passive: true });
+      document.addEventListener('touchend', handleTouchEnd, { passive: true });
     };
 
     const container = containerRef.current;
