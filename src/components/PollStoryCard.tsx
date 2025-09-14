@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Volume2, VolumeX, Play, Pause, RotateCcw } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LocationBadge, OrganizationType } from "@/components/LocationBadge";
 import { Button } from "@/components/ui/button";
@@ -53,7 +53,6 @@ export const PollStoryCard = ({
 }: PollStoryCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isVoting, setIsVoting] = useState(false);
-  const [isNarrationPlaying, setIsNarrationPlaying] = useState(false);
   const [showResults, setShowResults] = useState(story.hasUserVoted);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -94,20 +93,6 @@ export const PollStoryCard = ({
         onNext();
       }, 3000);
     }, 500);
-  };
-
-  const playNarration = async () => {
-    setIsNarrationPlaying(true);
-    
-    // Simulate AI narration (would use ElevenLabs in real implementation)
-    setTimeout(() => {
-      setIsNarrationPlaying(false);
-    }, 5000);
-    
-    toast.success("מפעיל הסבר בינה מלאכותית...", {
-      position: "bottom-center",
-      duration: 2000
-    });
   };
 
   const getBackgroundElement = () => {
@@ -159,23 +144,6 @@ export const PollStoryCard = ({
           />
           
           <div className="flex items-center gap-2">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation();
-                playNarration();
-              }}
-              className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
-              disabled={isNarrationPlaying}
-            >
-              {isNarrationPlaying ? (
-                <Pause className="w-5 h-5" />
-              ) : (
-                <Play className="w-5 h-5" />
-              )}
-            </Button>
-            
             <Button
               size="icon"
               variant="ghost"
