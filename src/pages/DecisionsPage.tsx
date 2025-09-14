@@ -17,6 +17,7 @@ const DecisionsPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout>();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastNavigationTime = useRef<number>(0);
 
   // Auto-progress story
   useEffect(() => {
@@ -55,6 +56,10 @@ const DecisionsPage = () => {
   }, [currentStoryIndex, isPaused]);
 
   const handleNextStory = () => {
+    const now = Date.now();
+    if (now - lastNavigationTime.current < 300) return; // Throttle to 300ms
+    lastNavigationTime.current = now;
+    
     if (currentStoryIndex < mockPollStories.length - 1) {
       setCurrentStoryIndex(prev => prev + 1);
       setStoryProgress(0);
@@ -68,6 +73,10 @@ const DecisionsPage = () => {
   };
 
   const handlePreviousStory = () => {
+    const now = Date.now();
+    if (now - lastNavigationTime.current < 300) return; // Throttle to 300ms
+    lastNavigationTime.current = now;
+    
     if (currentStoryIndex > 0) {
       setCurrentStoryIndex(prev => prev - 1);
       setStoryProgress(0);
