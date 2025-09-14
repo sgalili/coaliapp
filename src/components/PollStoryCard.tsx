@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LocationBadge, OrganizationType } from "@/components/LocationBadge";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
 
 export interface PollOption {
@@ -11,6 +12,17 @@ export interface PollOption {
   votes: number;
   percentage: number;
   color?: string;
+  // Profile details for expert polls
+  avatar?: string;
+  city?: string;
+  expertise?: string[];
+  videoUrl?: string;
+  bio?: string;
+  stats?: {
+    trustScore?: number;
+    posts?: number;
+    followers?: number;
+  };
 }
 
 export interface PollStory {
@@ -54,7 +66,12 @@ export const PollStoryCard = ({
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isVoting, setIsVoting] = useState(false);
   const [showResults, setShowResults] = useState(story.hasUserVoted);
+  const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleExpansion = (optionId: string) => {
+    setExpandedOption(expandedOption === optionId ? null : optionId);
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -210,21 +227,112 @@ export const PollStoryCard = ({
                     </div>
                   </div>
                 ) : (
-                  // Voting View - Instagram Stories style
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedOption(option.id);
-                    }}
-                    className={cn(
-                      "w-full p-4 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2",
-                      selectedOption === option.id
-                        ? "bg-white/30 border-white scale-105"
-                        : "bg-white/10 border-white/30 hover:bg-white/20 hover:border-white/50"
+                  // Voting View
+                  <div>
+                    {story.pollType === 'expert' && option.avatar ? (
+                      // Expert candidate with expandable details
+                      <div className="space-y-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedOption(option.id);
+                          }}
+                          className={cn(
+                            "w-full p-4 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2",
+                            selectedOption === option.id
+                              ? "bg-white/30 border-white scale-105"
+                              : "bg-white/10 border-white/30 hover:bg-white/20 hover:border-white/50"
+                          )}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>{option.text}</span>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleExpansion(option.id);
+                              }}
+                              className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
+                            >
+                              {expandedOption === option.id ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                        </button>
+                        
+                        <Collapsible open={expandedOption === option.id}>
+                          <CollapsibleContent className="animate-accordion-down">
+                            <div className="mt-2 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                              <div className="flex items-start gap-3">
+                                <img 
+                                  src={option.avatar} 
+                                  alt={option.text}
+                                  className="w-16 h-16 rounded-full object-cover"
+                                />
+                                <div className="flex-1 text-right">
+                                  <div className="text-white/90 text-sm mb-2">
+                                    <span className="font-medium">{option.city}</span>
+                                  </div>
+                                  
+                                  {option.expertise && (
+                                    <div className="flex flex-wrap gap-1 mb-2 justify-end">
+                                      {option.expertise.map((exp, idx) => (
+                                        <span 
+                                          key={idx}
+                                          className="px-2 py-1 bg-white/20 rounded-full text-xs text-white"
+                                        >
+                                          {exp}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+                                  
+                                  {option.bio && (
+                                    <p className="text-white/80 text-sm mb-2 leading-relaxed">
+                                      {option.bio}
+                                    </p>
+                                  )}
+                                  
+                                  {option.stats && (
+                                    <div className="flex justify-end gap-4 text-xs text-white/70">
+                                      {option.stats.trustScore && (
+                                        <span>אמינות: {option.stats.trustScore}</span>
+                                      )}
+                                      {option.stats.posts && (
+                                        <span>פוסטים: {option.stats.posts}</span>
+                                      )}
+                                      {option.stats.followers && (
+                                        <span>עוקבים: {option.stats.followers.toLocaleString('he')}</span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+                    ) : (
+                      // Regular option
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedOption(option.id);
+                        }}
+                        className={cn(
+                          "w-full p-4 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2",
+                          selectedOption === option.id
+                            ? "bg-white/30 border-white scale-105"
+                            : "bg-white/10 border-white/30 hover:bg-white/20 hover:border-white/50"
+                        )}
+                      >
+                        {option.text}
+                      </button>
                     )}
-                  >
-                    {option.text}
-                  </button>
+                  </div>
                 )}
               </div>
             ))}

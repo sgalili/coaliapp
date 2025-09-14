@@ -47,9 +47,39 @@ export const mockPollStories: PollStory[] = [
     question: "מי המועמד המועדף עליכם לשר החינוך?",
     description: "בחרו מבין המועמדים הבאים",
     options: [
-      { id: "candidate1", text: "ד״ר רחל כהן", votes: 523, percentage: 41 },
-      { id: "candidate2", text: "פרופ׳ יוסי לוי", votes: 398, percentage: 31 },
-      { id: "candidate3", text: "ד״ר מירי דוד", votes: 279, percentage: 22 },
+      { 
+        id: "candidate1", 
+        text: "ד״ר רחל כהן", 
+        votes: 523, 
+        percentage: 41,
+        avatar: "/src/assets/rachel-profile.jpg",
+        city: "תל אביב",
+        expertise: ["פדגוגיה", "מדיניות חינוך", "ניהול מערכות"],
+        bio: "בעלת ניסיון של 15 שנה בחינוך, התמחות בפיתוח תכניות לימוד חדשניות",
+        stats: { trustScore: 8.4, posts: 127, followers: 15400 }
+      },
+      { 
+        id: "candidate2", 
+        text: "פרופ׳ יוסי לוי", 
+        votes: 398, 
+        percentage: 31,
+        avatar: "/src/assets/yaakov-profile.jpg",
+        city: "ירושלים",
+        expertise: ["מחקר חינוכי", "טכנולוגיה בחינוך", "פסיכולוגיה חינוכית"],
+        bio: "פרופסור במדעי החינוך, חלוץ בשילוב טכנולוגיה בלמידה",
+        stats: { trustScore: 7.9, posts: 89, followers: 12300 }
+      },
+      { 
+        id: "candidate3", 
+        text: "ד״ר מירי דוד", 
+        votes: 279, 
+        percentage: 22,
+        avatar: "/src/assets/maya-profile.jpg",
+        city: "חיפה",
+        expertise: ["חינוך מיוחד", "הכלה", "רב-תרבותיות"],
+        bio: "מומחית בחינוך מיוחד וקידום שוויון הזדמנויות בחינוך",
+        stats: { trustScore: 8.7, posts: 156, followers: 9800 }
+      },
       { id: "candidate4", text: "אחר", votes: 78, percentage: 6 }
     ],
     totalVotes: 1278,
