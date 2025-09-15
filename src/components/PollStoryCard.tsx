@@ -245,7 +245,14 @@ export const PollStoryCard = ({
                           )}
                         >
                           <div className="flex items-center justify-between">
-                            <span>{option.text}</span>
+                            <div className="flex items-center gap-3">
+                              <img 
+                                src={option.avatar} 
+                                alt={option.text}
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                              <span>{option.text}</span>
+                            </div>
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
@@ -266,50 +273,43 @@ export const PollStoryCard = ({
                         <Collapsible open={expandedOption === option.id}>
                           <CollapsibleContent className="animate-accordion-down">
                             <div className="mt-2 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
-                              <div className="flex items-start gap-3">
-                                <img 
-                                  src={option.avatar} 
-                                  alt={option.text}
-                                  className="w-16 h-16 rounded-full object-cover"
-                                />
-                                <div className="flex-1 text-right">
-                                  <div className="text-white/90 text-sm mb-2">
-                                    <span className="font-medium">{option.city}</span>
-                                  </div>
-                                  
-                                  {option.expertise && (
-                                    <div className="flex flex-wrap gap-1 mb-2 justify-end">
-                                      {option.expertise.map((exp, idx) => (
-                                        <span 
-                                          key={idx}
-                                          className="px-2 py-1 bg-white/20 rounded-full text-xs text-white"
-                                        >
-                                          {exp}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  )}
-                                  
-                                  {option.bio && (
-                                    <p className="text-white/80 text-sm mb-2 leading-relaxed">
-                                      {option.bio}
-                                    </p>
-                                  )}
-                                  
-                                  {option.stats && (
-                                    <div className="flex justify-end gap-4 text-xs text-white/70">
-                                      {option.stats.trustScore && (
-                                        <span>אמינות: {option.stats.trustScore}</span>
-                                      )}
-                                      {option.stats.posts && (
-                                        <span>פוסטים: {option.stats.posts}</span>
-                                      )}
-                                      {option.stats.followers && (
-                                        <span>עוקבים: {option.stats.followers.toLocaleString('he')}</span>
-                                      )}
-                                    </div>
-                                  )}
+                              <div className="text-right space-y-3">
+                                <div className="text-white/90 text-sm">
+                                  <span className="font-medium">{option.city}</span>
                                 </div>
+                                
+                                {option.expertise && (
+                                  <div className="flex flex-wrap gap-1 justify-end">
+                                    {option.expertise.map((exp, idx) => (
+                                      <span 
+                                        key={idx}
+                                        className="px-2 py-1 bg-white/20 rounded-full text-xs text-white"
+                                      >
+                                        {exp}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                                
+                                {option.bio && (
+                                  <p className="text-white/80 text-sm leading-relaxed">
+                                    {option.bio}
+                                  </p>
+                                )}
+                                
+                                {option.stats && (
+                                  <div className="flex justify-end gap-4 text-xs text-white/70">
+                                    {option.stats.trustScore && (
+                                      <span>אמינות: {option.stats.trustScore}</span>
+                                    )}
+                                    {option.stats.posts && (
+                                      <span>פוסטים: {option.stats.posts}</span>
+                                    )}
+                                    {option.stats.followers && (
+                                      <span>עוקבים: {option.stats.followers.toLocaleString('he')}</span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </CollapsibleContent>
