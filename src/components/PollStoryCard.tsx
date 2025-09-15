@@ -154,7 +154,7 @@ export const PollStoryCard = ({
       <div className="relative z-10 flex flex-col h-full">
         
         {/* Top controls */}
-        <div className="flex items-center justify-between p-4 pt-[30px]">
+        <div className="flex items-center justify-between p-4 pt-[90px]">
           <LocationBadge 
             type={story.organizationType} 
             name={story.organizationName} 
