@@ -209,7 +209,7 @@ export const PollStoryCard = ({
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 flex flex-col justify-start px-6 py-4 overflow-y-auto">
+        <div className="flex-1 flex flex-col justify-start px-6 py-4 pb-32 overflow-y-auto">
           
           {/* Question */}
           <div className="mb-8 text-center">
@@ -393,7 +393,7 @@ export const PollStoryCard = ({
 
           {/* Vote Button - Only show for non-government polls */}
           {!showResults && story.pollType !== 'government' && (
-            <div className="mt-8 mb-24 md:mb-20 max-w-md mx-auto w-full">
+            <div className="mt-8 mb-40 md:mb-20 max-w-md mx-auto w-full">
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
