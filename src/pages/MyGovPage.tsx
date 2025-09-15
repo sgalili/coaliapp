@@ -39,6 +39,7 @@ import { useEconomicsCandidates, EconomicsCandidate } from "@/hooks/useEconomics
 import { useEducationCandidates, EducationCandidate } from "@/hooks/useEducationCandidates";
 import { useHealthCandidates, HealthCandidate } from "@/hooks/useHealthCandidates";
 import { useJusticeCandidates, JusticeCandidate } from "@/hooks/useJusticeCandidates";
+import { useEnvironmentCandidates, EnvironmentCandidate } from "@/hooks/useEnvironmentCandidates";
 
 // Mock candidates data
 const mockCandidates: Candidate[] = [
@@ -160,6 +161,9 @@ export default function MyGovPage() {
   
   // Load justice candidates from Supabase
   const { candidates: justiceCandidates, isLoading: justiceLoading, error: justiceError } = useJusticeCandidates();
+  
+  // Load environment candidates from Supabase
+  const { candidates: environmentCandidates, isLoading: environmentLoading, error: environmentError } = useEnvironmentCandidates();
 
   // Load existing government selections on component mount
   useEffect(() => {
@@ -359,6 +363,7 @@ export default function MyGovPage() {
     if (ministry.id === "education" && educationLoading) return;
     if (ministry.id === "health" && healthLoading) return;
     if (ministry.id === "justice" && justiceLoading) return;
+    if (ministry.id === "environment" && environmentLoading) return;
     setSelectedMinistry(ministry);
     setIsModalOpen(true);
   };
@@ -454,6 +459,18 @@ export default function MyGovPage() {
     }));
   };
 
+  // Convert Environment candidates to the expected Candidate format
+  const convertEnvironmentCandidates = (environmentCandidates: EnvironmentCandidate[]): Candidate[] => {
+    return environmentCandidates.map(candidate => ({
+      id: candidate.id,
+      name: candidate.name,
+      avatar: candidate.avatar_url || '/placeholder.svg',
+      expertise: candidate.expertise || [],
+      party: candidate.party || 'ללא מפלגה',
+      experience: candidate.experience || ''
+    }));
+  };
+
   // Determine which candidates to show in modal
   const getCurrentCandidates = (): Candidate[] => {
     if (selectedMinistry?.id === "pm") {
@@ -473,6 +490,9 @@ export default function MyGovPage() {
     }
     if (selectedMinistry?.id === "justice") {
       return convertJusticeCandidates(justiceCandidates);
+    }
+    if (selectedMinistry?.id === "environment") {
+      return convertEnvironmentCandidates(environmentCandidates);
     }
     return mockCandidates;
   };
