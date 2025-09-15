@@ -69,7 +69,7 @@ export const CandidateSelectionModal = ({
               onClick={handleNext}
               className="rounded-full"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
             </Button>
             
             <span className="text-sm text-muted-foreground">
@@ -82,7 +82,7 @@ export const CandidateSelectionModal = ({
               onClick={handlePrevious}
               className="rounded-full"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </Button>
           </div>
 
