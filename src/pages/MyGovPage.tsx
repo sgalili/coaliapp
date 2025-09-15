@@ -603,7 +603,15 @@ export default function MyGovPage() {
                         </div>
                       </div>
                       <h3 className="text-sm font-medium mb-3 leading-tight">{ministry.name}</h3>
-                      <Button variant="outline" size="sm" className="w-full text-xs">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full text-xs"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMinistryClick(ministry);
+                        }}
+                      >
                         לחצו לבחירה
                       </Button>
                     </>
