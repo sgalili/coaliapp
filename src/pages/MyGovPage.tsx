@@ -106,6 +106,70 @@ const mockCandidates: Candidate[] = [
     expertise: ["כלכלה", "אוצר", "מדיניות"],
     party: "כחול לבן",
     experience: "חשב כללי לשעבר, כלכלן"
+  },
+  {
+    id: "transport1",
+    name: "אבי כהן",
+    avatar: amitProfile,
+    expertise: ["תחבורה", "לוגיסטיקה", "תכנון"],
+    party: "ליכוד",
+    experience: "מנכ״ל רכבת ישראל לשעבר"
+  },
+  {
+    id: "interior1", 
+    name: "דנה לוי",
+    avatar: mayaProfile,
+    expertise: ["ביטחון פנים", "משטרה", "חירום"],
+    party: "יש עתיד",
+    experience: "נצבת משטרה לשעבר"
+  },
+  {
+    id: "foreign1",
+    name: "אלי רוזן",
+    avatar: davidProfile,
+    expertise: ["יחסי חוץ", "דיפלומטיה", "בינלאומי"],
+    party: "כחול לבן",
+    experience: "שגריר ישראל באו״ם לשעבר"
+  },
+  {
+    id: "culture1",
+    name: "תמר שמיר",
+    avatar: noaProfile,
+    expertise: ["תרבות", "אמנות", "ספורט"],
+    party: "מרץ",
+    experience: "מנהלת תיאטרון הבימה"
+  },
+  {
+    id: "science1",
+    name: "פרופ׳ משה גולד",
+    avatar: yaronProfile,
+    expertise: ["מדע", "טכנולוגיה", "מחקר"],
+    party: "העבודה",
+    experience: "ראש המועצה הלאומית למחקר ופיתוח"
+  },
+  {
+    id: "immigration1",
+    name: "אסתר מזרחי",
+    avatar: rachelProfile,
+    expertise: ["עלייה", "קליטה", "חברה"],
+    party: "ליכוד",
+    experience: "מנהלת הסוכנות היהודית"
+  },
+  {
+    id: "agriculture1",
+    name: "דן אברהם",
+    avatar: yaakovProfile,
+    expertise: ["חקלאות", "מים", "כפר"],
+    party: "הבית היהודי",
+    experience: "חקלאי ומנהיג מושבים"
+  },
+  {
+    id: "tourism1",
+    name: "ליאת כהן",
+    avatar: sarahProfile,
+    expertise: ["תיירות", "פיתוח", "שיווק"],
+    party: "יש עתיד",
+    experience: "מנכ״לית משרד התיירות לשעבר"
   }
 ];
 
