@@ -93,8 +93,14 @@ export const PollStoryCard = ({
     video.muted = isMuted;
   }, [isMuted]);
 
+  const isExpired = () => {
+    const now = new Date();
+    const expiry = new Date(story.expiresAt);
+    return expiry.getTime() <= now.getTime();
+  };
+
   const handleVote = async () => {
-    if (!selectedOption || isVoting || story.hasUserVoted) return;
+    if (!selectedOption || isVoting || story.hasUserVoted || isExpired()) return;
     
     setIsVoting(true);
     
@@ -354,15 +360,15 @@ export const PollStoryCard = ({
                   e.stopPropagation();
                   handleVote();
                 }}
-                disabled={!selectedOption || isVoting}
+                disabled={!selectedOption || isVoting || isExpired()}
                 className={cn(
                   "w-full py-4 text-lg font-bold rounded-2xl transition-all duration-200",
-                  selectedOption && !isVoting
+                  selectedOption && !isVoting && !isExpired()
                     ? "bg-white text-black hover:bg-white/90 scale-105"
                     : "bg-white/20 text-white/60 cursor-not-allowed"
                 )}
               >
-                {isVoting ? "מצביע..." : "הצבע עכשיו"}
+                {isExpired() ? "ההצבעה הסתיימה" : (isVoting ? "מצביע..." : "הצבע עכשיו")}
               </Button>
             </div>
           )}
