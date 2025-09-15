@@ -169,26 +169,7 @@ export const PollStoryCard = ({
         </div>
 
         {/* Mute button */}
-        <div className="absolute top-4 right-4 z-20">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleMute();
-            }}
-            className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
-          >
-            {isMuted ? (
-              <VolumeX className="w-5 h-5" />
-            ) : (
-              <Volume2 className="w-5 h-5" />
-            )}
-          </Button>
-        </div>
-
-        {/* Mute button */}
-        <div className="absolute top-4 right-4 z-20">
+        <div className="absolute top-16 left-4 z-20">
           <Button
             size="icon"
             variant="ghost"
