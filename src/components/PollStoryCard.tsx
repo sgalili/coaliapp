@@ -56,6 +56,7 @@ interface PollStoryCardProps {
   isMuted: boolean;
   onToggleMute: () => void;
   isActive: boolean;
+  showResultsTemporarily?: boolean;
 }
 
 export const PollStoryCard = ({ 
@@ -64,11 +65,12 @@ export const PollStoryCard = ({
   onNext, 
   isMuted, 
   onToggleMute,
-  isActive 
+  isActive,
+  showResultsTemporarily = false
 }: PollStoryCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isVoting, setIsVoting] = useState(false);
-  const [showResults, setShowResults] = useState(story.hasUserVoted);
+  const [showResults, setShowResults] = useState(false);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -93,6 +95,17 @@ export const PollStoryCard = ({
     video.muted = isMuted;
   }, [isMuted]);
 
+  // Update showResults based on temporary display or permanent vote status
+  useEffect(() => {
+    setShowResults(showResultsTemporarily || story.hasUserVoted);
+  }, [showResultsTemporarily, story.hasUserVoted]);
+
+  // Reset local state when story changes
+  useEffect(() => {
+    setSelectedOption("");
+    setExpandedOption(null);
+  }, [story.id]);
+
   const isExpired = () => {
     const now = new Date();
     const expiry = new Date(story.expiresAt);
@@ -114,10 +127,10 @@ export const PollStoryCard = ({
         duration: 2000
       });
 
-      // Auto-advance after seeing results for 3 seconds
+      // Auto-advance after seeing results for 5 seconds
       setTimeout(() => {
         onNext();
-      }, 3000);
+      }, 5000);
     }, 500);
   };
 

@@ -17,10 +17,12 @@ export const VoteFeed = ({
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
   const [votedStories, setVotedStories] = useState<Record<string, string>>({});
+  const [currentlyShowingResults, setCurrentlyShowingResults] = useState<string | null>(null);
   const {
     toast
   } = useToast();
   const handleNextStory = () => {
+    setCurrentlyShowingResults(null); // Reset results display when moving to next story
     if (currentStoryIndex < mockPollStories.length - 1) {
       setCurrentStoryIndex(prev => prev + 1);
     } else {
@@ -31,6 +33,7 @@ export const VoteFeed = ({
     }
   };
   const handlePreviousStory = () => {
+    setCurrentlyShowingResults(null); // Reset results display when moving to previous story
     if (currentStoryIndex > 0) {
       setCurrentStoryIndex(prev => prev - 1);
     }
@@ -44,6 +47,7 @@ export const VoteFeed = ({
       ...prev,
       [storyId]: optionId
     }));
+    setCurrentlyShowingResults(storyId);
   };
   const handleToggleMute = () => {
     const newMutedState = !isMuted;
@@ -159,7 +163,13 @@ export const VoteFeed = ({
         ...currentStory,
         hasUserVoted: !!votedStories[currentStory.id],
         userVotedOption: votedStories[currentStory.id]
-      }} onVote={handleVote} onNext={handleNextStory} isMuted={isMuted} onToggleMute={handleToggleMute} isActive={true} />
+      }} 
+      onVote={handleVote} 
+      onNext={handleNextStory} 
+      isMuted={isMuted} 
+      onToggleMute={handleToggleMute} 
+      isActive={true}
+      showResultsTemporarily={currentlyShowingResults === currentStory.id} />
       </div>
     </div>;
 };
