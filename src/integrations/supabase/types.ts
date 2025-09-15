@@ -357,6 +357,45 @@ export type Database = {
         }
         Relationships: []
       }
+      justice_candidates: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          experience: string | null
+          expertise: string[] | null
+          id: string
+          name: string
+          party: string | null
+          updated_at: string
+          wikipedia_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          experience?: string | null
+          expertise?: string[] | null
+          id?: string
+          name: string
+          party?: string | null
+          updated_at?: string
+          wikipedia_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          experience?: string | null
+          expertise?: string[] | null
+          id?: string
+          name?: string
+          party?: string | null
+          updated_at?: string
+          wikipedia_url?: string | null
+        }
+        Relationships: []
+      }
       kyc_verifications: {
         Row: {
           created_at: string
