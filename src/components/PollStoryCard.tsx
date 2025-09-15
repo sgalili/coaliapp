@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Volume2, VolumeX, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrganizationType } from "@/components/LocationBadge";
@@ -73,6 +74,7 @@ export const PollStoryCard = ({
   const [showResults, setShowResults] = useState(false);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const navigate = useNavigate();
 
   const toggleExpansion = (optionId: string) => {
     setExpandedOption(expandedOption === optionId ? null : optionId);
@@ -228,7 +230,7 @@ export const PollStoryCard = ({
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = '/mygov';
+                    navigate('/mygov');
                   }}
                   className="w-full p-6 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2 bg-white/30 border-white scale-105 hover:bg-white/40 hover:border-white hover:scale-110 active:scale-95"
                 >

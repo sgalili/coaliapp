@@ -55,6 +55,7 @@ const App = () => (
           <Route path="/mygov/generate" element={<MyGovGeneratePage />} />
           <Route path="/mygov/share/:shareId" element={<MyGovSharePage />} />
           <Route path="/decisions" element={<DecisionsPage />} />
+          <Route path="/decisions/:cardId" element={<DecisionsPage />} />
           <Route path="/votefeed" element={<VoteFeedPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

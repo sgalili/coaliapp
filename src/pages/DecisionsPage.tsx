@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Plus, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navigation } from "@/components/Navigation";
@@ -13,7 +14,12 @@ import { toast } from "sonner";
 import { useToast } from "@/hooks/use-toast";
 
 const DecisionsPage = () => {
-  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const { cardId } = useParams();
+  const navigate = useNavigate();
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(() => {
+    const index = cardId ? parseInt(cardId) - 1 : 0;
+    return index >= 0 && index < mockPollStories.length ? index : 0;
+  });
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
   const [votedStories, setVotedStories] = useState<Record<string, string>>({});
@@ -26,7 +32,9 @@ const DecisionsPage = () => {
 
   const handleNextStory = () => {
     if (currentStoryIndex < mockPollStories.length - 1) {
-      setCurrentStoryIndex(prev => prev + 1);
+      const newIndex = currentStoryIndex + 1;
+      setCurrentStoryIndex(newIndex);
+      navigate(`/decisions/${newIndex + 1}`, { replace: true });
     } else {
       // End of stories - show completion message
       toast({
@@ -38,7 +46,9 @@ const DecisionsPage = () => {
 
   const handlePreviousStory = () => {
     if (currentStoryIndex > 0) {
-      setCurrentStoryIndex(prev => prev - 1);
+      const newIndex = currentStoryIndex - 1;
+      setCurrentStoryIndex(newIndex);
+      navigate(`/decisions/${newIndex + 1}`, { replace: true });
     }
   };
 
@@ -191,6 +201,7 @@ const DecisionsPage = () => {
           <Button 
             onClick={() => {
               setCurrentStoryIndex(0);
+              navigate('/decisions/1', { replace: true });
             }}
             className="bg-white text-primary hover:bg-white/90"
           >
