@@ -349,7 +349,8 @@ export default function MyGovPage() {
   };
 
   const handlePMClick = () => {
-    if (pmLoading) return; // Don't open modal while loading
+    // Don't open modal while loading or if no candidates are available
+    if (pmLoading || !pmCandidates.length) return;
     const pmMinistry: Ministry = { id: "pm", name: "ראש הממשלה", icon: User };
     setSelectedMinistry(pmMinistry);
     setIsModalOpen(true);

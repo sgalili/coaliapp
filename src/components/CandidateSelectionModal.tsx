@@ -50,6 +50,9 @@ export const CandidateSelectionModal = ({
   if (!candidates.length) return null;
 
   const currentCandidate = candidates[currentIndex];
+  
+  // Safety check to prevent undefined access
+  if (!currentCandidate) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
