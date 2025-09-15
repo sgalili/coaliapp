@@ -158,7 +158,7 @@ export const PollStoryCard = ({
         
         {/* Poll Header Card */}
         {/* Poll Header Card */}
-        <div className="flex justify-center pt-[90px] px-4">
+        <div className="flex justify-center pt-[110px] px-4">
           <PollHeaderCard
             organizationType={story.organizationType}
             organizationName={story.organizationName}
