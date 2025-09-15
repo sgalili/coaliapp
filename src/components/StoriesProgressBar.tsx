@@ -10,7 +10,7 @@ export const StoriesProgressBar = ({
   currentStoryIndex
 }: StoriesProgressBarProps) => {
   return (
-    <div className="fixed top-5 left-4 right-4 z-50 flex gap-1">
+    <div className="fixed top-3 left-4 right-4 z-50 flex gap-1">
       {Array.from({ length: totalStories }).map((_, index) => (
         <div 
           key={index}
