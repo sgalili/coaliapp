@@ -119,7 +119,7 @@ export const PollHeaderCard = ({
         
         <div className="flex items-center gap-1">
           <Users className="w-4 h-4" />
-          <span>{totalVotes.toLocaleString()} משתתפים</span>
+          <span>{totalVotes.toLocaleString()} הצבעות</span>
         </div>
       </div>
     </div>
