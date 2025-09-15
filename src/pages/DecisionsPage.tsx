@@ -1,17 +1,27 @@
 import { useState, useEffect, useRef } from "react";
 import { Plus, RotateCcw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Navigation } from "@/components/Navigation";
 import { PollStoryCard } from "@/components/PollStoryCard";
 import { StoriesProgressBar } from "@/components/StoriesProgressBar";
+import { VoteHeader } from "@/components/VoteHeader";
+import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
+import { VideoFeedPage } from "@/components/VideoFeedPage";
 import { Button } from "@/components/ui/button";
 import { mockPollStories } from "@/data/mockPollStories";
 import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 
 const DecisionsPage = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
   const [votedStories, setVotedStories] = useState<Record<string, string>>({});
+  const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
+  const [zoozBalance, setZoozBalance] = useState(1250);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  const { toast } = useToast();
 
 
   const handleNextStory = () => {
@@ -19,9 +29,9 @@ const DecisionsPage = () => {
       setCurrentStoryIndex(prev => prev + 1);
     } else {
       // End of stories - show completion message
-      toast.success("סיימת את כל ההצבעות! 🎉", {
-        position: "bottom-center",
-        duration: 3000
+      toast({
+        title: "סיימת את כל ההצבעות! 🎉",
+        description: "כל כבוד! סיימת את כל ההצבעות הזמינות.",
       });
     }
   };
@@ -51,6 +61,48 @@ const DecisionsPage = () => {
       window.speechSynthesis.cancel();
       setIsReadingText(false);
     }
+  };
+
+  // Filter navigation with animation
+  const handleFilterChange = (newFilter: VoteFilterType) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setVoteFilter(newFilter);
+    setTimeout(() => setIsTransitioning(false), 300);
+  };
+
+  // Video feed handlers
+  const handleTrust = (postId: string) => {
+    toast({
+      title: "Trust Given! ❤️",
+      description: "Your trust helps build a better network.",
+    });
+  };
+
+  const handleWatch = (postId: string) => {
+    toast({
+      title: "Now Watching 👁️", 
+      description: "You'll see their content more often.",
+    });
+  };
+
+  const handleZooz = (postId: string) => {
+    if (zoozBalance < 1) {
+      toast({
+        title: "Insufficient ZOOZ",
+        description: "You don't have enough ZOOZ to support this creator.",
+      });
+      return;
+    }
+    setZoozBalance(prev => prev - 1);
+    toast({
+      title: "ZOOZ Sent! 🚀",
+      description: "Supporting amazing creators!",
+    });
+  };
+
+  const handleVolumeToggle = () => {
+    setIsMuted(!isMuted);
   };
 
 
@@ -151,54 +203,99 @@ const DecisionsPage = () => {
   }
 
   return (
-    <div className="relative h-screen overflow-hidden">
-      {/* Stories Progress Bar */}
-      <StoriesProgressBar 
-        totalStories={mockPollStories.length}
-        currentStoryIndex={currentStoryIndex}
+    <div className="min-h-screen bg-background relative">
+      {/* Vote Header - only show for 'for-me' filter */}
+      {voteFilter === 'for-me' && <VoteHeader />}
+      
+      {/* Vote Filters */}
+      <VoteFilters 
+        activeFilter={voteFilter}
+        onFilterChange={handleFilterChange}
       />
-
-      {/* Add Poll Button */}
-      <Button
-        size="icon"
-        className="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm"
-        onClick={() => toast.info("פתיחת יוצר הצבעות...", { position: "bottom-center" })}
-      >
-        <Plus className="w-5 h-5" />
-      </Button>
-
-      {/* Stories Container with Global Tap Handler */}
-      <div 
-        className="h-screen overflow-auto relative cursor-pointer"
-        onClick={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const containerWidth = rect.width;
-          
-          // In RTL: right 40% is for previous, left 60% is for next
-          if (clickX > containerWidth * 0.6) {
-            handlePreviousStory();
-          } else {
-            handleNextStory();
-          }
-        }}
-      >
-        <PollStoryCard
-          story={{
-            ...currentStory,
-            hasUserVoted: !!votedStories[currentStory.id],
-            userVotedOption: votedStories[currentStory.id]
+      
+      {/* Animated content container */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={voteFilter}
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            damping: 30,
+            duration: 0.3 
           }}
-          onVote={handleVote}
-          onNext={handleNextStory}
-          isMuted={isMuted}
-          onToggleMute={handleToggleMute}
-          isActive={true}
-        />
-      </div>
+          className="min-h-screen"
+        >
+          {/* Route between Poll Stories and VideoFeedPage based on filter */}
+          {voteFilter === 'for-me' ? (
+            <div className="relative h-screen overflow-hidden">
+              {/* Stories Progress Bar */}
+              <StoriesProgressBar 
+                totalStories={mockPollStories.length}
+                currentStoryIndex={currentStoryIndex}
+              />
+
+              {/* Add Poll Button */}
+              <Button
+                size="icon"
+                className="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm"
+                onClick={() => toast({
+                  title: "פתיחת יוצר הצבעות...",
+                  description: "בקרוב תוכלו ליצור הצבעות חדשות!",
+                })}
+              >
+                <Plus className="w-5 h-5" />
+              </Button>
+
+              {/* Stories Container with Global Tap Handler */}
+              <div 
+                className="h-screen overflow-auto relative cursor-pointer"
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const clickX = e.clientX - rect.left;
+                  const containerWidth = rect.width;
+                  
+                  // In RTL: right 40% is for previous, left 60% is for next
+                  if (clickX > containerWidth * 0.6) {
+                    handlePreviousStory();
+                  } else {
+                    handleNextStory();
+                  }
+                }}
+              >
+                <PollStoryCard
+                  story={{
+                    ...currentStory,
+                    hasUserVoted: !!votedStories[currentStory.id],
+                    userVotedOption: votedStories[currentStory.id]
+                  }}
+                  onVote={handleVote}
+                  onNext={handleNextStory}
+                  isMuted={isMuted}
+                  onToggleMute={handleToggleMute}
+                  isActive={true}
+                />
+              </div>
+            </div>
+          ) : (
+            <VideoFeedPage
+              activeFilter={voteFilter}
+              onFilterChange={handleFilterChange}
+              onTrust={handleTrust}
+              onWatch={handleWatch}
+              onZooz={handleZooz}
+              userBalance={zoozBalance}
+              isMuted={isMuted}
+              onVolumeToggle={handleVolumeToggle}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       {/* Bottom navigation */}
-      <Navigation />
+      <Navigation zoozBalance={zoozBalance} />
     </div>
   );
 };

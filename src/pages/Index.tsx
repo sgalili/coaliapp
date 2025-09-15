@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { VoteFeed } from "@/components/VoteFeed";
 import { VoteHeader } from "@/components/VoteHeader";
@@ -185,11 +186,12 @@ const mockPosts = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
   const [showVideoCreator, setShowVideoCreator] = useState(false);
   const [zoozBalance, setZoozBalance] = useState(1250);
-  const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
+  const [voteFilter, setVoteFilter] = useState<VoteFilterType>('candidates');
   const [showKycNotice, setShowKycNotice] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -278,6 +280,13 @@ const Index = () => {
   // Filter navigation with animation
   const handleFilterChange = (newFilter: VoteFilterType) => {
     if (isTransitioning) return;
+    
+    // If switching to 'for-me', navigate to decisions page
+    if (newFilter === 'for-me') {
+      navigate('/decisions');
+      return;
+    }
+    
     setIsTransitioning(true);
     setVoteFilter(newFilter);
     setTimeout(() => setIsTransitioning(false), 300);
@@ -327,11 +336,8 @@ const Index = () => {
       onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
       onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
     >
-      {/* Vote Header - only show for 'for-me' filter */}
-      {voteFilter === 'for-me' && <VoteHeader />}
-      
-      {/* KYC Notice - only show for 'for-me' filter */}
-      {showKycNotice && voteFilter === 'for-me' && (
+      {/* KYC Notice - only show for video feeds */}
+      {showKycNotice && (
         <div className="pt-[115px] px-3 pb-0 -mb-16">
           <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
             <button 
@@ -371,21 +377,17 @@ const Index = () => {
           }}
           className="min-h-screen"
         >
-          {/* Route between VoteFeed and VideoFeedPage based on filter */}
-          {voteFilter === 'for-me' ? (
-            <VoteFeed filter={voteFilter} />
-          ) : (
-            <VideoFeedPage
-              activeFilter={voteFilter}
-              onFilterChange={handleFilterChange}
-              onTrust={handleTrust}
-              onWatch={handleWatch}
-              onZooz={handleZooz}
-              userBalance={zoozBalance}
-              isMuted={isMuted}
-              onVolumeToggle={handleVolumeToggle}
-            />
-          )}
+          {/* Show VideoFeedPage for video content */}
+          <VideoFeedPage
+            activeFilter={voteFilter}
+            onFilterChange={handleFilterChange}
+            onTrust={handleTrust}
+            onWatch={handleWatch}
+            onZooz={handleZooz}
+            userBalance={zoozBalance}
+            isMuted={isMuted}
+            onVolumeToggle={handleVolumeToggle}
+          />
         </motion.div>
       </AnimatePresence>
 
