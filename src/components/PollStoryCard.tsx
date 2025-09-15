@@ -279,7 +279,7 @@ export const PollStoryCard = ({
                                 </div>
                                 
                                 {option.expertise && (
-                                  <div className="flex flex-wrap gap-1 justify-end">
+                                  <div className="flex flex-wrap gap-1">
                                     {option.expertise.map((exp, idx) => (
                                       <span 
                                         key={idx}
