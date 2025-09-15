@@ -20,6 +20,21 @@ import yaakovProfile from "@/assets/yaakov-profile.jpg";
 import yaronProfile from "@/assets/yaron-profile.jpg";
 import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
 
+// Import PM candidates photos
+import netanyahuCandidateProfile from "@/assets/candidates/netanyahu.jpg";
+import lapidProfile from "@/assets/candidates/lapid.jpg";
+import bennettProfile from "@/assets/candidates/bennett.jpg";
+import gantzProfile from "@/assets/candidates/gantz.jpg";
+import saarProfile from "@/assets/candidates/saar.jpg";
+import liebermanProfile from "@/assets/candidates/lieberman.jpg";
+import benGvirProfile from "@/assets/candidates/ben-gvir.jpg";
+import livniProfile from "@/assets/candidates/livni.jpg";
+import barakProfile from "@/assets/candidates/barak.jpg";
+import shakedProfile from "@/assets/candidates/shaked.jpg";
+
+// Import PM candidates hook
+import { usePrimeMinisters, PMCandidate } from "@/hooks/usePrimeMinisters";
+
 // Mock candidates data
 const mockCandidates: Candidate[] = [
   {
@@ -122,6 +137,9 @@ export default function MyGovPage() {
   const [selectedMinistry, setSelectedMinistry] = useState<Ministry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Load PM candidates from Supabase
+  const { candidates: pmCandidates, isLoading: pmLoading, error: pmError } = usePrimeMinisters();
 
   // Load existing government selections on component mount
   useEffect(() => {
@@ -331,9 +349,30 @@ export default function MyGovPage() {
   };
 
   const handlePMClick = () => {
+    if (pmLoading) return; // Don't open modal while loading
     const pmMinistry: Ministry = { id: "pm", name: "ראש הממשלה", icon: User };
     setSelectedMinistry(pmMinistry);
     setIsModalOpen(true);
+  };
+
+  // Convert PM candidates to the expected Candidate format
+  const convertPMCandidates = (pmCandidates: PMCandidate[]): Candidate[] => {
+    return pmCandidates.map(candidate => ({
+      id: candidate.id,
+      name: candidate.name,
+      avatar: candidate.avatar,
+      expertise: candidate.expertise,
+      party: candidate.party,
+      experience: candidate.experience
+    }));
+  };
+
+  // Determine which candidates to show in modal
+  const getCurrentCandidates = (): Candidate[] => {
+    if (selectedMinistry?.id === "pm") {
+      return convertPMCandidates(pmCandidates);
+    }
+    return mockCandidates;
   };
 
   return (
@@ -358,11 +397,21 @@ export default function MyGovPage() {
         {/* Prime Minister Section */}
         <div className="flex justify-center">
           <Card 
-            className="w-full max-w-sm cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
-            onClick={handlePMClick}
+            className={`w-full max-w-sm cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${pmLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={pmLoading ? undefined : handlePMClick}
           >
             <CardContent className="p-6 text-center">
-              {selectedCandidates["pm"] ? (
+              {pmLoading ? (
+                <>
+                  <div className="flex justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="h-8 w-8 text-primary animate-pulse" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">ראש הממשלה</h3>
+                  <p className="text-sm text-muted-foreground">טוען מועמדים...</p>
+                </>
+              ) : selectedCandidates["pm"] ? (
                 <>
                   <div className="flex justify-center mb-4">
                     <Avatar className="w-16 h-16">
@@ -466,7 +515,7 @@ export default function MyGovPage() {
           setSelectedMinistry(null);
         }}
         onSelect={handleCandidateSelect}
-        candidates={mockCandidates}
+        candidates={getCurrentCandidates()}
         ministryName={selectedMinistry?.name || ""}
       />
     </div>
