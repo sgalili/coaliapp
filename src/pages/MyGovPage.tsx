@@ -36,6 +36,7 @@ import shakedProfile from "@/assets/candidates/shaked.jpg";
 import { usePrimeMinisters, PMCandidate } from "@/hooks/usePrimeMinisters";
 import { useDefenseCandidates, DefenseCandidate } from "@/hooks/useDefenseCandidates";
 import { useEconomicsCandidates, EconomicsCandidate } from "@/hooks/useEconomicsCandidates";
+import { useEducationCandidates, EducationCandidate } from "@/hooks/useEducationCandidates";
 
 // Mock candidates data
 const mockCandidates: Candidate[] = [
@@ -148,6 +149,9 @@ export default function MyGovPage() {
   
   // Load economics candidates from Supabase
   const { candidates: economicsCandidates, isLoading: economicsLoading, error: economicsError } = useEconomicsCandidates();
+  
+  // Load education candidates from Supabase
+  const { candidates: educationCandidates, isLoading: educationLoading, error: educationError } = useEducationCandidates();
 
   // Load existing government selections on component mount
   useEffect(() => {
@@ -344,6 +348,7 @@ export default function MyGovPage() {
     // Don't open modal while candidates are loading for specific ministries
     if (ministry.id === "defense" && defenseLoading) return;
     if (ministry.id === "finance" && economicsLoading) return;
+    if (ministry.id === "education" && educationLoading) return;
     setSelectedMinistry(ministry);
     setIsModalOpen(true);
   };
@@ -403,6 +408,18 @@ export default function MyGovPage() {
     }));
   };
 
+  // Convert Education candidates to the expected Candidate format
+  const convertEducationCandidates = (educationCandidates: EducationCandidate[]): Candidate[] => {
+    return educationCandidates.map(candidate => ({
+      id: candidate.id,
+      name: candidate.name,
+      avatar: candidate.avatar,
+      expertise: candidate.expertise,
+      party: candidate.party,
+      experience: candidate.experience
+    }));
+  };
+
   // Determine which candidates to show in modal
   const getCurrentCandidates = (): Candidate[] => {
     if (selectedMinistry?.id === "pm") {
@@ -413,6 +430,9 @@ export default function MyGovPage() {
     }
     if (selectedMinistry?.id === "finance") {
       return convertEconomicsCandidates(economicsCandidates);
+    }
+    if (selectedMinistry?.id === "education") {
+      return convertEducationCandidates(educationCandidates);
     }
     return mockCandidates;
   };
