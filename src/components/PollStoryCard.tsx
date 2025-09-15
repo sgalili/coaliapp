@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Volume2, VolumeX, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { LocationBadge, OrganizationType } from "@/components/LocationBadge";
+import { OrganizationType } from "@/components/LocationBadge";
+import { PollHeaderCard } from "@/components/PollHeaderCard";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
