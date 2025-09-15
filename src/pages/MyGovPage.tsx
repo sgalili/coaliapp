@@ -37,6 +37,7 @@ import { usePrimeMinisters, PMCandidate } from "@/hooks/usePrimeMinisters";
 import { useDefenseCandidates, DefenseCandidate } from "@/hooks/useDefenseCandidates";
 import { useEconomicsCandidates, EconomicsCandidate } from "@/hooks/useEconomicsCandidates";
 import { useEducationCandidates, EducationCandidate } from "@/hooks/useEducationCandidates";
+import { useHealthCandidates, HealthCandidate } from "@/hooks/useHealthCandidates";
 
 // Mock candidates data
 const mockCandidates: Candidate[] = [
@@ -152,6 +153,9 @@ export default function MyGovPage() {
   
   // Load education candidates from Supabase
   const { candidates: educationCandidates, isLoading: educationLoading, error: educationError } = useEducationCandidates();
+  
+  // Load health candidates from Supabase
+  const { candidates: healthCandidates, isLoading: healthLoading, error: healthError } = useHealthCandidates();
 
   // Load existing government selections on component mount
   useEffect(() => {
@@ -349,6 +353,7 @@ export default function MyGovPage() {
     if (ministry.id === "defense" && defenseLoading) return;
     if (ministry.id === "finance" && economicsLoading) return;
     if (ministry.id === "education" && educationLoading) return;
+    if (ministry.id === "health" && healthLoading) return;
     setSelectedMinistry(ministry);
     setIsModalOpen(true);
   };
@@ -420,6 +425,18 @@ export default function MyGovPage() {
     }));
   };
 
+  // Convert Health candidates to the expected Candidate format
+  const convertHealthCandidates = (healthCandidates: HealthCandidate[]): Candidate[] => {
+    return healthCandidates.map(candidate => ({
+      id: candidate.id,
+      name: candidate.name,
+      avatar: candidate.avatar,
+      expertise: candidate.expertise,
+      party: candidate.party,
+      experience: candidate.experience
+    }));
+  };
+
   // Determine which candidates to show in modal
   const getCurrentCandidates = (): Candidate[] => {
     if (selectedMinistry?.id === "pm") {
@@ -433,6 +450,9 @@ export default function MyGovPage() {
     }
     if (selectedMinistry?.id === "education") {
       return convertEducationCandidates(educationCandidates);
+    }
+    if (selectedMinistry?.id === "health") {
+      return convertHealthCandidates(healthCandidates);
     }
     return mockCandidates;
   };
