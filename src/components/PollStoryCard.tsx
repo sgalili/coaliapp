@@ -354,7 +354,7 @@ export const PollStoryCard = ({
 
           {/* Vote Button */}
           {!showResults && (
-            <div className="mt-8 max-w-md mx-auto w-full">
+            <div className="mt-8 mb-20 max-w-md mx-auto w-full">
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
