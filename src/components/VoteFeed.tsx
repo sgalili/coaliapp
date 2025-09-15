@@ -124,15 +124,7 @@ export const VoteFeed = ({
   }
   const currentStory = mockPollStories[currentStoryIndex];
   if (!currentStory) {
-    return <div className="h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary/80">
-        <div className="text-center text-white">
-          <h2 className="text-2xl font-bold mb-4">סיימת את כל ההצבעות!</h2>
-          <Button onClick={() => setCurrentStoryIndex(0)} className="bg-white text-primary hover:bg-white/90">
-            <RotateCcw className="w-4 h-4 mr-2" />
-            התחל מחדש
-          </Button>
-        </div>
-      </div>;
+    return null;
   }
   return <div className="relative h-screen overflow-hidden">
       {/* Stories Progress Bar */}
