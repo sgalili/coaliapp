@@ -34,6 +34,7 @@ import shakedProfile from "@/assets/candidates/shaked.jpg";
 
 // Import PM candidates hook
 import { usePrimeMinisters, PMCandidate } from "@/hooks/usePrimeMinisters";
+import { useDefenseCandidates, DefenseCandidate } from "@/hooks/useDefenseCandidates";
 
 // Mock candidates data
 const mockCandidates: Candidate[] = [
@@ -140,6 +141,9 @@ export default function MyGovPage() {
   
   // Load PM candidates from Supabase
   const { candidates: pmCandidates, isLoading: pmLoading, error: pmError } = usePrimeMinisters();
+  
+  // Load defense candidates from Supabase
+  const { candidates: defenseCandidates, isLoading: defenseLoading, error: defenseError } = useDefenseCandidates();
 
   // Load existing government selections on component mount
   useEffect(() => {
@@ -333,6 +337,8 @@ export default function MyGovPage() {
   };
 
   const handleMinistryClick = (ministry: Ministry) => {
+    // Don't open modal while defense candidates are loading for defense ministry
+    if (ministry.id === "defense" && defenseLoading) return;
     setSelectedMinistry(ministry);
     setIsModalOpen(true);
   };
@@ -368,10 +374,25 @@ export default function MyGovPage() {
     }));
   };
 
+  // Convert Defense candidates to the expected Candidate format
+  const convertDefenseCandidates = (defenseCandidates: DefenseCandidate[]): Candidate[] => {
+    return defenseCandidates.map(candidate => ({
+      id: candidate.id,
+      name: candidate.name,
+      avatar: candidate.avatar,
+      expertise: candidate.expertise,
+      party: candidate.party,
+      experience: candidate.experience
+    }));
+  };
+
   // Determine which candidates to show in modal
   const getCurrentCandidates = (): Candidate[] => {
     if (selectedMinistry?.id === "pm") {
       return convertPMCandidates(pmCandidates);
+    }
+    if (selectedMinistry?.id === "defense") {
+      return convertDefenseCandidates(defenseCandidates);
     }
     return mockCandidates;
   };
