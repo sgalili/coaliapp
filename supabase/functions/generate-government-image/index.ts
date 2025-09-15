@@ -43,35 +43,9 @@ serve(async (req) => {
       );
     }
 
-    // Upload candidate images as references and build prompt
-    const { prompt, imageReferences } = await buildGovernmentPromptWithReferences(selectedCandidates, runwareApiKey);
+    // Build detailed prompt for AI image generation
+    const prompt = buildGovernmentPrompt(selectedCandidates);
     console.log('Generated prompt:', prompt);
-    console.log('Image references:', imageReferences);
-
-    // Prepare Runware API tasks
-    const tasks = [
-      {
-        taskType: "authentication",
-        apiKey: runwareApiKey
-      },
-      {
-        taskType: "imageInference",
-        taskUUID: crypto.randomUUID(),
-        positivePrompt: prompt,
-        width: 1024,
-        height: 1024,
-        model: "runware:101@1", // PhotoMaker model
-        numberResults: 1,
-        outputFormat: "WEBP",
-        CFGScale: 1,
-        scheduler: "FlowMatchEulerDiscreteScheduler",
-        strength: 0.8,
-        ...(imageReferences.length > 0 && { 
-          inputImages: imageReferences,
-          photoMakerStrength: 0.8
-        })
-      }
-    ];
 
     // Call Runware API
     const runwareResponse = await fetch('https://api.runware.ai/v1', {
@@ -79,7 +53,25 @@ serve(async (req) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(tasks)
+      body: JSON.stringify([
+        {
+          taskType: "authentication",
+          apiKey: runwareApiKey
+        },
+        {
+          taskType: "imageInference",
+          taskUUID: crypto.randomUUID(),
+          positivePrompt: prompt,
+          width: 1024,
+          height: 1024,
+          model: "runware:100@1",
+          numberResults: 1,
+          outputFormat: "WEBP",
+          CFGScale: 1,
+          scheduler: "FlowMatchEulerDiscreteScheduler",
+          strength: 0.8
+        }
+      ])
     });
 
     if (!runwareResponse.ok) {
@@ -123,95 +115,35 @@ serve(async (req) => {
   }
 });
 
-async function buildGovernmentPromptWithReferences(
-  selectedCandidates: Record<string, CandidateData>, 
-  runwareApiKey: string
-): Promise<{ prompt: string; imageReferences: string[] }> {
+function buildGovernmentPrompt(selectedCandidates: Record<string, CandidateData>): string {
   const pmCandidate = selectedCandidates['pm'];
   const ministers = Object.entries(selectedCandidates)
     .filter(([key]) => key !== 'pm')
     .map(([ministry, candidate]) => ({ ministry, candidate }));
 
-  const totalPeople = 1 + ministers.length; // PM + ministers
-  const imageReferences: string[] = [];
-
-  // Upload candidate images as references
-  try {
-    const uploadTasks = [];
-    
-    if (pmCandidate?.avatar) {
-      uploadTasks.push(uploadImageReference(pmCandidate.avatar, runwareApiKey));
-    }
-    
-    for (const { candidate } of ministers) {
-      if (candidate.avatar) {
-        uploadTasks.push(uploadImageReference(candidate.avatar, runwareApiKey));
-      }
-    }
-
-    const uploadResults = await Promise.all(uploadTasks);
-    imageReferences.push(...uploadResults.filter(Boolean));
-  } catch (error) {
-    console.warn('Failed to upload some image references:', error);
-  }
-
-  // Build enhanced prompt with spatial arrangement
-  let prompt = `Professional Israeli government portrait photograph featuring exactly ${totalPeople} people: `;
+  let prompt = "Professional government portrait, official Israeli government photo style, ";
   
   if (pmCandidate) {
-    prompt += `Prime Minister ${pmCandidate.name} in the center foreground, `;
+    prompt += `Prime Minister ${pmCandidate.name} in the center, `;
     prompt += `representing ${pmCandidate.party} party, `;
+    prompt += `expertise in ${pmCandidate.expertise}, `;
   }
 
   if (ministers.length > 0) {
-    prompt += `flanked by ${ministers.length} cabinet ministers arranged around: `;
+    prompt += "surrounded by cabinet ministers: ";
     ministers.forEach(({ ministry, candidate }, index) => {
       prompt += `${candidate.name} (${getMinistryName(ministry)})`;
       if (index < ministers.length - 1) prompt += ", ";
     });
   }
 
-  prompt += ". All wearing dark formal business suits, standing in official Israeli government building ";
-  prompt += "with Israeli flag backdrop, professional lighting, distinct facial features for each person, ";
-  prompt += "no duplicate faces, official state portrait style, high resolution, ";
-  prompt += "sophisticated composition, confident and authoritative poses, realistic human faces";
+  prompt += ". Ultra high resolution, professional lighting, formal government setting, ";
+  prompt += "Israeli flag in background, official government building interior, ";
+  prompt += "sophisticated composition, political portrait photography style, ";
+  prompt += "everyone wearing formal business attire, confident and authoritative poses, ";
+  prompt += "realistic human faces, high quality professional photograph";
 
-  return { prompt, imageReferences };
-}
-
-async function uploadImageReference(avatarPath: string, runwareApiKey: string): Promise<string | null> {
-  try {
-    // Convert relative path to full URL
-    const baseUrl = 'https://hcqygoupvgcsdxtzyest.supabase.co/storage/v1/object/public';
-    const imageUrl = avatarPath.startsWith('http') ? avatarPath : `${baseUrl}${avatarPath}`;
-    
-    const uploadResponse = await fetch('https://api.runware.ai/v1', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify([
-        {
-          taskType: "authentication",
-          apiKey: runwareApiKey
-        },
-        {
-          taskType: "imageUpload",
-          taskUUID: crypto.randomUUID(),
-          imageInitiator: imageUrl
-        }
-      ])
-    });
-
-    if (uploadResponse.ok) {
-      const uploadData = await uploadResponse.json();
-      const uploadResult = uploadData.data?.find((item: any) => item.taskType === 'imageUpload');
-      return uploadResult?.imageUUID || null;
-    }
-  } catch (error) {
-    console.warn('Failed to upload image reference:', avatarPath, error);
-  }
-  return null;
+  return prompt;
 }
 
 function getMinistryName(ministryId: string): string {
@@ -221,7 +153,6 @@ function getMinistryName(ministryId: string): string {
     'education': 'Education Minister',
     'health': 'Health Minister',
     'justice': 'Justice Minister',
-    'environment': 'Environment Minister',
     'transport': 'Transport Minister',
     'housing': 'Housing Minister',
     'economy': 'Economy Minister',
