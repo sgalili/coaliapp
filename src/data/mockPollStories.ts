@@ -13,10 +13,12 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=800&fit=crop",
     organizationType: "city",
     organizationName: "עיריית תל אביב",
+    publishedDate: "2024-01-15",
+    expiresAt: "2024-01-30",
     aiNarration: "שלום, אני אסביר לכם על החלטת הפארק החדש...",
     prosAndCons: [
       {
-        option: "בעד",
+        option: "בעד",  
         pros: ["שטח ירוק נוסף", "מקום משחק לילדים", "שיפור איכות החיים"],
         cons: ["פחות מקומות חניה", "עלות גבוהה", "תחזוקה שוטפת"]
       }
@@ -38,6 +40,8 @@ export const mockPollStories: PollStory[] = [
     backgroundVideo: "/public/videos/traffic-bg.mp4",
     organizationType: "city",
     organizationName: "עיריית חיפה",
+    publishedDate: "2024-01-10",
+    expiresAt: "2024-01-25",
     aiNarration: "הבה נדון בפתרונות לבעיית התנועה...",
     hasUserVoted: false,
     pollType: "multiple"
@@ -86,6 +90,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=400&h=800&fit=crop",
     organizationType: "country",
     organizationName: "מדינת ישראל",
+    publishedDate: "2024-01-12",
+    expiresAt: "2024-01-27",
     aiNarration: "בואו נבחן את המועמדים השונים לתפקיד...",
     hasUserVoted: false,
     pollType: "expert"
@@ -102,6 +108,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9d1?w=400&h=800&fit=crop",
     organizationType: "foundation",
     organizationName: "קרן החינוך",
+    publishedDate: "2024-01-08",
+    expiresAt: "2024-01-22",
     aiNarration: "נדון בחשיבות השקעה בחינוך...",
     hasUserVoted: true,
     userVotedOption: "approve",
@@ -121,6 +129,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=800&fit=crop",
     organizationType: "company",
     organizationName: "טבע פארמצבטיקל",
+    publishedDate: "2024-01-05",
+    expiresAt: "2024-01-20",
     aiNarration: "כל פרויקט סביבתי יש לו יתרונות...",
     hasUserVoted: false,
     pollType: "multiple"

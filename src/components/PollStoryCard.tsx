@@ -35,6 +35,8 @@ export interface PollStory {
   backgroundVideo?: string;
   organizationType: OrganizationType;
   organizationName: string;
+  publishedDate: string;
+  expiresAt: string;
   aiNarration: string;
   prosAndCons?: {
     option: string;
@@ -153,30 +155,54 @@ export const PollStoryCard = ({
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
         
-        {/* Top controls */}
-        <div className="flex items-center justify-between p-4 pt-[110px]">
-          <LocationBadge 
-            type={story.organizationType} 
-            name={story.organizationName} 
+        {/* Poll Header Card */}
+        {/* Poll Header Card */}
+        <div className="flex justify-center pt-[90px] px-4">
+          <PollHeaderCard
+            organizationType={story.organizationType}
+            organizationName={story.organizationName}
+            publishedDate={story.publishedDate}
+            expiresAt={story.expiresAt}
+            totalVotes={story.totalVotes}
           />
-          
-          <div className="flex items-center gap-2">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleMute();
-              }}
-              className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
-            >
-              {isMuted ? (
-                <VolumeX className="w-5 h-5" />
-              ) : (
-                <Volume2 className="w-5 h-5" />
-              )}
-            </Button>
-          </div>
+        </div>
+
+        {/* Mute button */}
+        <div className="absolute top-4 right-4 z-20">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleMute();
+            }}
+            className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
+          >
+            {isMuted ? (
+              <VolumeX className="w-5 h-5" />
+            ) : (
+              <Volume2 className="w-5 h-5" />
+            )}
+          </Button>
+        </div>
+
+        {/* Mute button */}
+        <div className="absolute top-4 right-4 z-20">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleMute();
+            }}
+            className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
+          >
+            {isMuted ? (
+              <VolumeX className="w-5 h-5" />
+            ) : (
+              <Volume2 className="w-5 h-5" />
+            )}
+          </Button>
         </div>
 
         {/* Main content area */}
