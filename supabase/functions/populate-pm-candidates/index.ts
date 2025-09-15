@@ -19,7 +19,7 @@ interface PMCandidateData {
 const candidates: PMCandidateData[] = [
   {
     name: "בנימין נתניהו",
-    avatar_url: "/src/assets/candidates/netanyahu.jpg",
+    avatar_url: "/candidates/netanyahu.jpg",
     party: "ליכוד",
     expertise: ["כלכלה", "ביטחון לאומי", "יחסים חוץ"],
     experience: "רה״מ הכי ותיק בתולדות ישראל, שגריר לאו״ם",
@@ -28,7 +28,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "יאיר לפיד",
-    avatar_url: "/src/assets/candidates/lapid.jpg",
+    avatar_url: "/candidates/lapid.jpg",
     party: "יש עתיד",
     expertise: ["תקשורת", "כלכלה", "חברה"],
     experience: "רה״מ לשעבר, שר האוצר לשעבר, עיתונאי",
@@ -37,7 +37,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "נפתלי בנט",
-    avatar_url: "/src/assets/candidates/bennett.jpg",
+    avatar_url: "/candidates/bennett.jpg",
     party: "ימינה",
     expertise: ["טכנולוגיה", "יזמות", "ביטחון"],
     experience: "רה״מ לשעבר, יזם טק, קצין יחידה מובחרת",
@@ -46,7 +46,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "בני גנץ",
-    avatar_url: "/src/assets/candidates/gantz.jpg",
+    avatar_url: "/candidates/gantz.jpg",
     party: "כחול לבן",
     expertise: ["ביטחון", "הגנה", "מנהיגות צבאית"],
     experience: "רמטכ״ל לשעבר, שר הביטחון לשעבר",
@@ -55,7 +55,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "גדעון סער",
-    avatar_url: "/src/assets/candidates/saar.jpg",
+    avatar_url: "/candidates/saar.jpg",
     party: "תקווה חדשה",
     expertise: ["חינוך", "חקיקה", "מדיניות ציבורית"],
     experience: "שר החינוך לשעבר, יו״ר הכנסת לשעבר",
@@ -64,7 +64,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "אביגדור ליברמן",
-    avatar_url: "/src/assets/candidates/lieberman.jpg",
+    avatar_url: "/candidates/lieberman.jpg",
     party: "ישראל ביתנו",
     expertise: ["ביטחון", "מדיניות חוץ", "כלכלה"],
     experience: "שר הביטחון לשעבר, שר החוץ לשעבר",
@@ -73,7 +73,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "איתמר בן-גביר",
-    avatar_url: "/src/assets/candidates/ben-gvir.jpg",
+    avatar_url: "/candidates/ben-gvir.jpg",
     party: "עוצמה יהודית",
     expertise: ["משפט", "ביטחון פנים", "מדיניות לאומית"],
     experience: "שר הביטחון הלאומי, עורך דין",
@@ -82,7 +82,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "ציפי לבני",
-    avatar_url: "/src/assets/candidates/livni.jpg",
+    avatar_url: "/candidates/livni.jpg",
     party: "התנועה",
     expertise: ["משפט", "דיפלומטיה", "שלום"],
     experience: "שרת החוץ לשעבר, עורכת דין, מתווכת שלום",
@@ -91,7 +91,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "אהוד ברק",
-    avatar_url: "/src/assets/candidates/barak.jpg",
+    avatar_url: "/candidates/barak.jpg",
     party: "העבודה",
     expertise: ["ביטחון", "מנהיגות", "אסטרטגיה"],
     experience: "רה״מ לשעבר, רמטכ״ל לשעבר, החייל המעוטר ביותר",
@@ -100,7 +100,7 @@ const candidates: PMCandidateData[] = [
   },
   {
     name: "איילת שקד",
-    avatar_url: "/src/assets/candidates/shaked.jpg",
+    avatar_url: "/candidates/shaked.jpg",
     party: "ימינה",
     expertise: ["משפט", "חקיקה", "זכויות אדם"],
     experience: "שרת המשפטים לשעבר, שרת הפנים לשעבר",
