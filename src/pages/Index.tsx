@@ -330,25 +330,6 @@ const Index = () => {
       onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
       onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
     >
-      {/* KYC Notice - only show for video feeds */}
-      {showKycNotice && (
-        <div className="pt-[115px] px-3 pb-0 -mb-16">
-          <div className="bg-blue-50 border border-blue-180 p-0 text-right relative rounded my-0 px-px mx-[42px]">
-            <button 
-              onClick={() => setShowKycNotice(false)} 
-              className="absolute -top-1 -left-1 w-6 h-6 flex items-center justify-center transition-colors hover:opacity-70"
-            >
-              <X className="w-5 h-5 text-blue-600" />
-            </button>
-            <button 
-              onClick={() => triggerKYCCheck()} 
-              className="text-blue-800 text-sm hover:underline cursor-pointer p-3 w-full font-medium"
-            >
-              אמתו את הזהות שלכם – קבלו 10 זוז 💸 וקבלו גישה לתוכן מותאם לזכויות הצבעה שלכם! 🔓
-            </button>
-          </div>
-        </div>
-      )}
       
       {/* Vote Filters */}
       <VoteFilters 
@@ -380,6 +361,7 @@ const Index = () => {
               onTrust={handleTrust}
               onWatch={handleWatch}
               onZooz={handleZooz}
+              onCreateContent={handleCreateContent}
               userBalance={zoozBalance}
               isMuted={isMuted}
               onVolumeToggle={handleVolumeToggle}

@@ -1,6 +1,7 @@
 import React from "react";
 import { VideoFeed, VideoPost } from "@/components/VideoFeed";
 import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
+import { Plus } from "lucide-react";
 
 // Import profile images
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -14,6 +15,7 @@ interface VideoFeedPageProps {
   onTrust: (postId: string) => void;
   onWatch: (postId: string) => void;
   onZooz: (postId: string) => void;
+  onCreateContent?: () => void;
   userBalance: number;
   currentUserId?: string;
   isMuted: boolean;
@@ -126,6 +128,7 @@ export const VideoFeedPage = ({
   onTrust, 
   onWatch, 
   onZooz, 
+  onCreateContent,
   userBalance,
   currentUserId,
   isMuted,
@@ -151,6 +154,16 @@ export const VideoFeedPage = ({
           onFilterChange={onFilterChange}
         />
       </div>
+
+      {/* Create Content Button */}
+      {onCreateContent && (
+        <button
+          onClick={onCreateContent}
+          className="fixed bottom-20 left-4 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
 
       {/* Video Feed */}
       <VideoFeed
