@@ -5,6 +5,7 @@ import { PollStoryCard } from "./PollStoryCard";
 import { StoriesProgressBar } from "./StoriesProgressBar";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { mockPollStories } from "@/data/mockPollStories";
 
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 
@@ -20,67 +21,6 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
   
   const { toast } = useToast();
 
-  // Mock poll stories data
-  const mockPollStories = [
-    {
-      id: "1",
-      question: "האם לאפשר בנייה בגובה של 40 קומות?",
-      description: "הצעה לשינוי תב״ע שתאפשר בנייה בגובה של עד 40 קומות במרכז העיר",
-      backgroundImage: "https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-4.0.3",
-      options: [
-        { id: "1a", text: "בעד", votes: 245, percentage: 45 },
-        { id: "1b", text: "נגד", votes: 301, percentage: 55 }
-      ],
-      totalVotes: 546,
-      category: "עיר",
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      pollType: "simple" as const,
-      organizationType: "city" as const,
-      organizationName: "עיריית תל אביב",
-      aiNarration: "שאלה מרכזית על עתיד הפיתוח העירוני",
-      hasUserVoted: false
-    },
-    {
-      id: "2", 
-      question: "מי יהיה ראש העיר הבא?",
-      description: "בחירות לראשות העיר תל אביב 2024",
-      backgroundImage: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-4.0.3",
-      options: [
-        { id: "2a", text: "רון חולדאי", votes: 1205, percentage: 35 },
-        { id: "2b", text: "אסף זמיר", votes: 890, percentage: 26 }, 
-        { id: "2c", text: "אורי בר-לב", votes: 672, percentage: 19 },
-        { id: "2d", text: "אחר", votes: 689, percentage: 20 }
-      ],
-      totalVotes: 3456,
-      category: "בחירות",
-      endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      pollType: "expert" as const,
-      organizationType: "city" as const,
-      organizationName: "עיריית תל אביב",
-      aiNarration: "הבחירות הקרובות לראשות העיר",
-      hasUserVoted: false
-    },
-    {
-      id: "3",
-      question: "איך לפתור את בעיית התחבורה הציבורית?",
-      description: "איזה פתרון תחבורתי יעיל הכי חשוב לעיר?",
-      backgroundImage: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3",
-      options: [
-        { id: "3a", text: "רכבת קלה נוספת", votes: 892, percentage: 40 },
-        { id: "3b", text: "רשת אוטובוסים מורחבת", votes: 534, percentage: 24 },
-        { id: "3c", text: "עידוד אופניים חשמליים", votes: 445, percentage: 20 },
-        { id: "3d", text: "הגבלות על רכבים פרטיים", votes: 357, percentage: 16 }
-      ],
-      totalVotes: 2228,
-      category: "תחבורה",
-      endDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-      pollType: "multiple" as const,
-      organizationType: "country" as const,
-      organizationName: "משרד התחבורה",
-      aiNarration: "פתרונות חדשניים לבעיות התחבורה",
-      hasUserVoted: false
-    }
-  ];
 
   const handleNextStory = () => {
     if (currentStoryIndex < mockPollStories.length - 1) {
