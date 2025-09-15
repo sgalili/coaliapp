@@ -283,7 +283,7 @@ export const PollStoryCard = ({
                                     {option.expertise.map((exp, idx) => (
                                       <span 
                                         key={idx}
-                                        className="px-2 py-1 bg-white/20 rounded-full text-xs text-white"
+                                        className="px-2 py-1 bg-white/20 rounded-full text-xs text-white text-right"
                                       >
                                         {exp}
                                       </span>
