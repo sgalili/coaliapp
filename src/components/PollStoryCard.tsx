@@ -224,25 +224,23 @@ export const PollStoryCard = ({
           {/* Poll Options */}
           <div className="space-y-4 max-w-md mx-auto w-full">
             {story.pollType === 'government' ? (
-              <div className="space-y-3 text-right">
+              <div className="space-y-4">
                 <button 
                   onClick={() => window.location.href = '/mygov'}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full p-6 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2 bg-gradient-to-r from-blue-600/20 to-blue-700/20 border-blue-400/50 hover:from-blue-600/30 hover:to-blue-700/30 hover:border-blue-300 hover:scale-105 active:scale-95"
                 >
-                  <div className="flex items-center justify-center mb-2">
+                  <div className="text-center space-y-2">
                     <h3 className="text-xl font-bold">
-                      הממשלה שלי
+                      🏛️ הממשלה שלי
                     </h3>
+                    <p className="text-base opacity-90">
+                      הרכיבו את הממשלה שלכם בקליק!
+                    </p>
+                    <p className="text-sm opacity-75">
+                      בחרו בטובים ביותר לתפקידים המתאימים
+                    </p>
                   </div>
-                  
-                  <p className="text-lg font-semibold opacity-95">
-                    הרכיבו את הממשלה שלכם בקליק!
-                  </p>
                 </button>
-
-                <p className="text-xs text-white/70 text-center leading-relaxed px-[4px]">
-                  בחרו בטובים ביותר - לתפקידים המתאימים ביותר!
-                </p>
               </div>
             ) : (
               story.options.map((option, index) => (

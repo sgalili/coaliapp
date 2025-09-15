@@ -156,7 +156,7 @@ export const mockPollStories: PollStory[] = [
       { id: "create", text: "הרכב ממשלה", votes: 0, percentage: 0 }
     ],
     totalVotes: 0,
-    backgroundImage: "https://images.unsplash.com/photo-1607602486464-c80a46946294?w=400&h=800&fit=crop",
+    backgroundImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=800&fit=crop",
     organizationType: "country",
     organizationName: "מדינת ישראל",
     publishedDate: "2025-09-15",
