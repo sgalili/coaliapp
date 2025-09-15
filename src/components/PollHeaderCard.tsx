@@ -77,7 +77,7 @@ export const PollHeaderCard = ({
 
   return (
     <div className={cn(
-      "flex flex-col items-center p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg animate-fade-in",
+      "flex flex-col items-center p-4 mt-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg animate-fade-in",
       className
     )}>
       {/* Organization Info */}
