@@ -161,7 +161,7 @@ export const VoteFeed = ({ filter }: VoteFeedProps) => {
       {/* Add Poll Button */}
       <Button
         size="icon"
-        className="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm"
+        className="fixed top-4 left-4 z-50 w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm"
         onClick={() => toast({
           title: "פתיחת יוצר הצבעות...",
           description: "בקרוב תוכלו ליצור הצבעות חדשות!",
