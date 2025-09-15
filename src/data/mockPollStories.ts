@@ -147,5 +147,22 @@ export const mockPollStories: PollStory[] = [
     aiNarration: "כל פרויקט סביבתי יש לו יתרונות...",
     hasUserVoted: false,
     pollType: "multiple"
+  },
+  {
+    id: "6",
+    question: "הרכיבו את הממשלה הבאה של ישראל",
+    description: "בחרו את המועמדים הטובים ביותר לתפקידים המתאימים ביותר",
+    options: [
+      { id: "create", text: "הרכב ממשלה", votes: 0, percentage: 0 }
+    ],
+    totalVotes: 0,
+    backgroundImage: "https://images.unsplash.com/photo-1607602486464-c80a46946294?w=400&h=800&fit=crop",
+    organizationType: "country",
+    organizationName: "מדינת ישראל",
+    publishedDate: "2025-09-15",
+    expiresAt: getFutureDate(30),
+    aiNarration: "הזמן הגיע להרכיב את הממשלה הבאה...",
+    hasUserVoted: false,
+    pollType: "government"
   }
 ];

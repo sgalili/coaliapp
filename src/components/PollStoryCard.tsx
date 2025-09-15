@@ -46,7 +46,7 @@ export interface PollStory {
   }[];
   hasUserVoted: boolean;
   userVotedOption?: string;
-  pollType: 'simple' | 'multiple' | 'expert';
+  pollType: 'simple' | 'multiple' | 'expert' | 'government';
 }
 
 interface PollStoryCardProps {
@@ -223,7 +223,29 @@ export const PollStoryCard = ({
 
           {/* Poll Options */}
           <div className="space-y-4 max-w-md mx-auto w-full">
-            {story.options.map((option, index) => (
+            {story.pollType === 'government' ? (
+              <div className="space-y-3 text-right">
+                <button 
+                  onClick={() => window.location.href = '/mygov'}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <div className="flex items-center justify-center mb-2">
+                    <h3 className="text-xl font-bold">
+                      הממשלה שלי
+                    </h3>
+                  </div>
+                  
+                  <p className="text-lg font-semibold opacity-95">
+                    הרכיבו את הממשלה שלכם בקליק!
+                  </p>
+                </button>
+
+                <p className="text-xs text-white/70 text-center leading-relaxed px-[4px]">
+                  בחרו בטובים ביותר - לתפקידים המתאימים ביותר!
+                </p>
+              </div>
+            ) : (
+              story.options.map((option, index) => (
               <div key={option.id}>
                 {showResults ? (
                   // Results View
@@ -362,11 +384,12 @@ export const PollStoryCard = ({
                   </div>
                 )}
               </div>
-            ))}
+              ))
+            )}
           </div>
 
-          {/* Vote Button */}
-          {!showResults && (
+          {/* Vote Button - Only show for non-government polls */}
+          {!showResults && story.pollType !== 'government' && (
             <div className="mt-8 mb-20 max-w-md mx-auto w-full">
               <Button
                 onClick={(e) => {
