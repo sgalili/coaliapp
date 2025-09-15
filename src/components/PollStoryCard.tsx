@@ -226,7 +226,10 @@ export const PollStoryCard = ({
             {story.pollType === 'government' ? (
               <div className="space-y-4">
                 <button 
-                  onClick={() => window.location.href = '/mygov'}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.location.href = '/mygov';
+                  }}
                   className="w-full p-6 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2 bg-white/30 border-white scale-105 hover:bg-white/40 hover:border-white hover:scale-110 active:scale-95"
                 >
                   <div className="text-center space-y-2">
