@@ -230,7 +230,7 @@ export const PollStoryCard = ({
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate('/mygov');
+                    navigate('/mygov', { replace: false });
                   }}
                   className="w-full p-6 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2 bg-white/30 border-white scale-105 hover:bg-white/40 hover:border-white hover:scale-110 active:scale-95"
                 >
