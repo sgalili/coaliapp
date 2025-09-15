@@ -139,7 +139,7 @@ export const VoteFeed = ({
       </Button>
 
       {/* Stories Container with Global Tap Handler */}
-      <div className="h-screen overflow-auto relative cursor-pointer" onClick={e => {
+      <div className="h-screen overflow-auto overscroll-contain relative cursor-pointer" onClick={e => {
       const rect = e.currentTarget.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const containerWidth = rect.width;

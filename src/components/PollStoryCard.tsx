@@ -393,7 +393,7 @@ export const PollStoryCard = ({
 
           {/* Vote Button - Only show for non-government polls */}
           {!showResults && story.pollType !== 'government' && (
-            <div className="mt-8 mb-20 max-w-md mx-auto w-full">
+            <div className="mt-8 mb-24 md:mb-20 max-w-md mx-auto w-full">
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -412,13 +412,6 @@ export const PollStoryCard = ({
             </div>
           )}
 
-        </div>
-
-        {/* Bottom hint */}
-        <div className="pb-6 text-center">
-          <p className="text-white/60 text-sm">
-            לחץ כדי להמשיך
-          </p>
         </div>
 
       </div>
