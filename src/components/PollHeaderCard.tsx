@@ -49,9 +49,9 @@ const calculateTimeRemaining = (expiresAt: string): string => {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   
-  if (days > 0) return `${days} ימים`;
-  if (hours > 0) return `${hours} שעות`;
-  return "פחות משעה";
+  if (days > 0) return `${days} ימים נותרו`;
+  if (hours > 0) return `${hours} שעות נותרו`;
+  return "פחות משעה נותרה";
 };
 
 const formatTimeAgo = (dateString: string): string => {
@@ -102,23 +102,19 @@ export const PollHeaderCard = ({
       </div>
 
       {/* Stats Row */}
-      <div className="flex items-center justify-center gap-6 text-white/80 text-sm">
+      <div className="flex items-center justify-between w-full text-white/80 text-xs px-2">
         <div className="flex items-center gap-1">
-          <Calendar className="w-4 h-4" />
+          <Calendar className="w-3 h-3" />
           <span>{formattedDate}</span>
         </div>
         
-        <div className="w-px h-4 bg-white/30" />
-        
         <div className="flex items-center gap-1">
-          <Clock className="w-4 h-4" />
+          <Clock className="w-3 h-3" />
           <span>{timeRemaining}</span>
         </div>
         
-        <div className="w-px h-4 bg-white/30" />
-        
         <div className="flex items-center gap-1">
-          <Users className="w-4 h-4" />
+          <Users className="w-3 h-3" />
           <span>{totalVotes.toLocaleString()} הצבעות</span>
         </div>
       </div>
