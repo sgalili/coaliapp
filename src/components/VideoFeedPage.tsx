@@ -159,9 +159,9 @@ export const VideoFeedPage = ({
       {onCreateContent && (
         <button
           onClick={onCreateContent}
-          className="fixed bottom-20 left-4 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+          className="fixed top-4 right-4 z-50 w-8 h-8 bg-muted/80 text-foreground rounded-full flex items-center justify-center shadow-sm hover:bg-muted transition-colors backdrop-blur-sm border border-border/20"
         >
-          <Plus className="w-6 h-6" />
+          <Plus className="w-4 h-4" />
         </button>
       )}
 
