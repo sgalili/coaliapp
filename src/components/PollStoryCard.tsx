@@ -382,7 +382,7 @@ export const PollStoryCard = ({
         </div>
 
         {/* Bottom hint */}
-        <div className="p-6 text-center">
+        <div className="pb-6 text-center">
           <p className="text-white/60 text-sm">
             לחץ כדי להמשיך
           </p>
