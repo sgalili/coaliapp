@@ -121,27 +121,41 @@ function buildGovernmentPrompt(selectedCandidates: Record<string, CandidateData>
     .filter(([key]) => key !== 'pm')
     .map(([ministry, candidate]) => ({ ministry, candidate }));
 
-  let prompt = "Professional government portrait, official Israeli government photo style, ";
+  const totalPeople = (pmCandidate ? 1 : 0) + ministers.length;
   
+  let prompt = `Professional Israeli government portrait featuring exactly ${totalPeople} people. `;
+  
+  // Composition structure
+  if (pmCandidate && ministers.length > 0) {
+    prompt += `1 Prime Minister in center foreground, ${ministers.length} cabinet ministers arranged around. `;
+  } else if (pmCandidate) {
+    prompt += "1 Prime Minister in center. ";
+  } else if (ministers.length > 0) {
+    prompt += `${ministers.length} cabinet ministers arranged in formal composition. `;
+  }
+
+  // Specific positioning and details
   if (pmCandidate) {
-    prompt += `Prime Minister ${pmCandidate.name} in the center, `;
-    prompt += `representing ${pmCandidate.party} party, `;
-    prompt += `expertise in ${pmCandidate.expertise}, `;
+    prompt += `Prime Minister ${pmCandidate.name} (center position, dark formal suit, confident pose), `;
   }
 
   if (ministers.length > 0) {
-    prompt += "surrounded by cabinet ministers: ";
     ministers.forEach(({ ministry, candidate }, index) => {
-      prompt += `${candidate.name} (${getMinistryName(ministry)})`;
-      if (index < ministers.length - 1) prompt += ", ";
+      const positions = ['left side', 'right side', 'back left', 'back right', 'back center'];
+      const position = positions[index] || 'background';
+      prompt += `${getMinistryName(ministry)} ${candidate.name} (${position} position, formal attire), `;
     });
   }
 
-  prompt += ". Ultra high resolution, professional lighting, formal government setting, ";
-  prompt += "Israeli flag in background, official government building interior, ";
-  prompt += "sophisticated composition, political portrait photography style, ";
-  prompt += "everyone wearing formal business attire, confident and authoritative poses, ";
-  prompt += "realistic human faces, high quality professional photograph";
+  // Visual quality specifications
+  prompt += "All individuals with unique and distinct facial features, no duplicate faces, ";
+  prompt += "different ages and builds for diversity, all wearing dark formal business suits, ";
+  prompt += "standing in official Israeli government building interior, Israeli flag prominently displayed in background, ";
+  prompt += "professional studio lighting with soft shadows, formal government setting, ";
+  prompt += "sophisticated political portrait photography style, confident and authoritative body language, ";
+  prompt += "ultra high resolution, sharp focus, realistic human proportions, ";
+  prompt += "professional government photo quality, no artificial or cartoonish features, ";
+  prompt += "natural skin tones, proper formal dress code, dignified poses";
 
   return prompt;
 }
@@ -153,6 +167,7 @@ function getMinistryName(ministryId: string): string {
     'education': 'Education Minister',
     'health': 'Health Minister',
     'justice': 'Justice Minister',
+    'environment': 'Environment Minister',
     'transport': 'Transport Minister',
     'housing': 'Housing Minister',
     'economy': 'Economy Minister',
