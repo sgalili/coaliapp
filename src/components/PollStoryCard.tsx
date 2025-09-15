@@ -227,7 +227,7 @@ export const PollStoryCard = ({
               <div className="space-y-4">
                 <button 
                   onClick={() => window.location.href = '/mygov'}
-                  className="w-full p-6 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2 bg-gradient-to-r from-blue-600/20 to-blue-700/20 border-blue-400/50 hover:from-blue-600/30 hover:to-blue-700/30 hover:border-blue-300 hover:scale-105 active:scale-95"
+                  className="w-full p-6 rounded-2xl backdrop-blur-sm transition-all duration-200 text-white font-medium text-lg border-2 bg-white/30 border-white scale-105 hover:bg-white/40 hover:border-white hover:scale-110 active:scale-95"
                 >
                   <div className="text-center space-y-2">
                     <h3 className="text-xl font-bold">
