@@ -10,7 +10,7 @@ interface VoteFiltersProps {
 export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) => {
 
   const filters = [
-    { id: 'for-me' as const, label: 'החלטות' },
+    { id: 'for-me' as const, label: 'Decisions' },
     { id: 'candidates' as const, label: 'המעגל שלי' },
     { id: 'experts' as const, label: 'סייר' }
   ];

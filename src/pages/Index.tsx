@@ -281,12 +281,6 @@ const Index = () => {
   const handleFilterChange = (newFilter: VoteFilterType) => {
     if (isTransitioning) return;
     
-    // If switching to 'for-me', navigate to decisions page
-    if (newFilter === 'for-me') {
-      navigate('/decisions');
-      return;
-    }
-    
     setIsTransitioning(true);
     setVoteFilter(newFilter);
     setTimeout(() => setIsTransitioning(false), 300);
@@ -377,17 +371,20 @@ const Index = () => {
           }}
           className="min-h-screen"
         >
-          {/* Show VideoFeedPage for video content */}
-          <VideoFeedPage
-            activeFilter={voteFilter}
-            onFilterChange={handleFilterChange}
-            onTrust={handleTrust}
-            onWatch={handleWatch}
-            onZooz={handleZooz}
-            userBalance={zoozBalance}
-            isMuted={isMuted}
-            onVolumeToggle={handleVolumeToggle}
-          />
+          {voteFilter === 'for-me' ? (
+            <VoteFeed filter={voteFilter} />
+          ) : (
+            <VideoFeedPage
+              activeFilter={voteFilter}
+              onFilterChange={handleFilterChange}
+              onTrust={handleTrust}
+              onWatch={handleWatch}
+              onZooz={handleZooz}
+              userBalance={zoozBalance}
+              isMuted={isMuted}
+              onVolumeToggle={handleVolumeToggle}
+            />
+          )}
         </motion.div>
       </AnimatePresence>
 
