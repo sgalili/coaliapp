@@ -541,22 +541,22 @@ export default function MyGovPage() {
       return convertPMCandidates(pmCandidates);
     }
     if (selectedMinistry?.id === "defense") {
-      return convertDefenseCandidates(defenseCandidates);
+      return defenseCandidates.length > 0 ? convertDefenseCandidates(defenseCandidates) : mockCandidates;
     }
     if (selectedMinistry?.id === "finance") {
-      return convertEconomicsCandidates(economicsCandidates);
+      return economicsCandidates.length > 0 ? convertEconomicsCandidates(economicsCandidates) : mockCandidates;
     }
     if (selectedMinistry?.id === "education") {
-      return convertEducationCandidates(educationCandidates);
+      return educationCandidates.length > 0 ? convertEducationCandidates(educationCandidates) : mockCandidates;
     }
     if (selectedMinistry?.id === "health") {
-      return convertHealthCandidates(healthCandidates);
+      return healthCandidates.length > 0 ? convertHealthCandidates(healthCandidates) : mockCandidates;
     }
     if (selectedMinistry?.id === "justice") {
-      return convertJusticeCandidates(justiceCandidates);
+      return justiceCandidates.length > 0 ? convertJusticeCandidates(justiceCandidates) : mockCandidates;
     }
     if (selectedMinistry?.id === "environment") {
-      return convertEnvironmentCandidates(environmentCandidates);
+      return environmentCandidates.length > 0 ? convertEnvironmentCandidates(environmentCandidates) : mockCandidates;
     }
     return mockCandidates;
   };
