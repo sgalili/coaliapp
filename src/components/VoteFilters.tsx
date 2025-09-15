@@ -27,7 +27,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
               "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200",
               activeFilter === filter.id
                 ? "bg-primary/20 text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground bg-muted/20"
+                : "text-white/80 hover:text-white bg-white/10"
             )}
           >
             <span className="text-xs">{filter.label}</span>
