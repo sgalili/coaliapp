@@ -54,12 +54,22 @@ const calculateTimeRemaining = (expiresAt: string): string => {
   return "פחות משעה";
 };
 
-const formatDate = (dateString: string): string => {
+const formatTimeAgo = (dateString: string): string => {
+  const now = new Date();
   const date = new Date(dateString);
-  return date.toLocaleDateString('he-IL', { 
-    day: 'numeric', 
-    month: 'short' 
-  });
+  const diffInMs = now.getTime() - date.getTime();
+  
+  const minutes = Math.floor(diffInMs / (1000 * 60));
+  const hours = Math.floor(diffInMs / (1000 * 60 * 60));
+  const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  
+  if (minutes < 60) {
+    return `לפני ${minutes} דקות`;
+  } else if (hours < 24) {
+    return `לפני ${hours} שעות`;
+  } else {
+    return `לפני ${days} ימים`;
+  }
 };
 
 export const PollHeaderCard = ({ 
@@ -73,7 +83,7 @@ export const PollHeaderCard = ({
   const config = organizationConfig[organizationType];
   const Icon = config.icon;
   const timeRemaining = calculateTimeRemaining(expiresAt);
-  const formattedDate = formatDate(publishedDate);
+  const formattedDate = formatTimeAgo(publishedDate);
 
   return (
     <div className={cn(
