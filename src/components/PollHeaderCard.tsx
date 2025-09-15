@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { MapPin, Building2, Globe, Users, Landmark, Clock, Calendar } from "lucide-react";
 import { OrganizationType } from "./LocationBadge";
 
 interface PollHeaderCardProps {
@@ -10,34 +9,6 @@ interface PollHeaderCardProps {
   totalVotes: number;
   className?: string;
 }
-
-const organizationConfig = {
-  neighborhood: {
-    icon: MapPin,
-    emoji: "🏘️",
-    color: "text-emerald-400"
-  },
-  city: {
-    icon: Building2,
-    emoji: "🏙️",
-    color: "text-blue-400"
-  },
-  country: {
-    icon: Globe,
-    emoji: "🇮🇱",
-    color: "text-purple-400"
-  },
-  foundation: {
-    icon: Landmark,
-    emoji: "🏛️",
-    color: "text-amber-400"
-  },
-  company: {
-    icon: Users,
-    emoji: "🏢",
-    color: "text-cyan-400"
-  }
-};
 
 const calculateTimeRemaining = (expiresAt: string): string => {
   const now = new Date();
@@ -80,8 +51,6 @@ export const PollHeaderCard = ({
   totalVotes, 
   className 
 }: PollHeaderCardProps) => {
-  const config = organizationConfig[organizationType];
-  const Icon = config.icon;
   const timeRemaining = calculateTimeRemaining(expiresAt);
   const formattedDate = formatTimeAgo(publishedDate);
 
@@ -91,32 +60,19 @@ export const PollHeaderCard = ({
       className
     )}>
       {/* Organization Info */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{config.emoji}</span>
-          <Icon className={cn("w-5 h-5", config.color)} />
-        </div>
+      <div className="flex items-center justify-center mb-3">
         <h3 className="text-white font-bold text-lg text-center">
           {organizationName}
         </h3>
       </div>
 
       {/* Stats Row */}
-      <div className="flex items-center justify-between w-full text-white/80 text-xs px-2">
-        <div className="flex items-center gap-1">
-          <Calendar className="w-3 h-3" />
-          <span>{formattedDate}</span>
-        </div>
-        
-        <div className="flex items-center gap-1">
-          <Clock className="w-3 h-3" />
-          <span>{timeRemaining}</span>
-        </div>
-        
-        <div className="flex items-center gap-1">
-          <Users className="w-3 h-3" />
-          <span>{totalVotes.toLocaleString()} הצבעות</span>
-        </div>
+      <div className="flex items-center justify-center gap-2 text-white/80 text-xs whitespace-nowrap">
+        <span>{formattedDate}</span>
+        <span>•</span>
+        <span>{timeRemaining}</span>
+        <span>•</span>
+        <span>{totalVotes.toLocaleString()} הצבעות</span>
       </div>
     </div>
   );
