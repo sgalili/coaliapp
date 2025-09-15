@@ -1,0 +1,12 @@
+-- Insert Prime Minister candidates data
+INSERT INTO public.prime_minister_candidates (name, avatar_url, party, expertise, experience, bio, wikipedia_url) VALUES 
+('בנימין נתניהו', '/src/assets/candidates/netanyahu.jpg', 'ליכוד', ARRAY['כלכלה', 'ביטחון לאומי', 'יחסים חוץ'], 'רה״מ הכי ותיק בתולדות ישראל, שגריר לאו״ם', 'מוביל הימין בישראל למעלה מ-30 שנה', 'https://en.wikipedia.org/wiki/Benjamin_Netanyahu'),
+('יאיר לפיד', '/src/assets/candidates/lapid.jpg', 'יש עתיד', ARRAY['תקשורת', 'כלכלה', 'חברה'], 'רה״מ לשעבר, שר האוצר לשעבר, עיתונאי', 'מוביל המרכז הישראלי, נציג הציבור החילוני', 'https://en.wikipedia.org/wiki/Yair_Lapid'),
+('נפתלי בנט', '/src/assets/candidates/bennett.jpg', 'ימינה', ARRAY['טכנולוגיה', 'יזמות', 'ביטחון'], 'רה״מ לשעבר, יזם טק, קצין יחידה מובחרת', 'מייצג את הימין החדש והטכנולوגי', 'https://en.wikipedia.org/wiki/Naftali_Bennett'),
+('בני גנץ', '/src/assets/candidates/gantz.jpg', 'כחול לבן', ARRAY['ביטחון', 'הגנה', 'מנהיגות צבאית'], 'רמטכ״ל לשעבר, שר הביטחון לשעבר', 'גנרל מוערך, מוביל המחנה הביטחוני המתון', 'https://en.wikipedia.org/wiki/Benny_Gantz'),
+('גדעון סער', '/src/assets/candidates/saar.jpg', 'תקווה חדשה', ARRAY['חינוך', 'חקיקה', 'מדיניות ציבורית'], 'שר החינוך לשעבר, יו״ר הכנסת לשעבר', 'פוליטיקאי ותיק עם ניסיון בתחומי חברה וחינוך', 'https://en.wikipedia.org/wiki/Gideon_Sa%27ar'),
+('אביגדור ליברמן', '/src/assets/candidates/lieberman.jpg', 'ישראל ביתנו', ARRAY['ביטחון', 'מדיניות חוץ', 'כלכלה'], 'שר הביטחון לשעבר, שר החוץ לשעבר', 'מייצג את הציבור הרוסי, ידוע בעמדות חד משמעיות', 'https://en.wikipedia.org/wiki/Avigdor_Lieberman'),
+('איתמר בן-גביר', '/src/assets/candidates/ben-gvir.jpg', 'עוצמה יהודית', ARRAY['משפט', 'ביטחון פנים', 'מדיניות לאומית'], 'שר הביטחון הלאומי, עורך דין', 'מוביל הימין הלאומי, פעיל למען יהודי יו״ש', 'https://en.wikipedia.org/wiki/Itamar_Ben-Gvir'),
+('ציפי לבני', '/src/assets/candidates/livni.jpg', 'התנועה', ARRAY['משפט', 'דיפלומטיה', 'שלום'], 'שרת החוץ לשעבר, עורכת דין, מתווכת שלום', 'מובילת השמאל המתון, חסידת תהליכי השלום', 'https://en.wikipedia.org/wiki/Tzipi_Livni'),
+('אהוד ברק', '/src/assets/candidates/barak.jpg', 'העבודה', ARRAY['ביטחון', 'מנהיגות', 'אסטרטגיה'], 'רה״מ לשעבר, רמטכ״ל לשעבר, החייל המעוטר ביותר', 'מנהיג ביטחוני מנוסה עם ניסיון ממשלתי עשיר', 'https://en.wikipedia.org/wiki/Ehud_Barak'),
+('איילת שקד', '/src/assets/candidates/shaked.jpg', 'ימינה', ARRAY['משפט', 'חקיקה', 'זכויות אדם'], 'שרת המשפטים לשעבר, שרת הפנים לשעבר', 'יוריסטית מובילה, חלוצת הרפורמה במערכת המשפט', 'https://en.wikipedia.org/wiki/Ayelet_Shaked');
