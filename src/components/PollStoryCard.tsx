@@ -231,7 +231,7 @@ export const PollStoryCard = ({
                 >
                   <div className="text-center space-y-2">
                     <h3 className="text-xl font-bold">
-                      🏛️ הממשלה שלי
+                      הממשלה שלי
                     </h3>
                     <p className="text-base opacity-90">
                       הרכיבו את הממשלה שלכם בקליק!
