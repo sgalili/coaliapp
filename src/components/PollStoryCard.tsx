@@ -194,7 +194,7 @@ export const PollStoryCard = ({
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 flex flex-col justify-center px-6">
+        <div className="flex-1 flex flex-col justify-start px-6 py-4 overflow-y-auto">
           
           {/* Question */}
           <div className="mb-8 text-center">
