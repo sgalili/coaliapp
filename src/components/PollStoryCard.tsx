@@ -373,12 +373,6 @@ export const PollStoryCard = ({
             </div>
           )}
 
-          {/* Stats */}
-          <div className="mt-6 text-center">
-            <p className="text-white/80 text-sm">
-              {story.totalVotes.toLocaleString('he')} משתתפים
-            </p>
-          </div>
         </div>
 
         {/* Bottom hint */}
