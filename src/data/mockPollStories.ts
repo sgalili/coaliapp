@@ -1,5 +1,18 @@
 import { PollStory } from "@/components/PollStoryCard";
 
+// Helper function to get future dates
+const getFutureDate = (daysFromNow: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromNow);
+  return date.toISOString().split('T')[0];
+};
+
+const getPastDate = (daysAgo: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  return date.toISOString().split('T')[0];
+};
+
 export const mockPollStories: PollStory[] = [
   {
     id: "1",
@@ -13,8 +26,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=800&fit=crop",
     organizationType: "city",
     organizationName: "עיריית תל אביב",
-    publishedDate: "2024-01-15",
-    expiresAt: "2024-01-30",
+    publishedDate: getPastDate(5),
+    expiresAt: getFutureDate(15),
     aiNarration: "שלום, אני אסביר לכם על החלטת הפארק החדש...",
     prosAndCons: [
       {
@@ -40,8 +53,8 @@ export const mockPollStories: PollStory[] = [
     backgroundVideo: "/public/videos/traffic-bg.mp4",
     organizationType: "city",
     organizationName: "עיריית חיפה",
-    publishedDate: "2024-01-10",
-    expiresAt: "2024-01-25",
+    publishedDate: getPastDate(8),
+    expiresAt: getFutureDate(12),
     aiNarration: "הבה נדון בפתרונות לבעיית התנועה...",
     hasUserVoted: false,
     pollType: "multiple"
@@ -90,8 +103,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=400&h=800&fit=crop",
     organizationType: "country",
     organizationName: "מדינת ישראל",
-    publishedDate: "2024-01-12",
-    expiresAt: "2024-01-27",
+    publishedDate: getPastDate(7),
+    expiresAt: getFutureDate(10),
     aiNarration: "בואו נבחן את המועמדים השונים לתפקיד...",
     hasUserVoted: false,
     pollType: "expert"
@@ -108,8 +121,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9d1?w=400&h=800&fit=crop",
     organizationType: "foundation",
     organizationName: "קרן החינוך",
-    publishedDate: "2024-01-08",
-    expiresAt: "2024-01-22",
+    publishedDate: getPastDate(10),
+    expiresAt: getFutureDate(5),
     aiNarration: "נדון בחשיבות השקעה בחינוך...",
     hasUserVoted: true,
     userVotedOption: "approve",
@@ -129,8 +142,8 @@ export const mockPollStories: PollStory[] = [
     backgroundImage: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=800&fit=crop",
     organizationType: "company",
     organizationName: "טבע פארמצבטיקל",
-    publishedDate: "2024-01-05",
-    expiresAt: "2024-01-20",
+    publishedDate: getPastDate(12),
+    expiresAt: getFutureDate(3),
     aiNarration: "כל פרויקט סביבתי יש לו יתרונות...",
     hasUserVoted: false,
     pollType: "multiple"
