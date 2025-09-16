@@ -569,7 +569,7 @@ export default function MyGovPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/")}
             className="ml-auto"
           >
             <ArrowRight className="h-5 w-5" />
