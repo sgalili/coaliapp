@@ -298,6 +298,9 @@ const Index = () => {
     handleSwipe(startX, startY, endX, endY);
   };
 
+  // State for swipe direction
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+
   // Common swipe logic
   const handleSwipe = (startX: number, startY: number, endX: number, endY: number) => {
     const deltaX = endX - startX;
@@ -313,14 +316,37 @@ const Index = () => {
       
       if (deltaX > 0) {
         // Swipe right - go to previous filter (bring left page to screen)
+        setSwipeDirection('right');
         const prevIndex = currentIndex === 0 ? filters.length - 1 : currentIndex - 1;
         handleFilterChange(filters[prevIndex]);
       } else {
         // Swipe left - go to next filter (bring right page to screen)
+        setSwipeDirection('left');
         const nextIndex = (currentIndex + 1) % filters.length;
         handleFilterChange(filters[nextIndex]);
       }
     }
+  };
+
+  // Get animation props based on swipe direction
+  const getAnimationProps = () => {
+    const isSwipeRight = swipeDirection === 'right';
+    const isSwipeLeft = swipeDirection === 'left';
+    
+    return {
+      initial: { 
+        x: isSwipeRight ? -100 : isSwipeLeft ? 100 : 100,
+        opacity: 0.8
+      },
+      animate: { 
+        x: 0, 
+        opacity: 1 
+      },
+      exit: { 
+        x: isSwipeRight ? 100 : isSwipeLeft ? -100 : -100,
+        opacity: 0.8
+      }
+    };
   };
   
   return (
@@ -337,20 +363,20 @@ const Index = () => {
         onFilterChange={handleFilterChange}
       />
       
-      {/* Animated content container */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={voteFilter}
-          initial={{ x: 300 }}
-          animate={{ x: 0 }}
-          exit={{ x: -300 }}
-          transition={{ 
-            type: "tween", 
-            ease: [0.25, 0.1, 0.25, 1],
-            duration: 0.25 
-          }}
-          className="min-h-screen"
-        >
+      {/* Pre-rendered content containers */}
+      <div className="relative min-h-screen overflow-hidden">
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={voteFilter}
+            {...getAnimationProps()}
+            transition={{ 
+              type: "tween", 
+              ease: [0.32, 0.72, 0, 1],
+              duration: 0.15 
+            }}
+            className="absolute inset-0 will-change-transform"
+            style={{ transform: 'translate3d(0, 0, 0)' }}
+          >
           {voteFilter === 'for-me' ? (
             <VoteFeed filter={voteFilter} />
           ) : (
@@ -368,6 +394,7 @@ const Index = () => {
           )}
         </motion.div>
       </AnimatePresence>
+      </div>
 
       <Navigation zoozBalance={zoozBalance} />
 

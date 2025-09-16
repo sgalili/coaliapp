@@ -26,6 +26,8 @@ const DecisionsPage = () => {
   const [voteFilter, setVoteFilter] = useState<VoteFilterType>('for-me');
   const [zoozBalance, setZoozBalance] = useState(1250);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  // State for swipe direction
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   
   const { toast } = useToast();
 
@@ -113,6 +115,27 @@ const DecisionsPage = () => {
 
   const handleVolumeToggle = () => {
     setIsMuted(!isMuted);
+  };
+
+  // Get animation props based on swipe direction
+  const getAnimationProps = () => {
+    const isSwipeRight = swipeDirection === 'right';
+    const isSwipeLeft = swipeDirection === 'left';
+    
+    return {
+      initial: { 
+        x: isSwipeRight ? -100 : isSwipeLeft ? 100 : 100,
+        opacity: 0.8
+      },
+      animate: { 
+        x: 0, 
+        opacity: 1 
+      },
+      exit: { 
+        x: isSwipeRight ? 100 : isSwipeLeft ? -100 : -100,
+        opacity: 0.8
+      }
+    };
   };
 
 
@@ -204,20 +227,20 @@ const DecisionsPage = () => {
         onFilterChange={handleFilterChange}
       />
       
-      {/* Animated content container */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={voteFilter}
-          initial={{ x: 300 }}
-          animate={{ x: 0 }}
-          exit={{ x: -300 }}
-          transition={{ 
-            type: "tween", 
-            ease: [0.25, 0.1, 0.25, 1],
-            duration: 0.25 
-          }}
-          className="min-h-screen"
-        >
+      {/* Pre-rendered content containers */}
+      <div className="relative min-h-screen overflow-hidden">
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={voteFilter}
+            {...getAnimationProps()}
+            transition={{ 
+              type: "tween", 
+              ease: [0.32, 0.72, 0, 1],
+              duration: 0.15 
+            }}
+            className="absolute inset-0 will-change-transform"
+            style={{ transform: 'translate3d(0, 0, 0)' }}
+          >
           {/* Route between Poll Stories and VideoFeedPage based on filter */}
           {voteFilter === 'for-me' ? (
             <div className="relative h-screen overflow-hidden">
@@ -283,6 +306,7 @@ const DecisionsPage = () => {
           )}
         </motion.div>
       </AnimatePresence>
+      </div>
 
       {/* Bottom navigation */}
       <Navigation zoozBalance={zoozBalance} />
