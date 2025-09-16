@@ -346,7 +346,7 @@ const VideoCard = ({
         
         <div className="cursor-pointer text-right" onClick={() => navigate(`/user/${post.id}`)}>
           <div className="flex items-center justify-end gap-1">
-            <span className="text-white font-semibold text-sm">{post.username}</span>
+            <span className="text-white font-semibold text-sm text-right">{post.username}</span>
           </div>
           <div className="mt-1">
             <ExpertiseBadge expertise={post.expertise} category={post.category} />
