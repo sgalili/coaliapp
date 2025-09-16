@@ -348,7 +348,7 @@ const VideoCard = ({
           <div className="flex items-center justify-end gap-1">
             <span className="text-white font-semibold text-sm text-right">{post.username}</span>
           </div>
-          <div className="mt-1">
+          <div className="mt-1 text-right">
             <ExpertiseBadge expertise={post.expertise} category={post.category} />
           </div>
         </div>
