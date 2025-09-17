@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
+export type VoteFilterType = 'for-me' | 'candidates' | 'all';
 
 interface VoteFiltersProps {
   activeFilter: VoteFilterType;
@@ -11,8 +11,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
 
   const filters = [
     { id: 'candidates' as const, label: 'המעגל שלי' },
-    { id: 'for-me' as const, label: 'החלטות' },
-    { id: 'experts' as const, label: 'סייר' }
+    { id: 'for-me' as const, label: 'החלטות' }
   ];
 
   return (
@@ -22,7 +21,7 @@ export const VoteFilters = ({ activeFilter, onFilterChange }: VoteFiltersProps) 
           <button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
-            data-tour-id={filter.id === 'for-me' ? 'decisions-filter' : filter.id === 'candidates' ? 'circle-filter' : 'explore-filter'}
+            data-tour-id={filter.id === 'for-me' ? 'decisions-filter' : 'circle-filter'}
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200",
               activeFilter === filter.id

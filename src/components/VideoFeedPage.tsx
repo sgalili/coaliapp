@@ -139,9 +139,6 @@ export const VideoFeedPage = ({
     if (activeFilter === 'candidates') {
       return mockCandidateVideos;
     }
-    if (activeFilter === 'experts') {
-      return mockExpertVideos;
-    }
     return [...mockCandidateVideos, ...mockExpertVideos];
   };
 

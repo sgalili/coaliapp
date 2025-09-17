@@ -311,7 +311,7 @@ const Index = () => {
     const threshold = 80;
 
     if (isHorizontalSwipe && Math.abs(deltaX) > threshold && !isTransitioning) {
-      const filters: VoteFilterType[] = ['for-me', 'candidates', 'experts'];
+      const filters: VoteFilterType[] = ['for-me', 'candidates'];
       const currentIndex = filters.indexOf(voteFilter);
       
       if (deltaX > 0) {
