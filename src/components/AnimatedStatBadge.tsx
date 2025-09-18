@@ -104,7 +104,7 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
       )}>
         {icon}
       </div>
-      <div className="h-4 flex items-center justify-center">
+      <div className="h-4 w-16 flex items-center justify-center">
         {renderContent()}
       </div>
     </button>
