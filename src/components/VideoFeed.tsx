@@ -151,16 +151,22 @@ const VoteIcon = () => {
       viewBox="0 0 24 24" 
       className="w-6 h-6" 
       fill="none" 
-      stroke="currentColor" 
+      stroke="white" 
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {/* Carré */}
-      <rect x="6" y="6" width="12" height="12" />
+      {/* Urne simple */}
+      <rect x="7" y="14" width="10" height="6" />
       
-      {/* V à l'intérieur */}
-      <path d="M10 10 L12 14 L14 10" />
+      {/* Fente sur le dessus */}
+      <line x1="9" y1="14" x2="15" y2="14" />
+      
+      {/* Main qui vote */}
+      <path d="M13 10 L15 8 L17 10 L15 12" />
+      
+      {/* Bulletin */}
+      <rect x="14" y="4" width="2" height="8" />
     </svg>
   );
 };
