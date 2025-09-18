@@ -153,18 +153,20 @@ const VoteIcon = () => {
       fill="none" 
       stroke="currentColor" 
       strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      {/* Urne trapézoïdale - base large qui se rétrécit vers le haut */}
-      <path d="M6 18 h12 l-1 -6 H7 Z" />
+      {/* Urne simple - boîte rectangulaire */}
+      <rect x="6" y="13" width="12" height="7" />
       
-      {/* Fente de l'urne */}
-      <line x1="7" y1="12" x2="17" y2="12" />
+      {/* Fente sur le dessus */}
+      <line x1="8" y1="13" x2="16" y2="13" />
       
-      {/* Main stylisée tenant le bulletin */}
-      <path d="M14 8 L16 6 L18 8 L16 10" />
+      {/* Main tenant le bulletin */}
+      <path d="M14 9 L16 7 L18 9" />
       
-      {/* Bulletin de vote entrant dans la fente */}
-      <rect x="15" y="6" width="2" height="4" />
+      {/* Bulletin qui descend */}
+      <rect x="15" y="4" width="2" height="6" fill="none" />
     </svg>
   );
 };
