@@ -147,19 +147,25 @@ const KYCBadge = ({
 };
 const VoteIcon = () => {
   return (
-    <div className="relative w-6 h-6">
-      {/* Urne simple - boîte rectangulaire */}
-      <div className="absolute bottom-0 left-1 w-4 h-3 border-2 border-current" />
+    <svg 
+      viewBox="0 0 24 24" 
+      className="w-6 h-6" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2"
+    >
+      {/* Urne trapézoïdale - base large qui se rétrécit vers le haut */}
+      <path d="M6 18 h12 l-1 -6 H7 Z" />
       
       {/* Fente de l'urne */}
-      <div className="absolute bottom-3 left-1.5 w-3 h-0.5 bg-current" />
+      <line x1="7" y1="12" x2="17" y2="12" />
       
-      {/* Main stylisée */}
-      <div className="absolute top-0.5 right-0.5 w-1 h-1.5 border-2 border-current rounded-sm" />
+      {/* Main stylisée tenant le bulletin */}
+      <path d="M14 8 L16 6 L18 8 L16 10" />
       
-      {/* Bulletin qui rentre */}
-      <div className="absolute top-0 right-1.5 w-1.5 h-2.5 border-2 border-current" />
-    </div>
+      {/* Bulletin de vote entrant dans la fente */}
+      <rect x="15" y="6" width="2" height="4" />
+    </svg>
   );
 };
 
