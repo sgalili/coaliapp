@@ -408,7 +408,7 @@ const VideoCard = ({
       </div>
 
       {/* Volume button - positioned below + button */}
-      <div className="absolute top-16 left-4">
+      <div className="absolute top-16 left-2">
         <button onClick={handleVolumeToggle} className="flex flex-col items-center gap-1 group">
           <div className="w-12 h-12 rounded-full flex items-center justify-center group-active:scale-95 transition-transform">
             {isMuted ? <VolumeX className="w-6 h-6 text-white fill-white" /> : <Volume2 className="w-6 h-6 text-white fill-white" />}
@@ -417,7 +417,7 @@ const VideoCard = ({
       </div>
 
       {/* Action buttons */}
-      <div className="absolute left-4 bottom-20 flex flex-col gap-5">
+      <div className="absolute left-2 bottom-20 flex flex-col gap-5">
 
         {/* VOTE button - only for votable posts */}
         {post.isVotable && (
