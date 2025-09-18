@@ -41,7 +41,7 @@ const tourSteps: TourStep[] = [
     id: "leaders",
     title: "מובילים",
     description: "מצא את האנשים שזכו בהכי הרבה אמון והצבעות, לפי תחום.",
-    targetSelector: "[data-tour-id='leaders-tab']",
+    targetSelector: "[data-tour-id='toptrusted-tab']",
     position: "top"
   },
   {
