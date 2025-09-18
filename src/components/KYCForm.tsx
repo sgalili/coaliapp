@@ -83,7 +83,7 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                className="w-full"
+                className="w-full text-right"
                 dir="ltr"
               />
             </div>
