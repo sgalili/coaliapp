@@ -34,7 +34,7 @@ const tourSteps: TourStep[] = [
     id: "impact",
     title: "אימפקט",
     description: "קרא חדשות עם דעות מומחים והשפע ישירות עם הדעה האישית שלך.",
-    targetSelector: "[data-tour-id='impact-tab']",
+    targetSelector: "[data-tour-id='news-tab']",
     position: "top"
   },
   {
