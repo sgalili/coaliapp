@@ -161,9 +161,9 @@ export const VideoFeedPage = ({
   // Get appropriate videos based on filter
   const getVideos = (): VideoPost[] => {
     if (activeFilter === 'candidates') {
-      return mockCandidateVideos;
+      return [...mockCandidateVideos, ...mockExpertVideos];
     }
-    return [...mockCandidateVideos, ...mockExpertVideos];
+    return mockCandidateVideos;
   };
 
   return (
