@@ -232,11 +232,13 @@ const Index = () => {
       toast({
         title: "אמון ניתן! ❤️",
         description: `נתת אמון בתחום ${categoryName} • עלות: 1 ZOOZ`,
+        duration: 5000,
       });
     } else {
       toast({
         title: "אמון הוסר",
         description: `האמון הוסר מהתחום ${categoryName} • עלות: 1 ZOOZ`,
+        duration: 5000,
       });
     }
   };
