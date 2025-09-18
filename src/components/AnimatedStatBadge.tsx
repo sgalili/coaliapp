@@ -11,13 +11,6 @@ interface AnimatedStatBadgeProps {
   className?: string;
 }
 
-const STAT_LABELS = {
-  vote: "הצבעות",
-  zooz: "ZOOZ", 
-  trust: "אמון",
-  watch: "צפיות", 
-  share: "שיתופים"
-};
 
 export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   count,
@@ -32,23 +25,31 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    console.log('AnimatedStatBadge: useEffect started');
+    
     // 15-second cycle: 10s numbers, 5s labels
     const startCycle = () => {
+      console.log('AnimatedStatBadge: Starting new cycle - showing NUMBERS for 10s');
+      
       // Phase 1: Show numbers for 10 seconds
-      setTimeout(() => {
+      const timer1 = setTimeout(() => {
+        console.log('AnimatedStatBadge: 10s elapsed - transitioning to LABELS');
         setIsAnimating(true);
         
         // After 300ms transition, show labels
-        setTimeout(() => {
+        const timer2 = setTimeout(() => {
+          console.log('AnimatedStatBadge: Now showing LABELS for 5s');
           setPhase('labels');
           setIsAnimating(false);
           
           // Phase 2: Show labels for 5 seconds
-          setTimeout(() => {
+          const timer3 = setTimeout(() => {
+            console.log('AnimatedStatBadge: 5s elapsed - transitioning back to NUMBERS');
             setIsAnimating(true);
             
             // After 300ms transition, show numbers
-            setTimeout(() => {
+            const timer4 = setTimeout(() => {
+              console.log('AnimatedStatBadge: Back to NUMBERS - restarting cycle');
               setPhase('numbers');
               setIsAnimating(false);
               
@@ -61,6 +62,11 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
     };
 
     startCycle();
+    
+    // Cleanup function to clear any pending timeouts
+    return () => {
+      console.log('AnimatedStatBadge: Component unmounting - clearing timers');
+    };
   }, []);
 
   const renderContent = () => {
