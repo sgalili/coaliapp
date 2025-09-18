@@ -84,11 +84,11 @@ const DecisionsPage = () => {
   };
 
   // Video feed handlers
-  const handleVote = (postId: string, ministryPosition: string) => {
+  const handleVideoVote = (postId: string, ministryPosition: string) => {
     // TODO: Implement vote confirmation and database update
-    toast(`הצבעת עבור המועמד! 🗳️`, {
-      position: "bottom-center",
-      duration: 2000
+    toast({
+      title: "הצבעת עבור המועמד! 🗳️",
+      description: "הצבעה נרשמה בהצלחה"
     });
   };
 
@@ -307,7 +307,7 @@ const DecisionsPage = () => {
               onTrust={handleTrust}
               onWatch={handleWatch}
               onZooz={handleZooz}
-              onVote={handleVote}
+              onVote={handleVideoVote}
               userBalance={zoozBalance}
               isMuted={isMuted}
               onVolumeToggle={handleVolumeToggle}
