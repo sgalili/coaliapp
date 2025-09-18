@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useZoozReactions, LiveZoozReaction } from "@/hooks/useZoozReactions";
 import { AnimatedStatBadge } from "./AnimatedStatBadge";
 import { TrustIconFillable, WatchIconFillable } from "./FillableIcons";
+import { VoteAnimation } from './VoteAnimation';
 export interface VideoPost {
   id: string;
   username: string;
@@ -32,6 +33,7 @@ export interface VideoPost {
   // Vote-related properties
   isVotable?: boolean;
   ministryPosition?: string;
+  candidateName?: string;
   voteCount?: number;
   // User interaction states
   hasUserVoted?: boolean;
@@ -213,6 +215,7 @@ const VideoCard = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
+  const [showVoteAnimation, setShowVoteAnimation] = useState(false);
   const [lastClick, setLastClick] = useState(0);
   const [isAuthenticityExpanded, setIsAuthenticityExpanded] = useState(false);
   const navigate = useNavigate();
@@ -396,7 +399,7 @@ const VideoCard = ({
             count={post.voteCount}
             label="הצבעות"
             icon={<VoteIcon />}
-            onClick={() => onVote(post.id, post.ministryPosition!)}
+            onClick={() => setShowVoteAnimation(true)}
             isActive={post.hasUserVoted}
             activeColor="bg-vote/60"
           />
@@ -481,6 +484,16 @@ const VideoCard = ({
           </div>
         )}
       </div>
+
+      {/* Vote Animation Modal */}
+      <VoteAnimation
+        isOpen={showVoteAnimation}
+        onClose={() => setShowVoteAnimation(false)}
+        onConfirm={() => onVote(post.id, post.ministryPosition!)}
+        username={post.username}
+        candidate={post.candidateName || post.username}
+        position={post.ministryPosition || "ראש הממשלה"}
+      />
 
     </div>;
 };
