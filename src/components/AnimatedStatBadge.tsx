@@ -13,6 +13,15 @@ interface AnimatedStatBadgeProps {
 }
 
 
+const formatNumber = (num: number): string => {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1).replace('.0', '') + 'M';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace('.0', '') + 'K';
+  }
+  return num.toString();
+};
+
 export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   count,
   label,
@@ -81,7 +90,7 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
             isAnimating ? "animate-slide-up-out" : ""
           )}
         >
-          {count.toLocaleString()}
+          {formatNumber(count)}
         </span>
       );
     } else {
