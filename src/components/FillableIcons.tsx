@@ -8,16 +8,46 @@ interface FillableIconProps {
 }
 
 export const TrustIconFillable: React.FC<FillableIconProps> = ({ className, isFilled = false }) => {
+  if (isFilled) {
+    return (
+      <svg 
+        className={cn("w-6 h-6 text-white transition-all duration-300", className)} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2"
+      >
+        {/* Main handshake shapes filled with white */}
+        <path 
+          d="M11 17a4 4 0 0 1-8 0V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2z" 
+          fill="white"
+          stroke="black" 
+          strokeWidth="1.5"
+        />
+        <path 
+          d="M9 15a4 4 0 0 0 8 0V9a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2z" 
+          fill="white"
+          stroke="black" 
+          strokeWidth="1.5"
+        />
+        {/* Internal details remain transparent */}
+        <path 
+          d="M9 12h2l2 2h2" 
+          fill="none"
+          stroke="black" 
+          strokeWidth="1.5"
+        />
+      </svg>
+    );
+  }
+
   return (
     <div className={cn("relative", className)}>
       <Handshake 
-        className={cn(
-          "w-6 h-6 text-white transition-all duration-300",
-          isFilled && "fill-white"
-        )}
-        fill={isFilled ? "white" : "none"}
+        className="w-6 h-6 text-white transition-all duration-300"
+        fill="none"
         stroke="currentColor"
-        strokeWidth={isFilled ? 1.5 : 2}
+        strokeWidth="2"
       />
     </div>
   );
