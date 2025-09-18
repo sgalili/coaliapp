@@ -82,16 +82,19 @@ export const VoteAnimation = ({
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", damping: 15 }}
-                      className="w-24 h-20 bg-gradient-to-b from-muted-foreground/20 to-muted-foreground/40 border-2 border-muted-foreground/60 rounded-lg relative overflow-hidden shadow-lg"
+                      className="w-32 h-24 bg-background border-2 border-foreground rounded-lg relative overflow-visible shadow-lg"
                     >
                       {/* Ballot slot */}
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-background/80 rounded-full shadow-inner border border-muted-foreground/30" />
-                      {/* Vote icon */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                        <Vote className="w-6 h-6 text-primary" />
+                      <div className="absolute top-1 left-1/2 -translate-x-1/2 w-20 h-2 bg-muted rounded-sm shadow-inner border border-foreground/30" />
+                      
+                      {/* VOTE text on the ballot box */}
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                        <span className="text-foreground font-bold text-lg">VOTE</span>
                       </div>
-                      {/* Lock mechanism */}
-                      <div className="absolute top-0 right-1 w-2 h-2 bg-muted-foreground/60 rounded-full" />
+                      
+                      {/* Ballot box legs */}
+                      <div className="absolute -bottom-2 left-2 w-1 h-4 bg-foreground rounded-sm" />
+                      <div className="absolute -bottom-2 right-2 w-1 h-4 bg-foreground rounded-sm" />
                     </motion.div>
                   </div>
 
@@ -120,13 +123,13 @@ export const VoteAnimation = ({
                     
                     {/* Ballot */}
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{ scale: 0, x: -20 }}
+                      animate={{ scale: 1, x: 0 }}
                       transition={{ delay: 0.8, type: "spring" }}
-                      className="absolute -top-4 -right-2 bg-background border border-border rounded-sm p-2 shadow-lg min-w-32 max-w-40"
+                      className="absolute -top-8 -right-4 bg-background border-2 border-foreground rounded-sm p-3 shadow-lg min-w-36 max-w-44"
                     >
                       <div className="text-xs font-semibold text-foreground text-center">
-                        <div className="text-primary">{username}</div>
+                        <div className="text-primary font-bold">{username}</div>
                         <div className="text-muted-foreground mt-1 leading-tight">
                           {candidate} – {position}
                         </div>
@@ -186,36 +189,36 @@ export const VoteAnimation = ({
                 {/* Animated Ballot Box - Closing */}
                 <motion.div
                   initial={{ scale: 1 }}
-                  animate={{ scale: [1, 1.1, 1] }}
+                  animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 1, ease: "easeInOut" }}
                   className="relative"
                 >
                   <motion.div
-                    className="w-32 h-24 bg-gradient-to-b from-muted-foreground/20 to-muted-foreground/40 border-2 border-muted-foreground/60 rounded-lg relative overflow-hidden shadow-2xl"
+                    className="w-40 h-28 bg-background border-2 border-foreground rounded-lg relative overflow-visible shadow-2xl"
                   >
                     {/* Closing lid animation */}
                     <motion.div
                       initial={{ rotateX: 0 }}
-                      animate={{ rotateX: -15 }}
+                      animate={{ rotateX: -10 }}
                       transition={{ delay: 0.5, duration: 0.8 }}
-                      className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-muted-foreground/40 to-muted-foreground/60 rounded-t-lg shadow-inner border-b border-muted-foreground/30"
+                      className="absolute top-0 left-0 right-0 h-2 bg-muted-foreground/60 rounded-t-lg shadow-inner border-b border-foreground/30"
                       style={{ transformOrigin: 'bottom' }}
                     />
                     
-                    {/* Vote icon with glow */}
+                    {/* VOTE text with glow */}
                     <motion.div
                       animate={{ 
-                        scale: [1, 1.2, 1],
-                        filter: ['brightness(1)', 'brightness(1.5)', 'brightness(1)']
+                        scale: [1, 1.1, 1],
+                        filter: ['brightness(1)', 'brightness(1.3)', 'brightness(1)']
                       }}
                       transition={{ 
                         duration: 2,
                         repeat: Infinity,
                         ease: "easeInOut"
                       }}
-                      className="absolute bottom-4 left-1/2 -translate-x-1/2"
+                      className="absolute bottom-6 left-1/2 -translate-x-1/2"
                     >
-                      <Vote className="w-8 h-8 text-primary drop-shadow-lg" />
+                      <span className="text-primary font-bold text-xl drop-shadow-lg">VOTE</span>
                     </motion.div>
 
                     {/* Success checkmark */}
@@ -223,17 +226,21 @@ export const VoteAnimation = ({
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 1.2, type: "spring", damping: 10 }}
-                      className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
+                      className="absolute -top-3 -right-3 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-lg border-2 border-background"
                     >
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 1.4, type: "spring" }}
-                        className="text-white text-lg font-bold"
+                        className="text-white text-xl font-bold"
                       >
                         ✓
                       </motion.span>
                     </motion.div>
+                    
+                    {/* Ballot box legs */}
+                    <div className="absolute -bottom-3 left-4 w-1.5 h-6 bg-foreground rounded-sm" />
+                    <div className="absolute -bottom-3 right-4 w-1.5 h-6 bg-foreground rounded-sm" />
                   </motion.div>
                 </motion.div>
 
