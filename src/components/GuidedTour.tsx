@@ -73,7 +73,34 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
 
   useEffect(() => {
     positionTooltip();
+    highlightTargetElement();
   }, [currentStep]);
+
+  // Add/remove tour-highlight class to target element
+  const highlightTargetElement = () => {
+    // Remove highlight from previous element
+    const previousHighlighted = document.querySelector('.tour-highlight');
+    if (previousHighlighted) {
+      previousHighlighted.classList.remove('tour-highlight');
+    }
+
+    // Add highlight to current target element
+    const step = tourSteps[currentStep];
+    const targetElement = document.querySelector(step.targetSelector);
+    if (targetElement) {
+      targetElement.classList.add('tour-highlight');
+    }
+  };
+
+  // Clean up highlight when component unmounts or tour closes
+  useEffect(() => {
+    return () => {
+      const highlighted = document.querySelector('.tour-highlight');
+      if (highlighted) {
+        highlighted.classList.remove('tour-highlight');
+      }
+    };
+  }, []);
 
   const getBorderPosition = (targetElement: Element) => {
     const rect = targetElement.getBoundingClientRect();
@@ -184,6 +211,11 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
   };
 
   const handleClose = () => {
+    // Remove highlight before closing
+    const highlighted = document.querySelector('.tour-highlight');
+    if (highlighted) {
+      highlighted.classList.remove('tour-highlight');
+    }
     setIsVisible(false);
     setTimeout(onClose, 300);
   };

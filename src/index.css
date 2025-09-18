@@ -141,6 +141,17 @@ All colors MUST be HSL.
   }
 }
 
+/* Tour Highlight Styles */
+.tour-highlight svg,
+.tour-highlight .lucide {
+  color: hsl(var(--primary)) !important;
+}
+
+.tour-highlight span,
+.tour-highlight {
+  color: hsl(var(--primary)) !important;
+}
+
 @layer utilities {
   @keyframes zooz-coin-float-center {
     0% { 
