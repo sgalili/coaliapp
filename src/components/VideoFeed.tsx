@@ -41,7 +41,7 @@ export interface VideoPost {
 }
 interface VideoFeedProps {
   posts: VideoPost[];
-  onTrust: (postId: string) => void;
+  onTrust: (postId: string, post: VideoPost, isGivingTrust: boolean) => void;
   onWatch: (postId: string, isWatching?: boolean) => void;
   onZooz: (postId: string) => void;
   onVote: (postId: string, ministryPosition: string) => void;
@@ -200,7 +200,7 @@ const VideoCard = ({
   onVolumeToggle
 }: {
   post: VideoPost;
-  onTrust: (id: string) => void;
+  onTrust: (id: string, post: VideoPost, isGivingTrust: boolean) => void;
   onWatch: (id: string, isWatching?: boolean) => void;
   onZooz: (id: string) => void;
   onVote: (id: string, ministryPosition: string) => void;
@@ -427,7 +427,7 @@ const VideoCard = ({
               <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
             </div>
           }
-          onClick={() => onTrust(post.id)}
+          onClick={() => onTrust(post.id, post, !post.hasUserTrusted)}
           isActive={post.hasUserTrusted}
           activeColor="bg-trust/30"
         />

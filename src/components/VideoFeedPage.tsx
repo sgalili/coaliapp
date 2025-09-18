@@ -13,7 +13,7 @@ import warrenBuffettProfile from "@/assets/warren-buffett-profile.jpg";
 interface VideoFeedPageProps {
   activeFilter: VoteFilterType;
   onFilterChange: (filter: VoteFilterType) => void;
-  onTrust: (postId: string) => void;
+  onTrust: (postId: string, post: VideoPost, isGivingTrust: boolean) => void;
   onWatch: (postId: string, isWatching?: boolean) => void;
   onZooz: (postId: string) => void;
   onVote: (postId: string, ministryPosition: string) => void;
@@ -200,7 +200,7 @@ export const VideoFeedPage = ({
   }>>({});
 
   // Enhanced handlers that update local state + call parent callbacks
-  const handleTrustWithState = (postId: string) => {
+  const handleTrustWithState = (postId: string, post: VideoPost, isGivingTrust: boolean) => {
     setPostStates(prev => ({
       ...prev,
       [postId]: {
@@ -208,7 +208,7 @@ export const VideoFeedPage = ({
         hasUserTrusted: !prev[postId]?.hasUserTrusted
       }
     }));
-    onTrust(postId);
+    onTrust(postId, post, isGivingTrust);
   };
 
   const handleWatchWithState = (postId: string) => {

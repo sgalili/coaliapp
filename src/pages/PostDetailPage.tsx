@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Share, Heart, MessageCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { VideoFeed } from "@/components/VideoFeed";
+import { VideoFeed, VideoPost } from "@/components/VideoFeed";
 
 // Mock data for posts
 const mockPostsData = {
@@ -53,11 +53,36 @@ const PostDetailPage = () => {
     });
   };
 
-  const handleTrust = (id: string) => {
-    toast({
-      title: "Trust Given! ❤️",
-      description: `You trusted @${post.handle}. Your trust helps build a better network.`,
-    });
+  const handleTrust = (id: string, post: VideoPost, isGivingTrust: boolean) => {
+    const categoryName = getCategoryName(post.category || post.expertise);
+    
+    if (isGivingTrust) {
+      toast({
+        title: "אמון ניתן! ❤️",
+        description: `נתת אמון ל-@${post.handle} בתחום ${categoryName} • עלות: 1 ZOOZ`,
+      });
+    } else {
+      toast({
+        title: "אמון הוסר",
+        description: `האמון הוסר מ-@${post.handle} בתחום ${categoryName} • עלות: 1 ZOOZ`,
+      });
+    }
+  };
+
+  const getCategoryName = (category: string) => {
+    const categoryMap: Record<string, string> = {
+      'politics': 'פוליטיקה',
+      'economy': 'כלכלה', 
+      'technology': 'טכנולוגיה',
+      'health': 'בריאות',
+      'education': 'חינוך',
+      'defense': 'ביטחון',
+      'justice': 'משפטים',
+      'environment': 'איכות הסביבה',
+      'jewelry': 'תכשיטים ועסקים',
+      'art': 'אמנות'
+    };
+    return categoryMap[category] || category;
   };
 
   const handleWatch = (id: string, isWatching?: boolean) => {

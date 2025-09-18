@@ -8,6 +8,7 @@ import { StoriesProgressBar } from "@/components/StoriesProgressBar";
 import { VoteHeader } from "@/components/VoteHeader";
 import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
 import { VideoFeedPage } from "@/components/VideoFeedPage";
+import { VideoPost } from "@/components/VideoFeed";
 import { Button } from "@/components/ui/button";
 import { mockPollStories } from "@/data/mockPollStories";
 import { toast } from "sonner";
@@ -92,11 +93,36 @@ const DecisionsPage = () => {
     });
   };
 
-  const handleTrust = (postId: string) => {
-    toast({
-      title: "Trust Given! ❤️",
-      description: "Your trust helps build a better network.",
-    });
+  const handleTrust = (postId: string, post: VideoPost, isGivingTrust: boolean) => {
+    const categoryName = getCategoryName(post.category || post.expertise);
+    
+    if (isGivingTrust) {
+      toast({
+        title: "אמון ניתן! ❤️",
+        description: `נתת אמון בתחום ${categoryName} • עלות: 1 ZOOZ`,
+      });
+    } else {
+      toast({
+        title: "אמון הוסר",
+        description: `האמון הוסר מהתחום ${categoryName} • עלות: 1 ZOOZ`,
+      });
+    }
+  };
+
+  const getCategoryName = (category: string) => {
+    const categoryMap: Record<string, string> = {
+      'politics': 'פוליטיקה',
+      'economy': 'כלכלה',
+      'technology': 'טכנולוגיה',
+      'health': 'בריאות',
+      'education': 'חינוך',
+      'defense': 'ביטחון',
+      'justice': 'משפטים',
+      'environment': 'איכות הסביבה',
+      'jewelry': 'תכשיטים ועסקים',
+      'art': 'אמנות'
+    };
+    return categoryMap[category] || category;
   };
 
   const handleWatch = (postId: string, isWatching?: boolean) => {
