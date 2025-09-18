@@ -255,7 +255,7 @@ export const VideoFeedPage = ({
       </div>
 
       {/* Create Content Button */}
-      {onCreateContent && <button onClick={onCreateContent} className="fixed top-4 left-2 z-50 w-8 h-8 bg-muted/80 text-foreground rounded-full flex items-center justify-center shadow-sm hover:bg-muted transition-colors backdrop-blur-sm border border-border/20 mx-[11px]">
+      {onCreateContent && <button onClick={onCreateContent} className="fixed top-4 left-2 z-50 w-8 h-8 bg-muted/80 text-foreground rounded-full flex items-center justify-center shadow-sm hover:bg-muted transition-colors backdrop-blur-sm border border-border/20 mx-[9px]">
           <Plus className="w-4 h-4" />
         </button>}
 
