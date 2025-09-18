@@ -8,6 +8,7 @@ import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
 import yaakovProfile from "@/assets/yaakov-profile.jpg";
 import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
 import mayaProfile from "@/assets/maya-profile.jpg";
+import warrenBuffettProfile from "@/assets/warren-buffett-profile.jpg";
 
 interface VideoFeedPageProps {
   activeFilter: VoteFilterType;
@@ -50,11 +51,11 @@ const mockCandidateVideos: VideoPost[] = [
   },
   {
     id: "cand-2", 
-    username: "יאיר לפיד",
-    handle: "@yairlapid",
-    profileImage: yaakovProfile,
+    username: "ירון זליכה",
+    handle: "@yaronzelekha",
+    profileImage: yaronProfile,
     videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818123/%D7%90%D7%96_%D7%9E%D7%94_%D7%90%D7%AA%D7%94_%D7%91%D7%A2%D7%A6%D7%9D_%D7%9E%D7%A6%D7%99%D7%A2__jb7xb0.mp4",
-    caption: "הדרך שלנו לשינוי - מה צריך לעשות אחרת",
+    caption: "ניתוח כלכלי מעמיק של המצב הנוכחי ודרכי הפתרון",
     trustCount: 156789,
     watchCount: 890000,
     commentCount: 34567,
@@ -62,10 +63,10 @@ const mockCandidateVideos: VideoPost[] = [
     zoozCount: 67234,
     isVerified: true,
     kycLevel: 3,
-    expertise: "כלכלה ופיננסים",
-    category: "politics",
+    expertise: "כלכלה אקדמית",
+    category: "economy",
     authenticityData: {
-      city: "תל אביב",
+      city: "ירושלים",
       country: "ישראל",
       localTime: "14:30", 
       isAuthentic: true
@@ -76,22 +77,22 @@ const mockCandidateVideos: VideoPost[] = [
 const mockExpertVideos: VideoPost[] = [
   {
     id: "exp-1",
-    username: "פרופ' יאיר זלקה",
-    handle: "@yaronzelekha", 
-    profileImage: yaronProfile,
-    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818123/%D7%90%D7%96_%D7%9E%D7%94_%D7%90%D7%AA%D7%94_%D7%91%D7%A2%D7%A6%D7%9D_%D7%9E%D7%A6%D7%99%D7%A2__jb7xb0.mp4",
-    caption: "ניתוח כלכלי של המצב הנוכחי והשלכותיו על העתיד",
-    trustCount: 89012,
-    watchCount: 450000,
-    commentCount: 12345,
-    shareCount: 8901,
-    zoozCount: 23456,
+    username: "יעקב אליעזרוב",
+    handle: "@yaakoveliezerov", 
+    profileImage: yaakovProfile,
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755819172/Thank_you_Hashem_telaviv_israel_jewellery_diamonds_jeweler_gold_aupgtx.mp4",
+    caption: "תודה לה' על הברכות בעסק התכשיטים והיהלומים",
+    trustCount: 45678,
+    watchCount: 230000,
+    commentCount: 8901,
+    shareCount: 4567,
+    zoozCount: 15432,
     isVerified: true,
     kycLevel: 2,
-    expertise: "כלכלה אקדמית",
-    category: "economy",
+    expertise: "תכשיטים ועסקים",
+    category: "jewelry",
     authenticityData: {
-      city: "ירושלים",
+      city: "תל אביב",
       country: "ישראל",
       localTime: "14:30",
       isAuthentic: true
@@ -99,6 +100,29 @@ const mockExpertVideos: VideoPost[] = [
   },
   {
     id: "exp-2",
+    username: "Warren Buffett",
+    handle: "@warrenbuffett",
+    profileImage: warrenBuffettProfile, 
+    videoUrl: "https://res.cloudinary.com/drylxyich/video/upload/v1755818920/Warren_Buffett_-_Best_advice_ever_lhuq7u.mp4",
+    caption: "Best investment advice ever - lessons for long-term wealth building",
+    trustCount: 567890,
+    watchCount: 2100000,
+    commentCount: 89012,
+    shareCount: 45678,
+    zoozCount: 123456,
+    isVerified: true,
+    kycLevel: 3,
+    expertise: "השקעות ופיננסים",
+    category: "economy",
+    authenticityData: {
+      city: "Omaha",
+      country: "USA",
+      localTime: "07:30",
+      isAuthentic: true
+    }
+  },
+  {
+    id: "exp-3",
     username: "ד״ר מאיה רוזן",
     handle: "@mayarosen",
     profileImage: mayaProfile, 
