@@ -156,17 +156,11 @@ const VoteIcon = () => {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {/* Urne simple - boîte rectangulaire */}
-      <rect x="6" y="13" width="12" height="7" />
+      {/* Carré */}
+      <rect x="6" y="6" width="12" height="12" />
       
-      {/* Fente sur le dessus */}
-      <line x1="8" y1="13" x2="16" y2="13" />
-      
-      {/* Main tenant le bulletin */}
-      <path d="M14 9 L16 7 L18 9" />
-      
-      {/* Bulletin qui descend */}
-      <rect x="15" y="4" width="2" height="6" fill="none" />
+      {/* V à l'intérieur */}
+      <path d="M10 10 L12 14 L14 10" />
     </svg>
   );
 };
