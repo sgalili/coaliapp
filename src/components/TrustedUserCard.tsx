@@ -8,8 +8,8 @@ import { getDomainConfig, getDomainBadgeClasses } from "@/lib/domainConfig";
 import type { Expert } from "@/pages/TopTrustedPage";
 const TrustIcon = () => {
   return <div className="relative">
-      <Handshake className="w-6 h-6 text-white" />
-      <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
+      <Handshake className="w-6 h-6 text-trust" />
+      <Crown className="w-1 h-1 text-yellow-400 absolute -top-1 -right-1" />
     </div>;
 };
 interface TrustedUserCardProps {
@@ -97,12 +97,9 @@ export const TrustedUserCard = ({
         <div className="flex items-start pt-2">
           <Button 
             onClick={onTrustClick} 
+            variant={expert.trustedByUser ? "default" : "outline"} 
             size="icon"
-            className={`w-12 h-12 rounded-full ${
-              expert.trustedByUser 
-                ? "bg-primary text-white hover:bg-primary/90" 
-                : "bg-blue-50 text-white hover:bg-blue-100/90"
-            }`}
+            className="w-12 h-12 rounded-full"
           >
             <TrustIcon />
           </Button>
