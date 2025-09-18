@@ -11,6 +11,13 @@ interface AnimatedStatBadgeProps {
   className?: string;
 }
 
+const STAT_LABELS = {
+  vote: "הצבעות",
+  zooz: "ZOOZ", 
+  trust: "אמון",
+  watch: "צפיות", 
+  share: "שיתופים"
+};
 
 export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   count,
