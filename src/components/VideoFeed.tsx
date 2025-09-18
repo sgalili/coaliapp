@@ -149,14 +149,14 @@ const VoteIcon = () => {
   return (
     <div className="relative">
       <div className="w-6 h-6 relative">
-        {/* Ballot box base */}
-        <div className="w-5 h-3.5 border-2 border-current rounded-sm absolute bottom-0 left-0.5" />
-        {/* Ballot box slot */}
-        <div className="w-3 h-0.5 bg-current absolute top-1.5 left-1.5" />
-        {/* Ballot paper going in */}
-        <div className="w-1.5 h-2 bg-current rounded-t-sm absolute top-0.5 left-2.25 opacity-90" />
-        {/* Check mark on ballot */}
-        <div className="absolute top-0.5 left-2.5 text-[6px] font-bold leading-none">✓</div>
+        {/* Urne - base rectangulaire */}
+        <div className="w-4 h-3 border-2 border-current rounded-sm absolute bottom-0 left-1" />
+        {/* Fente sur le dessus de l'urne */}
+        <div className="w-2.5 h-0.5 bg-current absolute top-2.5 left-1.75" />
+        {/* Papier de vote qui rentre */}
+        <div className="w-1.5 h-2.5 border border-current bg-transparent absolute top-0 left-2.25" />
+        {/* V sur le papier */}
+        <div className="absolute top-0.5 left-2.5 text-[6px] font-bold leading-none">V</div>
       </div>
     </div>
   );
