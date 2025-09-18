@@ -150,23 +150,22 @@ const VoteIcon = () => {
     <svg 
       viewBox="0 0 24 24" 
       className="w-6 h-6" 
-      fill="none" 
-      stroke="white" 
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="white"
     >
-      {/* Urne simple */}
-      <rect x="7" y="14" width="10" height="6" />
+      {/* Urne (ballot box) - forme trapézoïde */}
+      <path d="M6 15 L6 20 L18 20 L18 15 L17 14 L7 14 Z" />
       
-      {/* Fente sur le dessus */}
-      <line x1="9" y1="14" x2="15" y2="14" />
+      {/* Fente sur le dessus de l'urne */}
+      <rect x="8" y="13.5" width="8" height="1" />
       
-      {/* Main qui vote */}
-      <path d="M13 10 L15 8 L17 10 L15 12" />
+      {/* Main stylisée */}
+      <path d="M14 4 L16 4 L17 5 L17 7 L16 8 L15 9 L14 10 L13 9 L14 8 L14 6 Z" />
       
-      {/* Bulletin */}
-      <rect x="14" y="4" width="2" height="8" />
+      {/* Bulletin rectangulaire */}
+      <rect x="15" y="6" width="3" height="4" />
+      
+      {/* Pouce de la main */}
+      <ellipse cx="13.5" cy="7" rx="0.8" ry="1.2" />
     </svg>
   );
 };
