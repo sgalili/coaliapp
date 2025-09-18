@@ -37,9 +37,7 @@ export const TrustedUserCard = ({
           </div>
           
           {/* Watch button under avatar */}
-          <button onClick={onWatchClick} className="p-1.5 transition-colors hover:opacity-80">
-            <Eye className="w-4 h-4 text-watch" />
-          </button>
+          
         </div>
 
         {/* User Info - expanded for more content space */}
