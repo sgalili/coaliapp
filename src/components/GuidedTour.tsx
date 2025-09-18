@@ -26,7 +26,7 @@ const tourSteps: TourStep[] = [
   {
     id: "decisions",
     title: "החלטות - השפע על העתיד שלך",
-    description: "השתתף בהחלטות שמשפיעות עליך - הצבע בסקרים, משאלי עם ובחירות, וצור את ה-MyGov האישי שלך עם המועמדים הנבחרים שלך.",
+    description: "השתתף בהחלטות שמשפיעות עליך - הצבע בסקרים, משאלי עם ובחירות, וצור את הממשלה שלך עם המועמדים הנבחרים שלך.",
     targetSelector: "[data-tour-id='decisions-filter']",
     position: "bottom"
   },
