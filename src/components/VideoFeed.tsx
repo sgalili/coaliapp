@@ -407,7 +407,7 @@ const VideoCard = ({
           label="ZOOZ"
           icon={
             <div className="relative">
-              <ZoozIcon className={(post.userZoozSent && post.userZoozSent > 0) ? "text-zooz" : "text-white"} />
+              <ZoozIcon className="text-white" />
               <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
             </div>
           }
@@ -422,7 +422,7 @@ const VideoCard = ({
           label="אמון"
           icon={
             <div className="relative">
-              <Handshake className={cn("w-6 h-6", post.hasUserTrusted ? "text-trust" : "text-white")} />
+              <Handshake className="w-6 h-6 text-white" />
               <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
             </div>
           }
@@ -435,7 +435,7 @@ const VideoCard = ({
         <AnimatedStatBadge
           count={post.watchCount}
           label="צפיות"
-          icon={<Eye className={cn("w-6 h-6", post.hasUserWatched ? "text-watch" : "text-white")} />}
+          icon={<Eye className="w-6 h-6 text-white" />}
           onClick={() => onWatch(post.id)}
           isActive={post.hasUserWatched}
           activeColor="bg-watch/60"
