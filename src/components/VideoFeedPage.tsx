@@ -135,7 +135,7 @@ const mockExpertVideos: VideoPost[] = [
     zoozCount: 18901,
     isVerified: true,
     kycLevel: 2,
-    expertise: "טכנולוגיה וחברה",
+    expertise: "דיאטה ותזונה",
     category: "technology",
     authenticityData: {
       city: "חיפה",
