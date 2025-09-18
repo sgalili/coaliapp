@@ -7,47 +7,23 @@ import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { getDomainConfig, getDomainBadgeClasses } from "@/lib/domainConfig";
 import type { Expert } from "@/pages/TopTrustedPage";
 const TrustIcon = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      <Handshake className="w-5 h-5 text-trust" strokeWidth={2} />
-      <Crown className="w-2 h-2 text-yellow-400 absolute -top-1 -right-1" />
-    </div>
-  );
-};
-
-const VoteIcon = () => {
-  return (
-    <svg 
-      className="w-5 h-5 text-primary" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2"
-    >
-      <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2Z"/>
-      <path d="M13 11h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"/>
-      <path d="M9 11V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
-      <circle cx="12" cy="6" r="3"/>
-    </svg>
-  );
+  return <div className="relative">
+      <Handshake className="w-6 h-6 text-trust" />
+      <Crown className="w-1 h-1 text-yellow-400 absolute -top-1 -right-1" />
+    </div>;
 };
 interface TrustedUserCardProps {
   expert: Expert;
   onProfileClick: () => void;
   onTrustClick: () => void;
   onWatchClick: () => void;
-  onVoteClick?: () => void;
 }
 export const TrustedUserCard = ({
   expert,
   onProfileClick,
   onTrustClick,
-  onWatchClick,
-  onVoteClick
+  onWatchClick
 }: TrustedUserCardProps) => {
-  // Determine if this should show vote button instead of trust (alternating pattern)
-  const showVoteButton = parseInt(expert.id) % 3 === 0;
-  
   return <>
       <div className="flex items-start gap-3 p-3 hover:bg-accent/30 transition-colors">
         {/* Profile section with status indicators */}
@@ -117,15 +93,15 @@ export const TrustedUserCard = ({
           </div>
         </div>
 
-        {/* Main Action Button - alternates between Trust and Vote */}
+        {/* Main Trust CTA */}
         <div className="flex items-start pt-2">
           <Button 
-            onClick={showVoteButton ? onVoteClick : onTrustClick} 
+            onClick={onTrustClick} 
             variant={expert.trustedByUser ? "default" : "outline"} 
             size="icon"
             className="w-12 h-12 rounded-full"
           >
-            {showVoteButton ? <VoteIcon /> : <TrustIcon />}
+            <TrustIcon />
           </Button>
         </div>
       </div>
