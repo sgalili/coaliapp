@@ -28,53 +28,48 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   activeColor = "bg-white/20",
   className = ""
 }) => {
-  const [phase, setPhase] = useState<'numbers' | 'transitioning-to-label' | 'labels' | 'transitioning-to-numbers'>('numbers');
+  const [phase, setPhase] = useState<'numbers' | 'labels'>('numbers');
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    // 18-second cycle: 5s numbers, 6s labels, 7s numbers
+    // 15-second cycle: 10s numbers, 5s labels
     const startCycle = () => {
-      // Phase 1: Show numbers for 5 seconds
+      // Phase 1: Show numbers for 10 seconds
       setTimeout(() => {
         setIsAnimating(true);
-        setPhase('transitioning-to-label');
         
         // After 300ms transition, show labels
         setTimeout(() => {
           setPhase('labels');
           setIsAnimating(false);
           
-          // Phase 2: Show labels for 6 seconds
+          // Phase 2: Show labels for 5 seconds
           setTimeout(() => {
             setIsAnimating(true);
-            setPhase('transitioning-to-numbers');
             
             // After 300ms transition, show numbers
             setTimeout(() => {
               setPhase('numbers');
               setIsAnimating(false);
               
-              // Phase 3: Show numbers for 7 more seconds before restarting
-              setTimeout(() => {
-                startCycle();
-              }, 7000);
+              // Restart cycle
+              startCycle();
             }, 300);
-          }, 6000);
+          }, 5000);
         }, 300);
-      }, 5000);
+      }, 10000);
     };
 
     startCycle();
   }, []);
 
   const renderContent = () => {
-    if (phase === 'numbers' || phase === 'transitioning-to-numbers') {
+    if (phase === 'numbers') {
       return (
         <span 
           className={cn(
             "text-white text-xs font-medium transition-all duration-300",
-            phase === 'transitioning-to-numbers' && !isAnimating ? "animate-slide-up-in" : "",
-            phase === 'numbers' && isAnimating ? "animate-slide-up-out" : ""
+            isAnimating ? "animate-slide-up-out" : ""
           )}
         >
           {count.toLocaleString()}
@@ -85,8 +80,7 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
         <span 
           className={cn(
             "text-white text-xs font-medium transition-all duration-300",
-            phase === 'transitioning-to-label' && !isAnimating ? "animate-slide-down-in" : "",
-            phase === 'labels' && isAnimating ? "animate-slide-down-out" : ""
+            isAnimating ? "animate-slide-down-out" : ""
           )}
           dir="rtl"
         >
