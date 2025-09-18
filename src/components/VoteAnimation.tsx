@@ -167,7 +167,7 @@ export const VoteAnimation = ({
                       onClick={handleConfirm}
                       className="flex-1 bg-vote hover:bg-vote/90 text-vote-foreground font-semibold shadow-lg"
                     >
-                      הצבע כעת
+                      אישור הצבעה
                     </Button>
                   </motion.div>
                 </div>
