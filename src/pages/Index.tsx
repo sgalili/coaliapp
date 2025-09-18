@@ -25,6 +25,9 @@ import noaProfile from "@/assets/noa-profile.jpg";
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
 import yaronProfile from "@/assets/yaron-zelekha-profile.jpg";
 
+// Development mode - set to false for production
+const DEVELOPMENT_MODE = true;
+
 // Mock data for development
 const mockPosts = [
   {
@@ -221,9 +224,15 @@ const Index = () => {
     document.documentElement.setAttribute('lang', 'he');
     
     // Check if onboarding should be shown
-    const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
-    if (!onboardingCompleted) {
+    if (DEVELOPMENT_MODE) {
+      // In development mode, always show onboarding
       setShowOnboarding(true);
+    } else {
+      // In production mode, respect localStorage
+      const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
+      if (!onboardingCompleted) {
+        setShowOnboarding(true);
+      }
     }
   }, []);
 
