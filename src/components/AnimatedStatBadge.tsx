@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { Sparkles } from './Sparkles';
 
 interface AnimatedStatBadgeProps {
   count: number;
@@ -23,6 +24,21 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
 }) => {
   const [phase, setPhase] = useState<'numbers' | 'labels'>('numbers');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isClickAnimating, setIsClickAnimating] = useState(false);
+  const prevActiveRef = useRef(isActive);
+
+  // Detect activation for animation
+  useEffect(() => {
+    if (!prevActiveRef.current && isActive) {
+      // Just activated - trigger animation
+      setIsClickAnimating(true);
+      const timer = setTimeout(() => {
+        setIsClickAnimating(false);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+    prevActiveRef.current = isActive;
+  }, [isActive]);
 
   useEffect(() => {
     // 15-second cycle: 10s numbers, 5s labels
@@ -86,10 +102,12 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   return (
     <button onClick={onClick} className={cn("flex flex-col items-center gap-1 group", className)}>
       <div className={cn(
-        "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
-        isActive ? activeColor : "bg-white/20"
+        "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-all duration-300 relative",
+        isActive ? activeColor : "bg-white/20",
+        isClickAnimating ? "animate-like-bounce" : ""
       )}>
         {icon}
+        <Sparkles isActive={isClickAnimating} />
       </div>
       <div className="h-4 w-16 flex items-center justify-center">
         {renderContent()}

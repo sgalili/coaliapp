@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useZoozReactions, LiveZoozReaction } from "@/hooks/useZoozReactions";
 import { AnimatedStatBadge } from "./AnimatedStatBadge";
+import { TrustIconFillable, WatchIconFillable } from "./FillableIcons";
 export interface VideoPost {
   id: string;
   username: string;
@@ -413,7 +414,7 @@ const VideoCard = ({
           }
           onClick={handleZoozSend}
           isActive={post.userZoozSent && post.userZoozSent > 0}
-          activeColor="bg-zooz/60"
+          activeColor="bg-zooz/30"
         />
 
         {/* Trust button */}
@@ -422,23 +423,23 @@ const VideoCard = ({
           label="אמון"
           icon={
             <div className="relative">
-              <Handshake className="w-6 h-6 text-white" />
+              <TrustIconFillable isFilled={post.hasUserTrusted} />
               <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
             </div>
           }
           onClick={() => onTrust(post.id)}
           isActive={post.hasUserTrusted}
-          activeColor="bg-trust/60"
+          activeColor="bg-trust/30"
         />
 
         {/* Watch button */}
         <AnimatedStatBadge
           count={post.watchCount}
           label="צפיות"
-          icon={<Eye className="w-6 h-6 text-white" />}
+          icon={<WatchIconFillable isFilled={post.hasUserWatched} />}
           onClick={() => onWatch(post.id)}
           isActive={post.hasUserWatched}
-          activeColor="bg-watch/60"
+          activeColor="bg-watch/30"
         />
 
         {/* Share button */}

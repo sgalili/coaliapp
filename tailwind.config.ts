@@ -140,6 +140,70 @@ export default {
 						opacity: '0',
 						transform: 'translateY(20px)'
 					}
+				},
+				'like-bounce': {
+					'0%': { transform: 'scale(1)' },
+					'15%': { transform: 'scale(1.1)' },
+					'30%': { transform: 'scale(1.25)' },
+					'50%': { transform: 'scale(1.3)' },
+					'70%': { transform: 'scale(1.1)' },
+					'100%': { transform: 'scale(1)' }
+				},
+				'sparkle-1': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translate(-8px, -8px) scale(0) rotate(0deg)' 
+					},
+					'20%': { 
+						opacity: '1', 
+						transform: 'translate(-8px, -8px) scale(1) rotate(90deg)' 
+					},
+					'100%': { 
+						opacity: '0', 
+						transform: 'translate(-12px, -12px) scale(0) rotate(180deg)' 
+					}
+				},
+				'sparkle-2': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translate(8px, -8px) scale(0) rotate(0deg)' 
+					},
+					'25%': { 
+						opacity: '1', 
+						transform: 'translate(8px, -8px) scale(1) rotate(90deg)' 
+					},
+					'100%': { 
+						opacity: '0', 
+						transform: 'translate(12px, -12px) scale(0) rotate(180deg)' 
+					}
+				},
+				'sparkle-3': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translate(-8px, 8px) scale(0) rotate(0deg)' 
+					},
+					'30%': { 
+						opacity: '1', 
+						transform: 'translate(-8px, 8px) scale(1) rotate(90deg)' 
+					},
+					'100%': { 
+						opacity: '0', 
+						transform: 'translate(-12px, 12px) scale(0) rotate(180deg)' 
+					}
+				},
+				'sparkle-4': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translate(8px, 8px) scale(0) rotate(0deg)' 
+					},
+					'35%': { 
+						opacity: '1', 
+						transform: 'translate(8px, 8px) scale(1) rotate(90deg)' 
+					},
+					'100%': { 
+						opacity: '0', 
+						transform: 'translate(12px, 12px) scale(0) rotate(180deg)' 
+					}
 				}
 			},
 			animation: {
@@ -148,7 +212,12 @@ export default {
 				'slide-up-out': 'slide-up-out 0.3s ease-out',
 				'slide-down-in': 'slide-down-in 0.3s ease-out',
 				'slide-up-in': 'slide-up-in 0.3s ease-out',
-				'slide-down-out': 'slide-down-out 0.3s ease-out'
+				'slide-down-out': 'slide-down-out 0.3s ease-out',
+				'like-bounce': 'like-bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+				'sparkle-1': 'sparkle-1 0.5s ease-out',
+				'sparkle-2': 'sparkle-2 0.5s ease-out 0.1s',
+				'sparkle-3': 'sparkle-3 0.5s ease-out 0.2s',
+				'sparkle-4': 'sparkle-4 0.5s ease-out 0.3s'
 			}
 		}
 	},
