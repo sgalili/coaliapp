@@ -41,9 +41,7 @@ export const HomeOnboarding = ({
           <div className="space-y-4">
             
             <h1 className="text-xl font-bold text-foreground">מוכנים לסיור קצר?</h1>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              כאן תוכלו להכיר, לבחור ולהשפיע על העתיד שלנו.
-            </p>
+            
           </div>
 
           {/* Main description */}
