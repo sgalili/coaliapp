@@ -45,14 +45,6 @@ export const SearchModal = ({ isOpen, onClose, allExperts }: SearchModalProps) =
     });
   };
 
-  const handleVoteClick = (expert: Expert) => {
-    toast({
-      title: "הצבעה",
-      description: `הצבעת עבור ${expert.name}`,
-      duration: 2000,
-    });
-  };
-
   const handleMessageClick = () => {
     toast({
       title: "שליחת הודעה",
@@ -108,14 +100,12 @@ export const SearchModal = ({ isOpen, onClose, allExperts }: SearchModalProps) =
                   נמצאו {filteredExperts.length} תוצאות
                 </p>
                 
-                {filteredExperts.map((expert, index) => (
+                {filteredExperts.map((expert) => (
                   <TrustedUserCard
                     key={expert.id}
                     expert={expert}
-                    index={index}
                     onProfileClick={() => setSelectedExpert(expert)}
                     onTrustClick={() => handleTrustClick(expert)}
-                    onVoteClick={() => handleVoteClick(expert)}
                     onWatchClick={() => handleWatchClick(expert)}
                   />
                 ))}
