@@ -97,8 +97,8 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
 
     console.log(`Step ${currentStep + 1}: Positioning logic`, { currentStep, stepId: step.id });
 
-    // For steps 4-7 (navigation tabs), use ONLY bottom positioning logic
-    if (currentStep >= 3) {
+    // For steps 3-6 (navigation tabs), use ONLY bottom positioning logic
+    if (currentStep >= 2) {
       console.log(`Step ${currentStep + 1}: Using bottom navigation logic`);
       top = viewportHeight - 280; // Fixed position near bottom for all navigation tabs
       left = rect.left + (rect.width / 2) - 150; // Center the tooltip on the tab
