@@ -82,14 +82,16 @@ export const VoteAnimation = ({
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", damping: 15 }}
-                      className="w-24 h-20 bg-gradient-to-b from-secondary to-muted border-2 border-border rounded-lg relative overflow-hidden shadow-lg"
+                      className="w-24 h-20 bg-gradient-to-b from-muted-foreground/20 to-muted-foreground/40 border-2 border-muted-foreground/60 rounded-lg relative overflow-hidden shadow-lg"
                     >
                       {/* Ballot slot */}
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-1 bg-background rounded-full shadow-inner" />
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-background/80 rounded-full shadow-inner border border-muted-foreground/30" />
                       {/* Vote icon */}
                       <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                        <Vote className="w-6 h-6 text-vote" />
+                        <Vote className="w-6 h-6 text-primary" />
                       </div>
+                      {/* Lock mechanism */}
+                      <div className="absolute top-0 right-1 w-2 h-2 bg-muted-foreground/60 rounded-full" />
                     </motion.div>
                   </div>
 
@@ -189,14 +191,14 @@ export const VoteAnimation = ({
                   className="relative"
                 >
                   <motion.div
-                    className="w-32 h-24 bg-gradient-to-b from-secondary to-muted border-2 border-border rounded-lg relative overflow-hidden shadow-2xl"
+                    className="w-32 h-24 bg-gradient-to-b from-muted-foreground/20 to-muted-foreground/40 border-2 border-muted-foreground/60 rounded-lg relative overflow-hidden shadow-2xl"
                   >
                     {/* Closing lid animation */}
                     <motion.div
                       initial={{ rotateX: 0 }}
                       animate={{ rotateX: -15 }}
                       transition={{ delay: 0.5, duration: 0.8 }}
-                      className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-border to-secondary rounded-t-lg shadow-inner"
+                      className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-muted-foreground/40 to-muted-foreground/60 rounded-t-lg shadow-inner border-b border-muted-foreground/30"
                       style={{ transformOrigin: 'bottom' }}
                     />
                     
@@ -213,7 +215,7 @@ export const VoteAnimation = ({
                       }}
                       className="absolute bottom-4 left-1/2 -translate-x-1/2"
                     >
-                      <Vote className="w-8 h-8 text-vote drop-shadow-lg" />
+                      <Vote className="w-8 h-8 text-primary drop-shadow-lg" />
                     </motion.div>
 
                     {/* Success checkmark */}

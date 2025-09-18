@@ -223,6 +223,32 @@ const VideoCard = ({
     liveReactions,
     addZoozReaction
   } = useZoozReactions(post.id, currentUserId);
+
+  const handleVote = () => {
+    const isAlreadyVoted = post.hasUserVoted;
+    
+    if (isAlreadyVoted) {
+      // Show simple confirmation dialog for vote cancellation
+      const confirmed = window.confirm("האם אתה בטוח שברצונך לבטל את ההצבעה?");
+      if (confirmed) {
+        // Call the parent's onVote function to handle cancellation
+        onVote(post.id, post.ministryPosition || "");
+        toast.success("ההצבעה בוטלה בהצלחה", {
+          position: "bottom-center",
+          duration: 2000
+        });
+      }
+      return;
+    }
+    
+    // Show animation for new vote
+    setShowVoteAnimation(true);
+  };
+
+  const handleVoteConfirm = () => {
+    onVote(post.id, post.ministryPosition || "");
+    setShowVoteAnimation(false);
+  };
   
   // Only show authenticity info if real metadata exists in video file
   const hasAuthenticityData = post.authenticityData?.isAuthentic === true;
@@ -399,7 +425,7 @@ const VideoCard = ({
             count={post.voteCount}
             label="הצבעות"
             icon={<VoteIcon />}
-            onClick={() => setShowVoteAnimation(true)}
+            onClick={handleVote}
             isActive={post.hasUserVoted}
             activeColor="bg-vote/60"
           />
@@ -489,7 +515,7 @@ const VideoCard = ({
       <VoteAnimation
         isOpen={showVoteAnimation}
         onClose={() => setShowVoteAnimation(false)}
-        onConfirm={() => onVote(post.id, post.ministryPosition!)}
+        onConfirm={handleVoteConfirm}
         username={post.username}
         candidate={post.candidateName || post.username}
         position={post.ministryPosition || "ראש הממשלה"}
