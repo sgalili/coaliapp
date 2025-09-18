@@ -61,10 +61,10 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
               value={formData.city} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
             >
-              <SelectTrigger className="text-right">
+              <SelectTrigger className="text-right" dir="rtl">
                 <SelectValue placeholder="בחר עיר" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent dir="rtl">
                 {cities.map((city) => (
                   <SelectItem key={city} value={city} className="text-right">
                     {city}
@@ -77,14 +77,16 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
           {/* Date of Birth */}
           <div className="space-y-2">
             <Label htmlFor="dob" className="text-right block">תאריך לידה</Label>
-            <Input
-              id="dob"
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-              className="text-right"
-              dir="ltr" // Keep date input LTR for better UX
-            />
+            <div className="text-right" dir="rtl">
+              <Input
+                id="dob"
+                type="date"
+                value={formData.dateOfBirth}
+                onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                className="w-full"
+                dir="ltr"
+              />
+            </div>
           </div>
 
           {/* ID Number */}
