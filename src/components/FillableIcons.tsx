@@ -19,11 +19,17 @@ export const TrustIconFillable: React.FC<FillableIconProps> = ({ className, isFi
 
 export const WatchIconFillable: React.FC<FillableIconProps> = ({ className, isFilled = false }) => {
   return (
-    <Eye 
-      className={cn("w-6 h-6 text-white transition-all duration-300", className)}
-      fill={isFilled ? "white" : "none"}
+    <svg 
+      className={cn("w-6 h-6 text-white transition-all duration-300", className)} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
       strokeWidth={isFilled ? 1 : 2}
-    />
+    >
+      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" fill={isFilled ? "white" : "none"} />
+      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" />
+      {isFilled && <circle cx="12" cy="12" r="1.5" fill="transparent" stroke="none" />}
+    </svg>
   );
 };
 

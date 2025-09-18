@@ -435,7 +435,7 @@ const VideoCard = ({
         {/* Watch button */}
         <AnimatedStatBadge
           count={post.watchCount}
-          label="צפיות"
+          label="עוקבים"
           icon={<WatchIconFillable isFilled={post.hasUserWatched} />}
           onClick={() => onWatch(post.id)}
           isActive={post.hasUserWatched}
