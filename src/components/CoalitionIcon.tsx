@@ -17,26 +17,16 @@ export const CoalitionIcon: React.FC<CoalitionIconProps> = ({
       fill="none"
       className={className}
     >
-      {/* Outer circle border */}
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        fill="none"
-      />
-      
-      {/* Dots forming a "C" shape */}
-      <circle cx="8" cy="6" r="1.5" fill="currentColor" />
-      <circle cx="6" cy="8" r="1.5" fill="currentColor" />
-      <circle cx="5" cy="11" r="1.5" fill="currentColor" />
-      <circle cx="5" cy="13" r="1.5" fill="currentColor" />
-      <circle cx="6" cy="16" r="1.5" fill="currentColor" />
-      <circle cx="8" cy="18" r="1.5" fill="currentColor" />
-      <circle cx="11" cy="19" r="1.5" fill="currentColor" />
-      <circle cx="13" cy="19" r="1.5" fill="currentColor" />
-      <circle cx="16" cy="18" r="1.5" fill="currentColor" />
+      {/* Dots forming a clear "C" shape */}
+      <circle cx="15" cy="5" r="1.2" fill="currentColor" />
+      <circle cx="11" cy="4" r="1.2" fill="currentColor" />
+      <circle cx="7" cy="5" r="1.2" fill="currentColor" />
+      <circle cx="4" cy="8" r="1.2" fill="currentColor" />
+      <circle cx="3" cy="12" r="1.2" fill="currentColor" />
+      <circle cx="4" cy="16" r="1.2" fill="currentColor" />
+      <circle cx="7" cy="19" r="1.2" fill="currentColor" />
+      <circle cx="11" cy="20" r="1.2" fill="currentColor" />
+      <circle cx="15" cy="19" r="1.2" fill="currentColor" />
     </svg>
   );
 };
