@@ -298,11 +298,20 @@ export const PollStoryCard = ({
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <img 
-                                src={option.avatar} 
-                                alt={option.text}
-                                className="w-10 h-10 rounded-full object-cover"
-                              />
+                              {option.avatar ? (
+                                <img 
+                                  src={option.avatar} 
+                                  alt={option.text}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                  }}
+                                />
+                              ) : null}
+                              <div className={`w-10 h-10 rounded-full bg-white/20 flex items-center justify-center ${option.avatar ? 'hidden' : ''}`}>
+                                👤
+                              </div>
                               <span>{option.text}</span>
                             </div>
                             <button
