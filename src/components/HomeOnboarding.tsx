@@ -50,7 +50,7 @@ export const HomeOnboarding = ({
             
             
 
-            <p className="text-sm font-medium text-foreground mt-4">עכשיו זה הזמן שלכם לבחור באנשים הנכונים לתפקידים הנכונים, לתת את דעתכם על מה שקורה בקהילות שללכם, בעיר ובמדינה שלכם.</p>
+            <p className="text-sm font-medium text-foreground mt-4">עכשיו זה הזמן שלכם לבחור באנשים הנכונים לתפקידים הנכונים, לתת את דעתכם על מה שקורה בקהילות שלכם, בשכונה, בעיר ובמדינה שלכם.</p>
           </div>
 
           {/* Action buttons */}
