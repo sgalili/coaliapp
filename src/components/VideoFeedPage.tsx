@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VideoFeed, VideoPost } from "@/components/VideoFeed";
 import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
 import { Plus } from "lucide-react";
@@ -191,12 +191,72 @@ export const VideoFeedPage = ({
   isMuted,
   onVolumeToggle 
 }: VideoFeedPageProps) => {
-  // Get appropriate videos based on filter
+  // State to track user interactions with posts
+  const [postStates, setPostStates] = useState<Record<string, {
+    hasUserTrusted: boolean;
+    hasUserWatched: boolean;
+    hasUserVoted: boolean;
+    userZoozSent: number;
+  }>>({});
+
+  // Enhanced handlers that update local state + call parent callbacks
+  const handleTrustWithState = (postId: string) => {
+    setPostStates(prev => ({
+      ...prev,
+      [postId]: {
+        ...prev[postId],
+        hasUserTrusted: !prev[postId]?.hasUserTrusted
+      }
+    }));
+    onTrust(postId);
+  };
+
+  const handleWatchWithState = (postId: string) => {
+    setPostStates(prev => ({
+      ...prev,
+      [postId]: {
+        ...prev[postId],
+        hasUserWatched: true
+      }
+    }));
+    onWatch(postId);
+  };
+
+  const handleZoozWithState = (postId: string) => {
+    setPostStates(prev => ({
+      ...prev,
+      [postId]: {
+        ...prev[postId],
+        userZoozSent: (prev[postId]?.userZoozSent || 0) + 1
+      }
+    }));
+    onZooz(postId);
+  };
+
+  const handleVoteWithState = (postId: string, ministryPosition: string) => {
+    setPostStates(prev => ({
+      ...prev,
+      [postId]: {
+        ...prev[postId],
+        hasUserVoted: !prev[postId]?.hasUserVoted
+      }
+    }));
+    onVote(postId, ministryPosition);
+  };
+  // Get appropriate videos based on filter with updated states
   const getVideos = (): VideoPost[] => {
-    if (activeFilter === 'candidates') {
-      return [...mockCandidateVideos, ...mockExpertVideos];
-    }
-    return mockCandidateVideos;
+    const baseVideos = activeFilter === 'candidates' 
+      ? [...mockCandidateVideos, ...mockExpertVideos]
+      : mockCandidateVideos;
+    
+    // Merge with current user interaction states
+    return baseVideos.map(post => ({
+      ...post,
+      hasUserTrusted: postStates[post.id]?.hasUserTrusted ?? post.hasUserTrusted,
+      hasUserWatched: postStates[post.id]?.hasUserWatched ?? post.hasUserWatched,
+      hasUserVoted: postStates[post.id]?.hasUserVoted ?? post.hasUserVoted,
+      userZoozSent: postStates[post.id]?.userZoozSent ?? post.userZoozSent,
+    }));
   };
 
   return (
@@ -222,10 +282,10 @@ export const VideoFeedPage = ({
       {/* Video Feed */}
       <VideoFeed
         posts={getVideos()}
-        onTrust={onTrust}
-        onWatch={onWatch}
-        onZooz={onZooz}
-        onVote={onVote}
+        onTrust={handleTrustWithState}
+        onWatch={handleWatchWithState}
+        onZooz={handleZoozWithState}
+        onVote={handleVoteWithState}
         userBalance={userBalance}
         currentUserId={currentUserId}
         isMuted={isMuted}
