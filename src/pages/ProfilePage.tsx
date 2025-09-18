@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap, Handshake, Crown, Globe, Twitter, Facebook, Youtube, Linkedin, ExternalLink, Bell, Building2 } from "lucide-react";
+import { ArrowRight, Heart, Eye, MessageCircle, Share, MapPin, Calendar, UserCheck, Camera, Vote, TrendingUp, Shield, GraduationCap, Handshake, Crown, Globe, Twitter, Facebook, Youtube, Linkedin, ExternalLink, Bell } from "lucide-react";
+import { CoalitionIcon } from "@/components/CoalitionIcon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -165,7 +166,7 @@ const ProfilePage = () => {
               size="icon"
               onClick={() => navigate('/mygov')}
             >
-              <Building2 className="w-4 h-4" />
+              <CoalitionIcon className="w-4 h-4" />
             </Button>
             <Button variant="outline" size="icon">
               <Share className="w-4 h-4" />
