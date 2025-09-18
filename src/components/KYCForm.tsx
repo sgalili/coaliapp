@@ -84,7 +84,6 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
                 value={formData.dateOfBirth}
                 onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
                 className="w-full text-right [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:mr-0"
-                dir="ltr"
               />
             </div>
           </div>
