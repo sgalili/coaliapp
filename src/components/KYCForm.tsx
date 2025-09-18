@@ -110,7 +110,7 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
               onClick={onBack}
               className="flex-1 flex items-center justify-center gap-2"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" />
               חזרה
             </Button>
             <Button
@@ -119,7 +119,7 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
               className="flex-1 flex items-center justify-center gap-2"
             >
               המשך
-              <ArrowRight className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" />
             </Button>
           </div>
         </form>
