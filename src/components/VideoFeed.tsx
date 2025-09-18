@@ -201,7 +201,7 @@ const VideoCard = ({
 }: {
   post: VideoPost;
   onTrust: (id: string) => void;
-  onWatch: (id: string) => void;
+  onWatch: (id: string, isWatching?: boolean) => void;
   onZooz: (id: string) => void;
   onVote: (id: string, ministryPosition: string) => void;
   userBalance: number;
