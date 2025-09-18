@@ -217,12 +217,19 @@ const Index = () => {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  const handleVideoVote = (postId: string, ministryPosition: string) => {
+  const handleVideoVote = (postId: string, ministryPosition: string, isCurrentlyVoted: boolean) => {
     // TODO: Implement vote confirmation and database update
-    toast({
-      title: "הצבעת עבור המועמד! 🗳️",
-      description: "הצבעה נרשמה בהצלחה"
-    });
+    if (isCurrentlyVoted) {
+      toast({
+        title: "ההצבעה בוטלה",
+        description: "ההצבעה הוסרה בהצלחה"
+      });
+    } else {
+      toast({
+        title: "הצבעת עבור המועמד! 🗳️",
+        description: "הצבעה נרשמה בהצלחה"
+      });
+    }
   };
 
   const handleTrust = (postId: string, post: VideoPost, isGivingTrust: boolean) => {

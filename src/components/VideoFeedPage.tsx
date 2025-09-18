@@ -16,7 +16,7 @@ interface VideoFeedPageProps {
   onTrust: (postId: string, post: VideoPost, isGivingTrust: boolean) => void;
   onWatch: (postId: string, isWatching?: boolean) => void;
   onZooz: (postId: string) => void;
-  onVote: (postId: string, ministryPosition: string) => void;
+  onVote: (postId: string, ministryPosition: string, isCurrentlyVoted: boolean) => void;
   onCreateContent?: () => void;
   userBalance: number;
   currentUserId?: string;
@@ -239,6 +239,8 @@ export const VideoFeedPage = ({
   };
 
   const handleVoteWithState = (postId: string, ministryPosition: string) => {
+    const isCurrentlyVoted = postStates[postId]?.hasUserVoted ?? false;
+    
     setPostStates(prev => ({
       ...prev,
       [postId]: {
@@ -246,7 +248,7 @@ export const VideoFeedPage = ({
         hasUserVoted: !prev[postId]?.hasUserVoted
       }
     }));
-    onVote(postId, ministryPosition);
+    onVote(postId, ministryPosition, isCurrentlyVoted);
   };
   // Get appropriate videos based on filter with updated states
   const getVideos = (): VideoPost[] => {
