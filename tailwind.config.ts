@@ -70,6 +70,10 @@ export default {
 					DEFAULT: 'hsl(var(--watch))',
 					foreground: 'hsl(var(--watch-foreground))'
 				},
+				vote: {
+					DEFAULT: 'hsl(var(--vote))',
+					foreground: 'hsl(var(--vote-foreground))'
+				},
 				zooz: {
 					DEFAULT: 'hsl(var(--zooz))',
 					foreground: 'hsl(var(--zooz-foreground))'

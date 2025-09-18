@@ -61,8 +61,10 @@ All colors MUST be HSL.
     /* Trust network colors - fresh blue theme */
     --trust: 142 71% 45%;
     --trust-foreground: 0 0% 98%;
-    --watch: 221 83% 53%;
+    --watch: 199 89% 48%;
     --watch-foreground: 0 0% 98%;
+    --vote: 240 100% 60%;
+    --vote-foreground: 0 0% 98%;
     --zooz: 47 96% 53%;
     --zooz-foreground: 224 71% 4%;
     --zooz-glow: 45 100% 60%;
@@ -111,8 +113,10 @@ All colors MUST be HSL.
     /* Trust network colors - same for dark mode */
     --trust: 120 100% 40%;
     --trust-foreground: 0 0% 98%;
-    --watch: 210 100% 50%;
+    --watch: 189 89% 48%;
     --watch-foreground: 0 0% 98%;
+    --vote: 240 100% 60%;
+    --vote-foreground: 0 0% 98%;
     --zooz: 39 100% 50%;
     --zooz-foreground: 0 0% 8%;
     --zooz-glow: 45 100% 60%;

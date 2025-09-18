@@ -397,7 +397,7 @@ const VideoCard = ({
             icon={<VoteIcon />}
             onClick={() => onVote(post.id, post.ministryPosition!)}
             isActive={post.hasUserVoted}
-            activeColor="bg-violet-500/40"
+            activeColor="bg-vote/60"
           />
         )}
 
@@ -413,7 +413,7 @@ const VideoCard = ({
           }
           onClick={handleZoozSend}
           isActive={post.userZoozSent && post.userZoozSent > 0}
-          activeColor="bg-zooz/40"
+          activeColor="bg-zooz/60"
         />
 
         {/* Trust button */}
@@ -428,7 +428,7 @@ const VideoCard = ({
           }
           onClick={() => onTrust(post.id)}
           isActive={post.hasUserTrusted}
-          activeColor="bg-trust/40"
+          activeColor="bg-trust/60"
         />
 
         {/* Watch button */}
@@ -438,7 +438,7 @@ const VideoCard = ({
           icon={<Eye className={cn("w-6 h-6", post.hasUserWatched ? "text-watch" : "text-white")} />}
           onClick={() => onWatch(post.id)}
           isActive={post.hasUserWatched}
-          activeColor="bg-watch/40"
+          activeColor="bg-watch/60"
         />
 
         {/* Share button */}
