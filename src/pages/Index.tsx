@@ -271,18 +271,16 @@ const Index = () => {
   const handleZooz = (postId: string) => {
     if (zoozBalance < 1) {
       toast({
-        title: "Insufficient ZOOZ",
-        description: "You don't have enough ZOOZ to support this creator.",
+        title: "יתרת ZOOZ לא מספיקה",
+        description: "אין לך מספיק ZOOZ כדי לתמוך ביוצר הזה.",
+        duration: 5000,
       });
       return;
     }
 
     setZoozBalance(prev => prev - 1);
     
-    toast({
-      title: "ZOOZ Sent! 🚀",
-      description: "Supporting amazing creators!",
-    });
+    // Don't show toast here - it's already handled in VideoFeed component
   };
 
   const handleCreateContent = () => {

@@ -273,7 +273,7 @@ const VideoCard = ({
   };
   const handleZoozSend = async (e?: React.MouseEvent) => {
     if (userBalance < 1) {
-      toast.error("Solde ZOOZ insuffisant", {
+      toast.error("יתרת ZOOZ לא מספיקה", {
         position: "bottom-center",
         duration: 2000
       });
@@ -287,8 +287,8 @@ const VideoCard = ({
     }
     onZooz(post.id);
 
-    // Bottom toast only - no top popup
-    toast.success("1 ZOOZ envoyé! 🚀", {
+    // Bottom toast in Hebrew
+    toast.success("נשלח ZOOZ אחד! 🚀", {
       position: "bottom-center",
       duration: 1500
     });
