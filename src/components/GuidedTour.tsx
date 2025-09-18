@@ -17,24 +17,17 @@ interface TourStep {
 
 const tourSteps: TourStep[] = [
   {
-    id: "decisions",
-    title: "החלטות שממתינות לקול שלך",
-    description: "כאן תראה הצבעות פעילות בשכונה, בקהילה, בעיר או במדינה.\nמשתמשים שקיבלו אמון מהקהילה יכולים גם ליזום החלטות חדשות.",
-    targetSelector: "[data-tour-id='decisions-filter']",
-    position: "bottom"
-  },
-  {
     id: "circle",
-    title: "המעגל שלי",
-    description: "תוכן של האנשים שאתה עוקב אחריהם ושאתה סומך עליהם, או מאנשי הקשר שלך.",
+    title: "זירה - מעגל האמון והבחירה שלך",
+    description: "גלה מומחים ומועמדים לתפקידים - צפה בסרטונים שלהם, תן להם אמון בתחומי המומחיות שלהם או הצבע עבורם לתפקידים.",
     targetSelector: "[data-tour-id='circle-filter']",
     position: "bottom"
   },
   {
-    id: "explore",
-    title: "סייר",
-    description: "גלה מומחים בכל התחומים, בנה יחסי אמון להחלטות ונציגים עתידיים שלך.",
-    targetSelector: "[data-tour-id='explore-filter']",
+    id: "decisions",
+    title: "החלטות - השפע על העתיד שלך",
+    description: "השתתף בהחלטות שמשפיעות עליך - הצבע בסקרים, משאלי עם ובחירות, וצור את ה-MyGov האישי שלך עם המועמדים הנבחרים שלך.",
+    targetSelector: "[data-tour-id='decisions-filter']",
     position: "bottom"
   },
   {

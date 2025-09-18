@@ -9,6 +9,8 @@ import { KYCForm } from "@/components/KYCForm";
 import { VideoCreator } from "@/components/VideoCreator";
 import { VideoFeedPage } from "@/components/VideoFeedPage";
 import { VideoPost } from "@/components/VideoFeed";
+import { HomeOnboarding } from "@/components/HomeOnboarding";
+import { GuidedTour } from "@/components/GuidedTour";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
 import { X } from "lucide-react";
@@ -196,6 +198,8 @@ const Index = () => {
   const [showKycNotice, setShowKycNotice] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showTour, setShowTour] = useState(false);
   
   // Swipe handling
   const containerRef = useRef<HTMLDivElement>(null);
@@ -215,6 +219,12 @@ const Index = () => {
     // Set RTL direction for the entire app
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
+    
+    // Check if onboarding should be shown
+    const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
+    if (!onboardingCompleted) {
+      setShowOnboarding(true);
+    }
   }, []);
 
   const handleVideoVote = (postId: string, ministryPosition: string, isCurrentlyVoted: boolean) => {
@@ -318,6 +328,21 @@ const Index = () => {
 
   const handleVolumeToggle = () => {
     setIsMuted(!isMuted);
+  };
+
+  const handleOnboardingClose = () => {
+    localStorage.setItem('home-onboarding-completed', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingStartTour = () => {
+    localStorage.setItem('home-onboarding-completed', 'true');
+    setShowOnboarding(false);
+    setShowTour(true);
+  };
+
+  const handleTourClose = () => {
+    setShowTour(false);
   };
 
   // Filter navigation with animation
@@ -458,6 +483,19 @@ const Index = () => {
         <VideoCreator
           onClose={() => setShowVideoCreator(false)}
           onPublish={handleVideoPublish}
+        />
+      )}
+
+      {showOnboarding && (
+        <HomeOnboarding
+          onClose={handleOnboardingClose}
+          onStartTour={handleOnboardingStartTour}
+        />
+      )}
+
+      {showTour && (
+        <GuidedTour
+          onClose={handleTourClose}
         />
       )}
     </div>
