@@ -109,9 +109,9 @@ export const AnimatedStatBadge: React.FC<AnimatedStatBadgeProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={cn("flex flex-col items-center gap-1 group", className)}>
+    <button onClick={onClick} className={cn("flex flex-col items-center gap-0.8 group", className)}>
       <div className={cn(
-        "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-all duration-300 relative",
+        "w-11 h-11 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-all duration-300 relative",
         isActive ? activeColor : "bg-white/20",
         isClickAnimating ? "animate-like-bounce" : ""
       )}>

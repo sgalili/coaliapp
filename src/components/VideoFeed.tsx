@@ -417,7 +417,7 @@ const VideoCard = ({
       </div>
 
       {/* Action buttons */}
-      <div className="absolute left-4 bottom-20 flex flex-col gap-6">
+      <div className="absolute left-4 bottom-20 flex flex-col gap-5">
 
         {/* VOTE button - only for votable posts */}
         {post.isVotable && (
