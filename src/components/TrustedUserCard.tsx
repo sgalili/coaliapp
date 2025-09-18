@@ -6,24 +6,41 @@ import { Eye, Crown, Handshake } from "lucide-react";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { getDomainConfig, getDomainBadgeClasses } from "@/lib/domainConfig";
 import type { Expert } from "@/pages/TopTrustedPage";
+// Using exact same icons as home page
 const TrustIcon = () => {
   return <div className="relative">
       <Handshake className="w-6 h-6 text-trust" />
-      <Crown className="w-1 h-1 text-yellow-400 absolute -top-1 -right-1" />
+      <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
     </div>;
+};
+
+const VoteIcon = () => {
+  return (
+    <img 
+      src="/vote.png" 
+      alt="Vote" 
+      className="w-6 h-6 brightness-0 invert"
+    />
+  );
 };
 interface TrustedUserCardProps {
   expert: Expert;
+  index: number;
   onProfileClick: () => void;
   onTrustClick: () => void;
+  onVoteClick: () => void;
   onWatchClick: () => void;
 }
 export const TrustedUserCard = ({
   expert,
+  index,
   onProfileClick,
   onTrustClick,
+  onVoteClick,
   onWatchClick
 }: TrustedUserCardProps) => {
+  // Alternate between trust and vote buttons - every 3rd gets vote
+  const showVoteButton = index % 3 === 2;
   return <>
       <div className="flex items-start gap-3 p-3 hover:bg-accent/30 transition-colors">
         {/* Profile section with status indicators */}
@@ -93,16 +110,27 @@ export const TrustedUserCard = ({
           </div>
         </div>
 
-        {/* Main Trust CTA */}
+        {/* Main Action CTA - alternates between Trust and Vote */}
         <div className="flex items-start pt-2">
-          <Button 
-            onClick={onTrustClick} 
-            variant={expert.trustedByUser ? "default" : "outline"} 
-            size="icon"
-            className="w-12 h-12 rounded-full"
-          >
-            <TrustIcon />
-          </Button>
+          {showVoteButton ? (
+            <Button 
+              onClick={onVoteClick} 
+              variant="outline"
+              size="icon"
+              className="w-12 h-12 rounded-full"
+            >
+              <VoteIcon />
+            </Button>
+          ) : (
+            <Button 
+              onClick={onTrustClick} 
+              variant={expert.trustedByUser ? "default" : "outline"} 
+              size="icon"
+              className="w-12 h-12 rounded-full"
+            >
+              <TrustIcon />
+            </Button>
+          )}
         </div>
       </div>
       <Separator />
