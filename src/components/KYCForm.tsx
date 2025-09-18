@@ -77,15 +77,15 @@ export const KYCForm = ({ onSubmit, onBack }: KYCFormProps) => {
           {/* Date of Birth */}
           <div className="space-y-2">
             <Label htmlFor="dob" className="text-right block">תאריך לידה</Label>
-            <div className="text-right" dir="rtl">
-              <Input
-                id="dob"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                className="w-full text-right [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:mr-0"
-              />
-            </div>
+            <Input
+              id="dob"
+              type="date"
+              dir="rtl"
+              value={formData.dateOfBirth}
+              onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+              className="w-full text-right direction-rtl [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:mr-0 [&::-webkit-datetime-edit]:text-right [&::-webkit-datetime-edit-fields-wrapper]:justify-end"
+              style={{ direction: 'rtl', textAlign: 'right' }}
+            />
           </div>
 
           {/* ID Number */}
