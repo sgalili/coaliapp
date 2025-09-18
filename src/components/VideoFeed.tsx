@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Handshake, Crown, Eye, Share, User, Shield, ShieldAlert, ShieldCheck, Volume2, VolumeX } from "lucide-react";
+import { Handshake, Crown, Eye, Share, User, Shield, ShieldAlert, ShieldCheck, Volume2, VolumeX, Vote } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -27,12 +27,22 @@ export interface VideoPost {
     localTime: string;
     isAuthentic: boolean;
   };
+  // Vote-related properties
+  isVotable?: boolean;
+  ministryPosition?: string;
+  voteCount?: number;
+  // User interaction states
+  hasUserVoted?: boolean;
+  hasUserTrusted?: boolean;
+  hasUserWatched?: boolean;
+  userZoozSent?: number;
 }
 interface VideoFeedProps {
   posts: VideoPost[];
   onTrust: (postId: string) => void;
   onWatch: (postId: string) => void;
   onZooz: (postId: string) => void;
+  onVote: (postId: string, ministryPosition: string) => void;
   userBalance: number;
   currentUserId?: string;
   isMuted: boolean;
@@ -135,6 +145,21 @@ const KYCBadge = ({
       <IconComponent className={cn("w-4 h-4", color)} />
     </div>;
 };
+const VoteIcon = () => {
+  return (
+    <div className="relative">
+      <div className="w-6 h-6 relative">
+        {/* Ballot box */}
+        <div className="w-5 h-4 border-2 border-current rounded-sm absolute bottom-0 left-0.5" />
+        {/* Ballot paper */}
+        <div className="w-2 h-3 bg-current rounded-t-sm absolute top-0 left-2 opacity-80" />
+        {/* V mark on ballot */}
+        <div className="absolute top-0.5 left-2.5 text-[8px] font-bold">V</div>
+      </div>
+    </div>
+  );
+};
+
 const ZoozIcon = ({
   className = "w-6 h-6 text-zooz",
   isCoin = false
@@ -171,6 +196,7 @@ const VideoCard = ({
   onTrust,
   onWatch,
   onZooz,
+  onVote,
   userBalance,
   currentUserId,
   isMuted,
@@ -180,6 +206,7 @@ const VideoCard = ({
   onTrust: (id: string) => void;
   onWatch: (id: string) => void;
   onZooz: (id: string) => void;
+  onVote: (id: string, ministryPosition: string) => void;
   userBalance: number;
   currentUserId?: string;
   isMuted: boolean;
@@ -366,10 +393,26 @@ const VideoCard = ({
       {/* Action buttons */}
       <div className="absolute left-4 bottom-20 flex flex-col gap-6">
 
+        {/* VOTE button - only for votable posts */}
+        {post.isVotable && (
+          <button onClick={() => onVote(post.id, post.ministryPosition!)} className="flex flex-col items-center gap-1 group">
+            <div className={cn(
+              "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
+              post.hasUserVoted ? "bg-violet-500/40" : "bg-white/20"
+            )}>
+              <VoteIcon />
+            </div>
+            <span className="text-white text-xs font-medium">{post.voteCount}</span>
+          </button>
+        )}
+
         {/* ZOOZ button */}
         <button onClick={handleZoozSend} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-zooz/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden">
-            <ZoozIcon />
+          <div className={cn(
+            "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden",
+            (post.userZoozSent && post.userZoozSent > 0) ? "bg-zooz/40" : "bg-white/20"
+          )}>
+            <ZoozIcon className={(post.userZoozSent && post.userZoozSent > 0) ? "text-zooz" : "text-white"} />
             <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
           </div>
           <span className="text-white text-xs font-medium">{post.zoozCount}</span>
@@ -377,16 +420,25 @@ const VideoCard = ({
 
         {/* Trust button */}
         <button onClick={() => onTrust(post.id)} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-trust/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <TrustIcon />
+          <div className={cn(
+            "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
+            post.hasUserTrusted ? "bg-trust/40" : "bg-white/20"
+          )}>
+            <div className="relative">
+              <Handshake className={cn("w-6 h-6", post.hasUserTrusted ? "text-trust" : "text-white")} />
+              <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
+            </div>
           </div>
           <span className="text-white text-xs font-medium">{post.trustCount}</span>
         </button>
 
         {/* Watch button */}
         <button onClick={() => onWatch(post.id)} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-watch/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <Eye className="w-6 h-6 text-watch" />
+          <div className={cn(
+            "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
+            post.hasUserWatched ? "bg-watch/40" : "bg-white/20"
+          )}>
+            <Eye className={cn("w-6 h-6", post.hasUserWatched ? "text-watch" : "text-white")} />
           </div>
           <span className="text-white text-xs font-medium">{post.watchCount}</span>
         </button>
@@ -436,12 +488,13 @@ export const VideoFeed = ({
   onTrust,
   onWatch,
   onZooz,
+  onVote,
   userBalance,
   currentUserId,
   isMuted,
   onVolumeToggle
 }: VideoFeedProps) => {
   return <div className="h-screen overflow-y-scroll snap-y snap-mandatory">
-      {posts.map(post => <VideoCard key={post.id} post={post} onTrust={onTrust} onWatch={onWatch} onZooz={onZooz} userBalance={userBalance} currentUserId={currentUserId} isMuted={isMuted} onVolumeToggle={onVolumeToggle} />)}
+      {posts.map(post => <VideoCard key={post.id} post={post} onTrust={onTrust} onWatch={onWatch} onZooz={onZooz} onVote={onVote} userBalance={userBalance} currentUserId={currentUserId} isMuted={isMuted} onVolumeToggle={onVolumeToggle} />)}
     </div>;
 };

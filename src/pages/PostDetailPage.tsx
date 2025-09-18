@@ -91,6 +91,7 @@ const PostDetailPage = () => {
           onTrust={handleTrust}
           onWatch={handleWatch}
           onZooz={() => {}}
+          onVote={() => {}}
           userBalance={0}
           isMuted={true}
           onVolumeToggle={() => {}}

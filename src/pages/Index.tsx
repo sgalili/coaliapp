@@ -216,6 +216,14 @@ const Index = () => {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
+  const handleVote = (postId: string, ministryPosition: string) => {
+    // TODO: Implement vote confirmation and database update
+    toast({
+      title: "הצבעת עבור המועמד! 🗳️",
+      description: "הצבעה נרשמה בהצלחה"
+    });
+  };
+
   const handleTrust = (postId: string) => {
     toast({
       title: "Trust Given! ❤️",
@@ -386,6 +394,7 @@ const Index = () => {
               onTrust={handleTrust}
               onWatch={handleWatch}
               onZooz={handleZooz}
+              onVote={handleVote}
               onCreateContent={handleCreateContent}
               userBalance={zoozBalance}
               isMuted={isMuted}

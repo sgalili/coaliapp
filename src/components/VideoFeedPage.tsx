@@ -16,6 +16,7 @@ interface VideoFeedPageProps {
   onTrust: (postId: string) => void;
   onWatch: (postId: string) => void;
   onZooz: (postId: string) => void;
+  onVote: (postId: string, ministryPosition: string) => void;
   onCreateContent?: () => void;
   userBalance: number;
   currentUserId?: string;
@@ -42,6 +43,14 @@ const mockCandidateVideos: VideoPost[] = [
     expertise: "מנהיגות ופוליטיקה",
     category: "politics",
     isLive: true,
+    // Vote properties
+    isVotable: true,
+    ministryPosition: "prime_minister",
+    voteCount: 1247,
+    hasUserVoted: false,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+    userZoozSent: 0,
     authenticityData: {
       city: "ירושלים",
       country: "ישראל", 
@@ -65,6 +74,14 @@ const mockCandidateVideos: VideoPost[] = [
     kycLevel: 3,
     expertise: "כלכלה אקדמית",
     category: "economy",
+    // Vote properties
+    isVotable: true,
+    ministryPosition: "economics",
+    voteCount: 892,
+    hasUserVoted: false,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+    userZoozSent: 0,
     authenticityData: {
       city: "ירושלים",
       country: "ישראל",
@@ -91,6 +108,11 @@ const mockExpertVideos: VideoPost[] = [
     kycLevel: 2,
     expertise: "תכשיטים ועסקים",
     category: "jewelry",
+    // Not votable - expert only
+    isVotable: false,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+    userZoozSent: 0,
     authenticityData: {
       city: "תל אביב",
       country: "ישראל",
@@ -114,6 +136,11 @@ const mockExpertVideos: VideoPost[] = [
     kycLevel: 3,
     expertise: "השקעות ופיננסים",
     category: "economy",
+    // Not votable - expert only
+    isVotable: false,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+    userZoozSent: 0,
     authenticityData: {
       city: "Omaha",
       country: "USA",
@@ -137,6 +164,11 @@ const mockExpertVideos: VideoPost[] = [
     kycLevel: 2,
     expertise: "דיאטה ותזונה",
     category: "technology",
+    // Not votable - expert only
+    isVotable: false,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+    userZoozSent: 0,
     authenticityData: {
       city: "חיפה",
       country: "ישראל",
@@ -152,6 +184,7 @@ export const VideoFeedPage = ({
   onTrust, 
   onWatch, 
   onZooz, 
+  onVote,
   onCreateContent,
   userBalance,
   currentUserId,
@@ -192,6 +225,7 @@ export const VideoFeedPage = ({
         onTrust={onTrust}
         onWatch={onWatch}
         onZooz={onZooz}
+        onVote={onVote}
         userBalance={userBalance}
         currentUserId={currentUserId}
         isMuted={isMuted}
