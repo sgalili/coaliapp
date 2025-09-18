@@ -147,9 +147,12 @@ export const VoteAnimation = ({
                     <h3 className="text-lg font-semibold text-foreground mb-2">
                       אישור הצבעה
                     </h3>
-                    <p className="text-muted-foreground text-sm">
-                      האם אתה בטוח שברצונך להצביע עבור {candidate} לתפקיד {position}?
-                    </p>
+                     <p className="text-muted-foreground text-sm">
+                       האם אתה בטוח שברצונך להצביע עבור {candidate} לתפקיד {position}?
+                     </p>
+                     <p className="text-xs text-muted-foreground/80 mt-1">
+                       עלות: 1 ZOOZ
+                     </p>
                   </motion.div>
 
                   {/* Action buttons */}

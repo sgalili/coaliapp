@@ -229,7 +229,7 @@ const VideoCard = ({
     
     if (isAlreadyVoted) {
       // Show simple confirmation dialog for vote cancellation
-      const confirmed = window.confirm("האם אתה בטוח שברצונך לבטל את ההצבעה?");
+      const confirmed = window.confirm("האם אתה בטוח שברצונך לבטל את ההצבעה? • עלות: 1 ZOOZ");
       if (confirmed) {
         // Call the parent's onVote function to handle cancellation
         onVote(post.id, post.ministryPosition || "");
