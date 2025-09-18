@@ -75,6 +75,39 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
     positionTooltip();
   }, [currentStep]);
 
+  const getBorderPosition = (targetElement: Element) => {
+    const rect = targetElement.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Calculate desired border position
+    let borderTop = rect.top - 8;
+    let borderLeft = rect.left - 8;
+    let borderWidth = rect.width + 16;
+    let borderHeight = rect.height + 16;
+    
+    // Constrain border to viewport boundaries
+    if (borderLeft < 0) {
+      borderWidth += borderLeft; // Reduce width by the amount going off-screen
+      borderLeft = 0;
+    }
+    
+    if (borderLeft + borderWidth > viewportWidth) {
+      borderWidth = viewportWidth - borderLeft;
+    }
+    
+    if (borderTop < 0) {
+      borderHeight += borderTop;
+      borderTop = 0;
+    }
+    
+    if (borderTop + borderHeight > viewportHeight) {
+      borderHeight = viewportHeight - borderTop;
+    }
+    
+    return { borderTop, borderLeft, borderWidth, borderHeight };
+  };
+
   const positionTooltip = () => {
     const step = tourSteps[currentStep];
     const targetElement = document.querySelector(step.targetSelector);
@@ -157,6 +190,7 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
 
   const currentStepData = tourSteps[currentStep];
   const targetElement = document.querySelector(currentStepData.targetSelector);
+  const borderPosition = targetElement ? getBorderPosition(targetElement) : null;
 
   const getArrowIcon = () => {
     switch (currentStepData.position) {
@@ -230,15 +264,17 @@ export const GuidedTour = ({ onClose }: GuidedTourProps) => {
           />
           
           {/* Glowing border around the spotlight */}
-          <div
-            className="absolute border-2 border-primary rounded-lg shadow-lg shadow-primary/50 transition-all duration-300 pointer-events-none"
-            style={{
-              top: targetElement.getBoundingClientRect().top - 8,
-              left: targetElement.getBoundingClientRect().left - 8,
-              width: targetElement.getBoundingClientRect().width + 16,
-              height: targetElement.getBoundingClientRect().height + 16,
-            }}
-          />
+          {borderPosition && (
+            <div
+              className="absolute border-2 border-primary rounded-lg shadow-lg shadow-primary/50 transition-all duration-300 pointer-events-none"
+              style={{
+                top: borderPosition.borderTop,
+                left: borderPosition.borderLeft,
+                width: borderPosition.borderWidth,
+                height: borderPosition.borderHeight,
+              }}
+            />
+          )}
         </>
       ) : (
         /* Fallback overlay if target element not found */
