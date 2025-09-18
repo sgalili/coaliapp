@@ -48,9 +48,7 @@ export const HomeOnboarding = ({
 
           {/* Main description */}
           <div className="space-y-4 text-right">
-            <p className="text-sm text-muted-foreground">
-              האפליקציה מחולקת לשני מרחבים עיקריים:
-            </p>
+            <p className="text-sm text-muted-foreground">דף הבית מחולק לשני מרחבים עיקריים:</p>
             
             <div className="space-y-4">
               {/* זירה section */}
