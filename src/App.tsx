@@ -21,6 +21,7 @@ import MyGovPage from "./pages/MyGovPage";
 import MyGovGeneratePage from "./pages/MyGovGeneratePage";
 import MyGovSharePage from "./pages/MyGovSharePage";
 import { AuthPage } from "./pages/AuthPage";
+import { NotificationsPage } from "./pages/NotificationsPage";
 import DecisionsPage from "./pages/DecisionsPage";
 import VoteFeedPage from "./pages/VoteFeedPage";
 import NotFound from "./pages/NotFound";
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/toptrusted" element={<TopTrustedPage />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/notification" element={<NotificationsPage />} />
           <Route path="/data-management" element={<DataManagementPage />} />
           <Route path="/notifications-settings" element={<NotificationsSettingsPage />} />
           <Route path="/invite-friends" element={<InviteFriendsPage />} />
