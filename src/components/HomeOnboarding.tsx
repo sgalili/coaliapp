@@ -31,16 +31,16 @@ export const HomeOnboarding = ({
       {/* Modal */}
       <div className={cn("relative bg-card rounded-2xl p-8 mx-4 max-w-md w-full shadow-2xl border border-border/20 transition-all duration-300", isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4")}>
         {/* Close button */}
-        <button onClick={handleClose} className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted/50 transition-colors">
+        <button onClick={handleClose} className="absolute top-4 left-4 p-2 rounded-full hover:bg-muted/50 transition-colors">
           <X className="w-5 h-5 text-muted-foreground" />
         </button>
 
         {/* Content */}
-        <div className="text-center space-y-6">
+        <div className="text-right space-y-6">
           {/* Hero text with emoji */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-right">
             
-            <h1 className="text-xl font-bold text-foreground">מוכנים לסיור קצר?</h1>
+            <h1 className="text-xl font-bold text-foreground text-right">מוכנים לסיור קצר?</h1>
             
           </div>
 
