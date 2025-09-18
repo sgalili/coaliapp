@@ -46,9 +46,7 @@ export const TrustedUserCard = ({
         <div className="flex-1 cursor-pointer min-w-0" onClick={onProfileClick}>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-foreground truncate">{expert.name}</h3>
-            {expert.trending && <Badge variant="destructive" className="text-xs px-1.5 py-0.5 shrink-0">
-                🔥
-              </Badge>}
+            {expert.trending}
           </div>
           
           
@@ -95,12 +93,7 @@ export const TrustedUserCard = ({
 
         {/* Main Trust CTA */}
         <div className="flex items-start pt-2">
-          <Button 
-            onClick={onTrustClick} 
-            variant={expert.trustedByUser ? "default" : "outline"} 
-            size="icon"
-            className="w-12 h-12 rounded-full"
-          >
+          <Button onClick={onTrustClick} variant={expert.trustedByUser ? "default" : "outline"} size="icon" className="w-12 h-12 rounded-full">
             <TrustIcon />
           </Button>
         </div>
