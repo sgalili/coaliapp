@@ -42,7 +42,7 @@ export interface VideoPost {
 interface VideoFeedProps {
   posts: VideoPost[];
   onTrust: (postId: string) => void;
-  onWatch: (postId: string) => void;
+  onWatch: (postId: string, isWatching?: boolean) => void;
   onZooz: (postId: string) => void;
   onVote: (postId: string, ministryPosition: string) => void;
   userBalance: number;
@@ -437,7 +437,7 @@ const VideoCard = ({
           count={post.watchCount}
           label="עוקבים"
           icon={<WatchIconFillable isFilled={post.hasUserWatched} />}
-          onClick={() => onWatch(post.id)}
+          onClick={() => onWatch(post.id, !post.hasUserWatched)}
           isActive={post.hasUserWatched}
           activeColor="bg-watch/30"
         />

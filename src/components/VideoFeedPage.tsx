@@ -14,7 +14,7 @@ interface VideoFeedPageProps {
   activeFilter: VoteFilterType;
   onFilterChange: (filter: VoteFilterType) => void;
   onTrust: (postId: string) => void;
-  onWatch: (postId: string) => void;
+  onWatch: (postId: string, isWatching?: boolean) => void;
   onZooz: (postId: string) => void;
   onVote: (postId: string, ministryPosition: string) => void;
   onCreateContent?: () => void;
@@ -212,14 +212,19 @@ export const VideoFeedPage = ({
   };
 
   const handleWatchWithState = (postId: string) => {
+    const isCurrentlyWatched = postStates[postId]?.hasUserWatched;
+    const willWatch = !isCurrentlyWatched;
+    
     setPostStates(prev => ({
       ...prev,
       [postId]: {
         ...prev[postId],
-        hasUserWatched: true
+        hasUserWatched: !prev[postId]?.hasUserWatched
       }
     }));
-    onWatch(postId);
+    
+    // Pass watch status to parent
+    onWatch(postId, willWatch);
   };
 
   const handleZoozWithState = (postId: string) => {

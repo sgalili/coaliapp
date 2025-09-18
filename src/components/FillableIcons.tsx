@@ -24,11 +24,23 @@ export const WatchIconFillable: React.FC<FillableIconProps> = ({ className, isFi
       viewBox="0 0 24 24" 
       fill="none" 
       stroke="currentColor" 
-      strokeWidth={isFilled ? 1 : 2}
+      strokeWidth="2"
     >
-      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" fill={isFilled ? "white" : "none"} />
-      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" />
-      {isFilled && <circle cx="12" cy="12" r="1.5" fill="transparent" stroke="none" />}
+      {/* Outer eye shape */}
+      <path 
+        d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" 
+        fill={isFilled ? "white" : "none"}
+        stroke="currentColor" 
+      />
+      {/* Inner pupil - always stays transparent with stroke */}
+      <circle 
+        cx="12" 
+        cy="12" 
+        r="3" 
+        fill="none" 
+        stroke={isFilled ? "black" : "currentColor"} 
+        strokeWidth={isFilled ? "1.5" : "2"}
+      />
     </svg>
   );
 };

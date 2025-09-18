@@ -231,10 +231,12 @@ const Index = () => {
     });
   };
 
-  const handleWatch = (postId: string) => {
+  const handleWatch = (postId: string, isWatching?: boolean) => {
     toast({
-      title: "Now Watching 👁️",
-      description: "You'll see their content more often.",
+      title: isWatching ? "עכשיו עוקב 👁️" : "הפסיק לעקוב",
+      description: isWatching 
+        ? "תראה יותר תוכן שלהם" 
+        : "לא תראה עוד תוכן שלהם כל כך הרבה",
     });
   };
 

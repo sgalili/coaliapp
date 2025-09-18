@@ -60,10 +60,12 @@ const PostDetailPage = () => {
     });
   };
 
-  const handleWatch = (id: string) => {
+  const handleWatch = (id: string, isWatching?: boolean) => {
     toast({
-      title: "Now Watching 👁️",
-      description: `You're now watching @${post.handle}. You'll see their content more often.`,
+      title: isWatching ? "עכשיו עוקב 👁️" : "הפסיק לעקוב",
+      description: isWatching 
+        ? `עכשיו אתה עוקב אחרי @${post.handle}. תראה יותר תוכן שלהם.`
+        : `הפסקת לעקוב אחרי @${post.handle}.`,
     });
   };
 
