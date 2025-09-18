@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useZoozReactions, LiveZoozReaction } from "@/hooks/useZoozReactions";
+import { AnimatedStatBadge } from "./AnimatedStatBadge";
 export interface VideoPost {
   id: string;
   username: string;
@@ -390,61 +391,65 @@ const VideoCard = ({
 
         {/* VOTE button - only for votable posts */}
         {post.isVotable && (
-          <button onClick={() => onVote(post.id, post.ministryPosition!)} className="flex flex-col items-center gap-1 group">
-            <div className={cn(
-              "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
-              post.hasUserVoted ? "bg-violet-500/40" : "bg-white/20"
-            )}>
-              <VoteIcon />
-            </div>
-            <span className="text-white text-xs font-medium">{post.voteCount}</span>
-          </button>
+          <AnimatedStatBadge
+            count={post.voteCount}
+            label="הצבעות"
+            icon={<VoteIcon />}
+            onClick={() => onVote(post.id, post.ministryPosition!)}
+            isActive={post.hasUserVoted}
+            activeColor="bg-violet-500/40"
+          />
         )}
 
         {/* ZOOZ button */}
-        <button onClick={handleZoozSend} className="flex flex-col items-center gap-1 group">
-          <div className={cn(
-            "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform relative overflow-hidden",
-            (post.userZoozSent && post.userZoozSent > 0) ? "bg-zooz/40" : "bg-white/20"
-          )}>
-            <ZoozIcon className={(post.userZoozSent && post.userZoozSent > 0) ? "text-zooz" : "text-white"} />
-            <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.zoozCount}</span>
-        </button>
+        <AnimatedStatBadge
+          count={post.zoozCount}
+          label="ZOOZ"
+          icon={
+            <div className="relative">
+              <ZoozIcon className={(post.userZoozSent && post.userZoozSent > 0) ? "text-zooz" : "text-white"} />
+              <div className="absolute inset-0 bg-zooz/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
+            </div>
+          }
+          onClick={handleZoozSend}
+          isActive={post.userZoozSent && post.userZoozSent > 0}
+          activeColor="bg-zooz/40"
+        />
 
         {/* Trust button */}
-        <button onClick={() => onTrust(post.id)} className="flex flex-col items-center gap-1 group">
-          <div className={cn(
-            "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
-            post.hasUserTrusted ? "bg-trust/40" : "bg-white/20"
-          )}>
+        <AnimatedStatBadge
+          count={post.trustCount}
+          label="אמון"
+          icon={
             <div className="relative">
               <Handshake className={cn("w-6 h-6", post.hasUserTrusted ? "text-trust" : "text-white")} />
               <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
             </div>
-          </div>
-          <span className="text-white text-xs font-medium">{post.trustCount}</span>
-        </button>
+          }
+          onClick={() => onTrust(post.id)}
+          isActive={post.hasUserTrusted}
+          activeColor="bg-trust/40"
+        />
 
         {/* Watch button */}
-        <button onClick={() => onWatch(post.id)} className="flex flex-col items-center gap-1 group">
-          <div className={cn(
-            "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform",
-            post.hasUserWatched ? "bg-watch/40" : "bg-white/20"
-          )}>
-            <Eye className={cn("w-6 h-6", post.hasUserWatched ? "text-watch" : "text-white")} />
-          </div>
-          <span className="text-white text-xs font-medium">{post.watchCount}</span>
-        </button>
+        <AnimatedStatBadge
+          count={post.watchCount}
+          label="צפיות"
+          icon={<Eye className={cn("w-6 h-6", post.hasUserWatched ? "text-watch" : "text-white")} />}
+          onClick={() => onWatch(post.id)}
+          isActive={post.hasUserWatched}
+          activeColor="bg-watch/40"
+        />
 
         {/* Share button */}
-        <button onClick={handlePostClick} className="flex flex-col items-center gap-1 group">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-transform">
-            <Share className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-xs font-medium">{post.shareCount}</span>
-        </button>
+        <AnimatedStatBadge
+          count={post.shareCount}
+          label="שיתופים"
+          icon={<Share className="w-6 h-6 text-white" />}
+          onClick={handlePostClick}
+          isActive={false}
+          activeColor="bg-white/20"
+        />
       </div>
 
       {/* Caption */}
