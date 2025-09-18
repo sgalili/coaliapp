@@ -254,6 +254,14 @@ const TopTrustedPage = () => {
       duration: 2000
     });
   };
+
+  const handleVoteClick = (expert: Expert) => {
+    toast({
+      title: "הצבעה נרשמה",
+      description: `הצבעת עבור ${expert.name}`,
+      duration: 2000
+    });
+  };
   const handleMessageClick = () => {
     toast({
       title: "שליחת הודעה",
@@ -295,7 +303,7 @@ const TopTrustedPage = () => {
       {/* Periscope-style Vertical List */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-3">
-          {filteredExperts.map(expert => <TrustedUserCard key={expert.id} expert={expert} onProfileClick={() => setSelectedExpert(expert)} onTrustClick={() => handleTrustClick(expert)} onWatchClick={() => handleWatchClick(expert)} />)}
+          {filteredExperts.map(expert => <TrustedUserCard key={expert.id} expert={expert} onProfileClick={() => setSelectedExpert(expert)} onTrustClick={() => handleTrustClick(expert)} onWatchClick={() => handleWatchClick(expert)} onVoteClick={() => handleVoteClick(expert)} />)}
           
           {filteredExperts.length === 0 && <div className="flex items-center justify-center py-20 text-muted-foreground">
               <p className="text-sm">לא נמצאו משתמשים בקטגוריות שנבחרו</p>
