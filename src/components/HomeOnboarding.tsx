@@ -46,31 +46,9 @@ export const HomeOnboarding = ({
 
           {/* Main description */}
           <div className="space-y-4 text-right">
-            <p className="text-sm text-muted-foreground">דף הבית מחולק לשני מרחבים עיקריים:</p>
             
-            <div className="space-y-4">
-              {/* זירה section */}
-              <div className="p-4 rounded-xl bg-muted/30 border border-border/10">
-                <div className="flex items-center gap-2 mb-2 justify-end">
-                  <span className="font-semibold text-primary">זירה</span>
-                  <div className="text-lg">👥</div>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  כאן תכירו מומחים ומועמדים לתפקידים - צפו בסרטונים שלהם, תנו להם אמון ובחרו במי לתמוך
-                </p>
-              </div>
-
-              {/* החלטות section */}
-              <div className="p-4 rounded-xl bg-muted/30 border border-border/10">
-                <div className="flex items-center gap-2 mb-2 justify-end">
-                  <span className="font-semibold text-primary">החלטות</span>
-                  <div className="text-lg">🗳️</div>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  השתתפו בהחלטות - הצביעו בסקרים, משאלי עם, בחירות וצרו את ה-MyGov האישי שלכם
-                </p>
-              </div>
-            </div>
+            
+            
 
             <p className="text-sm font-medium text-foreground mt-4">
               עכשיו זה הזמן שלכם להיות חלק מהשינוי.
