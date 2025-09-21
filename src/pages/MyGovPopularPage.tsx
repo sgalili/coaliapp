@@ -423,7 +423,8 @@ export default function MyGovPopularPage() {
             הממשלה הפופולרית ביותר
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            הבחירות הפופולריות ביותר של הציבור
+            ממשלה זו מורכבת מהמועמדים שזכו בהכי הרבה קולות מהציבור לכל תפקיד ספציפי.<br />
+            שתפו את הממשלה הזו עם חברים כדי להשיג ממשלת אחדות לאומית
           </p>
         </div>
         <div className="w-10"></div> {/* Spacer for balance */}
