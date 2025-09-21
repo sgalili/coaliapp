@@ -90,15 +90,8 @@ const mockVotes: { [pollId: string]: PollVote[] } = {
 };
 
 export const usePoll = (newsId: string) => {
-  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>(() => {
-    // Initialize from localStorage
-    const userVotesKey = `userVotes`;
-    const stored = localStorage.getItem(userVotesKey);
-    const storedVotes = stored ? JSON.parse(stored) : {};
-    return {
-      'poll-4': 'מרגש מאוד', // Simuler que l'utilisateur a voté sur la news 4
-      ...storedVotes
-    };
+  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({
+    'poll-4': 'מרגש מאוד' // Simuler que l'utilisateur a voté sur la news 4
   });
   
   const poll = mockPolls[newsId];
@@ -141,15 +134,6 @@ export const usePoll = (newsId: string) => {
 
   const submitVote = (option: string) => {
     if (!poll || hasUserVoted) return;
-    
-    // Store in localStorage for persistence
-    const userVotesKey = `userVotes`;
-    const existingVotes = JSON.parse(localStorage.getItem(userVotesKey) || '{}');
-    const updatedVotes = { 
-      ...existingVotes, 
-      [poll.id]: option 
-    };
-    localStorage.setItem(userVotesKey, JSON.stringify(updatedVotes));
     
     setUserVotes(prev => ({
       ...prev,
