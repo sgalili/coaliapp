@@ -30,9 +30,14 @@ export const PollSection = ({
   if (!poll) return null;
   const handleTogglePoll = () => {
     if (!isExpanded) {
-      triggerKYCCheck(() => {
+      // Pour la première news (demo), contourner le KYC
+      if (newsId === 'news-1') {
         setIsExpanded(true);
-      });
+      } else {
+        triggerKYCCheck(() => {
+          setIsExpanded(true);
+        });
+      }
     } else {
       setIsExpanded(false);
     }
@@ -88,7 +93,7 @@ export const PollSection = ({
 
         {/* Expanded content */}
         <div className={cn("overflow-hidden transition-all duration-300 ease-in-out border-t border-border/50", isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0")}>
-          {isExpanded && isKYCVerified && <div className="p-4 pt-3">
+          {isExpanded && (isKYCVerified || newsId === 'news-1') && <div className="p-4 pt-3">
               <div className="bg-card p-4 border border-border/50 shadow-sm">
                 <h3 className="text-base font-semibold mb-4 text-right text-foreground leading-relaxed">
                   {poll.question}
