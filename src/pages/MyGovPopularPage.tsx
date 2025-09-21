@@ -114,65 +114,95 @@ export default function MyGovPopularPage() {
 
   const loadPopularSelections = async () => {
     setIsLoading(true);
+    setError(null);
+
     try {
-      // Get all government selections
-      const { data: selections, error } = await supabase
-        .from('government_selections')
+      const { data: sharedGovs, error } = await supabase
+        .from('shared_governments')
         .select('*');
 
       if (error) {
-        console.error('Error loading selections:', error);
-        setIsLoading(false);
+        console.error('Error loading shared governments:', error);
+        setError('Failed to load popular selections');
         return;
       }
 
-      if (!selections || selections.length === 0) {
-        setIsLoading(false);
+      if (!sharedGovs || sharedGovs.length === 0) {
+        setError('No government data found');
         return;
       }
 
-      // Process data to find most popular candidates per ministry
-      const ministryStats: { [key: string]: { [key: string]: { count: number; candidate: any } } } = {};
-      let pmStats: { [key: string]: { count: number; candidate: any } } = {};
+      // Count popularity for PM and ministers
+      const pmCounts: Record<string, { count: number; avatar: string }> = {};
+      const ministryCounts: Record<string, Record<string, { count: number; avatar: string }>> = {};
+      
+      // Initialize ministry counts
+      ministries.forEach(ministry => {
+        ministryCounts[ministry.id] = {};
+      });
 
-      selections.forEach((selection) => {
-        const candidateData = typeof selection.candidate_data === 'string' 
-          ? JSON.parse(selection.candidate_data) 
-          : selection.candidate_data;
+      sharedGovs.forEach((gov) => {
+        // Count PM
+        if (gov.pm_name) {
+          if (!pmCounts[gov.pm_name]) {
+            pmCounts[gov.pm_name] = { count: 0, avatar: gov.pm_avatar || '/candidates/placeholder-defense.jpg' };
+          }
+          pmCounts[gov.pm_name].count++;
+        }
 
-        if (selection.ministry_id === 'prime_minister') {
-          const candidateName = candidateData.name;
-          if (!pmStats[candidateName]) {
-            pmStats[candidateName] = { count: 0, candidate: candidateData };
-          }
-          pmStats[candidateName].count++;
-        } else {
-          if (!ministryStats[selection.ministry_id]) {
-            ministryStats[selection.ministry_id] = {};
-          }
+        // Count ministers (8 positions)
+        for (let i = 1; i <= 8; i++) {
+          const ministerName = gov[`minister_${i}_name`];
+          const ministerPosition = gov[`minister_${i}_position`];
+          const ministerAvatar = gov[`minister_${i}_avatar`];
           
-          const candidateName = candidateData.name;
-          if (!ministryStats[selection.ministry_id][candidateName]) {
-            ministryStats[selection.ministry_id][candidateName] = { count: 0, candidate: candidateData };
+          if (ministerName && ministerPosition) {
+            // Map position to ministry_id based on keywords
+            let ministryId = '';
+            
+            if (ministerPosition.includes('ביטחון') || ministerPosition.includes('Defense')) {
+              ministryId = 'defense';
+            } else if (ministerPosition.includes('אוצר') || ministerPosition.includes('Finance')) {
+              ministryId = 'finance';
+            } else if (ministerPosition.includes('חינוך') || ministerPosition.includes('Education')) {
+              ministryId = 'education';
+            } else if (ministerPosition.includes('בריאות') || ministerPosition.includes('Health')) {
+              ministryId = 'health';
+            } else if (ministerPosition.includes('משפטים') || ministerPosition.includes('Justice')) {
+              ministryId = 'justice';
+            } else if (ministerPosition.includes('תחבורה') || ministerPosition.includes('Transport')) {
+              ministryId = 'transport';
+            } else if (ministerPosition.includes('בינוי') || ministerPosition.includes('דיור') || ministerPosition.includes('Housing')) {
+              ministryId = 'housing';
+            } else if (ministerPosition.includes('כלכלה') || ministerPosition.includes('Economy')) {
+              ministryId = 'economy';
+            }
+            
+            if (ministryId && ministryCounts[ministryId]) {
+              if (!ministryCounts[ministryId][ministerName]) {
+                ministryCounts[ministryId][ministerName] = { 
+                  count: 0, 
+                  avatar: ministerAvatar || '/candidates/placeholder-defense.jpg' 
+                };
+              }
+              ministryCounts[ministryId][ministerName].count++;
+            }
           }
-          ministryStats[selection.ministry_id][candidateName].count++;
         }
       });
 
       // Find most popular PM
       let topPm: PopularCandidate | null = null;
-      let pmTotalVotes = 0;
-      
-      Object.values(pmStats).forEach(stat => pmTotalVotes += stat.count);
+      const pmTotalVotes = Object.values(pmCounts).reduce((total, data) => total + data.count, 0);
       
       if (pmTotalVotes > 0) {
-        const topPmEntry = Object.entries(pmStats).reduce((max, [name, stat]) => 
-          stat.count > max[1].count ? [name, stat] : max
+        const topPmEntry = Object.entries(pmCounts).reduce((max, [name, data]) => 
+          data.count > max[1].count ? [name, data] : max
         );
         
         topPm = {
-          name: topPmEntry[1].candidate.name,
-          avatar: topPmEntry[1].candidate.avatar,
+          name: topPmEntry[0],
+          avatar: topPmEntry[1].avatar,
           voteCount: topPmEntry[1].count,
           percentage: Math.round((topPmEntry[1].count / pmTotalVotes) * 100)
         };
@@ -180,25 +210,21 @@ export default function MyGovPopularPage() {
 
       // Process ministries
       const processedSelections: PopularSelection[] = ministries.map(ministry => {
-        const ministryData = ministryStats[ministry.id];
+        const ministryData = ministryCounts[ministry.id];
         let topCandidate: PopularCandidate | null = null;
-        let totalVotes = 0;
+        const totalVotes = Object.values(ministryData || {}).reduce((total, data) => total + data.count, 0);
 
-        if (ministryData) {
-          Object.values(ministryData).forEach(stat => totalVotes += stat.count);
+        if (ministryData && totalVotes > 0) {
+          const topEntry = Object.entries(ministryData).reduce((max, [name, data]) => 
+            data.count > max[1].count ? [name, data] : max
+          );
           
-          if (totalVotes > 0) {
-            const topEntry = Object.entries(ministryData).reduce((max, [name, stat]) => 
-              stat.count > max[1].count ? [name, stat] : max
-            );
-            
-            topCandidate = {
-              name: topEntry[1].candidate.name,
-              avatar: topEntry[1].candidate.avatar,
-              voteCount: topEntry[1].count,
-              percentage: Math.round((topEntry[1].count / totalVotes) * 100)
-            };
-          }
+          topCandidate = {
+            name: topEntry[0],
+            avatar: topEntry[1].avatar,
+            voteCount: topEntry[1].count,
+            percentage: Math.round((topEntry[1].count / totalVotes) * 100)
+          };
         }
 
         return {
@@ -218,9 +244,9 @@ export default function MyGovPopularPage() {
         candidates.pm = {
           name: topPm.name,
           avatar: topPm.avatar,
-          expertise: '',
-          party: '',
-          experience: ''
+          expertise: 'Political Leadership',
+          party: 'Popular Choice',
+          experience: 'Most Popular Prime Minister'
         };
       }
 
@@ -229,9 +255,9 @@ export default function MyGovPopularPage() {
           candidates[selection.ministryId] = {
             name: selection.candidate.name,
             avatar: selection.candidate.avatar,
-            expertise: '',
-            party: '',
-            experience: ''
+            expertise: ministries.find(m => m.id === selection.ministryId)?.name || '',
+            party: 'Popular Choice',
+            experience: `Most Popular ${ministries.find(m => m.id === selection.ministryId)?.name || 'Minister'}`
           };
         }
       });
