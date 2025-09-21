@@ -10,62 +10,53 @@ import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
 import { CandidateData, SelectedCandidates, saveGovernmentImage, getExistingGovernmentImage, saveImageToLocalStorage, getImageFromLocalStorage } from "@/utils/governmentImageUtils";
 
 // Ministry configurations matching MyGovPage
-const ministries = [
-  {
-    id: 'defense',
-    name: 'שר הביטחון',
-    icon: '🛡️',
-    description: 'אחראי על ביטחון המדינה והצבא'
-  },
-  {
-    id: 'finance', 
-    name: 'שר האוצר',
-    icon: '💰',
-    description: 'אחראי על הכלכלה והתקציב'
-  },
-  {
-    id: 'education',
-    name: 'שר החינוך', 
-    icon: '📚',
-    description: 'אחראי על מערכת החינוך'
-  },
-  {
-    id: 'health',
-    name: 'שר הבריאות',
-    icon: '🏥', 
-    description: 'אחראי על מערכת הבריאות'
-  },
-  {
-    id: 'justice',
-    name: 'שר המשפטים',
-    icon: '⚖️',
-    description: 'אחראי על מערכת המשפט'
-  },
-  {
-    id: 'transport',
-    name: 'שר התחבורה', 
-    icon: '🚗',
-    description: 'אחראי על תחבורה ותשתיות'
-  },
-  {
-    id: 'housing',
-    name: 'שר הבינוי והדיור',
-    icon: '🏘️',
-    description: 'אחראי על בינוי ודיור'
-  },
-  {
-    id: 'economy',
-    name: 'שר הכלכלה',
-    icon: '📈', 
-    description: 'אחראי על התעשייה והמסחר'
-  }
-];
+const ministries = [{
+  id: 'defense',
+  name: 'שר הביטחון',
+  icon: '🛡️',
+  description: 'אחראי על ביטחון המדינה והצבא'
+}, {
+  id: 'finance',
+  name: 'שר האוצר',
+  icon: '💰',
+  description: 'אחראי על הכלכלה והתקציב'
+}, {
+  id: 'education',
+  name: 'שר החינוך',
+  icon: '📚',
+  description: 'אחראי על מערכת החינוך'
+}, {
+  id: 'health',
+  name: 'שר הבריאות',
+  icon: '🏥',
+  description: 'אחראי על מערכת הבריאות'
+}, {
+  id: 'justice',
+  name: 'שר המשפטים',
+  icon: '⚖️',
+  description: 'אחראי על מערכת המשפט'
+}, {
+  id: 'transport',
+  name: 'שר התחבורה',
+  icon: '🚗',
+  description: 'אחראי על תחבורה ותשתיות'
+}, {
+  id: 'housing',
+  name: 'שר הבינוי והדיור',
+  icon: '🏘️',
+  description: 'אחראי על בינוי ודיור'
+}, {
+  id: 'economy',
+  name: 'שר הכלכלה',
+  icon: '📈',
+  description: 'אחראי על התעשייה והמסחר'
+}];
 
 // Helper function to get ministry display names
 function getMinistryDisplayName(ministryId: string): string {
   const ministryNames: Record<string, string> = {
     'defense': 'ביטחון',
-    'finance': 'אוצר', 
+    'finance': 'אוצר',
     'education': 'חינוך',
     'health': 'בריאות',
     'justice': 'משפטים',
@@ -75,23 +66,22 @@ function getMinistryDisplayName(ministryId: string): string {
   };
   return ministryNames[ministryId] || 'משרד';
 }
-
 interface PopularCandidate {
   name: string;
   avatar: string;
   voteCount: number;
   percentage: number;
 }
-
 interface PopularSelection {
   ministryId: string;
   candidate: PopularCandidate | null;
   totalVotes: number;
 }
-
 export default function MyGovPopularPage() {
   const navigate = useNavigate();
-  const { getAffiliateRef } = useAffiliateLinks();
+  const {
+    getAffiliateRef
+  } = useAffiliateLinks();
   const [popularSelections, setPopularSelections] = useState<PopularSelection[]>([]);
   const [pmSelection, setPmSelection] = useState<PopularCandidate | null>(null);
   const [selectedCandidates, setSelectedCandidates] = useState<SelectedCandidates>({});
@@ -100,52 +90,55 @@ export default function MyGovPopularPage() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     loadPopularSelections();
   }, []);
-
   useEffect(() => {
     // Generate image when popular selections are loaded
     if (Object.keys(selectedCandidates).length > 0) {
       loadOrGenerateImage();
     }
   }, [selectedCandidates]);
-
   const loadPopularSelections = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      const { data: sharedGovs, error } = await supabase
-        .from('shared_governments')
-        .select('*');
-
+      const {
+        data: sharedGovs,
+        error
+      } = await supabase.from('shared_governments').select('*');
       if (error) {
         console.error('Error loading shared governments:', error);
         setError('Failed to load popular selections');
         return;
       }
-
       if (!sharedGovs || sharedGovs.length === 0) {
         setError('No government data found');
         return;
       }
 
       // Count popularity for PM and ministers
-      const pmCounts: Record<string, { count: number; avatar: string }> = {};
-      const ministryCounts: Record<string, Record<string, { count: number; avatar: string }>> = {};
-      
+      const pmCounts: Record<string, {
+        count: number;
+        avatar: string;
+      }> = {};
+      const ministryCounts: Record<string, Record<string, {
+        count: number;
+        avatar: string;
+      }>> = {};
+
       // Initialize ministry counts
       ministries.forEach(ministry => {
         ministryCounts[ministry.id] = {};
       });
-
-      sharedGovs.forEach((gov) => {
+      sharedGovs.forEach(gov => {
         // Count PM
         if (gov.pm_name) {
           if (!pmCounts[gov.pm_name]) {
-            pmCounts[gov.pm_name] = { count: 0, avatar: gov.pm_avatar || '/candidates/placeholder-defense.jpg' };
+            pmCounts[gov.pm_name] = {
+              count: 0,
+              avatar: gov.pm_avatar || '/candidates/placeholder-defense.jpg'
+            };
           }
           pmCounts[gov.pm_name].count++;
         }
@@ -155,11 +148,9 @@ export default function MyGovPopularPage() {
           const ministerName = gov[`minister_${i}_name`];
           const ministerPosition = gov[`minister_${i}_position`];
           const ministerAvatar = gov[`minister_${i}_avatar`];
-          
           if (ministerName && ministerPosition) {
             // Map position to ministry_id based on keywords
             let ministryId = '';
-            
             if (ministerPosition.includes('ביטחון') || ministerPosition.includes('Defense')) {
               ministryId = 'defense';
             } else if (ministerPosition.includes('אוצר') || ministerPosition.includes('Finance')) {
@@ -177,12 +168,11 @@ export default function MyGovPopularPage() {
             } else if (ministerPosition.includes('כלכלה') || ministerPosition.includes('Economy')) {
               ministryId = 'economy';
             }
-            
             if (ministryId && ministryCounts[ministryId]) {
               if (!ministryCounts[ministryId][ministerName]) {
-                ministryCounts[ministryId][ministerName] = { 
-                  count: 0, 
-                  avatar: ministerAvatar || '/candidates/placeholder-defense.jpg' 
+                ministryCounts[ministryId][ministerName] = {
+                  count: 0,
+                  avatar: ministerAvatar || '/candidates/placeholder-defense.jpg'
                 };
               }
               ministryCounts[ministryId][ministerName].count++;
@@ -194,17 +184,13 @@ export default function MyGovPopularPage() {
       // Find most popular PM
       let topPm: PopularCandidate | null = null;
       const pmTotalVotes = Object.values(pmCounts).reduce((total, data) => total + data.count, 0);
-      
       if (pmTotalVotes > 0) {
-        const topPmEntry = Object.entries(pmCounts).reduce((max, [name, data]) => 
-          data.count > max[1].count ? [name, data] : max
-        );
-        
+        const topPmEntry = Object.entries(pmCounts).reduce((max, [name, data]) => data.count > max[1].count ? [name, data] : max);
         topPm = {
           name: topPmEntry[0],
           avatar: topPmEntry[1].avatar,
           voteCount: topPmEntry[1].count,
-          percentage: Math.round((topPmEntry[1].count / pmTotalVotes) * 100)
+          percentage: Math.round(topPmEntry[1].count / pmTotalVotes * 100)
         };
       }
 
@@ -213,33 +199,26 @@ export default function MyGovPopularPage() {
         const ministryData = ministryCounts[ministry.id];
         let topCandidate: PopularCandidate | null = null;
         const totalVotes = Object.values(ministryData || {}).reduce((total, data) => total + data.count, 0);
-
         if (ministryData && totalVotes > 0) {
-          const topEntry = Object.entries(ministryData).reduce((max, [name, data]) => 
-            data.count > max[1].count ? [name, data] : max
-          );
-          
+          const topEntry = Object.entries(ministryData).reduce((max, [name, data]) => data.count > max[1].count ? [name, data] : max);
           topCandidate = {
             name: topEntry[0],
             avatar: topEntry[1].avatar,
             voteCount: topEntry[1].count,
-            percentage: Math.round((topEntry[1].count / totalVotes) * 100)
+            percentage: Math.round(topEntry[1].count / totalVotes * 100)
           };
         }
-
         return {
           ministryId: ministry.id,
           candidate: topCandidate,
           totalVotes
         };
       });
-
       setPopularSelections(processedSelections);
       setPmSelection(topPm);
 
       // Create selectedCandidates object for image generation
       const candidates: SelectedCandidates = {};
-      
       if (topPm) {
         candidates.pm = {
           name: topPm.name,
@@ -249,7 +228,6 @@ export default function MyGovPopularPage() {
           experience: 'Most Popular Prime Minister'
         };
       }
-
       processedSelections.forEach(selection => {
         if (selection.candidate) {
           candidates[selection.ministryId] = {
@@ -261,9 +239,7 @@ export default function MyGovPopularPage() {
           };
         }
       });
-
       setSelectedCandidates(candidates);
-      
     } catch (error) {
       console.error('Error processing popular selections:', error);
       setError('שגיאה בטעינת הנתונים');
@@ -271,13 +247,10 @@ export default function MyGovPopularPage() {
       setIsLoading(false);
     }
   };
-
   const loadOrGenerateImage = async () => {
     if (Object.keys(selectedCandidates).length === 0) return;
-    
     setIsGenerating(true);
     setError(null);
-    
     try {
       // Try to get existing image from database first
       const existingImage = await getExistingGovernmentImage(selectedCandidates);
@@ -306,30 +279,29 @@ export default function MyGovPopularPage() {
       await generateImage();
     }
   };
-
   const generateImage = async (forceRegenerate = false) => {
     setIsGenerating(true);
     setError(null);
-    
     try {
       if (forceRegenerate) {
         toast.info("יוצר תמונה חדשה...");
       }
-      
       console.log('Calling generate-government-image function with:', selectedCandidates);
-      const { data, error } = await supabase.functions.invoke('generate-government-image', {
-        body: { selectedCandidates }
+      const {
+        data,
+        error
+      } = await supabase.functions.invoke('generate-government-image', {
+        body: {
+          selectedCandidates
+        }
       });
-
       if (error) {
         console.error('Supabase function error:', error);
         throw new Error(error.message || 'שגיאה ביצירת התמונה');
       }
-
       if (!data?.imageUrl) {
         throw new Error('לא התקבלה תמונה מהשרת');
       }
-
       setGeneratedImage(data.imageUrl);
       setPrompt(data.prompt || '');
 
@@ -341,7 +313,6 @@ export default function MyGovPopularPage() {
         console.warn('Failed to save to database, saving to localStorage:', saveError);
         saveImageToLocalStorage(selectedCandidates, data.imageUrl, data.prompt || '', data.seed);
       }
-      
       toast.success("התמונה נוצרה בהצלחה!");
     } catch (error) {
       console.error('Error generating image:', error);
@@ -351,7 +322,6 @@ export default function MyGovPopularPage() {
       setIsGenerating(false);
     }
   };
-
   const downloadImage = async () => {
     if (!generatedImage) return;
     try {
@@ -371,13 +341,10 @@ export default function MyGovPopularPage() {
       toast.error("שגיאה בהורדת התמונה");
     }
   };
-
   const shareImage = async () => {
     if (!generatedImage || !selectedCandidates) return;
-    
     try {
       const shareUrl = `${window.location.origin}/mygov/popular`;
-      
       if (navigator.share) {
         await navigator.share({
           title: 'הממשלה הפופולרית ביותר',
@@ -393,32 +360,21 @@ export default function MyGovPopularPage() {
       toast.error("שגיאה בשיתוף התמונה");
     }
   };
-
   const candidateCount = Object.keys(selectedCandidates).length;
   const pmCandidate = selectedCandidates['pm'];
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background p-4 pb-20">
+    return <div className="min-h-screen bg-background p-4 pb-20">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
             <p className="text-muted-foreground">טוען נתונים...</p>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background p-4 pb-20">
+  return <div className="min-h-screen bg-background p-4 pb-20">
       {/* Back Button */}
-      <Button 
-        variant="ghost" 
-        size="sm" 
-        onClick={() => navigate(-1)} 
-        className="absolute top-4 right-4 p-2 z-10"
-      >
+      <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="absolute top-4 right-4 p-2 z-10">
         <ArrowRight className="h-5 w-5" />
       </Button>
 
@@ -436,35 +392,11 @@ export default function MyGovPopularPage() {
 
       {/* Selection Summary */}
       <Card className="mb-6">
-        <CardContent>
-          <div className="space-y-3 text-sm">
-            {pmCandidate && (
-              <div className="font-medium border-b border-border/50 pb-2 py-[14px]">
-                🏛️ ראש הממשלה: {pmCandidate.name}
-              </div>
-            )}
-            
-            {/* Liste des ministres */}
-            <div className="space-y-1">
-              <div className="font-medium text-xs text-muted-foreground uppercase tracking-wide">
-                שרים ({candidateCount - 1})
-              </div>
-              {Object.entries(selectedCandidates)
-                .filter(([key]) => key !== 'pm')
-                .map(([ministryId, candidate]) => (
-                  <div key={ministryId} className="flex justify-between items-center text-xs py-1">
-                    <span className="font-medium">{candidate.name}</span>
-                    <span className="text-muted-foreground">{getMinistryDisplayName(ministryId)}</span>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </CardContent>
+        
       </Card>
 
       {/* Generation Status */}
-      {isGenerating && (
-        <Card className="mb-6">
+      {isGenerating && <Card className="mb-6">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
             <h3 className="text-lg font-medium mb-2">יוצר את הממשלה הפופולרית...</h3>
@@ -472,12 +404,10 @@ export default function MyGovPopularPage() {
               זה עלול לקחת כמה רגעים. אנחנו יוצרים תמונה מקצועית של הממשלה הפופולרית ביותר באמצעות בינה מלאכותית.
             </p>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       {/* Error State */}
-      {error && !isGenerating && (
-        <Card className="mb-6 border-destructive">
+      {error && !isGenerating && <Card className="mb-6 border-destructive">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="text-destructive text-lg mb-4">⚠️ שגיאה</div>
             <p className="text-center mb-4">{error}</p>
@@ -486,12 +416,10 @@ export default function MyGovPopularPage() {
               נסה שוב
             </Button>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       {/* Generated Image */}
-      {generatedImage && (
-        <Card className="mb-6">
+      {generatedImage && <Card className="mb-6">
           <CardHeader>
             <CardTitle className="text-lg text-center">
               🎉 הממשלה הפופולרית ביותר!
@@ -499,15 +427,10 @@ export default function MyGovPopularPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
-              <img 
-                src={generatedImage} 
-                alt="הממשלה הפופולרית ביותר" 
-                className="w-full h-auto rounded-lg shadow-lg" 
-                style={{
-                  maxHeight: '500px',
-                  objectFit: 'contain'
-                }} 
-              />
+              <img src={generatedImage} alt="הממשלה הפופולרית ביותר" className="w-full h-auto rounded-lg shadow-lg" style={{
+            maxHeight: '500px',
+            objectFit: 'contain'
+          }} />
             </div>
             
             {/* Action Buttons */}
@@ -526,8 +449,7 @@ export default function MyGovPopularPage() {
               </Button>
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
 
       {/* Popular Candidates Table */}
       <Card>
@@ -537,18 +459,13 @@ export default function MyGovPopularPage() {
         <CardContent>
           <div className="space-y-4">
             {/* Prime Minister */}
-            {pmSelection && (
-              <div className="border-2 border-primary/20 rounded-lg p-4">
+            {pmSelection && <div className="border-2 border-primary/20 rounded-lg p-4">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl">🏛️</span>
                   <h3 className="font-semibold">ראש הממשלה</h3>
                 </div>
                 <div className="flex items-center gap-4">
-                  <img 
-                    src={pmSelection.avatar} 
-                    alt={pmSelection.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
-                  />
+                  <img src={pmSelection.avatar} alt={pmSelection.name} className="w-12 h-12 rounded-full object-cover border-2 border-primary/20" />
                   <div className="flex-1">
                     <h4 className="font-medium">{pmSelection.name}</h4>
                     <div className="flex items-center gap-2 mt-1">
@@ -562,16 +479,13 @@ export default function MyGovPopularPage() {
                     </p>
                   </div>
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Ministers */}
             <div className="space-y-3">
-              {ministries.map((ministry) => {
-                const selection = popularSelections.find(s => s.ministryId === ministry.id);
-                
-                return (
-                  <div key={ministry.id} className="border rounded-lg p-3">
+              {ministries.map(ministry => {
+              const selection = popularSelections.find(s => s.ministryId === ministry.id);
+              return <div key={ministry.id} className="border rounded-lg p-3">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-xl">{ministry.icon}</span>
                       <div className="flex-1">
@@ -580,13 +494,8 @@ export default function MyGovPopularPage() {
                       </div>
                     </div>
                     
-                    {selection?.candidate ? (
-                      <div className="flex items-center gap-3 bg-muted/30 rounded-lg p-2">
-                        <img 
-                          src={selection.candidate.avatar} 
-                          alt={selection.candidate.name}
-                          className="w-10 h-10 rounded-full object-cover border border-primary/20"
-                        />
+                    {selection?.candidate ? <div className="flex items-center gap-3 bg-muted/30 rounded-lg p-2">
+                        <img src={selection.candidate.avatar} alt={selection.candidate.name} className="w-10 h-10 rounded-full object-cover border border-primary/20" />
                         <div className="flex-1">
                           <h5 className="font-medium text-sm">{selection.candidate.name}</h5>
                           <div className="flex items-center gap-2 mt-1">
@@ -599,19 +508,14 @@ export default function MyGovPopularPage() {
                             {selection.candidate.voteCount} מתוך {selection.totalVotes} קולות
                           </p>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-4 text-muted-foreground text-sm">
+                      </div> : <div className="text-center py-4 text-muted-foreground text-sm">
                         אין בחירות זמינות למשרד זה
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                      </div>}
+                  </div>;
+            })}
             </div>
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }
