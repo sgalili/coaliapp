@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, TrendingDown, Zap, Info, Users, Target, Award, Eye, MousePointer, Clock, Gauge } from "lucide-react";
+import { ArrowRight, TrendingUp, TrendingDown, Zap, Info, Users, Target, Award, Eye, MousePointer, Clock, Gauge } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -127,7 +127,7 @@ const MyStatsPage = () => {
               className="h-10 w-10"
               aria-label="חזור"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowRight className="h-5 w-5" />
             </Button>
             <h1 className="text-xl font-bold">הסטטיסטיקות שלי</h1>
           </div>
