@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Vote, Heart, Eye, Crown, Handshake, MessageCircle, User, Calendar, Filter } from "lucide-react";
+import { ArrowRight, Vote, Heart, Eye, Crown, Handshake, MessageCircle, User, Calendar, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -191,7 +191,7 @@ export const NotificationsPage = () => {
             size="icon"
             onClick={() => navigate(-1)}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" />
           </Button>
           <div className="flex-1">
             <h1 className="text-lg font-semibold">התראות</h1>
