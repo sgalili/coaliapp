@@ -161,7 +161,7 @@ export default function MyGovSharePage() {
 
   const createMyGovernment = () => {
     // Clear any existing local storage selections to start fresh
-    localStorage.removeItem('selectedCandidates');
+    localStorage.removeItem('myGovSelections');
     localStorage.removeItem('governmentImages');
     
     // Navigate to MyGov page
