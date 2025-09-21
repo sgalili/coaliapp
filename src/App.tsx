@@ -19,6 +19,7 @@ import MyStatsPage from "./pages/MyStatsPage";
 import LanguageSettingsPage from "./pages/LanguageSettingsPage";
 import MyGovPage from "./pages/MyGovPage";
 import MyGovGeneratePage from "./pages/MyGovGeneratePage";
+import MyGovPopularPage from "./pages/MyGovPopularPage";
 import MyGovSharePage from "./pages/MyGovSharePage";
 import { AuthPage } from "./pages/AuthPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
@@ -55,9 +56,10 @@ const App = () => (
             <Route path="/invite-friends" element={<InviteFriendsPage />} />
             <Route path="/my-stats" element={<MyStatsPage />} />
             <Route path="/language-settings" element={<LanguageSettingsPage />} />
-            <Route path="/mygov" element={<MyGovPage />} />
-            <Route path="/mygov/generate" element={<MyGovGeneratePage />} />
-            <Route path="/mygov/share/:shareId" element={<MyGovSharePage />} />
+          <Route path="/mygov" element={<MyGovPage />} />
+          <Route path="/mygov/generate" element={<MyGovGeneratePage />} />
+          <Route path="/mygov/popular" element={<MyGovPopularPage />} />
+          <Route path="/mygov/share/:shareId" element={<MyGovSharePage />} />
             <Route path="/decisions" element={<DecisionsPage />} />
             <Route path="/decisions/:cardId" element={<DecisionsPage />} />
             <Route path="/votefeed" element={<VoteFeedPage />} />

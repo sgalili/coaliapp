@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Share2, Loader2 } from "lucide-react";
+import { Download, Share2, Loader2, PlusCircle, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -43,6 +43,7 @@ interface SharedGovernmentData {
 
 export default function MyGovSharePage() {
   const { shareId } = useParams<{ shareId: string }>();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [governmentData, setGovernmentData] = useState<SharedGovernmentData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -158,6 +159,20 @@ export default function MyGovSharePage() {
     }
   };
 
+  const createMyGovernment = () => {
+    // Clear any existing local storage selections to start fresh
+    localStorage.removeItem('selectedCandidates');
+    localStorage.removeItem('governmentImages');
+    
+    // Navigate to MyGov page
+    navigate('/mygov');
+    toast.success("מעבר ליצירת ממשלה חדשה!");
+  };
+
+  const viewPopularGovernment = () => {
+    navigate('/mygov/popular');
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background p-4 pb-20">
@@ -254,6 +269,33 @@ export default function MyGovSharePage() {
             <Button onClick={shareImage} variant="outline" size="sm" className="flex-1 sm:flex-none min-w-0">
               <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               <span className="text-xs sm:text-sm">שתף</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* New Action Buttons */}
+      <Card className="mb-6">
+        <CardContent className="pt-6">
+          <div className="space-y-3">
+            <Button 
+              onClick={createMyGovernment}
+              variant="default"
+              size="lg"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+            >
+              <PlusCircle className="h-5 w-5 mr-2" />
+              אני רוצה ליצור את הממשלה שלי
+            </Button>
+            
+            <Button 
+              onClick={viewPopularGovernment}
+              variant="outline"
+              size="lg"
+              className="w-full border-primary/20 hover:bg-primary/5 text-primary hover:text-primary"
+            >
+              <TrendingUp className="h-5 w-5 mr-2" />
+              הממשלה הפופולרית ביותר
             </Button>
           </div>
         </CardContent>
