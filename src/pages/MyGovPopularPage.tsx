@@ -412,22 +412,26 @@ export default function MyGovPopularPage() {
 
   return (
     <div className="min-h-screen bg-background p-4 pb-20">
+      {/* Back Button */}
+      <Button 
+        variant="ghost" 
+        size="sm" 
+        onClick={() => navigate(-1)} 
+        className="absolute top-4 left-4 p-2 z-10"
+      >
+        <ArrowRight className="h-5 w-5" />
+      </Button>
+
       {/* Header */}
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="p-2">
-          <ArrowRight className="h-5 w-5" />
-        </Button>
-        <div className="flex-1 text-center">
-          <h1 className="text-2xl font-bold flex items-center justify-center gap-2">
-            <TrendingUp className="h-6 w-6 text-primary" />
-            הממשלה הפופולרית ביותר
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            ממשלה זו מורכבת מהמועמדים שזכו בהכי הרבה קולות מהציבור לכל תפקיד ספציפי.<br />
-            שתפו את הממשלה הזו עם חברים כדי להשיג ממשלת אחדות לאומית
-          </p>
-        </div>
-        <div className="w-10"></div> {/* Spacer for balance */}
+      <div className="text-center mb-6 pt-8">
+        <h1 className="text-2xl font-bold flex items-center justify-center gap-2">
+          <TrendingUp className="h-6 w-6 text-primary" />
+          הממשלה הפופולרית ביותר
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          ממשלה זו מורכבת מהמועמדים שזכו בהכי הרבה קולות מהציבור לכל תפקיד ספציפי.<br />
+          שתפו את הממשלה הזו עם חברים כדי להשיג ממשלת אחדות לאומית
+        </p>
       </div>
 
       {/* Selection Summary */}
