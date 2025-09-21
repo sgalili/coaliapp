@@ -417,7 +417,7 @@ export default function MyGovPopularPage() {
         variant="ghost" 
         size="sm" 
         onClick={() => navigate(-1)} 
-        className="absolute top-4 left-4 p-2 z-10"
+        className="absolute top-4 right-4 p-2 z-10"
       >
         <ArrowRight className="h-5 w-5" />
       </Button>
