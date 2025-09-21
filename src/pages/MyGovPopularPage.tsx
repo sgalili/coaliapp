@@ -421,9 +421,7 @@ export default function MyGovPopularPage() {
       {/* Generated Image */}
       {generatedImage && <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-lg text-center">
-              🎉 הממשלה הפופולרית ביותר!
-            </CardTitle>
+            <CardTitle className="text-lg text-center">🎉 תמונת הממשלה הפופולרית ביותר!</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
