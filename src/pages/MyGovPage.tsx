@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CandidateSelectionModal, Candidate } from "@/components/CandidateSelectionModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { getExistingGovernmentImage, getImageFromLocalStorage, CandidateData } from "@/utils/governmentImageUtils";
 
 // Import profile images
 import amitProfile from "@/assets/amit-profile.jpg";
@@ -207,6 +208,7 @@ export default function MyGovPage() {
   const [selectedMinistry, setSelectedMinistry] = useState<Ministry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [hasExistingImage, setHasExistingImage] = useState(false);
   
   // Load PM candidates from Supabase
   const { candidates: pmCandidates, isLoading: pmLoading, error: pmError } = usePrimeMinisters();
@@ -233,6 +235,46 @@ export default function MyGovPage() {
   useEffect(() => {
     loadGovernmentSelections();
   }, []);
+
+  // Check for existing government image when selectedCandidates changes
+  useEffect(() => {
+    checkForExistingImage();
+  }, [selectedCandidates]);
+
+  const checkForExistingImage = async () => {
+    if (!hasMinimumSelections()) {
+      setHasExistingImage(false);
+      return;
+    }
+
+    try {
+      // Convert selectedCandidates to the format expected by governmentImageUtils
+      const candidatesData: { [key: string]: CandidateData } = {};
+      Object.entries(selectedCandidates).forEach(([ministry, candidate]) => {
+        candidatesData[ministry] = {
+          name: candidate.name,
+          avatar: candidate.avatar,
+          expertise: typeof candidate.expertise === 'string' ? candidate.expertise : candidate.expertise.join(', '),
+          party: candidate.party,
+          experience: candidate.experience
+        };
+      });
+
+      // Check database first
+      const existingImage = await getExistingGovernmentImage(candidatesData);
+      if (existingImage) {
+        setHasExistingImage(true);
+        return;
+      }
+
+      // Check localStorage as fallback
+      const localImage = getImageFromLocalStorage(candidatesData);
+      setHasExistingImage(!!localImage);
+    } catch (error) {
+      console.error('Error checking for existing image:', error);
+      setHasExistingImage(false);
+    }
+  };
 
   const loadGovernmentSelections = async () => {
     try {
@@ -696,7 +738,7 @@ export default function MyGovPage() {
             disabled={isSaving}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm py-2 px-4 rounded-md"
           >
-            {isSaving ? "יוצר..." : "סיימתי ! צור את הממשלה שלי"}
+            {isSaving ? "טוען..." : hasExistingImage ? "תמונת הממשלה שלי" : "סיימתי ! צור את הממשלה שלי"}
           </Button>
         </div>
       )}
