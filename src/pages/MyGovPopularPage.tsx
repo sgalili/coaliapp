@@ -450,7 +450,7 @@ export default function MyGovPopularPage() {
       {/* Popular Candidates Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">פירוט הבחירות הפופולריות</CardTitle>
+          <CardTitle className="text-lg">הנבחרים לתפקידים :</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
