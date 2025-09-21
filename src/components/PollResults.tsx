@@ -13,7 +13,7 @@ export const PollResults = ({ newsId }: PollResultsProps) => {
   if (!poll) return null;
 
   const getBarColor = (option: string, isUserVote: boolean) => {
-    if (isUserVote) return 'bg-blue-600';
+    if (isUserVote) return 'bg-gradient-to-r from-blue-600 to-blue-700 shadow-md';
     
     switch (poll.pollType) {
       case 'yes_no':
@@ -50,7 +50,10 @@ export const PollResults = ({ newsId }: PollResultsProps) => {
           const isUserVote = userVote === option;
           
           return (
-            <div key={option} className="space-y-3">
+            <div key={option} className={cn(
+              "space-y-3 relative",
+              isUserVote && "bg-gradient-to-r from-blue-50/40 to-transparent p-3 rounded-lg border border-blue-200/50 shadow-sm"
+            )}>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <span className="text-lg font-bold text-blue-700">
@@ -60,8 +63,8 @@ export const PollResults = ({ newsId }: PollResultsProps) => {
                     ({result?.count || 0})
                   </span>
                   {isUserVote && (
-                    <Badge className="text-xs bg-blue-600 text-white px-2 py-1">
-                      הבחירה שלך
+                    <Badge className="text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-1 shadow-md border border-blue-500/20">
+                      ✓ הבחירה שלך
                     </Badge>
                   )}
                 </div>
@@ -70,10 +73,14 @@ export const PollResults = ({ newsId }: PollResultsProps) => {
                 </span>
               </div>
               
-              <div className="w-full bg-blue-50/60 rounded-full h-3 overflow-hidden border border-blue-100/80">
+              <div className={cn(
+                "w-full bg-blue-50/60 rounded-full h-3 overflow-hidden border border-blue-100/80",
+                isUserVote && "border-2 border-blue-400/60 shadow-md bg-gradient-to-r from-blue-100/80 to-blue-50/60"
+              )}>
                 <div
                   className={cn(
                     "h-full transition-all duration-700 ease-out rounded-full animate-scale-in",
+                    isUserVote && "shadow-inner",
                     getBarColor(option, isUserVote)
                   )}
                   style={{ width: `${result?.percentage || 0}%` }}
