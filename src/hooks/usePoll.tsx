@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface Poll {
   id: string;
@@ -62,8 +62,8 @@ const mockPolls: { [newsId: string]: Poll } = {
   }
 };
 
-// Mock votes with avatars
-const mockVotes: { [pollId: string]: PollVote[] } = {
+// Initial mock votes with avatars
+const initialMockVotes: { [pollId: string]: PollVote[] } = {
   'poll-1': [
     { id: '1', pollId: 'poll-1', userId: '1', optionSelected: 'תומך', userImage: '/src/assets/sarah-profile.jpg', userName: 'שרה' },
     { id: '2', pollId: 'poll-1', userId: '2', optionSelected: 'מתנגד', userImage: '/src/assets/david-profile.jpg', userName: 'דוד' },
@@ -85,25 +85,37 @@ const mockVotes: { [pollId: string]: PollVote[] } = {
     { id: '12', pollId: 'poll-4', userId: '12', optionSelected: 'מרגש מאוד', userImage: '/src/assets/maya-profile.jpg', userName: 'מיה' },
     { id: '13', pollId: 'poll-4', userId: '13', optionSelected: 'צפוי', userImage: '/src/assets/amit-profile.jpg', userName: 'עמית' },
     { id: '14', pollId: 'poll-4', userId: '14', optionSelected: 'משמח', userImage: '/src/assets/rachel-profile.jpg', userName: 'רחל' },
-    { id: 'current-user', pollId: 'poll-4', userId: 'current-user', optionSelected: 'מרגש מאוד', userImage: '/src/assets/sarah-profile.jpg', userName: 'את/ה' }
   ]
 };
 
+// Global state for votes (in a real app, this would be in a context or state manager)
+let globalVotes = { ...initialMockVotes };
+
 export const usePoll = (newsId: string) => {
-  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({
-    'poll-4': 'מרגש מאוד' // Simuler que l'utilisateur a voté sur la news 4
+  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>(() => {
+    // Load from localStorage
+    const saved = localStorage.getItem('pollVotes');
+    return saved ? JSON.parse(saved) : {};
   });
   
+  const [votes, setVotes] = useState<{ [pollId: string]: PollVote[] }>(() => globalVotes);
+  const [, forceUpdate] = useState({});
+  
   const poll = mockPolls[newsId];
-  const votes = poll ? mockVotes[poll.id] || [] : [];
+  const pollVotes = poll ? votes[poll.id] || [] : [];
   
   const hasUserVoted = poll ? !!userVotes[poll.id] : false;
+  
+  // Save user votes to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('pollVotes', JSON.stringify(userVotes));
+  }, [userVotes]);
 
   const calculateResults = (): PollResults => {
     if (!poll) return {};
     
     const results: PollResults = {};
-    const totalVotes = votes.length;
+    const totalVotes = pollVotes.length;
     
     // Initialize all options
     poll.options.forEach(option => {
@@ -115,7 +127,7 @@ export const usePoll = (newsId: string) => {
     });
     
     // Count votes
-    votes.forEach(vote => {
+    pollVotes.forEach(vote => {
       if (results[vote.optionSelected]) {
         results[vote.optionSelected].count++;
         results[vote.optionSelected].voters.push(vote);
@@ -135,12 +147,13 @@ export const usePoll = (newsId: string) => {
   const submitVote = (option: string) => {
     if (!poll || hasUserVoted) return;
     
+    // Update user votes
     setUserVotes(prev => ({
       ...prev,
       [poll.id]: option
     }));
     
-    // Add mock vote to results
+    // Add vote to global state and local state
     const newVote: PollVote = {
       id: `vote-${Date.now()}`,
       pollId: poll.id,
@@ -150,7 +163,16 @@ export const usePoll = (newsId: string) => {
       userName: 'את/ה'
     };
     
-    mockVotes[poll.id] = [...(mockVotes[poll.id] || []), newVote];
+    const updatedVotes = [...(globalVotes[poll.id] || []), newVote];
+    globalVotes[poll.id] = updatedVotes;
+    
+    setVotes(prev => ({
+      ...prev,
+      [poll.id]: updatedVotes
+    }));
+    
+    // Force re-render to update results immediately
+    forceUpdate({});
   };
 
   return {
@@ -158,7 +180,7 @@ export const usePoll = (newsId: string) => {
     hasUserVoted,
     userVote: poll ? userVotes[poll.id] : undefined,
     results: calculateResults(),
-    totalVotes: votes.length,
+    totalVotes: pollVotes.length,
     submitVote
   };
 };
