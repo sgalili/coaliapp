@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { usePoll } from '@/hooks/usePoll';
 import { useAudioFeedback } from '@/hooks/useAudioFeedback';
 import { PollVoteAnimation } from '@/components/PollVoteAnimation';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 interface PollVotingProps {
@@ -12,6 +13,7 @@ interface PollVotingProps {
 export const PollVoting = ({ newsId }: PollVotingProps) => {
   const { poll, submitVote, hasUserVoted } = usePoll(newsId);
   const { playVoteSubmit, playVoteSuccess } = useAudioFeedback();
+  const { toast } = useToast();
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [showAnimation, setShowAnimation] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
@@ -30,6 +32,15 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
     setIsVoting(true);
     submitVote(selectedOption);
     playVoteSuccess();
+    
+    // Show ZOOZ toast after vote
+    setTimeout(() => {
+      toast({
+        title: "הצבעה נשמרה!",
+        description: "קיבלת 1 ZOOZ עבור השתתפות בסקר",
+        duration: 4000,
+      });
+    }, 1500);
   };
 
   const handleCloseAnimation = () => {

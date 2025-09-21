@@ -30,7 +30,7 @@ export const PollVoteAnimation = ({
       onClose();
       setPhase('confirmation');
       setConfettiVisible(false);
-    }, 2500);
+    }, 1800);
   };
 
   // Generate confetti particles
