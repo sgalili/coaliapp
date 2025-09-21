@@ -18,7 +18,7 @@ interface AuthData {
   profilePicture?: string;
 }
 
-export const AuthPage = () => {
+const AuthPage = () => {
   const [currentStep, setCurrentStep] = useState<AuthStep>('phone');
   const [authData, setAuthData] = useState<AuthData>({
     phone: '',
@@ -176,3 +176,5 @@ export const AuthPage = () => {
     </div>
   );
 };
+
+export { AuthPage };
