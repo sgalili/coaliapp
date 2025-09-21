@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Download, RefreshCw, Share2, Loader2 } from "lucide-react";
+import { ArrowRight, Download, RefreshCw, Share2, Loader2, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
@@ -358,8 +358,18 @@ export default function MyGovGeneratePage() {
               </Button>
             </div>
 
-            {/* Back to Selection */}
-            <div className="text-center pt-4">
+            {/* Navigation Buttons */}
+            <div className="text-center pt-4 space-y-3">
+              <Button 
+                onClick={() => navigate('/mygov/popular')}
+                variant="outline"
+                size="lg"
+                className="w-full border-primary/20 hover:bg-primary/5 text-primary hover:text-primary"
+              >
+                <TrendingUp className="h-5 w-5 mr-2" />
+                הממשלה הפופולרית ביותר
+              </Button>
+              
               <Button onClick={() => navigate('/mygov')} variant="ghost" className="text-muted-foreground">
                 חזור לבחירת מועמדים
               </Button>
