@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, Volume2, Vote } from 'lucide-react';
 import { PollVoting } from './PollVoting';
 import { PollResults } from './PollResults';
+import { PollLiveResults } from './PollLiveResults';
 import { KYCForm } from './KYCForm';
 import { useKYC } from '@/hooks/useKYC';
 import { usePoll } from '@/hooks/usePoll';
@@ -101,13 +102,7 @@ export const PollSection = ({
                 
                 <div className="transition-all duration-500 ease-in-out">
                   {hasUserVoted ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 justify-center text-sm text-muted-foreground animate-fade-in">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span>הצבעה נקלטה • תוצאות חיות</span>
-                      </div>
-                      <PollResults newsId={newsId} />
-                    </div>
+                    <PollLiveResults newsId={newsId} />
                   ) : (
                     <PollVoting newsId={newsId} />
                   )}
