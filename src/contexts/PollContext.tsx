@@ -98,15 +98,7 @@ const initialMockVotes: { [pollId: string]: PollVote[] } = {
 
 export const PollProvider = ({ children }: { children: ReactNode }) => {
   const [votes, setVotes] = useState<{ [pollId: string]: PollVote[] }>(() => initialMockVotes);
-  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>(() => {
-    const saved = localStorage.getItem('pollVotes');
-    return saved ? JSON.parse(saved) : {};
-  });
-
-  // Save user votes to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('pollVotes', JSON.stringify(userVotes));
-  }, [userVotes]);
+  const [userVotes, setUserVotes] = useState<{ [pollId: string]: string }>({});
 
   const submitVote = (pollId: string, option: string) => {
     // Check if user already voted
