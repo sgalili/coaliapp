@@ -16,8 +16,8 @@ export const PollVoting = ({ newsId }: PollVotingProps) => {
   const handleVote = (option: string) => {
     submitVote(option);
     toast({
-      title: "הקול נשלח בהצלחה!",
-      description: "תוכל לראות את התוצאות כעת",
+      title: "הקול נשלח בהצלחה! 🗳️",
+      description: "זכית ב-1 ZOOZ • התוצאות מעודכנות בזמן אמת",
     });
   };
 

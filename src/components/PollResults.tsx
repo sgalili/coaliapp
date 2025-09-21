@@ -59,26 +59,31 @@ export const PollResults = ({ newsId }: PollResultsProps) => {
                   <span className="text-sm text-blue-600/70">
                     ({result?.count || 0})
                   </span>
-                  {isUserVote && (
-                    <Badge className="text-xs bg-blue-600 text-white px-2 py-1">
-                      הבחירה שלך
-                    </Badge>
-                  )}
+                   {isUserVote && (
+                     <Badge className="text-xs bg-green-600 text-white px-2 py-1 animate-pulse">
+                       ✓ הבחירה שלך
+                     </Badge>
+                   )}
                 </div>
                 <span className="text-sm font-medium text-right text-gray-800">
                   {formatOptionLabel(option)}
                 </span>
               </div>
               
-              <div className="w-full bg-blue-50/60 rounded-full h-3 overflow-hidden border border-blue-100/80">
-                <div
-                  className={cn(
-                    "h-full transition-all duration-700 ease-out rounded-full animate-scale-in",
-                    getBarColor(option, isUserVote)
-                  )}
-                  style={{ width: `${result?.percentage || 0}%` }}
-                />
-              </div>
+               <div className={cn(
+                 "w-full rounded-full h-3 overflow-hidden border transition-all duration-300",
+                 isUserVote 
+                   ? "bg-green-50 border-green-200 shadow-sm" 
+                   : "bg-blue-50/60 border-blue-100/80"
+               )}>
+                 <div
+                   className={cn(
+                     "h-full transition-all duration-700 ease-out rounded-full animate-scale-in",
+                     isUserVote ? "bg-green-600 shadow-sm" : getBarColor(option, isUserVote)
+                   )}
+                   style={{ width: `${result?.percentage || 0}%` }}
+                 />
+               </div>
               
               {result?.voters && result.voters.length > 0 && (
                 <div className="flex -space-x-2 justify-end">

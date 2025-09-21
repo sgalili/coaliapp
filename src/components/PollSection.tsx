@@ -99,7 +99,19 @@ export const PollSection = ({
                   {poll.question}
                 </h3>
                 
-                {hasUserVoted ? <PollResults newsId={newsId} /> : <PollVoting newsId={newsId} />}
+                <div className="transition-all duration-500 ease-in-out">
+                  {hasUserVoted ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 justify-center text-sm text-muted-foreground animate-fade-in">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span>הצבעה נקלטה • תוצאות חיות</span>
+                      </div>
+                      <PollResults newsId={newsId} />
+                    </div>
+                  ) : (
+                    <PollVoting newsId={newsId} />
+                  )}
+                </div>
               </div>
             </div>}
         </div>
