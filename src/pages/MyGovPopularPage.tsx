@@ -391,9 +391,7 @@ export default function MyGovPopularPage() {
       </div>
 
       {/* Selection Summary */}
-      <Card className="mb-6">
-        
-      </Card>
+      
 
       {/* Generation Status */}
       {isGenerating && <Card className="mb-6">
