@@ -231,10 +231,16 @@ const Index = () => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     
-    // Check if onboarding should be shown (only once)
-    const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
-    if (!onboardingCompleted) {
+    // Check if onboarding should be shown
+    if (DEVELOPMENT_MODE) {
+      // In development mode, always show onboarding on mount
       setShowOnboarding(true);
+    } else {
+      // In production mode, respect localStorage
+      const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
+      if (!onboardingCompleted) {
+        setShowOnboarding(true);
+      }
     }
   }, []); // No dependencies - runs once on mount
 
