@@ -712,6 +712,36 @@ export type Database = {
           },
         ]
       }
+      otp_verifications: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          otp_code: string
+          phone_number: string
+          verified: boolean
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          otp_code: string
+          phone_number: string
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          otp_code?: string
+          phone_number?: string
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       otps: {
         Row: {
           created_at: string
@@ -1441,38 +1471,17 @@ export type Database = {
         Args: { target_phone_hash: string; truster_id?: string }
         Returns: boolean
       }
-      generate_referral_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_share_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_my_referral_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_referral_code: { Args: never; Returns: string }
+      generate_share_id: { Args: never; Returns: string }
+      get_my_referral_code: { Args: never; Returns: string }
       has_trust_for_phone_hash: {
         Args: { phone_hash: string }
         Returns: boolean
       }
-      hash_phone: {
-        Args: { phone_number: string }
-        Returns: string
-      }
-      increment_news_view_count: {
-        Args: { news_id: string }
-        Returns: boolean
-      }
-      increment_post_views: {
-        Args: { p_post_id: string }
-        Returns: boolean
-      }
-      init_user_balance: {
-        Args: { p_user?: string }
-        Returns: boolean
-      }
+      hash_phone: { Args: { phone_number: string }; Returns: string }
+      increment_news_view_count: { Args: { news_id: string }; Returns: boolean }
+      increment_post_views: { Args: { p_post_id: string }; Returns: boolean }
+      init_user_balance: { Args: { p_user?: string }; Returns: boolean }
       reward_zooz: {
         Args: {
           p_amount: number
@@ -1493,10 +1502,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      update_user_stats: {
-        Args: { p_user_id: string }
-        Returns: boolean
-      }
+      update_user_stats: { Args: { p_user_id: string }; Returns: boolean }
       validate_invitation_code: {
         Args: { invitation_code: string }
         Returns: boolean

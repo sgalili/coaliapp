@@ -2,3 +2,6 @@ project_id = "hcqygoupvgcsdxtzyest"
 
 [functions.generate-government-image]
 verify_jwt = false
+
+[functions.whatsapp-otp-send]
+verify_jwt = false
