@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Volume2, VolumeX, ChevronDown, ChevronUp } from "lucide-react";
+import { Volume2, VolumeX, ChevronDown, ChevronUp, Share2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { OrganizationType } from "@/components/LocationBadge";
 import { PollHeaderCard } from "@/components/PollHeaderCard";
@@ -58,6 +59,7 @@ interface PollStoryCardProps {
   onToggleMute: () => void;
   isActive: boolean;
   showResultsTemporarily?: boolean;
+  showShareButton?: boolean;
 }
 
 export const PollStoryCard = ({ 
@@ -67,7 +69,8 @@ export const PollStoryCard = ({
   isMuted, 
   onToggleMute,
   isActive,
-  showResultsTemporarily = false
+  showResultsTemporarily = false,
+  showShareButton = false
 }: PollStoryCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [isVoting, setIsVoting] = useState(false);
@@ -78,6 +81,36 @@ export const PollStoryCard = ({
 
   const toggleExpansion = (optionId: string) => {
     setExpandedOption(expandedOption === optionId ? null : optionId);
+  };
+
+  const handleShare = async () => {
+    try {
+      // Get current user for affiliate link
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Build share URL with affiliate ref if user is logged in
+      const baseUrl = `${window.location.origin}/decisions/${story.id}`;
+      const shareUrl = user ? `${baseUrl}?ref=${user.id}` : baseUrl;
+      
+      // Try native share API first (mobile)
+      if (navigator.share) {
+        await navigator.share({
+          title: story.question,
+          text: story.description,
+          url: shareUrl,
+        });
+        toast.success('הקישור שותף!');
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('הקישור הועתק ללוח!');
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Share error:', error);
+        toast.error('שגיאה בשיתוף');
+      }
+    }
   };
 
   useEffect(() => {
@@ -189,8 +222,8 @@ export const PollStoryCard = ({
           />
         </div>
 
-        {/* Mute button */}
-        <div className="absolute top-16 left-4 z-20">
+        {/* Mute and Share buttons */}
+        <div className="absolute top-16 left-4 z-20 flex flex-col gap-2">
           <Button
             size="icon"
             variant="ghost"
@@ -206,6 +239,20 @@ export const PollStoryCard = ({
               <Volume2 className="w-5 h-5" />
             )}
           </Button>
+          
+          {showShareButton && (
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleShare();
+              }}
+              className="w-10 h-10 rounded-full bg-black/30 text-white hover:bg-black/50"
+            >
+              <Share2 className="w-5 h-5" />
+            </Button>
+          )}
         </div>
 
         {/* Main content area */}

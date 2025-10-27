@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
 import { Plus, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navigation } from "@/components/Navigation";
@@ -17,10 +18,11 @@ import { useToast } from "@/hooks/use-toast";
 const DecisionsPage = () => {
   const { cardId } = useParams();
   const navigate = useNavigate();
-  const [currentStoryIndex, setCurrentStoryIndex] = useState(() => {
-    const index = cardId ? parseInt(cardId) - 1 : 0;
-    return index >= 0 && index < mockPollStories.length ? index : 0;
-  });
+  const [searchParams] = useSearchParams();
+  const { saveAffiliateLink } = useAffiliateLinks();
+  const hasInitialized = useRef(false);
+  
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
   const [votedStories, setVotedStories] = useState<Record<string, string>>({});
@@ -31,6 +33,41 @@ const DecisionsPage = () => {
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   
   const { toast } = useToast();
+
+  // Handle initial navigation from shared URL
+  useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
+    // Handle affiliate ref from query params
+    const ref = searchParams.get('ref');
+    if (ref) {
+      saveAffiliateLink(ref, 'decision-share');
+      console.log('Affiliate ref saved from decision share:', ref);
+    }
+
+    // Handle navigation to specific poll by ID (not index)
+    if (cardId) {
+      // Check if cardId is a poll ID or an index
+      const pollIndex = mockPollStories.findIndex(story => story.id === cardId);
+      if (pollIndex !== -1) {
+        setCurrentStoryIndex(pollIndex);
+        console.log('Navigated to poll:', cardId, 'at index:', pollIndex);
+      } else {
+        // Try treating it as an index (backward compatibility)
+        const index = parseInt(cardId) - 1;
+        if (index >= 0 && index < mockPollStories.length) {
+          setCurrentStoryIndex(index);
+        } else {
+          toast({
+            title: "ההחלטה לא נמצאה",
+            description: "מועבר לעמוד הבית"
+          });
+          navigate('/decisions', { replace: true });
+        }
+      }
+    }
+  }, [cardId, searchParams, saveAffiliateLink, navigate, toast]);
 
 
   const handleNextStory = () => {
@@ -330,6 +367,7 @@ const DecisionsPage = () => {
                   isMuted={isMuted}
                   onToggleMute={handleToggleMute}
                   isActive={true}
+                  showShareButton={true}
                 />
               </div>
             </div>
