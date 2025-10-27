@@ -12,12 +12,12 @@ export const TrustIconFillable: React.FC<FillableIconProps> = ({ className, isFi
     <div className={cn("relative", className)}>
       <div className={cn(
         "w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300",
-        isFilled ? "bg-white" : "bg-transparent"
+        isFilled ? "bg-trust" : "bg-transparent"
       )}>
         <Handshake 
           className={cn(
             "w-5 h-5 transition-all duration-300",
-            isFilled ? "text-black" : "text-white"
+            isFilled ? "text-white" : "text-trust"
           )}
           fill="none"
           stroke="currentColor"
