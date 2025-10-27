@@ -389,7 +389,7 @@ const VideoCard = ({
       {liveReactions.map(renderZoozReaction)}
       
       {/* Profile section */}
-      <div className="absolute bottom-32 right-4 flex items-center gap-3">
+      <div className="absolute bottom-[138px] right-4 flex items-center gap-3">
         <div className="relative cursor-pointer" onClick={() => navigate(`/user/${post.id}`)}>
           {post.profileImage ? <img src={post.profileImage} alt={post.username} className="w-12 h-12 rounded-full object-cover border-2 border-white/20" /> : <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border-2 border-white/20">
               <User className="w-6 h-6 text-muted-foreground" />
