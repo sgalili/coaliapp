@@ -75,22 +75,62 @@ const AuthPage = () => {
   const handleOTPVerify = async (otp: string) => {
     setIsLoading(true);
     try {
-      // TODO: Verify OTP with backend
-      console.log('Verifying OTP:', otp);
+      const { supabase } = await import('@/integrations/supabase/client');
       
+      console.log('Verifying OTP:', otp, 'for phone:', authData.phone);
+      
+      // Call the verify and login edge function
+      const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify-and-login', {
+        body: { phone: authData.phone, otp }
+      });
+
+      console.log('OTP verification response:', data);
+
+      if (error) {
+        console.error('Error verifying OTP:', error);
+        toast({
+          title: "שגיאה",
+          description: "קוד האימות שגוי או פג תוקפו",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!data.user || !data.session) {
+        throw new Error('No user or session returned from verification');
+      }
+
+      // Set the session in Supabase client
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
+      });
+
+      if (sessionError) {
+        console.error('Error setting session:', sessionError);
+        throw sessionError;
+      }
+
+      console.log('Session set successfully for user:', data.user.id);
+      console.log('Profile exists:', data.profile_exists);
+
       setAuthData(prev => ({ ...prev, otp }));
       
-      // Check if user is new (mock logic for now)
-      const isNewUser = true; // TODO: Check from backend
-      
-      if (isNewUser) {
-        setCurrentStep('profile');
-      } else {
-        // Existing user, redirect to home
+      // Check if profile exists
+      if (data.profile_exists) {
+        console.log('User has existing profile, redirecting to home');
         navigate('/');
+      } else {
+        console.log('New user, showing profile completion');
+        setCurrentStep('profile');
       }
     } catch (error) {
       console.error('Error verifying OTP:', error);
+      toast({
+        title: "שגיאה",
+        description: "אירעה שגיאה באימות הקוד",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -99,14 +139,59 @@ const AuthPage = () => {
   const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
     setIsLoading(true);
     try {
-      // TODO: Create user profile in Supabase
-      console.log('Creating profile:', { firstName, lastName, profilePicture });
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      // Get the current authenticated user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.error('Error getting user:', userError);
+        toast({
+          title: "שגיאה",
+          description: "לא ניתן לאמת את המשתמש",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('Current auth user:', user.id);
+      console.log('Creating profile:', { firstName, lastName, phone: authData.phone });
+      
+      // Create profile in the profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: user.id,
+          first_name: firstName,
+          last_name: lastName,
+          phone: authData.phone,
+          avatar_url: profilePicture,
+          is_demo: false
+        });
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+        toast({
+          title: "שגיאה",
+          description: "לא ניתן ליצור פרופיל",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('Profile created successfully for user:', user.id);
       
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
       
-      // Profile completed, but don't redirect yet - onboarding will handle it
+      // Start onboarding flow
+      setCurrentStep('onboarding');
     } catch (error) {
       console.error('Error creating profile:', error);
+      toast({
+        title: "שגיאה",
+        description: "אירעה שגיאה בשמירת הפרופיל",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
