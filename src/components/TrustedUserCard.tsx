@@ -4,13 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Eye, Crown, Handshake } from "lucide-react";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
+import { TrustIconFillable } from "@/components/FillableIcons";
 import { getDomainConfig, getDomainBadgeClasses } from "@/lib/domainConfig";
 import type { Expert } from "@/pages/TopTrustedPage";
-const TrustIcon = () => {
-  return <div className="relative">
-      <Handshake className="w-6 h-6 text-trust" />
-      <Crown className="w-1 h-1 text-yellow-400 absolute -top-1 -right-1" />
-    </div>;
+
+const TrustIcon = ({ isFilled }: { isFilled?: boolean }) => {
+  return (
+    <div className="w-11 h-11 rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-95 transition-all duration-300 relative bg-white/20">
+      <div className="relative">
+        <TrustIconFillable isFilled={isFilled} />
+        <Crown className="w-3 h-3 text-yellow-400 absolute -top-1 -right-1" />
+      </div>
+    </div>
+  );
 };
 interface TrustedUserCardProps {
   expert: Expert;
@@ -92,7 +98,7 @@ export const TrustedUserCard = ({
         {/* Main Trust CTA */}
         <div className="flex items-start pt-2">
           <Button onClick={onTrustClick} variant={expert.trustedByUser ? "default" : "outline"} size="icon" className="w-12 h-12 rounded-full">
-            <TrustIcon />
+            <TrustIcon isFilled={expert.trustedByUser} />
           </Button>
         </div>
       </div>
