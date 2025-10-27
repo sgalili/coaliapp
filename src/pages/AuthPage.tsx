@@ -7,6 +7,7 @@ import { ProfileCompletion } from '@/components/auth/ProfileCompletion';
 import { LanguageSelector } from '@/components/auth/LanguageSelector';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
+import { useToast } from '@/hooks/use-toast';
 
 type AuthStep = 'phone' | 'otp' | 'profile' | 'onboarding';
 
@@ -32,6 +33,7 @@ const AuthPage = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const { saveAffiliateLink } = useAffiliateLinks();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Save affiliate link if present in URL
@@ -141,32 +143,82 @@ const AuthPage = () => {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // Use a predefined demo user UUID
-      const demoUserId = '00000000-0000-0000-0000-000000000001';
+      // Demo account credentials
+      const demoEmail = 'demo@coalichain.com';
+      const demoPassword = 'demo123456';
       
-      // Create or update demo profile
-      const { error: profileError } = await supabase
+      // Try to sign in first
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      let userId: string;
+
+      if (signInError) {
+        // If sign in fails, create new demo account
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPassword,
+          options: {
+            data: {
+              first_name: 'Demo',
+              last_name: 'User',
+            }
+          }
+        });
+
+        if (signUpError) {
+          console.error('Error creating demo account:', signUpError);
+          toast({
+            title: "שגיאה",
+            description: "לא ניתן ליצור חשבון דמו",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        userId = signUpData.user!.id;
+
+        // Create demo profile
+        const { error: profileError } = await supabase
+          .from('demo_profiles')
+          .insert({
+            user_id: userId,
+            first_name: 'Demo',
+            last_name: 'User',
+            phone: '+972501111111',
+          });
+
+        if (profileError) {
+          console.error('Error creating demo profile:', profileError);
+        }
+      } else {
+        userId = signInData.user.id;
+      }
+
+      // Update profiles table to mark as demo
+      await supabase
         .from('profiles')
         .upsert({
-          user_id: demoUserId,
+          user_id: userId,
           first_name: 'Demo',
           last_name: 'User',
           phone: '+972501111111',
           is_demo: true
         });
 
-      if (profileError) {
-        console.error('Error creating demo profile:', profileError);
-      }
-
-      // Store demo session in localStorage
-      localStorage.setItem('demo_user_id', demoUserId);
-      localStorage.setItem('is_demo', 'true');
+      console.log('Demo account logged in successfully');
       
       // Navigate to home
       navigate('/');
     } catch (error) {
       console.error('Error setting up demo account:', error);
+      toast({
+        title: "שגיאה",
+        description: "אירעה שגיאה בהתחברות לחשבון דמו",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
