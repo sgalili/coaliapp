@@ -1,13 +1,5 @@
-// supabase/functions/whatsapp-otp-send/index.ts
-import { serve } from "https://deno.land/std/http/server.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const ULTRA_ID = Deno.env.get("ULTRAMSG_INSTANCE_ID")!;
-const ULTRA_TOKEN = Deno.env.get("ULTRAMSG_TOKEN")!;
-
-const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,48 +7,94 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { phone } = await req.json();
-    if (!phone) return new Response("phone required", { status: 400, headers: corsHeaders });
+    const { phoneNumber } = await req.json();
+    
+    if (!phoneNumber) {
+      throw new Error('Phone number is required');
+    }
 
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    const expires = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Store OTP in Supabase
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
 
-    console.log(`Generating OTP for phone: ${phone}`);
-    console.log(`Using ULTRA_ID: ${ULTRA_ID}, ULTRA_TOKEN: ${ULTRA_TOKEN ? 'SET' : 'NOT SET'}`);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // store in DB
-    await sb.from("otps").insert({ phone, otp, expires_at: expires });
+    await supabaseClient
+      .from('otp_verifications')
+      .upsert({
+        phone_number: phoneNumber,
+        otp_code: otp,
+        expires_at: expiresAt.toISOString(),
+        verified: false,
+      }, {
+        onConflict: 'phone_number'
+      });
 
-    // send via UltraMsg
-    const res = await fetch(`https://api.ultramsg.com/${ULTRA_ID}/messages/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        token: ULTRA_TOKEN,
-        to: phone,
-        body: `🔐 Your OTP is: ${otp}`,
-        priority: "10",
+    // Send OTP via GreenAPI
+    const greenApiInstanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
+    const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
+
+    if (!greenApiInstanceId || !greenApiToken) {
+      throw new Error('GreenAPI credentials not configured');
+    }
+
+    const message = `Your verification code is: ${otp}\n\nThis code will expire in 10 minutes.`;
+    
+    const greenApiUrl = `https://api.green-api.com/waInstance${greenApiInstanceId}/sendMessage/${greenApiToken}`;
+    
+    const greenApiResponse = await fetch(greenApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chatId: `${phoneNumber}@c.us`,
+        message: message,
       }),
     });
 
-    const json = await res.json().catch(() => ({}));
-    console.log(`UltraMsg response:`, { status: res.status, json });
-    
-    return new Response(JSON.stringify({ ok: res.ok, vendor_status: res.status, vendor_json: json }), { 
-      status: 200, 
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  } catch (e) {
-    console.error('Error in whatsapp-otp-send:', e);
-    return new Response(e?.message ?? "error", { 
-      status: 500, 
-      headers: corsHeaders 
-    });
+    if (!greenApiResponse.ok) {
+      const errorData = await greenApiResponse.text();
+      console.error('GreenAPI error:', errorData);
+      throw new Error(`Failed to send WhatsApp message: ${errorData}`);
+    }
+
+    const greenApiResult = await greenApiResponse.json();
+    console.log('GreenAPI response:', greenApiResult);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: 'OTP sent successfully',
+        messageId: greenApiResult.idMessage 
+      }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200 
+      }
+    );
+
+  } catch (error) {
+    console.error('Error in whatsapp-otp-send:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: error.message || 'Internal server error',
+        success: false 
+      }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400 
+      }
+    );
   }
 });
