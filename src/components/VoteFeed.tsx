@@ -9,11 +9,13 @@ import { mockPollStories } from "@/data/mockPollStories";
 export type VoteFilterType = 'for-me' | 'candidates' | 'experts' | 'all';
 interface VoteFeedProps {
   filter: VoteFilterType;
+  initialStoryIndex?: number;
 }
 export const VoteFeed = ({
-  filter
+  filter,
+  initialStoryIndex = 0
 }: VoteFeedProps) => {
-  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(initialStoryIndex);
   const [isMuted, setIsMuted] = useState(true);
   const [isReadingText, setIsReadingText] = useState(false);
   const [votedStories, setVotedStories] = useState<Record<string, string>>({});

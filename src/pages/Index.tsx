@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAffiliateLinks } from "@/hooks/useAffiliateLinks";
+import { mockPollStories } from "@/data/mockPollStories";
 import { VoteFeed } from "@/components/VoteFeed";
 import { VoteHeader } from "@/components/VoteHeader";
 import { VoteFilters, VoteFilterType } from "@/components/VoteFilters";
@@ -193,6 +195,10 @@ const mockPosts = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const { pollId } = useParams();
+  const [searchParams] = useSearchParams();
+  const { saveAffiliateLink } = useAffiliateLinks();
+  
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
   const [showVideoCreator, setShowVideoCreator] = useState(false);
@@ -203,6 +209,7 @@ const Index = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
+  const [initialStoryIndex, setInitialStoryIndex] = useState<number>(0);
   
   // Swipe handling
   const containerRef = useRef<HTMLDivElement>(null);
@@ -223,6 +230,23 @@ const Index = () => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     
+    // Handle affiliate link from URL
+    const ref = searchParams.get('ref');
+    if (ref) {
+      saveAffiliateLink(ref, 'shared_poll');
+      console.log('Affiliate ref saved:', ref);
+    }
+    
+    // Handle direct poll link (pollId in URL)
+    const pollIdParam = searchParams.get('pollId');
+    if (pollIdParam) {
+      const foundIndex = mockPollStories.findIndex(story => story.id === pollIdParam);
+      if (foundIndex !== -1) {
+        setInitialStoryIndex(foundIndex);
+        setVoteFilter('for-me'); // Switch to poll feed
+      }
+    }
+    
     // Check if onboarding should be shown
     if (DEVELOPMENT_MODE) {
       // In development mode, always show onboarding
@@ -234,7 +258,7 @@ const Index = () => {
         setShowOnboarding(true);
       }
     }
-  }, []);
+  }, [searchParams, saveAffiliateLink]);
 
   const handleVideoVote = (postId: string, ministryPosition: string, isCurrentlyVoted: boolean) => {
     // TODO: Implement vote confirmation and database update
@@ -455,7 +479,7 @@ const Index = () => {
             style={{ transform: 'translate3d(0, 0, 0)' }}
           >
           {voteFilter === 'for-me' ? (
-            <VoteFeed filter={voteFilter} />
+            <VoteFeed filter={voteFilter} initialStoryIndex={initialStoryIndex} />
           ) : (
             <VideoFeedPage
               activeFilter={voteFilter}

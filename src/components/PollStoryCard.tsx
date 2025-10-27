@@ -89,8 +89,8 @@ export const PollStoryCard = ({
       const { data: { user } } = await supabase.auth.getUser();
       
       // Build share URL with affiliate ref if user is logged in
-      const baseUrl = `${window.location.origin}/decisions/${story.id}`;
-      const shareUrl = user ? `${baseUrl}?ref=${user.id}` : baseUrl;
+      const baseUrl = `${window.location.origin}/?pollId=${story.id}`;
+      const shareUrl = user ? `${baseUrl}&ref=${user.id}` : baseUrl;
       
       // Try native share API first (mobile)
       if (navigator.share) {
