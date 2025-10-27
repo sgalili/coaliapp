@@ -151,7 +151,7 @@ export const VoteFeed = ({
         handleNextStory();
       }
     }}>
-        <PollStoryCard story={{
+      <PollStoryCard story={{
         ...currentStory,
         hasUserVoted: !!votedStories[currentStory.id],
         userVotedOption: votedStories[currentStory.id]
@@ -161,7 +161,8 @@ export const VoteFeed = ({
       isMuted={isMuted} 
       onToggleMute={handleToggleMute} 
       isActive={true}
-      showResultsTemporarily={currentlyShowingResults === currentStory.id} />
+      showResultsTemporarily={currentlyShowingResults === currentStory.id}
+      showShareButton={true} />
       </div>
     </div>;
 };
