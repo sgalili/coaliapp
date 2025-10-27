@@ -105,6 +105,240 @@ export type Database = {
         }
         Relationships: []
       }
+      demo_news_articles: {
+        Row: {
+          category: string
+          comment_count: number | null
+          content: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean | null
+          published_at: string
+          source: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          category: string
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string
+          source: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          category?: string
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string
+          source?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      demo_poll_votes: {
+        Row: {
+          created_at: string
+          id: string
+          option_id: string
+          poll_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_id: string
+          poll_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_id?: string
+          poll_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      demo_polls: {
+        Row: {
+          ai_narration: string | null
+          background_image: string | null
+          background_video: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          options: Json
+          poll_type: string
+          published_date: string
+          question: string
+          total_votes: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_narration?: string | null
+          background_image?: string | null
+          background_video?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          options: Json
+          poll_type: string
+          published_date: string
+          question: string
+          total_votes?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_narration?: string | null
+          background_image?: string | null
+          background_video?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          options?: Json
+          poll_type?: string
+          published_date?: string
+          question?: string
+          total_votes?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      demo_posts: {
+        Row: {
+          category: string | null
+          comment_count: number | null
+          content: string | null
+          created_at: string
+          domain: string | null
+          id: string
+          is_live: boolean | null
+          share_count: number | null
+          thumbnail_url: string | null
+          title: string | null
+          trust_count: number | null
+          updated_at: string
+          user_id: string
+          video_url: string | null
+          view_count: number | null
+          watch_count: number | null
+          zooz_earned: number | null
+        }
+        Insert: {
+          category?: string | null
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          domain?: string | null
+          id?: string
+          is_live?: boolean | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          trust_count?: number | null
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+          view_count?: number | null
+          watch_count?: number | null
+          zooz_earned?: number | null
+        }
+        Update: {
+          category?: string | null
+          comment_count?: number | null
+          content?: string | null
+          created_at?: string
+          domain?: string | null
+          id?: string
+          is_live?: boolean | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          title?: string | null
+          trust_count?: number | null
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+          view_count?: number | null
+          watch_count?: number | null
+          zooz_earned?: number | null
+        }
+        Relationships: []
+      }
+      demo_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      demo_trusts: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          trusted_id: string
+          truster_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          trusted_id: string
+          truster_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          trusted_id?: string
+          truster_id?: string
+        }
+        Relationships: []
+      }
       economics_candidates: {
         Row: {
           avatar_url: string | null
@@ -879,6 +1113,7 @@ export type Database = {
           created_at: string
           first_name: string
           id: string
+          is_demo: boolean
           last_name: string
           phone: string
           updated_at: string
@@ -889,6 +1124,7 @@ export type Database = {
           created_at?: string
           first_name: string
           id?: string
+          is_demo?: boolean
           last_name: string
           phone: string
           updated_at?: string
@@ -899,6 +1135,7 @@ export type Database = {
           created_at?: string
           first_name?: string
           id?: string
+          is_demo?: boolean
           last_name?: string
           phone?: string
           updated_at?: string
@@ -1482,6 +1719,7 @@ export type Database = {
       increment_news_view_count: { Args: { news_id: string }; Returns: boolean }
       increment_post_views: { Args: { p_post_id: string }; Returns: boolean }
       init_user_balance: { Args: { p_user?: string }; Returns: boolean }
+      is_demo_user: { Args: { user_uuid: string }; Returns: boolean }
       reward_zooz: {
         Args: {
           p_amount: number
