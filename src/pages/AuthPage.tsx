@@ -45,8 +45,21 @@ const AuthPage = () => {
   const handlePhoneSubmit = async (phone: string) => {
     setIsLoading(true);
     try {
-      // TODO: Integrate with Ultramsg API for WhatsApp OTP
-      console.log('Sending OTP to:', phone);
+      console.log('=== SENDING OTP ===');
+      console.log('Phone being sent:', phone);
+      
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
+        body: { phone }
+      });
+      
+      console.log('Function response:', data);
+      console.log('Function error:', fnError);
+      
+      if (fnError) {
+        console.error('Error sending OTP:', fnError);
+        throw fnError;
+      }
       
       setAuthData(prev => ({ ...prev, phone }));
       setCurrentStep('otp');

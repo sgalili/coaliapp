@@ -46,6 +46,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     
     setError('');
     const fullPhone = `${selectedCountry.dialCode}${phoneNumber.replace(/\s/g, '')}`;
+    
+    console.log('=== SENDING OTP ===');
+    console.log('Phone being sent:', fullPhone);
+    
     onSubmit(fullPhone);
   };
 

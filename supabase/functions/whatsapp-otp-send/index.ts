@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('=== WhatsApp OTP Send Function Started ===');
+    console.log('=== FUNCTION CALLED ===');
     
     // Get request body
     const { phone } = await req.json();
@@ -80,6 +80,9 @@ serve(async (req) => {
     const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
     const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
+    console.log('GREENAPI_INSTANCE_ID exists:', !!instanceId);
+    console.log('GREENAPI_API_TOKEN exists:', !!apiToken);
+
     if (!instanceId || !apiToken) {
       console.error('Missing GreenAPI credentials');
       return new Response(
@@ -97,8 +100,9 @@ serve(async (req) => {
     console.log('GreenAPI Instance ID:', instanceId);
 
     // Format phone for GreenAPI: +972501234567 -> 972501234567@c.us
-    const formattedPhone = phone.substring(1) + '@c.us';
-    console.log('Formatted phone for GreenAPI:', formattedPhone);
+    const formattedPhone = phone.replace(/[^\d]/g, ''); // Remove + and all non-digits
+    const chatId = `${formattedPhone}@c.us`;
+    console.log('Formatted chatId:', chatId);
 
     // Prepare message
     const message = `Your verification code is: ${otp}\n\nThis code will expire in 10 minutes.`;
@@ -109,7 +113,7 @@ serve(async (req) => {
     console.log('GreenAPI URL:', greenApiUrl);
 
     const greenApiPayload = {
-      chatId: formattedPhone,
+      chatId: chatId,
       message: message,
     };
     console.log('GreenAPI payload:', JSON.stringify(greenApiPayload));
@@ -122,9 +126,17 @@ serve(async (req) => {
       body: JSON.stringify(greenApiPayload),
     });
 
-    const greenApiResult = await greenApiResponse.json();
     console.log('GreenAPI response status:', greenApiResponse.status);
-    console.log('GreenAPI response body:', JSON.stringify(greenApiResult));
+    const responseText = await greenApiResponse.text();
+    console.log('GreenAPI response:', responseText);
+    
+    let greenApiResult;
+    try {
+      greenApiResult = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Failed to parse GreenAPI response:', e);
+      greenApiResult = { error: 'Invalid response format', raw: responseText };
+    }
 
     if (!greenApiResponse.ok) {
       console.error('GreenAPI error:', greenApiResult);
