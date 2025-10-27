@@ -136,6 +136,42 @@ const AuthPage = () => {
     console.log('Switching to SMS method');
   };
 
+  const handleDemoAccount = async () => {
+    setIsLoading(true);
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      // Use a predefined demo user UUID
+      const demoUserId = '00000000-0000-0000-0000-000000000001';
+      
+      // Create or update demo profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: demoUserId,
+          first_name: 'Demo',
+          last_name: 'User',
+          phone: '+972501111111',
+          is_demo: true
+        });
+
+      if (profileError) {
+        console.error('Error creating demo profile:', profileError);
+      }
+
+      // Store demo session in localStorage
+      localStorage.setItem('demo_user_id', demoUserId);
+      localStorage.setItem('is_demo', 'true');
+      
+      // Navigate to home
+      navigate('/');
+    } catch (error) {
+      console.error('Error setting up demo account:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Language selector */}
@@ -147,10 +183,21 @@ const AuthPage = () => {
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           {currentStep === 'phone' && (
-            <PhoneInput
-              onSubmit={handlePhoneSubmit}
-              isLoading={isLoading}
-            />
+            <>
+              <PhoneInput
+                onSubmit={handlePhoneSubmit}
+                isLoading={isLoading}
+              />
+              <div className="mt-6">
+                <button
+                  onClick={handleDemoAccount}
+                  disabled={isLoading}
+                  className="w-full py-3 px-4 rounded-lg border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-semibold transition-colors disabled:opacity-50"
+                >
+                  {t('auth.demoAccount', 'Demo Account')}
+                </button>
+              </div>
+            </>
           )}
           
           {currentStep === 'otp' && (
