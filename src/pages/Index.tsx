@@ -225,11 +225,21 @@ const Index = () => {
     handleKYCClose
   } = useKYC();
 
+  // Setup RTL and onboarding (runs once on mount)
   useEffect(() => {
     // Set RTL direction for the entire app
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     
+    // Check if onboarding should be shown (only once)
+    const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
+    if (!onboardingCompleted) {
+      setShowOnboarding(true);
+    }
+  }, []); // No dependencies - runs once on mount
+
+  // Handle affiliate links and poll ID from URL
+  useEffect(() => {
     // Handle affiliate link from URL
     const ref = searchParams.get('ref');
     if (ref) {
@@ -244,18 +254,6 @@ const Index = () => {
       if (foundIndex !== -1) {
         setInitialStoryIndex(foundIndex);
         setVoteFilter('for-me'); // Switch to poll feed
-      }
-    }
-    
-    // Check if onboarding should be shown
-    if (DEVELOPMENT_MODE) {
-      // In development mode, always show onboarding
-      setShowOnboarding(true);
-    } else {
-      // In production mode, respect localStorage
-      const onboardingCompleted = localStorage.getItem('home-onboarding-completed');
-      if (!onboardingCompleted) {
-        setShowOnboarding(true);
       }
     }
   }, [searchParams, saveAffiliateLink]);
