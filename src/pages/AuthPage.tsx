@@ -244,23 +244,45 @@ const AuthPage = () => {
       const demoEmail = 'demo@coali.app';
       const demoPassword = 'demo123456';
 
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      // First try to sign in directly
+      let { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: demoEmail,
         password: demoPassword,
       });
 
       if (signInError) {
-        console.error('Demo sign-in failed:', signInError);
-        toast({ title: 'שגיאה', description: 'לא ניתן להתחבר לחשבון הדגמה', variant: 'destructive' });
-        setIsLoading(false);
-        return;
+        console.warn('Demo sign-in failed, ensuring demo user exists:', signInError?.message || signInError);
+        // Ensure the demo user exists and is confirmed
+        const { data: ensureData, error: ensureError } = await supabase.functions.invoke('ensure-demo-user', {
+          body: { email: demoEmail, password: demoPassword },
+        });
+
+        if (ensureError) {
+          console.error('Failed to ensure demo user:', ensureError);
+          toast({ title: 'Error', description: 'Could not create demo account', variant: 'destructive' });
+          setIsLoading(false);
+          return;
+        }
+
+        // Retry sign-in
+        ({ data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: demoEmail,
+          password: demoPassword,
+        }));
+
+        if (signInError) {
+          console.error('Demo sign-in failed after ensure:', signInError);
+          toast({ title: 'Error', description: 'Unable to log into demo account', variant: 'destructive' });
+          setIsLoading(false);
+          return;
+        }
       }
 
-      console.log('Demo account logged in:', signInData.user.id);
+      console.log('Demo account logged in:', signInData?.user?.id);
       navigate('/');
     } catch (error) {
       console.error('Demo login error:', error);
-      toast({ title: 'שגיאה', description: 'אירעה שגיאה בהתחברות לחשבון דמו', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Unexpected error signing into demo', variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
