@@ -117,12 +117,68 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [selectedPostIndex, setSelectedPostIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const zoozBalance = 1250;
 
   useEffect(() => {
     // Set RTL direction
     document.documentElement.setAttribute('dir', 'rtl');
-  }, []);
+    
+    // Fetch real user profile
+    const fetchUserProfile = async () => {
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError || !authUser) {
+          console.error('Error getting auth user:', authError);
+          navigate('/auth');
+          return;
+        }
+
+        console.log('Fetching profile for user:', authUser.id);
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .single();
+
+        if (profileError) {
+          console.error('Error fetching profile:', profileError);
+          // If no profile found, redirect to auth
+          if (profileError.code === 'PGRST116') {
+            navigate('/auth');
+          }
+          return;
+        }
+
+        console.log('Profile fetched successfully:', {
+          first_name: profile.first_name,
+          last_name: profile.last_name,
+          phone: profile.phone
+        });
+
+        // Update user state with real profile data
+        setUser(prev => ({
+          ...prev,
+          id: authUser.id,
+          username: profile.first_name && profile.last_name 
+            ? `${profile.first_name} ${profile.last_name}` 
+            : 'משתמש',
+          handle: authUser.email?.split('@')[0] || 'user',
+          profileImage: profile.avatar_url || prev.profileImage,
+          location: prev.location,
+        }));
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error in fetchUserProfile:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [navigate]);
 
   const handleUpdateField = (field: keyof typeof user, value: any) => {
     setUser(prev => ({

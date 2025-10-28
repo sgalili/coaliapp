@@ -113,29 +113,40 @@ const AuthPage = () => {
 
       console.log('Session set successfully for user:', data.user.id);
       console.log('Session set, user:', data.user.id, 'phone:', data.user.phone);
-      console.log('Profile exists:', data.profile_exists);
+      console.log('Profile exists:', data.profile_exists, '| Profile complete:', data.profile_complete);
 
       setAuthData(prev => ({ ...prev, otp }));
       
-      // Check if profile exists in database
-      if (data.profile_exists) {
-        console.log('User has existing profile, fetching profile data...');
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', data.user.id)
-          .maybeSingle();
-        
-        if (profileError) {
-          console.error('Error fetching profile:', profileError);
-        } else {
-          console.log('Profile fetched:', profileData?.first_name, profileData?.last_name, 'for user:', data.user.id);
-        }
-        
-        console.log('Redirecting to home page');
+      // Fetch the actual profile to check completeness
+      console.log('Fetching user profile after OTP verification...');
+      const { data: userProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', data.user.id)
+        .single();
+      
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        console.log('No profile found, showing profile completion');
+        setCurrentStep('profile');
+        return;
+      }
+      
+      console.log('Profile after OTP:', {
+        user_id: userProfile.user_id,
+        first_name: userProfile.first_name,
+        last_name: userProfile.last_name,
+        phone: userProfile.phone
+      });
+      
+      // Check if profile is complete (has first_name and last_name)
+      const isProfileComplete = userProfile.first_name && userProfile.last_name;
+      
+      if (isProfileComplete) {
+        console.log('Profile is complete, redirecting to home');
         navigate('/');
       } else {
-        console.log('New user, no profile exists - showing profile completion');
+        console.log('Profile exists but incomplete, showing profile completion');
         setCurrentStep('profile');
       }
     } catch (error) {

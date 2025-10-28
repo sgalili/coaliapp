@@ -192,6 +192,25 @@ Deno.serve(async (req) => {
     console.log('New user created:', newUserData.user.id);
     user = newUserData.user;
     isNewUser = true;
+
+    // Auto-create basic profile for new users
+    console.log('Creating basic profile for new user:', user.id);
+    const { error: profileCreateError } = await supabaseAdmin
+      .from('profiles')
+      .insert({
+        user_id: user.id,
+        phone: phone,
+        first_name: '',
+        last_name: '',
+        is_demo: false
+      });
+    
+    if (profileCreateError) {
+      console.error('Error creating profile:', profileCreateError);
+      // Don't fail the entire request, profile can be created later
+    } else {
+      console.log('Basic profile created successfully for user:', user.id);
+    }
   }
 
     console.log('Signing in with email/password to create session...');
@@ -216,7 +235,7 @@ Deno.serve(async (req) => {
       refresh_token: !!refresh_token 
     });
 
-    // Check if profile exists
+    // Check if profile exists and if it's complete
     console.log('Checking for existing profile...');
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
@@ -225,14 +244,24 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     const profile_exists = !!profile && !profileError;
-    console.log('Profile exists:', profile_exists, profile ? `(${profile.first_name} ${profile.last_name})` : '');
+    const profile_complete = profile_exists && profile.first_name && profile.last_name;
+    console.log('Profile check/creation for user:', user.id);
+    console.log('Profile exists:', profile_exists, '| Profile complete:', profile_complete);
+    if (profile) {
+      console.log('Profile data:', { first_name: profile.first_name, last_name: profile.last_name, phone: profile.phone });
+    }
 
     if (profileError && profileError.code !== 'PGRST116') {
       console.error('Error checking profile:', profileError);
     }
-
+    
     console.log('=== OTP Verification Complete ===');
-    console.log('Returning:', { user_id: user.id, profile_exists, is_new_user: isNewUser });
+    console.log('Returning:', { 
+      user_id: user.id, 
+      profile_exists, 
+      profile_complete,
+      is_new_user: isNewUser 
+    });
 
     return new Response(
       JSON.stringify({
@@ -246,6 +275,7 @@ Deno.serve(async (req) => {
           refresh_token,
         },
         profile_exists,
+        profile_complete,
         is_new_user: isNewUser
       }),
       { 
