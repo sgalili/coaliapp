@@ -14,8 +14,10 @@ import { ProfileMenu } from "@/components/ProfileMenu";
 import { KYCManagement } from "@/components/KYCManagement";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { VideoGrid } from "@/components/VideoGrid";
+import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsDemoMode } from "@/hooks/useIsDemoMode";
 
 interface UserProfile {
   id: string;
@@ -35,6 +37,7 @@ interface UserProfile {
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const { isDemoMode, getDemoUserId } = useIsDemoMode();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("posts");
@@ -43,46 +46,77 @@ const ProfilePage = () => {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     fetchUserProfile();
-  }, [navigate]);
+  }, [navigate, isDemoMode]);
 
   const fetchUserProfile = async () => {
     try {
-      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-      
-      if (authError || !authUser) {
-        console.error('Error getting auth user:', authError);
-        navigate('/auth');
-        return;
-      }
+      let authUserId: string;
+      let profile: any;
 
-      console.log('Fetching profile for user:', authUser.id);
-      
-      // Fetch profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', authUser.id)
-        .maybeSingle();
+      if (isDemoMode) {
+        // Demo mode
+        const demoUserId = getDemoUserId();
+        if (!demoUserId) {
+          navigate('/auth');
+          return;
+        }
 
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        setIsLoading(false);
-        return;
-      }
+        authUserId = demoUserId;
+        
+        const { data: demoProfile, error: profileError } = await supabase
+          .from('demo_profiles')
+          .select('*')
+          .eq('user_id', demoUserId)
+          .maybeSingle();
 
-      if (!profile) {
-        console.log('No profile found, redirecting to auth');
-        navigate('/auth');
-        return;
+        if (profileError || !demoProfile) {
+          console.error('Error fetching demo profile:', profileError);
+          setIsLoading(false);
+          return;
+        }
+
+        profile = demoProfile;
+      } else {
+        // Real mode
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError || !authUser) {
+          console.error('Error getting auth user:', authError);
+          navigate('/auth');
+          return;
+        }
+
+        authUserId = authUser.id;
+        
+        const { data: userProfile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .maybeSingle();
+
+        if (profileError) {
+          console.error('Error fetching profile:', profileError);
+          setIsLoading(false);
+          return;
+        }
+
+        if (!userProfile) {
+          console.log('No profile found, redirecting to auth');
+          navigate('/auth');
+          return;
+        }
+
+        profile = userProfile;
       }
 
       console.log('Profile fetched:', profile);
 
-      // Fetch user's posts
+      // Fetch user's posts (demo or real)
+      const postsTable = isDemoMode ? 'demo_posts' : 'posts';
       const { data: posts, error: postsError } = await supabase
-        .from('posts')
+        .from(postsTable)
         .select('*')
-        .eq('user_id', authUser.id)
+        .eq('user_id', authUserId)
         .order('created_at', { ascending: false });
 
       if (postsError) {
@@ -92,37 +126,32 @@ const ProfilePage = () => {
         console.log('User posts fetched:', posts?.length || 0);
       }
 
-      // Fetch trust count (people who trust this user)
+      // Fetch trust count
+      const trustTable = isDemoMode ? 'demo_trusts' : 'trusts';
       const { count: trustersCount } = await supabase
-        .from('trusts')
+        .from(trustTable)
         .select('*', { count: 'exact', head: true })
-        .eq('trusted_id', authUser.id);
+        .eq('trusted_id', authUserId);
 
       // Fetch watchers count
       const { count: watchersCount } = await supabase
         .from('watches')
         .select('*', { count: 'exact', head: true })
-        .eq('watched_id', authUser.id);
+        .eq('watched_id', authUserId);
 
       // Fetch wallet balance
       const { data: balance } = await supabase
         .from('user_balances')
         .select('zooz_balance')
-        .eq('user_id', authUser.id)
+        .eq('user_id', authUserId)
         .maybeSingle();
 
-      // Fetch user expertise
-      const { data: expertise } = await supabase
-        .from('user_expertise')
-        .select('*')
-        .eq('user_id', authUser.id);
-
       const userProfile: UserProfile = {
-        id: authUser.id,
+        id: authUserId,
         username: profile.first_name && profile.last_name 
           ? `${profile.first_name} ${profile.last_name}` 
           : '',
-        handle: authUser.email?.split('@')[0] || 'user',
+        handle: profile.phone || 'user',
         profileImage: profile.avatar_url,
         bio: '',
         location: '',
@@ -203,6 +232,9 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
+      {/* Demo Mode Banner */}
+      <DemoModeBanner />
+      
       {/* Header */}
       <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border z-10">
         <div className="flex items-center justify-end p-4">

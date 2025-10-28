@@ -1,8 +1,26 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useIsDemoMode } from './useIsDemoMode';
 import { usePollContext, mockPolls, Poll, PollVote, PollResults } from '../contexts/PollContext';
 
 export const usePoll = (newsId: string) => {
+  const { isDemoMode } = useIsDemoMode();
   const { votes, userVotes, submitVote } = usePollContext();
+  const [demoPolls, setDemoPolls] = useState<any[]>([]);
+  
+  useEffect(() => {
+    if (isDemoMode) {
+      const fetchDemoPolls = async () => {
+        const { data } = await supabase
+          .from('demo_polls')
+          .select('*')
+          .order('published_date', { ascending: false });
+        
+        if (data) setDemoPolls(data);
+      };
+      fetchDemoPolls();
+    }
+  }, [isDemoMode]);
   
   const poll = mockPolls[newsId];
   const pollVotes = poll ? votes[poll.id] || [] : [];

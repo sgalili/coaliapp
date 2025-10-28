@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useIsDemoMode } from './useIsDemoMode';
 
 interface Transaction {
   id: string;
@@ -58,12 +60,64 @@ const mockTransactions: Transaction[] = [
 ];
 
 export const useWalletData = (): WalletData => {
+  const { isDemoMode, getDemoUserId } = useIsDemoMode();
   const [walletData, setWalletData] = useState<WalletData>({
-    zoozBalance: 9957,
-    usdValue: 127.43,
-    percentageChange: 2.3,
-    transactions: mockTransactions
+    zoozBalance: 0,
+    usdValue: 0,
+    percentageChange: 0,
+    transactions: []
   });
+
+  useEffect(() => {
+    const fetchWalletData = async () => {
+      if (isDemoMode) {
+        // Fetch demo wallet data
+        const demoUserId = getDemoUserId();
+        if (!demoUserId) return;
+
+        // Get balance
+        const { data: balanceData } = await supabase
+          .from('user_balances')
+          .select('*')
+          .eq('user_id', demoUserId)
+          .maybeSingle();
+
+        // Get transactions
+        const { data: transactionsData } = await supabase
+          .from('zooz_transactions')
+          .select('*')
+          .or(`from_user_id.eq.${demoUserId},to_user_id.eq.${demoUserId}`)
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (balanceData) {
+          setWalletData({
+            zoozBalance: balanceData.zooz_balance || 0,
+            usdValue: balanceData.usd_value || 0,
+            percentageChange: balanceData.percentage_change || 0,
+            transactions: (transactionsData || []).map(tx => ({
+              id: tx.id,
+              type: tx.transaction_type as 'send' | 'receive' | 'reward' | 'purchase',
+              amount: tx.amount,
+              description: tx.description || '',
+              timestamp: new Date(tx.created_at),
+              fromTo: tx.note || undefined
+            }))
+          });
+        }
+      } else {
+        // Use mock data for non-demo mode (until real auth is implemented)
+        setWalletData({
+          zoozBalance: 9957,
+          usdValue: 127.43,
+          percentageChange: 2.3,
+          transactions: mockTransactions
+        });
+      }
+    };
+
+    fetchWalletData();
+  }, [isDemoMode, getDemoUserId]);
 
   // Simulate real-time USD conversion updates
   useEffect(() => {
@@ -73,7 +127,7 @@ export const useWalletData = (): WalletData => {
         usdValue: prev.usdValue + (Math.random() - 0.5) * 0.5,
         percentageChange: prev.percentageChange + (Math.random() - 0.5) * 0.2
       }));
-    }, 10000); // Update every 10 seconds
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);

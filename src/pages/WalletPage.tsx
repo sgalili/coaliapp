@@ -9,6 +9,7 @@ import { SendZoozModal } from "@/components/SendZoozModal";
 import { RequestZoozModal } from "@/components/RequestZoozModal";
 import { WithdrawModal } from "@/components/WithdrawModal";
 import { WalletSettings } from "@/components/WalletSettings";
+import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { useWalletData } from "@/hooks/useWalletData";
@@ -44,6 +45,9 @@ const WalletPage = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
+      {/* Demo Mode Banner */}
+      <DemoModeBanner />
+      
       {/* Header */}
       <div className="sticky top-0 bg-background z-10 border-b px-4 py-4">
         <div className="flex items-center justify-between">

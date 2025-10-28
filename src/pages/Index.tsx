@@ -13,6 +13,7 @@ import { VideoFeedPage } from "@/components/VideoFeedPage";
 import { VideoPost } from "@/components/VideoFeed";
 import { HomeOnboarding } from "@/components/HomeOnboarding";
 import { GuidedTour } from "@/components/GuidedTour";
+import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
 import { X } from "lucide-react";
@@ -461,6 +462,8 @@ const Index = () => {
       onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
       onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
     >
+      {/* Demo Mode Banner */}
+      <DemoModeBanner />
       
       {/* Vote Filters */}
       <VoteFilters 

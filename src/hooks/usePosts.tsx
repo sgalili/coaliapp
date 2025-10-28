@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useIsDemoMode } from './useIsDemoMode';
 
 export interface Post {
   id: string;
@@ -15,9 +16,13 @@ export interface Post {
   view_count: number;
   created_at: string;
   updated_at: string;
+  domain?: string;
+  category?: string;
+  zooz_earned?: number;
 }
 
 export const usePosts = () => {
+  const { isDemoMode } = useIsDemoMode();
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -25,8 +30,10 @@ export const usePosts = () => {
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
+      const tableName = isDemoMode ? 'demo_posts' : 'posts';
+      
       const { data, error } = await supabase
-        .from('posts')
+        .from(tableName)
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -43,8 +50,10 @@ export const usePosts = () => {
   const fetchUserPosts = async (userId: string) => {
     try {
       setIsLoading(true);
+      const tableName = isDemoMode ? 'demo_posts' : 'posts';
+      
       const { data, error } = await supabase
-        .from('posts')
+        .from(tableName)
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
@@ -61,7 +70,7 @@ export const usePosts = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [isDemoMode]);
 
   return {
     posts,
