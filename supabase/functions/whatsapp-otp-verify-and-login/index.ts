@@ -110,19 +110,40 @@ Deno.serve(async (req) => {
 
       console.log('Existing account sign-in succeeded for user:', user.id);
 
-      // Check if profile exists
-      console.log('Checking for existing profile...');
-      const { data: profile, error: profileError } = await supabaseAdmin
+      // Create profile if it doesn't exist
+      const { data: existingProfile } = await supabaseAdmin
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      const profile_exists = !!profile && !profileError;
-      console.log('Profile exists:', profile_exists, profile ? `(${profile.first_name} ${profile.last_name})` : '');
+      if (!existingProfile) {
+        console.log('Creating new profile for user:', user.id);
+        await supabaseAdmin
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            phone: phone,
+            first_name: '',
+            last_name: '',
+            avatar_url: null,
+            is_demo: false
+          });
+        console.log('Profile created successfully');
+      } else {
+        console.log('Profile already exists for user:', user.id);
+      }
 
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error('Error checking profile:', profileError);
+      // Check profile completeness
+      const profile_exists = !!existingProfile;
+      const profile_complete = existingProfile && existingProfile.first_name && existingProfile.last_name;
+      
+      console.log('Profile exists:', profile_exists, '| Profile complete:', profile_complete);
+      if (existingProfile) {
+        console.log('Profile data:', { 
+          first_name: existingProfile.first_name, 
+          last_name: existingProfile.last_name 
+        });
       }
 
       console.log('=== OTP Verification Complete (existing user) ===');
@@ -130,7 +151,8 @@ Deno.serve(async (req) => {
         JSON.stringify({
           user: { id: user.id, phone: user.phone, email: user.email },
           session: { access_token, refresh_token },
-          profile_exists,
+          profile_exists: true, // Always true now since we just created it
+          profile_complete,
           is_new_user: false
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
