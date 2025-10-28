@@ -17,24 +17,49 @@ export const useIsDemoMode = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  // Ensure we have a valid demo auth session when demo mode is on
+  useEffect(() => {
+    const ensureSession = async () => {
+      if (!isDemoMode) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          await supabase.auth.signInWithPassword({ email: 'demo@coali.app', password: 'Demo1234!' });
+        }
+      } catch (e) {
+        console.error('Error ensuring demo session:', e);
+      }
+    };
+    ensureSession();
+  }, [isDemoMode]);
+
   const enableDemoMode = async () => {
+    // Flag demo mode first
     localStorage.setItem('is_demo_mode', 'true');
-    
-    // Generate and store demo user ID
-    const demoUserId = crypto.randomUUID();
-    localStorage.setItem('demo_user_id', demoUserId);
-    
     setIsDemoMode(true);
 
-    // Trigger demo data seeding
     try {
-      const { data, error } = await supabase.functions.invoke('seed-demo-data');
-      if (!error && data?.primaryDemoUserId) {
-        localStorage.setItem('demo_user_id', data.primaryDemoUserId);
-        localStorage.setItem('primary_demo_user_id', data.primaryDemoUserId);
+      // Ensure demo auth user exists, then sign in
+      const email = 'demo@coali.app';
+      const password = 'Demo1234!';
+      await supabase.functions.invoke('ensure-demo-user', { body: { email, password } });
+
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError || !signInData.user) {
+        throw signInError || new Error('Failed to sign in demo user');
       }
+
+      // Seed demo data using the authenticated demo user as the primary profile
+      const { data: seedData } = await supabase.functions.invoke('seed-demo-data', {
+        body: { primaryDemoUserId: signInData.user.id }
+      });
+
+      // Store demo user id for UI usage
+      const primaryId = seedData?.primaryDemoUserId || signInData.user.id;
+      localStorage.setItem('demo_user_id', primaryId);
+      localStorage.setItem('primary_demo_user_id', primaryId);
     } catch (error) {
-      console.error('Error seeding demo data:', error);
+      console.error('Error setting up demo mode:', error);
     }
   };
 
