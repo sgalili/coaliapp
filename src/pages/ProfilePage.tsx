@@ -62,13 +62,17 @@ const ProfilePage = () => {
         .from('profiles')
         .select('*')
         .eq('user_id', authUser.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) {
         console.error('Error fetching profile:', profileError);
-        if (profileError.code === 'PGRST116') {
-          navigate('/auth');
-        }
+        setIsLoading(false);
+        return;
+      }
+
+      if (!profile) {
+        console.log('No profile found, redirecting to auth');
+        navigate('/auth');
         return;
       }
 
@@ -105,7 +109,7 @@ const ProfilePage = () => {
         .from('user_balances')
         .select('zooz_balance')
         .eq('user_id', authUser.id)
-        .single();
+        .maybeSingle();
 
       // Fetch user expertise
       const { data: expertise } = await supabase
