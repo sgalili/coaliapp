@@ -253,9 +253,35 @@ const AuthPage = () => {
   const handleDemoAccount = async () => {
     setIsLoading(true);
     try {
-      // Enable demo mode without any authentication
-      await enableDemoMode();
-      
+      // Enable demo mode and ensure session
+      const ok = await enableDemoMode();
+      if (!ok) {
+        toast({
+          title: 'שגיאה',
+          description: 'לא ניתן להפעיל מצב דמו. נסו שוב.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Wait briefly until Supabase session is available
+      const { supabase } = await import('@/integrations/supabase/client');
+      let user: any = null;
+      for (let i = 0; i < 10; i++) {
+        const { data: { user: u } } = await supabase.auth.getUser();
+        if (u) { user = u; break; }
+        await new Promise((r) => setTimeout(r, 200));
+      }
+
+      if (!user) {
+        toast({
+          title: 'שגיאה',
+          description: 'התחברות לחשבון הדמו נכשלה. נסו שוב.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
       toast({
         title: "ברוכים הבאים למצב דמו!",
         description: "אתם כעת צופים בחשבון הדמו של ירון זלקה",
