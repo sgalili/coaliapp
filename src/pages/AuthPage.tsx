@@ -35,7 +35,7 @@ const AuthPage = () => {
   const { t } = useTranslation();
   const { saveAffiliateLink } = useAffiliateLinks();
   const { toast } = useToast();
-  const { enableDemoMode } = useIsDemoMode();
+  const { enableDemoMode, isDemoMode } = useIsDemoMode();
 
   useEffect(() => {
     // Save affiliate link if present in URL
@@ -45,6 +45,25 @@ const AuthPage = () => {
       saveAffiliateLink(ref);
     }
   }, [location, saveAffiliateLink]);
+
+  // Auto-redirect when demo mode is active and session becomes available
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!isDemoMode) return;
+      const { supabase } = await import('@/integrations/supabase/client');
+      for (let i = 0; i < 20 && !cancelled; i++) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          navigate('/');
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 200));
+      }
+    };
+    run();
+    return () => { cancelled = true; };
+  }, [isDemoMode, navigate]);
 
   const handlePhoneSubmit = async (phone: string) => {
     setIsLoading(true);
