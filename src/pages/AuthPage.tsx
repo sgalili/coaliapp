@@ -238,86 +238,14 @@ const AuthPage = () => {
   };
 
   const handleDemoAccount = async () => {
+    // Direct demo access: no auth, just flag and navigate
     setIsLoading(true);
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
-      
-      // Demo account credentials (pre-created)
-      const demoEmail = 'demo@coali.app';
-      const demoPassword = 'demo123456';
-      
-      // Try to sign in first
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPassword,
-      });
-
-      let userId: string;
-
-      if (signInError) {
-        // If sign in fails, create new demo account
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: demoEmail,
-          password: demoPassword,
-          options: {
-            data: {
-              first_name: 'Demo',
-              last_name: 'User',
-            }
-          }
-        });
-
-        if (signUpError) {
-          console.error('Error creating demo account:', signUpError);
-          toast({
-            title: "שגיאה",
-            description: "לא ניתן ליצור חשבון דמו",
-            variant: "destructive"
-          });
-          return;
-        }
-
-        userId = signUpData.user!.id;
-
-        // Create demo profile
-        const { error: profileError } = await supabase
-          .from('demo_profiles')
-          .insert({
-            user_id: userId,
-            first_name: 'Demo',
-            last_name: 'User',
-            phone: '+972501111111',
-          });
-
-        if (profileError) {
-          console.error('Error creating demo profile:', profileError);
-        }
-      } else {
-        userId = signInData.user.id;
-      }
-
-      // Update profiles table to mark as demo
-      await supabase
-        .from('profiles')
-        .upsert({
-          user_id: userId,
-          first_name: 'Demo',
-          last_name: 'User',
-          phone: '+972501111111',
-          is_demo: true
-        });
-
-      console.log('Demo account logged in successfully');
-      
-      // Navigate to home
+      localStorage.setItem('coali_demo_mode', '1');
+      localStorage.setItem('coali_demo_email', 'demo@coali.app');
       navigate('/');
     } catch (error) {
-      console.error('Error setting up demo account:', error);
-      toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה בהתחברות לחשבון דמו",
-        variant: "destructive"
-      });
+      console.error('Demo navigation error:', error);
     } finally {
       setIsLoading(false);
     }

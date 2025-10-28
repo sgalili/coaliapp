@@ -137,46 +137,62 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check if user exists by email
-    console.log('Checking for existing user by email:', email);
-    const { data: existingByEmail, error: getByEmailError } = await supabaseAdmin.auth.admin.getUserByEmail(email);
-    if (getByEmailError) {
-      console.error('Error getUserByEmail:', getByEmailError);
-    }
+  // Check for existing user by email with a safe fallback when getUserByEmail is unavailable
+  console.log('Checking for existing user by email:', email);
+  let user: any = null;
+  let isNewUser = false;
 
-    let user;
-    let isNewUser = false;
+  try {
+    const adminApi: any = (supabaseAdmin as any).auth.admin;
 
-    if (existingByEmail?.user) {
-      console.log('Existing user found:', existingByEmail.user.id);
-      user = existingByEmail.user;
-      // Ensure password is set so we can create a session
-      const { error: updatePwdError } = await supabaseAdmin.auth.admin.updateUserById(user.id, { password });
-      if (updatePwdError) {
-        console.error('Error updating user password:', updatePwdError);
+    if (adminApi && typeof adminApi.getUserByEmail === 'function') {
+      const { data, error } = await adminApi.getUserByEmail(email);
+      if (error) {
+        console.error('Error getUserByEmail:', error);
       }
+      user = data?.user ?? null;
     } else {
-      // Create new email-based user linked to phone in metadata
-      console.log('Creating new user with email:', email, 'and phone:', phone);
-      const { data: newUserData, error: createError } = await supabaseAdmin.auth.admin.createUser({
-        email,
-        email_confirm: true,
-        password,
-        user_metadata: { phone }
-      });
-
-      if (createError || !newUserData?.user) {
-        console.error('Error creating user:', createError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to create user' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+      console.log('getUserByEmail not available, using listUsers fallback');
+      const { data: listData, error: listErr } = await adminApi.listUsers({ page: 1, perPage: 1000 });
+      if (listErr) {
+        console.error('listUsers error:', listErr);
+      } else {
+        user = listData?.users?.find((u: any) => u.email?.toLowerCase() === email.toLowerCase()) ?? null;
       }
-
-      console.log('New user created:', newUserData.user.id);
-      user = newUserData.user;
-      isNewUser = true;
     }
+  } catch (e) {
+    console.error('Admin email lookup failed:', e);
+  }
+
+  if (user) {
+    console.log('Existing user found:', user.id);
+    // Ensure password is set so we can create a session
+    const { error: updatePwdError } = await (supabaseAdmin as any).auth.admin.updateUserById(user.id, { password });
+    if (updatePwdError) {
+      console.error('Error updating user password:', updatePwdError);
+    }
+  } else {
+    // Create new email-based user linked to phone in metadata
+    console.log('Creating new user with email:', email, 'and phone:', phone);
+    const { data: newUserData, error: createError } = await (supabaseAdmin as any).auth.admin.createUser({
+      email,
+      email_confirm: true,
+      password,
+      user_metadata: { phone }
+    });
+
+    if (createError || !newUserData?.user) {
+      console.error('Error creating user:', createError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to create user' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('New user created:', newUserData.user.id);
+    user = newUserData.user;
+    isNewUser = true;
+  }
 
     console.log('Signing in with email/password to create session...');
     const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
