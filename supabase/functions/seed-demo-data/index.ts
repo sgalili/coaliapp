@@ -16,13 +16,17 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Read optional body with primary_user_id
+    const reqBody = await req.json().catch(() => ({} as any));
+    const primaryUserIdFromClient = reqBody?.primary_user_id ?? null;
+
     console.log('Starting demo data seeding...');
 
     // Clear existing demo data
     await clearDemoData(supabase);
 
     // Generate demo profiles
-    const profiles = await generateDemoProfiles(supabase);
+    const profiles = await generateDemoProfiles(supabase, primaryUserIdFromClient);
     console.log(`Created ${profiles.length} demo profiles`);
 
     // Generate demo posts
@@ -99,9 +103,9 @@ async function clearDemoData(supabase: any) {
   }
 }
 
-async function generateDemoProfiles(supabase: any) {
-  // First, create the primary demo user (Yaron Zelekha)
-  const primaryDemoUserId = crypto.randomUUID();
+async function generateDemoProfiles(supabase: any, primaryUserIdArg?: string) {
+  // First, create or bind to the primary demo user (Yaron Zelekha)
+  const primaryDemoUserId = primaryUserIdArg || crypto.randomUUID();
   const primaryJoinDate = new Date('2023-03-15');
   
   const { data: primaryProfile, error: primaryError } = await supabase
@@ -713,9 +717,6 @@ async function generateDemoNews(supabase: any) {
       comment_count: commentCount,
       thumbnail_url: '/public/vote.png',
       is_published: true,
-    });
-  }
-}
     });
   }
 }
