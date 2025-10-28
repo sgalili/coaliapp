@@ -238,14 +238,29 @@ const AuthPage = () => {
   };
 
   const handleDemoAccount = async () => {
-    // Direct demo access: no auth, just flag and navigate
     setIsLoading(true);
     try {
-      localStorage.setItem('coali_demo_mode', '1');
-      localStorage.setItem('coali_demo_email', 'demo@coali.app');
+      const { supabase } = await import('@/integrations/supabase/client');
+      const demoEmail = 'demo@coali.app';
+      const demoPassword = 'demo123456';
+
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      if (signInError) {
+        console.error('Demo sign-in failed:', signInError);
+        toast({ title: 'שגיאה', description: 'לא ניתן להתחבר לחשבון הדגמה', variant: 'destructive' });
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('Demo account logged in:', signInData.user.id);
       navigate('/');
     } catch (error) {
-      console.error('Demo navigation error:', error);
+      console.error('Demo login error:', error);
+      toast({ title: 'שגיאה', description: 'אירעה שגיאה בהתחברות לחשבון דמו', variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
