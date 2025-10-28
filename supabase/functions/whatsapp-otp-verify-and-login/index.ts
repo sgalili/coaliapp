@@ -96,6 +96,47 @@ Deno.serve(async (req) => {
     const email = `otp+${normalized}@coalichain.demo`;
     const password = `PhoneOtp!${normalized}`; // deterministic but non-guessable enough for demo
 
+    // Try signing in first in case account already exists
+    console.log('Attempting sign-in first with existing account...', { email });
+    const { data: trySignIn, error: trySignInError } = await supabaseAdmin.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (!trySignInError && trySignIn?.session && trySignIn?.user) {
+      const access_token = trySignIn.session.access_token;
+      const refresh_token = trySignIn.session.refresh_token;
+      const user = trySignIn.user;
+
+      console.log('Existing account sign-in succeeded for user:', user.id);
+
+      // Check if profile exists
+      console.log('Checking for existing profile...');
+      const { data: profile, error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      const profile_exists = !!profile && !profileError;
+      console.log('Profile exists:', profile_exists, profile ? `(${profile.first_name} ${profile.last_name})` : '');
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('Error checking profile:', profileError);
+      }
+
+      console.log('=== OTP Verification Complete (existing user) ===');
+      return new Response(
+        JSON.stringify({
+          user: { id: user.id, phone: user.phone, email: user.email },
+          session: { access_token, refresh_token },
+          profile_exists,
+          is_new_user: false
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Check if user exists by email
     console.log('Checking for existing user by email:', email);
     const { data: existingByEmail, error: getByEmailError } = await supabaseAdmin.auth.admin.getUserByEmail(email);

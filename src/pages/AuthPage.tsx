@@ -242,8 +242,8 @@ const AuthPage = () => {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // Demo account credentials
-      const demoEmail = 'demo@coalichain.com';
+      // Demo account credentials (pre-created)
+      const demoEmail = 'demo@coali.app';
       const demoPassword = 'demo123456';
       
       // Try to sign in first
@@ -345,7 +345,7 @@ const AuthPage = () => {
                   disabled={isLoading}
                   className="w-full py-3 px-4 rounded-lg border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-semibold transition-colors disabled:opacity-50"
                 >
-                  {t('auth.demoAccount', 'Demo Account')}
+                  {t('auth.demoAccount', 'כניסה לחשבון הדגמה')}
                 </button>
               </div>
             </>
