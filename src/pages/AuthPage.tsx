@@ -8,6 +8,7 @@ import { LanguageSelector } from '@/components/auth/LanguageSelector';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
 import { useToast } from '@/hooks/use-toast';
+import { useIsDemoMode } from '@/hooks/useIsDemoMode';
 
 type AuthStep = 'phone' | 'otp' | 'profile' | 'onboarding';
 
@@ -34,6 +35,7 @@ const AuthPage = () => {
   const { t } = useTranslation();
   const { saveAffiliateLink } = useAffiliateLinks();
   const { toast } = useToast();
+  const { enableDemoMode } = useIsDemoMode();
 
   useEffect(() => {
     // Save affiliate link if present in URL
@@ -251,49 +253,23 @@ const AuthPage = () => {
   const handleDemoAccount = async () => {
     setIsLoading(true);
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
-      const demoEmail = 'demo@coali.app';
-      const demoPassword = 'demo123456';
-
-      // First try to sign in directly
-      let { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPassword,
+      // Enable demo mode without any authentication
+      await enableDemoMode();
+      
+      toast({
+        title: "ברוכים הבאים למצב דמו!",
+        description: "אתם כעת צופים בחשבון הדמו של ירון זלקה",
       });
-
-      if (signInError) {
-        console.warn('Demo sign-in failed, ensuring demo user exists:', signInError?.message || signInError);
-        // Ensure the demo user exists and is confirmed
-        const { data: ensureData, error: ensureError } = await supabase.functions.invoke('ensure-demo-user', {
-          body: { email: demoEmail, password: demoPassword },
-        });
-
-        if (ensureError) {
-          console.error('Failed to ensure demo user:', ensureError);
-          toast({ title: 'Error', description: 'Could not create demo account', variant: 'destructive' });
-          setIsLoading(false);
-          return;
-        }
-
-        // Retry sign-in
-        ({ data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: demoEmail,
-          password: demoPassword,
-        }));
-
-        if (signInError) {
-          console.error('Demo sign-in failed after ensure:', signInError);
-          toast({ title: 'Error', description: 'Unable to log into demo account', variant: 'destructive' });
-          setIsLoading(false);
-          return;
-        }
-      }
-
-      console.log('Demo account logged in:', signInData?.user?.id);
+      
+      // Redirect directly to home
       navigate('/');
     } catch (error) {
-      console.error('Demo login error:', error);
-      toast({ title: 'Error', description: 'Unexpected error signing into demo', variant: 'destructive' });
+      console.error('Demo mode error:', error);
+      toast({ 
+        title: 'שגיאה', 
+        description: 'לא ניתן להיכנס למצב דמו', 
+        variant: 'destructive' 
+      });
     } finally {
       setIsLoading(false);
     }
