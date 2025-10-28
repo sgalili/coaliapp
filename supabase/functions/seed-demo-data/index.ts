@@ -57,6 +57,10 @@ serve(async (req) => {
     await generateDemoNewsComments(supabase, profiles);
     console.log('Created demo news comments');
 
+    // Generate demo messages
+    await generateDemoMessages(supabase, profiles);
+    console.log('Created demo messages');
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -79,6 +83,7 @@ serve(async (req) => {
 
 async function clearDemoData(supabase: any) {
   const tables = [
+    'demo_messages',
     'demo_trusts',
     'demo_poll_votes',
     'demo_zooz_transactions',
@@ -762,3 +767,146 @@ async function generateDemoNewsComments(supabase: any, profiles: any[]) {
     }
   }
 }
+
+async function generateDemoMessages(supabase: any, profiles: any[]) {
+  if (!profiles || profiles.length < 8) {
+    console.log('Not enough profiles for messages');
+    return;
+  }
+
+  const primaryUser = profiles[0]; // Yaron Zelekha
+  const now = new Date();
+  
+  const conversations = [
+    {
+      otherUser: profiles[1], // דוד לוי
+      messages: [
+        { content: 'היי, ראיתי את הפוסט שלך על הכלכלה. מאוד מעניין!', sent: false, daysAgo: 7 },
+        { content: 'תודה רבה! שמח שנהנית', sent: true, daysAgo: 7 },
+        { content: 'יש לך עוד מקורות על הנושא?', sent: false, daysAgo: 6 },
+        { content: 'בטח, אני אשלח לך כמה מאמרים', sent: true, daysAgo: 6 },
+        { content: 'מעולה, אשמח לקרוא', sent: false, daysAgo: 5 },
+        { content: 'שלחתי לך בהודעה פרטית', sent: true, daysAgo: 5 },
+        { content: 'קיבלתי, תודה רבה! 🙏', sent: false, daysAgo: 4 },
+        { content: 'בכיף! תמיד שמח לעזור', sent: true, daysAgo: 4 },
+        { content: 'אגב, אתה מתכנן לפרסם עוד תכנים בנושא?', sent: false, daysAgo: 2 },
+        { content: 'כן, בשבוע הבא אני מפרסם משהו חדש', sent: true, daysAgo: 2 },
+        { content: 'אחלה! אחכה בקוצר רוח 😊', sent: false, daysAgo: 1 },
+      ]
+    },
+    {
+      otherUser: profiles[2], // נועה רותם
+      messages: [
+        { content: 'שלום! יש לי רעיון לשיתוף פעולה', sent: false, daysAgo: 5 },
+        { content: 'שלום נועה! מה הרעיון?', sent: true, daysAgo: 5 },
+        { content: 'חשבתי שנוכל ליצור סדרת תכנים ביחד על כלכלה', sent: false, daysAgo: 5 },
+        { content: 'נשמע מעניין מאוד! ספרי לי עוד', sent: true, daysAgo: 5 },
+        { content: 'אני חושבת על 5-6 פרקים, כל אחד על נושא אחר', sent: false, daysAgo: 4 },
+        { content: 'אהבתי את הרעיון. בוא נקבע פגישה?', sent: true, daysAgo: 4 },
+        { content: 'בטח! מתי נוח לך?', sent: false, daysAgo: 4 },
+        { content: 'מחר אחרי 17:00?', sent: true, daysAgo: 3 },
+        { content: 'מצוין! נדבר מחר', sent: false, daysAgo: 3 },
+        { content: 'הפגישה הייתה מעולה! בואו נתחיל', sent: false, daysAgo: 2 },
+        { content: 'אני כבר מתחיל לעבוד על זה 💪', sent: true, daysAgo: 2 },
+        { content: 'אני גם! נדבר בסוף השבוע על ההתקדמות', sent: false, daysAgo: 1 },
+      ]
+    },
+    {
+      otherUser: profiles[3], // רחל כהן
+      messages: [
+        { content: 'תודה רבה על ה-Zooz! 🙏', sent: false, daysAgo: 3 },
+        { content: 'בשמחה! הפוסט שלך היה מצוין', sent: true, daysAgo: 3 },
+        { content: 'זה ממש עוזר לי להמשיך ליצור תוכן', sent: false, daysAgo: 3 },
+        { content: 'את עושה עבודה נהדרת, מגיע לך', sent: true, daysAgo: 3 },
+        { content: 'אם תצטרך עזרה, אני כאן', sent: true, daysAgo: 2 },
+        { content: 'תודה! אולי אצטרך ייעוץ בנושא כלכלי', sent: false, daysAgo: 2 },
+        { content: 'תמיד פתוח לשאלות 😊', sent: true, daysAgo: 2 },
+      ]
+    },
+    {
+      otherUser: profiles[4], // אמית ברק
+      messages: [
+        { content: 'שלום, יש לי שאלה על הפוסט האחרון שלך', sent: false, daysAgo: 2 },
+        { content: 'כן, בטח! מה השאלה?', sent: true, daysAgo: 2 },
+        { content: 'לא הבנתי את החלק על הריבית', sent: false, daysAgo: 2 },
+        { content: 'אני אסביר: כשהריבית עולה, ההלוואות יותר יקרות', sent: true, daysAgo: 2 },
+        { content: 'אה, עכשיו זה ברור! תודה', sent: false, daysAgo: 2 },
+        { content: 'אין בעד מה! תמיד שמח לעזור', sent: true, daysAgo: 2 },
+        { content: 'יש לך עוד פוסטים בנושא?', sent: false, daysAgo: 1 },
+        { content: 'כן, תחפש בפרופיל שלי תחת "כלכלה"', sent: true, daysAgo: 1 },
+        { content: 'מצאתי, תודה רבה!', sent: false, daysAgo: 1 },
+      ]
+    },
+    {
+      otherUser: profiles[5], // שרה אברהם
+      messages: [
+        { content: 'היי! אהבתי את הסרטון שלך', sent: false, daysAgo: 4 },
+        { content: 'תודה רבה! 😊', sent: true, daysAgo: 4 },
+        { content: 'איך אתה מכין את התכנים?', sent: false, daysAgo: 4 },
+        { content: 'אני מתכנן, כותב תסריט, ואז מצלם', sent: true, daysAgo: 4 },
+        { content: 'כמה זמן לוקח?', sent: false, daysAgo: 3 },
+        { content: 'בסביבות 3-4 שעות לכל סרטון', sent: true, daysAgo: 3 },
+        { content: 'וואו, זה הרבה עבודה!', sent: false, daysAgo: 3 },
+        { content: 'כן, אבל שווה את זה כשרואים את התגובות', sent: true, daysAgo: 3 },
+      ]
+    },
+    {
+      otherUser: profiles[6], // מיכל גולן
+      messages: [
+        { content: 'שלום ירון! ראיתי את הניתוח שלך על השוק', sent: false, daysAgo: 6 },
+        { content: 'שלום מיכל! מה דעתך?', sent: true, daysAgo: 6 },
+        { content: 'מאוד מקצועי ומעמיק', sent: false, daysAgo: 6 },
+        { content: 'תודה! השקעתי בזה הרבה זמן', sent: true, daysAgo: 6 },
+        { content: 'זה ניכר. המשך כך!', sent: false, daysAgo: 5 },
+      ]
+    },
+    {
+      otherUser: profiles[7], // יעקב לוי
+      messages: [
+        { content: 'תודה על התגובה לפוסט שלי', sent: false, daysAgo: 3 },
+        { content: 'בשמחה! היה מעניין לקרוא', sent: true, daysAgo: 3 },
+        { content: 'יש לך המלצות לשיפור?', sent: false, daysAgo: 3 },
+        { content: 'אולי להוסיף עוד דוגמאות', sent: true, daysAgo: 3 },
+        { content: 'רעיון מצוין! תודה', sent: false, daysAgo: 2 },
+      ]
+    },
+  ];
+
+  const messages: any[] = [];
+  
+  for (const conversation of conversations) {
+    const conversationId = [primaryUser.user_id, conversation.otherUser.user_id].sort().join('-');
+    
+    for (const msg of conversation.messages) {
+      const messageDate = new Date(now);
+      messageDate.setDate(messageDate.getDate() - msg.daysAgo);
+      messageDate.setHours(Math.floor(Math.random() * 12) + 9); // 9-21
+      messageDate.setMinutes(Math.floor(Math.random() * 60));
+      
+      messages.push({
+        sender_id: msg.sent ? primaryUser.user_id : conversation.otherUser.user_id,
+        recipient_id: msg.sent ? conversation.otherUser.user_id : primaryUser.user_id,
+        content: msg.content,
+        conversation_id: conversationId,
+        created_at: messageDate.toISOString(),
+        is_read: msg.daysAgo > 1 || msg.sent, // Recent received messages are unread
+      });
+    }
+  }
+
+  // Insert messages in batches
+  const batchSize = 50;
+  for (let i = 0; i < messages.length; i += batchSize) {
+    const batch = messages.slice(i, i + batchSize);
+    const { error } = await supabase
+      .from('demo_messages')
+      .insert(batch);
+
+    if (error) {
+      console.error('Error inserting demo messages batch:', error);
+    }
+  }
+
+  console.log(`Created ${messages.length} demo messages in ${conversations.length} conversations`);
+}
+
