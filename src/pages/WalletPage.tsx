@@ -43,6 +43,32 @@ const WalletPage = () => {
     });
   };
 
+  // Calculate stats from transactions
+  const totalEarned = transactions
+    .filter(tx => ['reward', 'receive'].includes(tx.type))
+    .reduce((sum, tx) => sum + tx.amount, 0);
+  
+  const totalSent = transactions
+    .filter(tx => tx.type === 'send')
+    .reduce((sum, tx) => sum + tx.amount, 0);
+  
+  const totalReceived = transactions
+    .filter(tx => tx.type === 'receive')
+    .reduce((sum, tx) => sum + tx.amount, 0);
+  
+  const thisMonth = transactions
+    .filter(tx => {
+      const txDate = new Date(tx.timestamp);
+      const now = new Date();
+      return txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear();
+    })
+    .reduce((sum, tx) => {
+      if (tx.type === 'send' || tx.type === 'withdrawal' || tx.type === 'purchase') {
+        return sum - tx.amount;
+      }
+      return sum + tx.amount;
+    }, 0);
+
   return (
     <div className="h-screen bg-background flex flex-col">
       {/* Demo Mode Banner */}
@@ -80,6 +106,28 @@ const WalletPage = () => {
             onSendClick={handleSendClick}
             onWithdrawClick={handleWithdrawClick}
           />
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-card rounded-lg p-4 border border-border">
+              <div className="text-xs text-muted-foreground mb-1">סה"כ הרווחת</div>
+              <div className="text-xl font-bold text-green-600">{totalEarned.toLocaleString()}Z</div>
+            </div>
+            <div className="bg-card rounded-lg p-4 border border-border">
+              <div className="text-xs text-muted-foreground mb-1">סה"כ שלחת</div>
+              <div className="text-xl font-bold text-red-600">{totalSent.toLocaleString()}Z</div>
+            </div>
+            <div className="bg-card rounded-lg p-4 border border-border">
+              <div className="text-xs text-muted-foreground mb-1">סה"כ קיבלת</div>
+              <div className="text-xl font-bold text-blue-600">{totalReceived.toLocaleString()}Z</div>
+            </div>
+            <div className="bg-card rounded-lg p-4 border border-border">
+              <div className="text-xs text-muted-foreground mb-1">החודש</div>
+              <div className={`text-xl font-bold ${thisMonth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {thisMonth >= 0 ? '+' : ''}{thisMonth.toLocaleString()}Z
+              </div>
+            </div>
+          </div>
 
           {/* Earn More Section */}
           <EarnMoreZooz onRewardClick={handleRewardClick} />

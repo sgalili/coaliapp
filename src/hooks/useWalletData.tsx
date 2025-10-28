@@ -4,7 +4,7 @@ import { useIsDemoMode } from './useIsDemoMode';
 
 interface Transaction {
   id: string;
-  type: 'send' | 'receive' | 'reward' | 'purchase';
+  type: 'send' | 'receive' | 'reward' | 'purchase' | 'withdrawal';
   amount: number;
   description: string;
   timestamp: Date;
@@ -82,22 +82,22 @@ export const useWalletData = (): WalletData => {
           .eq('user_id', demoUserId)
           .maybeSingle();
 
-        // Get transactions
+        // Get transactions - cast to any to handle dynamic table
         const { data: transactionsData } = await supabase
-          .from('zooz_transactions')
+          .from('demo_zooz_transactions' as any)
           .select('*')
           .or(`from_user_id.eq.${demoUserId},to_user_id.eq.${demoUserId}`)
           .order('created_at', { ascending: false })
-          .limit(10);
+          .limit(50);
 
         if (balanceData) {
           setWalletData({
             zoozBalance: balanceData.zooz_balance || 0,
             usdValue: balanceData.usd_value || 0,
             percentageChange: balanceData.percentage_change || 0,
-            transactions: (transactionsData || []).map(tx => ({
+            transactions: (transactionsData || []).map((tx: any) => ({
               id: tx.id,
-              type: tx.transaction_type as 'send' | 'receive' | 'reward' | 'purchase',
+              type: tx.transaction_type as 'send' | 'receive' | 'reward' | 'purchase' | 'withdrawal',
               amount: tx.amount,
               description: tx.description || '',
               timestamp: new Date(tx.created_at),

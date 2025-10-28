@@ -3,7 +3,7 @@ import { Separator } from "./ui/separator";
 
 interface Transaction {
   id: string;
-  type: 'send' | 'receive' | 'reward' | 'purchase';
+  type: 'send' | 'receive' | 'reward' | 'purchase' | 'withdrawal';
   amount: number;
   description: string;
   timestamp: Date;

@@ -3,9 +3,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Search, User, Check } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import { ContactPicker } from "./ContactPicker";
 import { TransactionConfirmation } from "./TransactionConfirmation";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useIsDemoMode } from "@/hooks/useIsDemoMode";
 
 interface SendZoozModalProps {
   isOpen: boolean;
@@ -37,6 +40,8 @@ export const SendZoozModal = ({ isOpen, onClose, currentBalance }: SendZoozModal
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const { isDemoMode, getDemoUserId } = useIsDemoMode();
+  const { toast: showToast } = useToast();
 
   const zoozAmount = amount ? parseInt(amount) : 0;
   const isValidAmount = zoozAmount > 0 && zoozAmount <= currentBalance;
@@ -73,7 +78,39 @@ export const SendZoozModal = ({ isOpen, onClose, currentBalance }: SendZoozModal
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    if (isDemoMode) {
+      const demoUserId = getDemoUserId();
+      if (!demoUserId) return;
+
+      // Create demo transaction
+      const { error } = await supabase
+        .from('demo_zooz_transactions' as any)
+        .insert({
+          from_user_id: demoUserId,
+          to_user_id: null,
+          amount: parseInt(amount),
+          transaction_type: 'send',
+          status: 'completed',
+          description: 'שלחת Zooz',
+          note: selectedContact?.name || customRecipient
+        });
+
+      if (error) {
+        showToast({
+          title: "שגיאה",
+          description: "לא ניתן ליצור את ההעברה",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
+    showToast({
+      title: "העברה בוצעה בהצלחה",
+      description: `שלחת ${amount} Zooz ל${selectedContact?.name || customRecipient}`,
+    });
+    
     // Transaction confirmed, close modal
     onClose();
     // Reset state

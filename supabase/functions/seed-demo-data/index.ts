@@ -81,7 +81,7 @@ async function clearDemoData(supabase: any) {
   const tables = [
     'demo_trusts',
     'demo_poll_votes',
-    'zooz_transactions',
+    'demo_zooz_transactions',
     'user_balances',
     'demo_posts',
     'demo_news_articles',
@@ -439,31 +439,95 @@ async function generateDemoComments(supabase: any, posts: any[], profiles: any[]
 }
 
 async function generateWalletData(supabase: any, profiles: any[]) {
-  const transactionTypes = ['reward', 'send', 'receive', 'purchase'];
-  const descriptions = [
-    'פרסום פוסט פופולרי',
-    'קיבלת תגובה חיובית',
-    'העברה מחבר',
-    'רכישת Zooz',
-    'פרס על תוכן איכותי',
-    'השתתפות בסקר',
-  ];
+  const primaryUser = profiles.find(p => p.isPrimary);
+  
+  if (primaryUser) {
+    // Create balance for primary user
+    await supabase.from('user_balances').upsert({
+      user_id: primaryUser.user_id,
+      zooz_balance: 15680,
+      usd_value: 200.52,
+      percentage_change: 2.21,
+      updated_at: new Date().toISOString()
+    });
 
-  for (const profile of profiles) {
-    // Generate 3-5 transactions per user
-    const txCount = Math.floor(3 + Math.random() * 3);
-    
+    // Rich transaction types for primary user
+    const transactionTypes = [
+      { type: 'reward', amount: 250, description: 'הרווחת Zooz מפוסט על כלכלה' },
+      { type: 'reward', amount: 180, description: 'הרווחת Zooz מפוסט על טכנולוגיה' },
+      { type: 'reward', amount: 150, description: 'בונוס אמון - 10 אנשים נתנו אמון' },
+      { type: 'reward', amount: 320, description: 'הרווחת Zooz מסרטון ויראלי' },
+      { type: 'reward', amount: 90, description: 'השתתפות בסקר' },
+      { type: 'reward', amount: 120, description: 'תגובה איכותית' },
+      { type: 'receive', amount: 500, description: 'העברת Zooz', note: 'דוד לוי' },
+      { type: 'receive', amount: 300, description: 'העברת Zooz', note: 'שרה כהן' },
+      { type: 'receive', amount: 750, description: 'העברת Zooz', note: 'מיכל רוזן' },
+      { type: 'receive', amount: 200, description: 'העברת Zooz', note: 'אבי שמעון' },
+      { type: 'send', amount: 300, description: 'שלחת Zooz', note: 'נועה רותם' },
+      { type: 'send', amount: 450, description: 'שלחת Zooz', note: 'אבי שמעון' },
+      { type: 'send', amount: 200, description: 'שלחת Zooz', note: 'רונית ברק' },
+      { type: 'send', amount: 150, description: 'שלחת Zooz', note: 'יעל כהן' },
+      { type: 'purchase', amount: 200, description: 'רכישת תוכן פרמיום' },
+      { type: 'purchase', amount: 1500, description: 'רכישת Zooz' },
+      { type: 'withdrawal', amount: 1000, description: 'משיכה לחשבון בנק' },
+      { type: 'withdrawal', amount: 500, description: 'משיכה לחשבון בנק' },
+    ];
+
+    // Generate 60 transactions over 30 days for primary user
+    const now = new Date();
+    for (let i = 0; i < 60; i++) {
+      const txType = transactionTypes[Math.floor(Math.random() * transactionTypes.length)];
+      const daysAgo = Math.floor(Math.random() * 30);
+      const hoursAgo = Math.floor(Math.random() * 24);
+      const txDate = new Date(now);
+      txDate.setDate(txDate.getDate() - daysAgo);
+      txDate.setHours(txDate.getHours() - hoursAgo);
+
+      const isReceive = txType.type === 'receive';
+      const isSend = txType.type === 'send';
+      const randomUser = profiles[Math.floor(Math.random() * profiles.length)];
+
+      await supabase.from('demo_zooz_transactions').insert({
+        created_at: txDate.toISOString(),
+        from_user_id: isSend ? primaryUser.user_id : (isReceive ? randomUser.user_id : null),
+        to_user_id: isReceive ? primaryUser.user_id : (isSend ? randomUser.user_id : null),
+        amount: txType.amount,
+        transaction_type: txType.type,
+        status: 'completed',
+        description: txType.description,
+        note: txType.note || null,
+      });
+    }
+  }
+
+  // Generate basic transactions for other demo users
+  const otherUsers = profiles.filter(p => !p.isPrimary);
+  for (const profile of otherUsers) {
+    // Create balance
+    const balance = Math.floor(100 + Math.random() * 5000);
+    await supabase.from('user_balances').upsert({
+      user_id: profile.user_id,
+      zooz_balance: balance,
+      usd_value: balance * 0.0128,
+      percentage_change: (Math.random() - 0.5) * 10,
+      updated_at: new Date().toISOString()
+    });
+
+    // Generate 3-8 transactions
+    const txCount = Math.floor(3 + Math.random() * 6);
     for (let i = 0; i < txCount; i++) {
-      const type = transactionTypes[Math.floor(Math.random() * transactionTypes.length)];
-      const amount = type === 'purchase' ? Math.floor(50 + Math.random() * 450) : Math.floor(1 + Math.random() * 50);
-      
-      await supabase.from('zooz_transactions').insert({
+      const types = ['reward', 'receive', 'send', 'purchase'];
+      const type = types[Math.floor(Math.random() * types.length)];
+      const amount = Math.floor(10 + Math.random() * 200);
+
+      await supabase.from('demo_zooz_transactions').insert({
         from_user_id: type === 'send' ? profile.user_id : null,
-        to_user_id: type === 'receive' || type === 'reward' ? profile.user_id : null,
+        to_user_id: ['receive', 'reward'].includes(type) ? profile.user_id : null,
         amount,
         transaction_type: type,
-        description: descriptions[Math.floor(Math.random() * descriptions.length)],
+        description: type === 'reward' ? 'פרס על תוכן' : type === 'purchase' ? 'רכישת Zooz' : 'העברה',
         created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'completed'
       });
     }
   }
