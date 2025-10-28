@@ -728,9 +728,6 @@ async function generateDemoNews(supabase: any) {
     });
   }
 }
-    });
-  }
-}
 
 async function generateDemoNewsComments(supabase: any, profiles: any[]) {
   // First get all demo news articles
