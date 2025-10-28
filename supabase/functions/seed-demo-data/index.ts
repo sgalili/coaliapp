@@ -53,6 +53,10 @@ serve(async (req) => {
     await generateDemoNews(supabase);
     console.log('Created demo news');
 
+    // Generate demo news comments
+    await generateDemoNewsComments(supabase, profiles);
+    console.log('Created demo news comments');
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -539,31 +543,158 @@ async function generateDemoPolls(supabase: any, profiles: any[]) {
 
 async function generateDemoNews(supabase: any) {
   const newsTemplates = [
-    { title: 'הממשלה מאשרת תקציב שיא לחינוך', category: 'חינוך', source: 'חדשות 13' },
-    { title: 'פריצת דרך בטכנולוגיית האנרגיה הירוקה', category: 'סביבה', source: 'גלובס' },
-    { title: 'כלכלנים צופים צמיחה של 4% השנה', category: 'כלכלה', source: 'TheMarker' },
-    { title: 'מחקר חדש על השפעת הבינה המלאכותית', category: 'טכנולוגיה', source: 'Ynet' },
-    { title: 'רפורמה במערכת הבריאות זוכה לתמיכה רחבה', category: 'בריאות', source: 'מעריב' },
-    { title: 'ראש הממשלה בנאום חשוב בכנסת', category: 'פוליטיקה', source: 'ערוץ 12' },
-    { title: 'חברות הייטק ישראליות מגייסות מיליארדים', category: 'טכנולוגיה', source: 'כלכליסט' },
-    { title: 'עשרות אלפים במחאה למען הסביבה', category: 'חברה', source: 'הארץ' },
-    { title: 'משבר דיור: פתרונות חדשניים באופק', category: 'חברה', source: 'חדשות 13' },
-    { title: 'מערכת החינוך עוברת דיגיטציה נרחבת', category: 'חינוך', source: 'גלובס' },
+    { 
+      title: 'הממשלה מאשרת תקציב שיא לחינוך',
+      description: 'התקציב החדש כולל העלאת שכר למורים והשקעה במבנים חדשים',
+      content: 'הכנסת אישרה היום בקריאה שלישית את תקציב החינוך הגדול בתולדות המדינה. התקציב כולל העלאת שכר של 15% למורים, בניית 200 בתי ספר חדשים, והשקעה נרחבת בטכנולוגיה חינוכית. שר החינוך: "זהו צעד היסטורי שישפר את מערכת החינוך לדורות הבאים".',
+      category: 'חינוך', 
+      source: 'חדשות 13' 
+    },
+    { 
+      title: 'פריצת דרך בטכנולוגיית האנרגיה הירוקה',
+      description: 'סטארטאפ ישראלי פיתח סוללה חדשנית שמכפילה את יעילות האחסון',
+      content: 'חברת אנרטק הישראלית הציגה היום סוללה חדשנית המבוססת על טכנולוגיה קוונטית. הסוללה מסוגלת לאחסן כמות אנרגיה כפולה במשך זמן ארוך יותר, ועלותה נמוכה ב-40% מסוללות קיימות. המומחים טוענים שזו יכולה להיות מהפכה בתחום האנרגיה המתחדשת.',
+      category: 'סביבה', 
+      source: 'גלובס' 
+    },
+    { 
+      title: 'כלכלנים צופים צמיחה של 4% השנה',
+      description: 'תחזית אופטימית למרות האתגרים הגלובליים',
+      content: 'הכלכלנים המובילים במשק מעריכים כי הכלכלה הישראלית תצמח השנה ב-4%, קצב מרשים למרות המצב הגלובלי. הצמיחה תונע על ידי תעשיית ההייטק, יצוא שיאי, וצריכה פנימית חזקה. עם זאת, המומחים מזהירים מפני האינפלציה המתמשכת.',
+      category: 'כלכלה', 
+      source: 'TheMarker' 
+    },
+    { 
+      title: 'מחקר חדש על השפעת הבינה המלאכותית',
+      description: 'אוניברסיטת תל אביב חושפת: AI משנה את שוק העבודה מהר יותר מהצפוי',
+      content: 'מחקר מקיף שנערך באוניברסיטת תל אביב מראה כי טכנולוגיות AI משנות את שוק העבודה בקצב מהיר פי 3 מהתחזיות. המחקר בוחן 500 מקצועות ומצביע על הצורך בהכשרה מחדש של עובדים רבים. פרופ\' שמואל כהן: "עלינו להיערך כבר היום למציאות החדשה".',
+      category: 'טכנולוגיה', 
+      source: 'Ynet' 
+    },
+    { 
+      title: 'רפורמה במערכת הבריאות זוכה לתמיכה רחבה',
+      description: 'קואליציה רחבה תומכת בשינויים המיוחלים במערכת הבריאות',
+      content: 'הרפורמה המקיפה במערכת הבריאות זוכה לתמיכה נרחבת מכל קשת הספקטרום הפוליטי. הרפורמה כוללת הקצאת תקציב נוסף, צמצום רשימות המתנה, ושיפור תנאי העבודה של הצוות הרפואי. ארגוני הרופאים והאחיות מברכים על הצעדים.',
+      category: 'בריאות', 
+      source: 'מעריב' 
+    },
+    { 
+      title: 'ראש הממשלה בנאום חשוב בכנסת',
+      description: 'נתניהו מציג חזון למדיניות החוץ לעשור הבא',
+      content: 'ראש הממשלה בנימין נתניהו נשא היום נאום מדיניות חשוב בכנסת, בו הציג את החזון שלו למדיניות החוץ של ישראל לעשור הבא. הנאום התמקד בחיזוק הקשרים עם מדינות המפרץ, שמירה על היתרון האיכותי הביטחוני, והרחבת שיתופי הפעולה הכלכליים.',
+      category: 'פוליטיקה', 
+      source: 'ערוץ 12' 
+    },
+    { 
+      title: 'חברות הייטק ישראליות מגייסות מיליארדים',
+      description: 'גל השקעות חדש מעיד על אמון במשק הישראלי',
+      content: 'חברות הייטק ישראליות גייסו ברבעון האחרון 5.2 מיליארד דולר, שיא חדש ברבעון בודד. ההשקעות מגיעות מקרנות מובילות בעולם ומעידות על האמון הגבוה של המשקיעים הבינלאומיים בחדשנות הישראלית. ענפי ה-AI והסייבר מובילים את הגיוסים.',
+      category: 'טכנולוגיה', 
+      source: 'כלכליסט' 
+    },
+    { 
+      title: 'עשרות אלפים במחאה למען הסביבה',
+      description: 'מחאה היסטורית דורשת צעדים דרסטיים נגד משבר האקלים',
+      content: 'מאות אלפי אזרחים יצאו היום לרחובות בערים גדולות ברחבי הארץ, בדרישה מהממשלה לנקוט בצעדים מיידיים למאבק במשבר האקלים. המפגינים דרשו הגברת השימוש באנרגיות מתחדשות, הפחתת פליטות, והשקעה בתחבורה ציבורית ירוקה.',
+      category: 'חברה', 
+      source: 'הארץ' 
+    },
+    { 
+      title: 'משבר הדיור: פתרונות חדשניים באופק',
+      description: 'תוכנית לאומית מציעה דרכים יצירתיות להתמודד עם משבר הדיור',
+      content: 'משרד השיכון הציג תוכנית מקיפה שמטרתה להתמודד עם משבר הדיור. התוכנית כוללת בנייה מואצת של 100,000 יחידות דיור, תמריצים למשקיעים בדיור בר השגה, ושינוי תמ"א להקלות בנייה. המומחים סקפטיים אך רואים בזה צעד ראשון.',
+      category: 'חברה', 
+      source: 'חדשות 13' 
+    },
+    { 
+      title: 'מערכת החינוך עוברת דיגיטציה נרחבת',
+      description: 'כל תלמיד יקבל מחשב נייד ונגישות למשאבי למידה דיגיטליים',
+      content: 'משרד החינוך מתחיל ביישום תוכנית דיגיטציה ארצית. כל תלמיד בבית ספר יקבל מחשב נייד אישי, ובתי הספר יצוידו בתשתיות WiFi מהירות. בנוסף, המורים יעברו הכשרה מקיפה לשימוש בכלים דיגיטליים בהוראה.',
+      category: 'חינוך', 
+      source: 'גלובס' 
+    },
+    { 
+      title: 'בנק ישראל מעלה ריבית ל-4.5%',
+      description: 'צעד נוסף במאבק באינפלציה',
+      content: 'בנק ישראל הודיע על העלאת הריבית ב-0.25% נוספים, למרות הדאגות מהאטת הצמיחה. הנגיד הסביר כי האינפלציה עדיין גבוהה מהיעד והצעד נדרש. כלכלנים חלוקים בדעתם האם זה הצעד הנכון.',
+      category: 'כלכלה', 
+      source: 'כלכליסט' 
+    },
+    { 
+      title: 'פריצת דרך רפואית: תרופה חדשה לסרטן',
+      description: 'בית חולים תל השומר מדווח על הצלחה במחקר קליני',
+      content: 'חוקרים בבית החולים תל השומר הודיעו על הצלחה משמעותית בניסוי קליני של תרופה חדשה לסרטן. התרופה הצליחה לכווץ גידולים ב-70% מהחולים, ללא תופעות לוואי חמורות. עוד מוקדם לדבר על פריצת דרך, אך התוצאות מעודדות.',
+      category: 'בריאות', 
+      source: 'ידיעות אחרונות' 
+    },
   ];
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 40; i++) {
     const template = newsTemplates[i % newsTemplates.length];
+    const commentCount = Math.floor(50 + Math.random() * 250);
     
     await supabase.from('demo_news_articles').insert({
-      title: `${template.title} - ${i + 1}`,
-      description: 'תקציר הכתבה...',
-      content: 'תוכן מלא של הכתבה...',
+      title: i === 0 ? template.title : `${template.title} ${i > 11 ? '- חלק ' + Math.floor(i/12) : ''}`,
+      description: template.description,
+      content: template.content,
       category: template.category,
       source: template.source,
       published_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-      view_count: Math.floor(1000 + Math.random() * 9000),
-      comment_count: Math.floor(5 + Math.random() * 45),
+      view_count: Math.floor(2000 + Math.random() * 15000),
+      comment_count: commentCount,
       thumbnail_url: '/public/vote.png',
+      is_published: true,
     });
+  }
+}
+    });
+  }
+}
+
+async function generateDemoNewsComments(supabase: any, profiles: any[]) {
+  // First get all demo news articles
+  const { data: newsArticles } = await supabase
+    .from('demo_news_articles')
+    .select('id, comment_count');
+
+  if (!newsArticles || newsArticles.length === 0) return;
+
+  const commentTemplates = [
+    'נקודה מעניינת ביותר. חשוב שנדון בזה לעומק.',
+    'אני חושב שיש כאן גם צד שני למטבע שכדאי לבחון.',
+    'תודה על הכתבה המקיפה. סוף סוף מישהו מדבר על זה.',
+    'לא בטוח שאני מסכים עם כל הנקודות, אבל מעניין לקרוא.',
+    'זה בדיוק מה שאני אומר כבר שנה! סוף סוף.',
+    'המצב מורכב יותר ממה שנראה לכאורה.',
+    'יש פה המון שיקולים שצריך לקחת בחשבון.',
+    'אני מציע לבחון גם את האופציות האחרות.',
+    'זהו נושא חשוב שמגיע לו יותר תשומת לב ציבורית.',
+    'מאוד מפתיע לראות את המספרים האלה.',
+    'לדעתי זה צעד בכיוון הנכון, אבל לא מספיק.',
+    'סוף סוף הם מבינים את זה!',
+    'האם מישהו חשב על ההשלכות ארוכות הטווח?',
+    'זה נושא שדורש מחשבה מעמיקה ולא פתרונות קלים.',
+    'אני מקווה שזה יוביל לשינוי אמיתי.',
+  ];
+
+  for (const article of newsArticles) {
+    const targetComments = article.comment_count || Math.floor(10 + Math.random() * 40);
+    
+    for (let i = 0; i < targetComments; i++) {
+      const commenter = profiles[Math.floor(Math.random() * profiles.length)];
+      const comment = commentTemplates[Math.floor(Math.random() * commentTemplates.length)];
+      
+      await supabase.from('demo_posts').insert({
+        user_id: commenter.user_id,
+        content: `${comment} ${i > 0 ? `(${i})` : ''}`,
+        created_at: new Date(Date.now() - Math.random() * 5 * 24 * 60 * 60 * 1000).toISOString(),
+        trust_count: Math.floor(5 + Math.random() * 50),
+        watch_count: Math.floor(10 + Math.random() * 100),
+        comment_count: Math.floor(Math.random() * 5),
+        share_count: Math.floor(Math.random() * 10),
+        view_count: Math.floor(50 + Math.random() * 200),
+        // Store news_article_id in a metadata field or create a separate comments table
+      });
+    }
   }
 }

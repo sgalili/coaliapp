@@ -1,7 +1,11 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Share, Heart, MessageCircle, Clock, Users, Smartphone, TrendingUp, Trophy, Palette, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useIsDemoMode } from "@/hooks/useIsDemoMode";
 
 // Format time ago function
 const formatTimeAgo = (dateString: string): string => {
@@ -53,11 +57,44 @@ const mockNewsData = {
 };
 
 const NewsDetailPage = () => {
-  const { newsId, commentId } = useParams();
+  const { newsId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isDemoMode } = useIsDemoMode();
+  const [newsItem, setNewsItem] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const newsItem = mockNewsData[newsId as keyof typeof mockNewsData];
+  useEffect(() => {
+    const fetchNews = async () => {
+      if (!newsId) return;
+
+      try {
+        const tableName = isDemoMode ? 'demo_news_articles' : 'news_articles';
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('*')
+          .eq('id', newsId)
+          .single();
+
+        if (error) throw error;
+        setNewsItem(data);
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, [newsId, isDemoMode]);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!newsItem) {
     return (
@@ -71,7 +108,7 @@ const NewsDetailPage = () => {
   }
 
   const handleShare = () => {
-    const url = `${window.location.origin}/news/${newsId}${commentId ? `/comment/${commentId}` : ''}`;
+    const url = `${window.location.origin}/news/${newsId}`;
     navigator.clipboard.writeText(url);
     toast({
       title: "הקישור הועתק",
@@ -88,6 +125,8 @@ const NewsDetailPage = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
+      <DemoModeBanner />
+      
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <Button variant="ghost" size="sm" onClick={() => navigate('/news')}>
@@ -103,11 +142,13 @@ const NewsDetailPage = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 max-w-4xl mx-auto">
           {/* Article Image */}
-          <img 
-            src={newsItem.thumbnail} 
-            alt={newsItem.title}
-            className="w-full h-64 object-cover rounded-lg mb-6"
-          />
+          {newsItem.thumbnail_url && (
+            <img 
+              src={newsItem.thumbnail_url} 
+              alt={newsItem.title}
+              className="w-full h-64 object-cover rounded-lg mb-6"
+            />
+          )}
 
           {/* Article Meta */}
           <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
@@ -121,7 +162,7 @@ const NewsDetailPage = () => {
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
-                <span>{formatTimeAgo(newsItem.publishedAt)}</span>
+                <span>{formatTimeAgo(newsItem.published_at)}</span>
               </div>
               {newsItem.source && <span>{newsItem.source}</span>}
             </div>
@@ -148,29 +189,19 @@ const NewsDetailPage = () => {
               className="flex items-center gap-2 text-muted-foreground hover:text-red-500 transition-colors"
             >
               <Heart className="w-5 h-5" />
-              <span>{newsItem.likes}</span>
+              <span>{newsItem.view_count}</span>
             </button>
             <button className="flex items-center gap-2 text-muted-foreground hover:text-blue-500 transition-colors">
               <MessageCircle className="w-5 h-5" />
-              <span>{newsItem.comments}</span>
+              <span>{newsItem.comment_count}</span>
             </button>
             <button 
               onClick={handleShare}
               className="flex items-center gap-2 text-muted-foreground hover:text-green-500 transition-colors"
             >
               <Share className="w-5 h-5" />
-              <span>{newsItem.shares}</span>
             </button>
           </div>
-
-          {commentId && (
-            <div className="bg-muted/50 p-4 rounded-lg mt-6">
-              <h3 className="font-semibold mb-2">תגובת מומחה מודגשת</h3>
-              <p className="text-sm text-muted-foreground">
-                התגובה עם ID: {commentId} מוצגת כאן
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
