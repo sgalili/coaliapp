@@ -14,10 +14,12 @@ import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { useWalletData } from "@/hooks/useWalletData";
 import { useToast } from "@/hooks/use-toast";
+import { useIsDemoMode } from "@/hooks/useIsDemoMode";
 
 const WalletPage = () => {
   const { zoozBalance, usdValue, percentageChange, transactions } = useWalletData();
   const { toast } = useToast();
+  const { isDemoMode } = useIsDemoMode();
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [showSendModal, setShowSendModal] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
@@ -75,7 +77,7 @@ const WalletPage = () => {
       <DemoModeBanner />
       
       {/* Header */}
-      <div className="sticky top-0 bg-background z-10 border-b px-4 py-4">
+      <div className={`sticky ${isDemoMode ? 'top-12' : 'top-0'} bg-background z-10 border-b px-4 py-4`}>
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"

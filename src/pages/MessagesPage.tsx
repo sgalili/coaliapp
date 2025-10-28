@@ -33,6 +33,9 @@ const MessagesPage = () => {
     <div className="h-screen bg-background flex flex-col">
       <DemoModeBanner />
       
+      {/* Spacer for demo banner */}
+      {getDemoUserId() && <div className="h-12" />}
+      
       <div className="flex-1 overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center h-full">

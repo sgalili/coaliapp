@@ -39,8 +39,16 @@ export const useIsDemoMode = () => {
   };
 
   const disableDemoMode = () => {
+    // Clear all demo-related data
     localStorage.removeItem('is_demo_mode');
     localStorage.removeItem('demo_user_id');
+    localStorage.removeItem('primary_demo_user_id');
+    // Clear any other potential demo data
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('demo_')) {
+        localStorage.removeItem(key);
+      }
+    });
     setIsDemoMode(false);
   };
 

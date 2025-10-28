@@ -95,8 +95,17 @@ export const ConversationThread = ({
             return (
               <div
                 key={message.id}
-                className={`flex ${isSent ? 'justify-start' : 'justify-end'}`}
+                className={`flex gap-2 ${isSent ? 'justify-end' : 'justify-start'}`}
               >
+                {!isSent && (
+                  <Avatar className="h-8 w-8 shrink-0">
+                    <AvatarImage src={otherUserAvatar} />
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      {otherUserName.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                )}
+                
                 <div
                   className={`
                     max-w-[70%] rounded-2xl px-4 py-2

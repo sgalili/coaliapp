@@ -164,7 +164,7 @@ const TopTrustedPage = () => {
       <DemoModeBanner />
       
       {/* Header */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className={`sticky ${isDemoMode ? 'top-12' : 'top-0'} z-40 bg-background/95 backdrop-blur-sm border-b border-border`}>
         <div className="p-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold">מובילים בקואלי</h1>

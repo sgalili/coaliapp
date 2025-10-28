@@ -58,23 +58,44 @@ const ProfilePage = () => {
       let profile: any;
 
       if (isDemoMode) {
-        // Demo mode
+        // Demo mode - ISOLATED from real data
         const demoUserId = getDemoUserId();
         if (!demoUserId) {
+          console.log('No demo user ID, redirecting to auth');
           navigate('/auth');
           return;
         }
 
         authUserId = demoUserId;
         
+        // Fetch ONLY from demo_profiles table
         const { data: demoProfile, error: profileError } = await supabase
           .from('demo_profiles')
           .select('*')
           .eq('user_id', demoUserId)
-          .maybeSingle();
+          .single();
 
-        if (profileError || !demoProfile) {
+        if (profileError) {
           console.error('Error fetching demo profile:', profileError);
+          // If profile doesn't exist, create a basic one
+          const basicProfile = {
+            user_id: demoUserId,
+            first_name: 'משתמש',
+            last_name: 'דמו',
+            phone: '+972500000000',
+            avatar_url: null
+          };
+          setUser({
+            id: demoUserId,
+            username: 'משתמש דמו',
+            handle: '500000000',
+            kycLevel: 0,
+            trustersCount: 0,
+            watchersCount: 0,
+            postsCount: 0,
+            zoozEarned: 0,
+            expertise: []
+          });
           setIsLoading(false);
           return;
         }
@@ -115,7 +136,7 @@ const ProfilePage = () => {
 
       console.log('Profile fetched:', profile);
 
-      // Fetch user's posts (demo or real)
+      // Fetch user's posts (ISOLATED: demo or real)
       const postsTable = isDemoMode ? 'demo_posts' : 'posts';
       const { data: posts, error: postsError } = await supabase
         .from(postsTable)
@@ -130,38 +151,69 @@ const ProfilePage = () => {
         console.log('User posts fetched:', posts?.length || 0);
       }
 
-      // Fetch trust count
+      // Fetch trust count (ISOLATED: demo or real)
       const trustTable = isDemoMode ? 'demo_trusts' : 'trusts';
       const { count: trustersCount } = await supabase
         .from(trustTable)
         .select('*', { count: 'exact', head: true })
         .eq('trusted_id', authUserId);
 
-      // Fetch watchers count
-      const { count: watchersCount } = await supabase
-        .from('watches')
-        .select('*', { count: 'exact', head: true })
-        .eq('watched_id', authUserId);
+      // Fetch watchers count (only for real users)
+      let watchersCount = 0;
+      if (!isDemoMode) {
+        const { count } = await supabase
+          .from('watches')
+          .select('*', { count: 'exact', head: true })
+          .eq('watched_id', authUserId);
+        watchersCount = count || 0;
+      } else {
+        // Demo users have mock watcher count
+        watchersCount = Math.floor(Math.random() * 500) + 100;
+      }
 
-      // Fetch wallet balance
-      const { data: balance } = await supabase
-        .from('user_balances')
-        .select('zooz_balance')
-        .eq('user_id', authUserId)
-        .maybeSingle();
+      // Fetch wallet balance (only for real users)
+      let balance = null;
+      if (!isDemoMode) {
+        const { data } = await supabase
+          .from('user_balances')
+          .select('zooz_balance')
+          .eq('user_id', authUserId)
+          .maybeSingle();
+        balance = data;
+      } else {
+        // Demo users get balance from demo seed
+        balance = { zooz_balance: 15680 };
+      }
 
-      // Fetch KYC level
-      const { data: kycData } = await supabase
-        .from('kyc_verifications')
-        .select('level')
-        .eq('user_id', authUserId)
-        .maybeSingle();
+      // Fetch KYC level (only for real users)
+      let kycData = null;
+      if (!isDemoMode) {
+        const { data } = await supabase
+          .from('kyc_verifications')
+          .select('level')
+          .eq('user_id', authUserId)
+          .maybeSingle();
+        kycData = data;
+      } else {
+        // Demo users have level 2 verification
+        kycData = { level: 2 };
+      }
 
-      // Fetch expertise
-      const { data: expertiseData } = await supabase
-        .from('user_expertise')
-        .select('*')
-        .eq('user_id', authUserId);
+      // Fetch expertise (only for real users)
+      let expertiseData = [];
+      if (!isDemoMode) {
+        const { data } = await supabase
+          .from('user_expertise')
+          .select('*')
+          .eq('user_id', authUserId);
+        expertiseData = data || [];
+      } else {
+        // Demo users have mock expertise
+        expertiseData = [
+          { domain: 'economy', verified: true },
+          { domain: 'finance', verified: true }
+        ];
+      }
 
       const userProfile: UserProfile = {
         id: authUserId,
@@ -263,6 +315,9 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-background" dir="rtl">
       {/* Demo Mode Banner */}
       <DemoModeBanner />
+      
+      {/* Spacer for demo banner */}
+      {isDemoMode && <div className="h-12" />}
       
       {/* Header */}
       <div className="sticky top-0 bg-background/80 backdrop-blur-sm border-b border-border z-10">

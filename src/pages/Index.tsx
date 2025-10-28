@@ -16,6 +16,7 @@ import { GuidedTour } from "@/components/GuidedTour";
 import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { useToast } from "@/hooks/use-toast";
 import { useKYC } from "@/hooks/useKYC";
+import { useIsDemoMode } from "@/hooks/useIsDemoMode";
 import { X } from "lucide-react";
 
 // Import profile images
@@ -199,6 +200,7 @@ const Index = () => {
   const { pollId } = useParams();
   const [searchParams] = useSearchParams();
   const { saveAffiliateLink } = useAffiliateLinks();
+  const { isDemoMode } = useIsDemoMode();
   
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [showKYC, setShowKYC] = useState(false);
@@ -458,7 +460,7 @@ const Index = () => {
   return (
     <div 
       ref={containerRef}
-      className="min-h-screen bg-background relative"
+      className={`min-h-screen bg-background relative ${isDemoMode ? 'pt-12' : ''}`}
       onTouchStart={(e) => handleTouchStart(e.nativeEvent)}
       onTouchEnd={(e) => handleTouchEnd(e.nativeEvent)}
     >
