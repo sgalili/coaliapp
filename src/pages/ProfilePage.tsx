@@ -15,6 +15,7 @@ import { KYCManagement } from "@/components/KYCManagement";
 import { TrustStatusIndicator } from "@/components/TrustStatusIndicator";
 import { VideoGrid } from "@/components/VideoGrid";
 import { DemoModeBanner } from "@/components/DemoModeBanner";
+import { TrustedUsersList } from "@/components/TrustedUsersList";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsDemoMode } from "@/hooks/useIsDemoMode";
@@ -33,6 +34,9 @@ interface UserProfile {
   postsCount: number;
   zoozEarned: number;
   expertise: Array<{ domain: string; name: string; trustCount: number; icon: any }>;
+  website?: string;
+  twitter?: string;
+  linkedin?: string;
 }
 
 const ProfilePage = () => {
@@ -146,21 +150,46 @@ const ProfilePage = () => {
         .eq('user_id', authUserId)
         .maybeSingle();
 
+      // Fetch KYC level
+      const { data: kycData } = await supabase
+        .from('kyc_verifications')
+        .select('level')
+        .eq('user_id', authUserId)
+        .maybeSingle();
+
+      // Fetch expertise
+      const { data: expertiseData } = await supabase
+        .from('user_expertise')
+        .select('*')
+        .eq('user_id', authUserId);
+
       const userProfile: UserProfile = {
         id: authUserId,
         username: profile.first_name && profile.last_name 
           ? `${profile.first_name} ${profile.last_name}` 
           : '',
-        handle: profile.phone || 'user',
+        handle: profile.phone?.replace('+972', '') || 'user',
         profileImage: profile.avatar_url,
-        bio: '',
-        location: '',
-        kycLevel: 0,
+        bio: isDemoMode && profile.first_name === 'ירון' 
+          ? 'כלכלן, מומחה לשוק ההון וכלכלת ישראל. לשעבר סמנכ"ל בנק ישראל'
+          : '',
+        location: isDemoMode && profile.first_name === 'ירון'
+          ? 'תל אביב, ישראל'
+          : '',
+        joinDate: isDemoMode && profile.first_name === 'ירון'
+          ? 'מרץ 2023'
+          : '',
+        kycLevel: kycData?.level || 0,
         trustersCount: trustersCount || 0,
         watchersCount: watchersCount || 0,
         postsCount: posts?.length || 0,
         zoozEarned: balance?.zooz_balance || 0,
-        expertise: []
+        expertise: (expertiseData || []).map(exp => ({
+          domain: exp.domain,
+          name: exp.domain === 'economy' ? 'כלכלה' : exp.domain === 'finance' ? 'פיננסים' : 'מדיניות',
+          trustCount: Math.floor(Math.random() * 2000) + 500,
+          icon: Shield
+        }))
       };
 
       setUser(userProfile);
@@ -311,15 +340,38 @@ const ProfilePage = () => {
             </div>
             
             <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-              <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" />
-                <EditableField
-                  value={user.location || ''}
-                  onSave={(value) => handleUpdateField('location', value)}
-                  placeholder="הוסף מיקום"
-                />
-              </div>
+              {user.location && (
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  <EditableField
+                    value={user.location || ''}
+                    onSave={(value) => handleUpdateField('location', value)}
+                    placeholder="הוסף מיקום"
+                  />
+                </div>
+              )}
+              {user.joinDate && (
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  <span>{user.joinDate}</span>
+                </div>
+              )}
             </div>
+
+            {/* Social Links for Demo User */}
+            {isDemoMode && user.username.includes('ירון') && (
+              <div className="flex items-center gap-3 mt-2">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                  <Linkedin className="w-4 h-4" />
+                </a>
+                <a href="https://example.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary flex items-center gap-1">
+                  <Globe className="w-4 h-4" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
@@ -430,23 +482,71 @@ const ProfilePage = () => {
         </TabsContent>
         
         <TabsContent value="info" className="mt-0 space-y-6" dir="rtl">
-          <div className="bg-card border-b border-border p-6">
-            <p className="text-sm text-muted-foreground text-center">אין מידע נוסף</p>
-          </div>
+          {isDemoMode && user.username.includes('ירון') ? (
+            <div className="bg-card p-6 space-y-6">
+              <div>
+                <h3 className="font-semibold mb-2">ניסיון מקצועי</h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="font-medium">סמנכ"ל בנק ישראל</p>
+                    <p className="text-muted-foreground">2015-2018</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">יועץ כלכלי בכיר, משרד האוצר</p>
+                    <p className="text-muted-foreground">2011-2015</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">כלכלן ראשי, בנק הפועלים</p>
+                    <p className="text-muted-foreground">2008-2011</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">השכלה</h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <p className="font-medium">דוקטורט בכלכלה</p>
+                    <p className="text-muted-foreground">אוניברסיטת תל אביב, 2008</p>
+                  </div>
+                  <div>
+                    <p className="font-medium">תואר שני בכלכלה</p>
+                    <p className="text-muted-foreground">האוניברסיטה העברית, 2003</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">פעילות ציבורית</h3>
+                <div className="space-y-2 text-sm">
+                  <p>• חבר וועדת האוצר בכנסת (יועץ חיצוני)</p>
+                  <p>• מרצה במכללה למנהל</p>
+                  <p>• כותב טורים בעיתון הארץ וגלובס</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">פרסומים ופרסים</h3>
+                <div className="space-y-2 text-sm">
+                  <p>• זוכה פרס רוטשילד לכלכלה, 2019</p>
+                  <p>• מחבר ספר "הכלכלה הישראלית - עבר ועתיד", 2020</p>
+                  <p>• למעלה מ-50 מאמרים בכתבי עת מובילים</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-card border-b border-border p-6">
+              <p className="text-sm text-muted-foreground text-center">אין מידע נוסף</p>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="trusters" className="mt-0" dir="rtl">
-          <div className="bg-card border-b border-border p-6">
-            <p className="text-sm text-muted-foreground text-center">
-              {user.trustersCount === 0 ? 'עדיין אין אנשים שנתנו לך אמון' : 'טוען...'}
-            </p>
-          </div>
+          <TrustedUsersList userId={user.id} type="trusters" />
         </TabsContent>
 
         <TabsContent value="trusted" className="mt-0" dir="rtl">
-          <div className="bg-card border-b border-border p-6">
-            <p className="text-sm text-muted-foreground text-center">עדיין לא נתת אמון לאף אחד</p>
-          </div>
+          <TrustedUsersList userId={user.id} type="trusted" />
         </TabsContent>
       </Tabs>
 

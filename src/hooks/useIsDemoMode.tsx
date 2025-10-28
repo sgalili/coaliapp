@@ -16,10 +16,20 @@ export const useIsDemoMode = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const enableDemoMode = () => {
+  const enableDemoMode = async () => {
     localStorage.setItem('is_demo_mode', 'true');
-    // Set a default demo user ID
-    localStorage.setItem('demo_user_id', crypto.randomUUID());
+    
+    // Try to fetch the primary demo user (Yaron Zelekha)
+    // This will be set after seeding demo data
+    const primaryDemoId = localStorage.getItem('primary_demo_user_id');
+    
+    if (primaryDemoId) {
+      localStorage.setItem('demo_user_id', primaryDemoId);
+    } else {
+      // Generate a new ID that will be associated with primary demo user
+      localStorage.setItem('demo_user_id', crypto.randomUUID());
+    }
+    
     setIsDemoMode(true);
   };
 

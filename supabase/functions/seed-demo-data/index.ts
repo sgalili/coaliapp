@@ -91,8 +91,61 @@ async function clearDemoData(supabase: any) {
 }
 
 async function generateDemoProfiles(supabase: any) {
+  // First, create the primary demo user (Yaron Zelekha)
+  const primaryDemoUserId = crypto.randomUUID();
+  const primaryJoinDate = new Date('2023-03-15');
+  
+  const { data: primaryProfile, error: primaryError } = await supabase
+    .from('demo_profiles')
+    .insert({
+      user_id: primaryDemoUserId,
+      first_name: 'ירון',
+      last_name: 'זלקה',
+      phone: '+972501234567',
+      avatar_url: '/src/assets/yaron-zelekha-profile.jpg',
+      created_at: primaryJoinDate.toISOString(),
+    })
+    .select()
+    .single();
+
+  if (primaryError) {
+    console.error('Error creating primary profile:', primaryError);
+  }
+
+  const profiles = primaryProfile ? [{ 
+    ...primaryProfile, 
+    bio: 'כלכלן, מומחה לשוק ההון וכלכלת ישראל. לשעבר סמנכ"ל בנק ישראל',
+    location: 'תל אביב, ישראל',
+    isPrimary: true
+  }] : [];
+
+  // Create user balance for primary user
+  await supabase.from('user_balances').insert({
+    user_id: primaryDemoUserId,
+    zooz_balance: 15680,
+    usd_value: 203.84,
+    percentage_change: 5.2,
+  });
+
+  // Create KYC verification for primary user (Level 5)
+  await supabase.from('kyc_verifications').insert({
+    user_id: primaryDemoUserId,
+    level: 5,
+    status: 'verified',
+    verified_at: primaryJoinDate.toISOString(),
+  });
+
+  // Create expertise for primary user
+  await supabase.from('user_expertise').insert([
+    { user_id: primaryDemoUserId, domain: 'economy', level: 5, verified: true },
+    { user_id: primaryDemoUserId, domain: 'finance', level: 5, verified: true },
+    { user_id: primaryDemoUserId, domain: 'policy', level: 4, verified: true },
+  ]);
+
+  // Store primary user ID in localStorage-like variable for reference
+  console.log('Primary demo user created:', primaryDemoUserId);
+
   const names = [
-    { first: 'ירון', last: 'זלקה', bio: 'כלכלן בכיר, לשעבר חשב המדינה' },
     { first: 'נועה', last: 'רותם', bio: 'עיתונאית חוקרת, מתמחה בפוליטיקה' },
     { first: 'דוד', last: 'לוי', bio: 'יועץ טכנולוגי, מומחה בסייבר' },
     { first: 'רחל', last: 'כהן', bio: 'רופאה בכירה, מנהלת מחלקה' },
@@ -139,7 +192,7 @@ async function generateDemoProfiles(supabase: any) {
       continue;
     }
 
-    profiles.push({ ...data, bio: name.bio });
+    profiles.push({ ...data, bio: name.bio, location: '' });
 
     // Create user balance
     const zoozBalance = Math.floor(1000 + Math.random() * 4000);
@@ -150,11 +203,11 @@ async function generateDemoProfiles(supabase: any) {
       percentage_change: (Math.random() - 0.5) * 10,
     });
 
-    // Create KYC verification for some users
+    // Create KYC verification for most users
     if (i < 15) {
       await supabase.from('kyc_verifications').insert({
         user_id: data.user_id,
-        level: Math.floor(Math.random() * 5) + 1,
+        level: Math.floor(Math.random() * 4) + 1,
         status: 'verified',
         verified_at: joinDate.toISOString(),
       });
@@ -168,6 +221,64 @@ async function generateDemoPosts(supabase: any, profiles: any[]) {
   const categories = ['הכל', 'פוליטיקה', 'טכנולוגיה', 'כלכלה', 'חברה', 'בריאות', 'חינוך'];
   const domains = ['politics', 'technology', 'economy', 'society', 'health', 'education'];
   
+  const posts = [];
+  const baseDate = new Date();
+  
+  // Find the primary user
+  const primaryUser = profiles.find(p => p.isPrimary) || profiles[0];
+
+  // Create 47 posts for primary user
+  const primaryPostTemplates = [
+    { title: 'ניתוח התקציב החדש - מה באמת קורה?', content: 'פירוט מעמיק של הצעת התקציב ומשמעויותיה על הכלכלה', category: 'כלכלה', domain: 'economy' },
+    { title: 'האינפלציה בישראל - תמונת מצב', content: 'סקירה של מגמות האינפלציה והשפעתן על האזרח הממוצע', category: 'כלכלה', domain: 'economy' },
+    { title: 'שוק הנדל"ן - לאן הוא הולך?', content: 'ניתוח מגמות ותחזיות לשוק הדיור בישראל', category: 'כלכלה', domain: 'economy' },
+    { title: 'המלחמה הכלכלית בין ארה"ב לסין', content: 'השלכות על הכלכלה הגלובלית וישראל', category: 'כלכלה', domain: 'economy' },
+    { title: 'מדיניות בנק ישראל - ריבית וצמיחה', content: 'האם בנק ישראל עושה מספיק?', category: 'כלכלה', domain: 'economy' },
+    { title: 'הייטק ישראלי - משבר או הזדמנות?', content: 'מה קורה עם חברות הסטארטאפ שלנו?', category: 'טכנולוגיה', domain: 'technology' },
+    { title: 'רפורמה במערכת הפנסיונית', content: 'מה צריך להשתנות כדי להבטיח עתיד כלכלי?', category: 'כלכלה', domain: 'economy' },
+    { title: 'משבר האנרגיה העולמי', content: 'השפעות על מחירי הדלק והחשמל בישראל', category: 'כלכלה', domain: 'economy' },
+    { title: 'הכלכלה הירוקה - עתיד או אשליה?', content: 'האם זה כדאי כלכלית?', category: 'סביבה', domain: 'environment' },
+    { title: 'שוק העבודה המשתנה', content: 'טכנולוגיה, גלובליזציה והעתיד של העובדים', category: 'כלכלה', domain: 'economy' },
+  ];
+
+  for (let i = 0; i < 47; i++) {
+    const template = primaryPostTemplates[i % primaryPostTemplates.length];
+    const createdAt = new Date(baseDate.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
+    
+    const trustCount = Math.floor(800 + Math.random() * 1200);
+    const watchCount = Math.floor(1500 + Math.random() * 2000);
+    const commentCount = Math.floor(30 + Math.random() * 70);
+    const shareCount = Math.floor(20 + Math.random() * 50);
+    const viewCount = Math.floor(8000 + Math.random() * 5000);
+    const zoozEarned = Math.floor(trustCount * 0.5 + watchCount * 0.2);
+
+    const { data, error } = await supabase
+      .from('demo_posts')
+      .insert({
+        user_id: primaryUser.user_id,
+        title: `${template.title}`,
+        content: template.content,
+        category: template.category,
+        domain: template.domain,
+        trust_count: trustCount,
+        watch_count: watchCount,
+        comment_count: commentCount,
+        share_count: shareCount,
+        view_count: viewCount,
+        zooz_earned: zoozEarned,
+        created_at: createdAt.toISOString(),
+        video_url: i % 4 === 0 ? '/public/videos/netanyahu-debate.mp4' : null,
+        thumbnail_url: '/public/vote.png',
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      posts.push(data);
+    }
+  }
+
+  // Create additional posts for other users
   const postTemplates = [
     { title: 'מה דעתכם על הצעת התקציב החדשה?', content: 'הממשלה הציגה את הצעת התקציב. האם זה מספיק לטיפול במשבר המחיר?', category: 'כלכלה', domain: 'economy' },
     { title: 'בינה מלאכותית משנה את שוק העבודה', content: 'איך נתכונן למהפכה הטכנולוגית הקרובה?', category: 'טכנולוגיה', domain: 'technology' },
@@ -181,12 +292,9 @@ async function generateDemoPosts(supabase: any, profiles: any[]) {
     { title: 'חינוך דיגיטלי - האם זה עובד?', content: 'ניתוח השפעת הלמידה מרחוק על התלמידים', category: 'חינוך', domain: 'education' },
   ];
 
-  const posts = [];
-  const baseDate = new Date();
-
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 30; i++) {
     const template = postTemplates[i % postTemplates.length];
-    const author = profiles[Math.floor(Math.random() * profiles.length)];
+    const author = profiles.filter(p => !p.isPrimary)[Math.floor(Math.random() * (profiles.length - 1))];
     const createdAt = new Date(baseDate.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
     
     const trustCount = Math.floor(500 + Math.random() * 4500);
@@ -227,9 +335,44 @@ async function generateDemoPosts(supabase: any, profiles: any[]) {
 
 async function generateTrustRelationships(supabase: any, profiles: any[]) {
   const trusts = [];
+  const primaryUser = profiles.find(p => p.isPrimary);
   
-  for (const truster of profiles) {
-    const trustCount = Math.floor(10 + Math.random() * 15);
+  // Create trusters for primary user (people who trust Yaron)
+  if (primaryUser) {
+    const trustersCount = 35; // Will simulate ~8,547 through multiple entries
+    const trusters = [...profiles]
+      .filter(p => p.user_id !== primaryUser.user_id)
+      .slice(0, trustersCount);
+
+    for (const truster of trusters) {
+      // Each truster trusts primary user multiple times (simulating domain-specific trust)
+      for (let i = 0; i < Math.floor(200 + Math.random() * 300); i++) {
+        trusts.push({
+          truster_id: truster.user_id,
+          trusted_id: primaryUser.user_id,
+          created_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+        });
+      }
+    }
+
+    // Primary user trusts 25 others
+    const trustedByPrimary = [...profiles]
+      .filter(p => p.user_id !== primaryUser.user_id)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 25);
+
+    for (const trusted of trustedByPrimary) {
+      trusts.push({
+        truster_id: primaryUser.user_id,
+        trusted_id: trusted.user_id,
+        created_at: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+    }
+  }
+  
+  // Create trust relationships for other users
+  for (const truster of profiles.filter(p => !p.isPrimary)) {
+    const trustCount = Math.floor(5 + Math.random() * 10);
     const trustedUsers = [...profiles]
       .filter(p => p.user_id !== truster.user_id)
       .sort(() => Math.random() - 0.5)
@@ -245,7 +388,7 @@ async function generateTrustRelationships(supabase: any, profiles: any[]) {
   }
 
   // Insert in batches
-  const batchSize = 50;
+  const batchSize = 100;
   for (let i = 0; i < trusts.length; i += batchSize) {
     await supabase.from('demo_trusts').insert(trusts.slice(i, i + batchSize));
   }
