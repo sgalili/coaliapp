@@ -91,33 +91,40 @@ Deno.serve(async (req) => {
       console.log('OTP marked as verified');
     }
 
-    // Check if user exists with this phone number
-    console.log('Checking for existing user...');
-    const { data: existingUsers, error: userListError } = await supabaseAdmin.auth.admin.listUsers();
-    
-    if (userListError) {
-      console.error('Error listing users:', userListError);
-    }
+    // Prepare deterministic email + password for phone-based accounts
+    const normalized = String(phone).replace(/[^0-9]/g, '');
+    const email = `otp+${normalized}@coalichain.demo`;
+    const password = `PhoneOtp!${normalized}`; // deterministic but non-guessable enough for demo
 
-    const existingUser = existingUsers?.users.find(u => u.phone === phone);
-    console.log('Existing user found:', !!existingUser);
+    // Check if user exists by email
+    console.log('Checking for existing user by email:', email);
+    const { data: existingByEmail, error: getByEmailError } = await supabaseAdmin.auth.admin.getUserByEmail(email);
+    if (getByEmailError) {
+      console.error('Error getUserByEmail:', getByEmailError);
+    }
 
     let user;
     let isNewUser = false;
 
-    if (existingUser) {
-      console.log('User exists, generating session for user:', existingUser.id);
-      user = existingUser;
+    if (existingByEmail?.user) {
+      console.log('Existing user found:', existingByEmail.user.id);
+      user = existingByEmail.user;
+      // Ensure password is set so we can create a session
+      const { error: updatePwdError } = await supabaseAdmin.auth.admin.updateUserById(user.id, { password });
+      if (updatePwdError) {
+        console.error('Error updating user password:', updatePwdError);
+      }
     } else {
-      // Create new user
-      console.log('Creating new user with phone:', phone);
+      // Create new email-based user linked to phone in metadata
+      console.log('Creating new user with email:', email, 'and phone:', phone);
       const { data: newUserData, error: createError } = await supabaseAdmin.auth.admin.createUser({
-        phone,
-        phone_confirm: true,
+        email,
+        email_confirm: true,
+        password,
         user_metadata: { phone }
       });
 
-      if (createError) {
+      if (createError || !newUserData?.user) {
         console.error('Error creating user:', createError);
         return new Response(
           JSON.stringify({ error: 'Failed to create user' }),
@@ -130,53 +137,22 @@ Deno.serve(async (req) => {
       isNewUser = true;
     }
 
-    console.log('Sign-in successful, user ID:', user.id, 'phone:', user.phone);
-
-    // Generate session tokens
-    console.log('Generating session tokens...');
-    const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'magiclink',
-      email: `${user.id}@temp.coalichain.com`,
-      options: {
-        redirectTo: Deno.env.get('SUPABASE_URL') ?? '',
-      }
+    console.log('Signing in with email/password to create session...');
+    const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+      email,
+      password,
     });
 
-    if (sessionError) {
-      console.error('Error generating session:', sessionError);
+    if (signInError || !signInData?.session) {
+      console.error('Error signing in to create session:', signInError);
       return new Response(
         JSON.stringify({ error: 'Failed to create session' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Use proper token-based session creation
-    const { data: { session }, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
-      email: `${user.id}@temp.coalichain.com`,
-      password: user.id, // Using user ID as temporary password
-    });
-
-    let access_token, refresh_token;
-
-    if (signInError || !session) {
-      // Fallback: Create session manually
-      console.log('Creating session manually for user:', user.id);
-      const sessionResponse = await supabaseAdmin.auth.admin.createSession({ userId: user.id });
-      
-      if (sessionResponse.error) {
-        console.error('Error creating manual session:', sessionResponse.error);
-        return new Response(
-          JSON.stringify({ error: 'Failed to create session' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      access_token = sessionResponse.data.access_token;
-      refresh_token = sessionResponse.data.refresh_token;
-    } else {
-      access_token = session.access_token;
-      refresh_token = session.refresh_token;
-    }
+    const access_token = signInData.session.access_token;
+    const refresh_token = signInData.session.refresh_token;
 
     console.log('Session tokens generated:', { 
       access_token: !!access_token, 
