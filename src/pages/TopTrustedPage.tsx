@@ -1,19 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, TrendingUp } from "lucide-react";
 import { TrustedUserCard } from "@/components/TrustedUserCard";
 import { ProfileOverlay } from "@/components/ProfileOverlay";
 import { SearchModal } from "@/components/SearchModal";
 import { CategoryFilterModal } from "@/components/CategoryFilterModal";
+import { DemoModeBanner } from "@/components/DemoModeBanner";
 import { useToast } from "@/hooks/use-toast";
-import amitProfile from "@/assets/amit-profile.jpg";
-import sarahProfile from "@/assets/sarah-profile.jpg";
-import davidProfile from "@/assets/david-profile.jpg";
-import mayaProfile from "@/assets/maya-profile.jpg";
-import rachelProfile from "@/assets/rachel-profile.jpg";
-import noaProfile from "@/assets/noa-profile.jpg";
-export type ExpertDomain = 'economy' | 'tech' | 'education' | 'health' | 'security' | 'culture';
+import { useIsDemoMode } from "@/hooks/useIsDemoMode";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+
+export type ExpertDomain = 'economy' | 'tech' | 'education' | 'health' | 'security' | 'culture' | 'politics';
+
 export interface Expert {
   id: string;
   name: string;
@@ -30,289 +30,245 @@ export interface Expert {
   };
   trustedByUser: boolean;
   trending: boolean;
+  trendingCount?: number;
   verified: boolean;
+  rank?: number;
 }
-const mockExperts: Expert[] = [{
-  id: '1',
-  name: 'אמית כהן',
-  avatar: amitProfile,
-  username: 'amit_cohen',
-  bio: 'מומחה כלכלה וטכנולוגיה, יועץ השקעות ומרצה בכיר באוניברסיטת תל אביב',
-  followers: 12500,
-  expertise: ['economy', 'tech'],
-  stats: {
-    trustCount: 2847,
-    views: 45200,
-    trustRate: 6.3,
-    kycLevel: 3
-  },
-  trustedByUser: true,
-  trending: true,
-  verified: true
-}, {
-  id: '2',
-  name: 'שרה לוי',
-  avatar: sarahProfile,
-  username: 'sarah_education',
-  bio: 'חוקרת חינוך, מומחית פדגוגיה דיגיטלית ויועצת ארגונית',
-  followers: 8900,
-  expertise: ['education', 'culture'],
-  stats: {
-    trustCount: 1523,
-    views: 18900,
-    trustRate: 8.1,
-    kycLevel: 2
-  },
-  trustedByUser: true,
-  trending: false,
-  verified: true
-}, {
-  id: '3',
-  name: 'דוד מושקוביץ',
-  avatar: davidProfile,
-  username: 'david_security',
-  bio: 'מומחה אבטחת מידע, יועץ סייבר וחוקר באקדמיה',
-  followers: 5600,
-  expertise: ['security', 'tech'],
-  stats: {
-    trustCount: 856,
-    views: 12400,
-    trustRate: 6.9,
-    kycLevel: 2
-  },
-  trustedByUser: false,
-  trending: true,
-  verified: true
-}, {
-  id: '4',
-  name: 'מאיה רוזן',
-  avatar: mayaProfile,
-  username: 'maya_health',
-  bio: 'רופאה מומחית, חוקרת בתחום הבריאות הדיגיטלית ומרצה',
-  followers: 9800,
-  expertise: ['health', 'education'],
-  stats: {
-    trustCount: 1234,
-    views: 15600,
-    trustRate: 7.9,
-    kycLevel: 3
-  },
-  trustedByUser: false,
-  trending: false,
-  verified: true
-}, {
-  id: '5',
-  name: 'רחל אברהם',
-  avatar: rachelProfile,
-  username: 'rachel_economy',
-  bio: 'כלכלנית בכירה, יועצת עסקית ומומחית בשווקים פיננסיים',
-  followers: 15200,
-  expertise: ['economy', 'culture'],
-  stats: {
-    trustCount: 3421,
-    views: 58300,
-    trustRate: 5.9,
-    kycLevel: 2
-  },
-  trustedByUser: true,
-  trending: false,
-  verified: true
-}, {
-  id: '6',
-  name: 'נועה שמואל',
-  avatar: noaProfile,
-  username: 'noa_tech',
-  bio: 'מפתחת תוכנה בכירה, מומחית בינה מלאכותית ומובילת צוותים',
-  followers: 7300,
-  expertise: ['tech', 'education'],
-  stats: {
-    trustCount: 987,
-    views: 11200,
-    trustRate: 8.8,
-    kycLevel: 3
-  },
-  trustedByUser: false,
-  trending: true,
-  verified: true
-},
-// Additional tech experts for testing horizontal scroll
-{
-  id: '7',
-  name: 'יוסי טכנולוגיה',
-  avatar: amitProfile,
-  expertise: ['tech'],
-  stats: {
-    trustCount: 1543,
-    views: 22100,
-    trustRate: 7.2,
-    kycLevel: 2
-  },
-  trustedByUser: true,
-  trending: false,
-  verified: true
-}, {
-  id: '8',
-  name: 'ליאת קוד',
-  avatar: sarahProfile,
-  expertise: ['tech'],
-  stats: {
-    trustCount: 892,
-    views: 13400,
-    trustRate: 8.5,
-    kycLevel: 3
-  },
-  trustedByUser: false,
-  trending: true,
-  verified: true
-}, {
-  id: '9',
-  name: 'אלון AI',
-  avatar: davidProfile,
-  expertise: ['tech'],
-  stats: {
-    trustCount: 2156,
-    views: 34800,
-    trustRate: 9.1,
-    kycLevel: 3
-  },
-  trustedByUser: false,
-  trending: true,
-  verified: true
-}, {
-  id: '10',
-  name: 'תמר סייבר',
-  avatar: mayaProfile,
-  expertise: ['tech', 'security'],
-  stats: {
-    trustCount: 1789,
-    views: 27600,
-    trustRate: 7.8,
-    kycLevel: 2
-  },
-  trustedByUser: true,
-  trending: false,
-  verified: true
-}, {
-  id: '11',
-  name: 'רועי בלוקצ\'יין',
-  avatar: rachelProfile,
-  expertise: ['tech', 'economy'],
-  stats: {
-    trustCount: 945,
-    views: 16200,
-    trustRate: 6.7,
-    kycLevel: 2
-  },
-  trustedByUser: false,
-  trending: true,
-  verified: true
-}, {
-  id: '12',
-  name: 'ענת דטה',
-  avatar: noaProfile,
-  expertise: ['tech'],
-  stats: {
-    trustCount: 1334,
-    views: 19800,
-    trustRate: 8.3,
-    kycLevel: 3
-  },
-  trustedByUser: false,
-  trending: false,
-  verified: true
-}];
+
 const TopTrustedPage = () => {
   const zoozBalance = 1250;
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { isDemoMode, getDemoUserId } = useIsDemoMode();
+  const navigate = useNavigate();
 
-  // State management
   const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<ExpertDomain[]>([]);
+  const [experts, setExperts] = useState<Expert[]>([]);
+  const [trendingExperts, setTrendingExperts] = useState<Expert[]>([]);
 
-  // Filter and sort experts
-  const filteredExperts = mockExperts.filter(expert => selectedCategories.length === 0 || expert.expertise.some(domain => selectedCategories.includes(domain))).sort((a, b) => {
-    // Sort by trust rate (highest first)
-    if (a.trustedByUser && !b.trustedByUser) return -1;
-    if (!a.trustedByUser && b.trustedByUser) return 1;
-    return b.stats.trustRate - a.stats.trustRate;
-  });
-  const handleTrustClick = (expert: Expert) => {
-    toast({
-      title: expert.trustedByUser ? "הוסר אמון" : "נתן אמון",
-      description: expert.trustedByUser ? `הוסר האמון מ${expert.name}` : `נתת אמון ל${expert.name}`,
-      duration: 2000
-    });
+  useEffect(() => {
+    const fetchDemoExperts = async () => {
+      if (!isDemoMode) return;
+
+      const demoUserId = getDemoUserId();
+      const { data: profiles } = await supabase
+        .from('demo_profiles')
+        .select('*');
+
+      const { data: trusts } = await supabase
+        .from('demo_trusts')
+        .select('*');
+
+      if (profiles) {
+        // Create rich expert data from demo profiles
+        const expertsData: Expert[] = profiles
+          .map((profile, index) => {
+            const trustCount = trusts?.filter(t => t.trusted_id === profile.user_id).length || 0;
+            const isTrustedByUser = trusts?.some(t => t.truster_id === demoUserId && t.trusted_id === profile.user_id) || false;
+            
+            // Assign expertise based on name patterns
+            let expertise: ExpertDomain[] = ['economy'];
+            if (profile.first_name?.includes('טכנ') || profile.last_name?.includes('טכנ')) expertise = ['tech'];
+            if (profile.first_name?.includes('רופ') || profile.last_name?.includes('בריאות')) expertise = ['health'];
+            
+            return {
+              id: profile.user_id,
+              name: `${profile.first_name} ${profile.last_name}`,
+              avatar: profile.avatar_url || '/placeholder.svg',
+              username: `@${profile.first_name}_${profile.last_name}`,
+              bio: index === 0 ? 'כלכלן, מומחה לשוק ההון וכלכלת ישראל. לשעבר סמנכ"ל בנק ישראל' : 
+                   `מומחה ${expertise[0] === 'economy' ? 'כלכלה' : expertise[0] === 'tech' ? 'טכנולוגיה' : 'בריאות'}`,
+              followers: Math.floor(1000 + Math.random() * 15000),
+              expertise,
+              stats: {
+                trustCount: index === 0 ? 12450 : trustCount + Math.floor(Math.random() * 5000),
+                views: Math.floor(10000 + Math.random() * 50000),
+                trustRate: 5 + Math.random() * 4,
+                kycLevel: Math.floor(2 + Math.random() * 2),
+              },
+              trustedByUser: isTrustedByUser,
+              trending: Math.random() > 0.6,
+              trendingCount: Math.floor(50 + Math.random() * 300),
+              verified: Math.random() > 0.3,
+              rank: index + 1,
+            };
+          })
+          .sort((a, b) => b.stats.trustCount - a.stats.trustCount);
+
+        setExperts(expertsData);
+        setTrendingExperts(expertsData.filter(e => e.trending).slice(0, 10));
+      }
+    };
+
+    fetchDemoExperts();
+  }, [isDemoMode, getDemoUserId]);
+
+  const filteredExperts = experts.filter(expert => 
+    selectedCategories.length === 0 || 
+    expert.expertise.some(domain => selectedCategories.includes(domain))
+  );
+
+  const handleTrustClick = async (expert: Expert) => {
+    if (!isDemoMode) return;
+
+    const demoUserId = getDemoUserId();
+    if (!demoUserId) return;
+
+    if (expert.trustedByUser) {
+      await supabase
+        .from('demo_trusts')
+        .delete()
+        .eq('truster_id', demoUserId)
+        .eq('trusted_id', expert.id);
+      
+      toast({
+        title: "הוסר אמון",
+        description: `הוסר האמון מ${expert.name}`,
+        duration: 2000
+      });
+    } else {
+      await supabase
+        .from('demo_trusts')
+        .insert({
+          truster_id: demoUserId,
+          trusted_id: expert.id
+        });
+      
+      toast({
+        title: "נתן אמון",
+        description: `נתת אמון ל${expert.name}`,
+        duration: 2000
+      });
+    }
+
+    // Refresh experts
+    const { data: trusts } = await supabase
+      .from('demo_trusts')
+      .select('*');
+
+    setExperts(experts.map(e => 
+      e.id === expert.id 
+        ? { ...e, trustedByUser: !e.trustedByUser }
+        : e
+    ));
   };
-  const handleWatchClick = (expert: Expert) => {
-    toast({
-      title: "פתיחת פרופיל",
-      description: `צפייה בתוכן של ${expert.name}`,
-      duration: 2000
-    });
+
+  const handleProfileClick = (expert: Expert) => {
+    navigate(`/user/${expert.id}`);
   };
-  const handleMessageClick = () => {
-    toast({
-      title: "שליחת הודעה",
-      description: "פתיחת צ'אט עם המשתמש",
-      duration: 2000
-    });
-  };
-  return <div className="h-screen bg-gradient-to-br from-background via-muted/30 to-primary/5 flex flex-col">
-      {/* Modern Header */}
+
+  return (
+    <div className="h-screen bg-background flex flex-col">
+      <DemoModeBanner />
+      
+      {/* Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="p-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-foreground">מובילים בקואלי</h1>
+            <h1 className="text-xl font-bold">מובילים בקואלי</h1>
             
-            {/* Search & Filter Icons */}
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)} className="h-9 w-9">
+              <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)}>
                 <Search className="h-4 w-4" />
               </Button>
               
-              <Button variant="ghost" size="icon" onClick={() => setIsFilterOpen(true)} className="h-9 w-9 relative">
+              <Button variant="ghost" size="icon" onClick={() => setIsFilterOpen(true)} className="relative">
                 <Filter className="h-4 w-4" />
-                {selectedCategories.length > 0 && <div className="absolute -top-1 -right-1 bg-primary rounded-full w-3 h-3 flex items-center justify-center">
+                {selectedCategories.length > 0 && (
+                  <div className="absolute -top-1 -right-1 bg-primary rounded-full w-3 h-3 flex items-center justify-center">
                     <span className="text-[10px] text-primary-foreground font-bold">
                       {selectedCategories.length}
                     </span>
-                  </div>}
+                  </div>
+                )}
               </Button>
             </div>
           </div>
           
-          {/* Filter indicator */}
-          {selectedCategories.length > 0 && <p className="text-xs text-muted-foreground mt-2">
-              מציג {filteredExperts.length} מתוך {mockExperts.length} משתמשים
-            </p>}
+          {selectedCategories.length > 0 && (
+            <p className="text-xs text-muted-foreground mt-2">
+              מציג {filteredExperts.length} מתוך {experts.length} משתמשים
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Periscope-style Vertical List */}
+      {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4 space-y-3">
-          {filteredExperts.map(expert => <TrustedUserCard key={expert.id} expert={expert} onProfileClick={() => setSelectedExpert(expert)} onTrustClick={() => handleTrustClick(expert)} onWatchClick={() => handleWatchClick(expert)} />)}
+        <div className="p-4 space-y-6">
+          {/* Trending Section */}
+          {trendingExperts.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-semibold">עולים השבוע</h2>
+              </div>
+              <div className="space-y-2">
+                {trendingExperts.slice(0, 5).map(expert => (
+                  <TrustedUserCard
+                    key={expert.id}
+                    expert={expert}
+                    onProfileClick={() => handleProfileClick(expert)}
+                    onTrustClick={() => handleTrustClick(expert)}
+                    onWatchClick={() => handleProfileClick(expert)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* All Users */}
+          <div className="space-y-3">
+            <h2 className="text-sm font-semibold">כל המובילים</h2>
+            <div className="space-y-2">
+              {filteredExperts.map(expert => (
+                <TrustedUserCard
+                  key={expert.id}
+                  expert={expert}
+                  onProfileClick={() => handleProfileClick(expert)}
+                  onTrustClick={() => handleTrustClick(expert)}
+                  onWatchClick={() => handleProfileClick(expert)}
+                />
+              ))}
+            </div>
+          </div>
           
-          {filteredExperts.length === 0 && <div className="flex items-center justify-center py-20 text-muted-foreground">
+          {filteredExperts.length === 0 && (
+            <div className="flex items-center justify-center py-20 text-muted-foreground">
               <p className="text-sm">לא נמצאו משתמשים בקטגוריות שנבחרו</p>
-            </div>}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Navigation */}
       <Navigation zoozBalance={zoozBalance} />
 
-      {/* Modals */}
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} allExperts={mockExperts} />
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        allExperts={experts} 
+      />
 
-      <CategoryFilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} selectedCategories={selectedCategories} onCategoryChange={setSelectedCategories} />
+      <CategoryFilterModal
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        selectedCategories={selectedCategories}
+        onCategoryChange={setSelectedCategories}
+      />
 
-      {/* Profile Overlay */}
-      {selectedExpert && <ProfileOverlay expert={selectedExpert} isOpen={!!selectedExpert} onClose={() => setSelectedExpert(null)} onTrustClick={() => handleTrustClick(selectedExpert)} onMessageClick={handleMessageClick} />}
-    </div>;
+      {selectedExpert && (
+        <ProfileOverlay
+          expert={selectedExpert}
+          isOpen={!!selectedExpert}
+          onClose={() => setSelectedExpert(null)}
+          onTrustClick={() => handleTrustClick(selectedExpert)}
+          onMessageClick={() => toast({ title: "שליחת הודעה", description: "פתיחת צ'אט" })}
+        />
+      )}
+    </div>
+  );
 };
+
 export default TopTrustedPage;

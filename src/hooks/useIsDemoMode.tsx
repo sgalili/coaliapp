@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useIsDemoMode = () => {
   const [isDemoMode, setIsDemoMode] = useState(() => {
@@ -19,18 +20,22 @@ export const useIsDemoMode = () => {
   const enableDemoMode = async () => {
     localStorage.setItem('is_demo_mode', 'true');
     
-    // Try to fetch the primary demo user (Yaron Zelekha)
-    // This will be set after seeding demo data
-    const primaryDemoId = localStorage.getItem('primary_demo_user_id');
-    
-    if (primaryDemoId) {
-      localStorage.setItem('demo_user_id', primaryDemoId);
-    } else {
-      // Generate a new ID that will be associated with primary demo user
-      localStorage.setItem('demo_user_id', crypto.randomUUID());
-    }
+    // Generate and store demo user ID
+    const demoUserId = crypto.randomUUID();
+    localStorage.setItem('demo_user_id', demoUserId);
     
     setIsDemoMode(true);
+
+    // Trigger demo data seeding
+    try {
+      const { data, error } = await supabase.functions.invoke('seed-demo-data');
+      if (!error && data?.primaryDemoUserId) {
+        localStorage.setItem('demo_user_id', data.primaryDemoUserId);
+        localStorage.setItem('primary_demo_user_id', data.primaryDemoUserId);
+      }
+    } catch (error) {
+      console.error('Error seeding demo data:', error);
+    }
   };
 
   const disableDemoMode = () => {

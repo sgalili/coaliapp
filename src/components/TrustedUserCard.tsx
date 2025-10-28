@@ -38,6 +38,18 @@ export const TrustedUserCard = ({
 }: TrustedUserCardProps) => {
   return <>
       <div className="flex items-start gap-3 p-3 hover:bg-accent/30 transition-colors">
+        {/* Rank number */}
+        {expert.rank && (
+          <div className="flex-shrink-0 w-8 text-center">
+            <span className={cn(
+              "text-sm font-bold",
+              expert.rank <= 3 ? "text-primary" : "text-muted-foreground"
+            )}>
+              #{expert.rank}
+            </span>
+          </div>
+        )}
+        
         {/* Profile section with status indicators */}
         <div className="flex flex-col items-center gap-2">
           <div className="relative cursor-pointer" onClick={onProfileClick}>
@@ -47,19 +59,24 @@ export const TrustedUserCard = ({
             </Avatar>
             <TrustStatusIndicator kycLevel={expert.stats.kycLevel} />
           </div>
-          
-          {/* Watch button under avatar */}
-          
         </div>
 
         {/* User Info - expanded for more content space */}
         <div className="flex-1 cursor-pointer min-w-0" onClick={onProfileClick}>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-foreground truncate">{expert.name}</h3>
-            {expert.trending}
+            {expert.verified && (
+              <Badge variant="secondary" className="text-xs px-1.5 py-0">✓</Badge>
+            )}
           </div>
           
-          
+          {/* Trending indicator */}
+          {expert.trending && expert.trendingCount && (
+            <div className="flex items-center gap-1 text-xs text-green-600 mb-1">
+              <span>↑</span>
+              <span>+{expert.trendingCount} השבוע</span>
+            </div>
+          )}
           
           {/* Domain badges using new config system */}
           <div className="flex flex-wrap gap-1 mb-2">
