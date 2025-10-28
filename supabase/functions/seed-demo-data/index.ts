@@ -16,22 +16,13 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Parse optional body for primary demo user id so the authed demo user matches the seeded primary profile
-    let primaryDemoUserId: string | undefined = undefined;
-    try {
-      const body = await req.json();
-      primaryDemoUserId = body?.primaryDemoUserId;
-    } catch (_) {
-      // no body provided
-    }
-
-    console.log('Starting demo data seeding...', { primaryDemoUserId });
+    console.log('Starting demo data seeding...');
 
     // Clear existing demo data
     await clearDemoData(supabase);
 
     // Generate demo profiles
-    const profiles = await generateDemoProfiles(supabase, primaryDemoUserId);
+    const profiles = await generateDemoProfiles(supabase);
     console.log(`Created ${profiles.length} demo profiles`);
 
     // Generate demo posts
@@ -74,7 +65,6 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         message: 'Demo data seeded successfully',
-        primaryDemoUserId: (profiles.find((p: any) => p.isPrimary)?.user_id) || null,
         stats: {
           profiles: profiles.length,
           posts: posts.length,
@@ -109,19 +99,19 @@ async function clearDemoData(supabase: any) {
   }
 }
 
-async function generateDemoProfiles(supabase: any, primaryDemoUserId?: string) {
-  // Create the primary demo user (Yaron Zelekha) using provided id if any
-  const primaryId = primaryDemoUserId || crypto.randomUUID();
+async function generateDemoProfiles(supabase: any) {
+  // First, create the primary demo user (Yaron Zelekha)
+  const primaryDemoUserId = crypto.randomUUID();
   const primaryJoinDate = new Date('2023-03-15');
   
   const { data: primaryProfile, error: primaryError } = await supabase
     .from('demo_profiles')
     .insert({
-      user_id: primaryId,
+      user_id: primaryDemoUserId,
       first_name: 'ירון',
       last_name: 'זלקה',
       phone: '+972501234567',
-      avatar_url: '/placeholder.svg',
+      avatar_url: '/src/assets/yaron-zelekha-profile.jpg',
       created_at: primaryJoinDate.toISOString(),
     })
     .select()
@@ -131,19 +121,16 @@ async function generateDemoProfiles(supabase: any, primaryDemoUserId?: string) {
     console.error('Error creating primary profile:', primaryError);
   }
 
-  const profiles: any[] = [];
-  if (primaryProfile) {
-    profiles.push({ 
-      ...primaryProfile, 
-      bio: 'כלכלן, מומחה לשוק ההון וכלכלת ישראל. לשעבר סמנכ"ל בנק ישראל',
-      location: 'תל אביב, ישראל',
-      isPrimary: true
-    });
-  }
+  const profiles = primaryProfile ? [{ 
+    ...primaryProfile, 
+    bio: 'כלכלן, מומחה לשוק ההון וכלכלת ישראל. לשעבר סמנכ"ל בנק ישראל',
+    location: 'תל אביב, ישראל',
+    isPrimary: true
+  }] : [];
 
   // Create user balance for primary user
   await supabase.from('user_balances').insert({
-    user_id: primaryId,
+    user_id: primaryDemoUserId,
     zooz_balance: 15680,
     usd_value: 203.84,
     percentage_change: 5.2,
@@ -151,7 +138,7 @@ async function generateDemoProfiles(supabase: any, primaryDemoUserId?: string) {
 
   // Create KYC verification for primary user (Level 5)
   await supabase.from('kyc_verifications').insert({
-    user_id: primaryId,
+    user_id: primaryDemoUserId,
     level: 5,
     status: 'verified',
     verified_at: primaryJoinDate.toISOString(),
@@ -159,13 +146,13 @@ async function generateDemoProfiles(supabase: any, primaryDemoUserId?: string) {
 
   // Create expertise for primary user
   await supabase.from('user_expertise').insert([
-    { user_id: primaryId, domain: 'economy', level: 5, verified: true },
-    { user_id: primaryId, domain: 'finance', level: 5, verified: true },
-    { user_id: primaryId, domain: 'policy', level: 4, verified: true },
+    { user_id: primaryDemoUserId, domain: 'economy', level: 5, verified: true },
+    { user_id: primaryDemoUserId, domain: 'finance', level: 5, verified: true },
+    { user_id: primaryDemoUserId, domain: 'policy', level: 4, verified: true },
   ]);
 
-  // Store primary user ID for reference
-  console.log('Primary demo user created:', primaryId);
+  // Store primary user ID in localStorage-like variable for reference
+  console.log('Primary demo user created:', primaryDemoUserId);
 
   const names = [
     { first: 'נועה', last: 'רותם', bio: 'עיתונאית חוקרת, מתמחה בפוליטיקה' },
@@ -189,6 +176,7 @@ async function generateDemoProfiles(supabase: any, primaryDemoUserId?: string) {
     { first: 'דנה', last: 'ויזל', bio: 'עובדת סוציאלית, מתנדבת' },
   ];
 
+  const profiles = [];
   const baseDate = new Date();
 
   for (let i = 0; i < names.length; i++) {
@@ -725,6 +713,9 @@ async function generateDemoNews(supabase: any) {
       comment_count: commentCount,
       thumbnail_url: '/public/vote.png',
       is_published: true,
+    });
+  }
+}
     });
   }
 }

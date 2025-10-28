@@ -1,15 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Menu, Bell, UserPlus, Globe, Shield, MessageCircle, Heart, ShoppingBag, Moon, HelpCircle, LogOut, BarChart3, Lock, ChevronRight, User as UserIcon } from "lucide-react";
+import { Menu, Bell, UserPlus, Globe, Shield, MessageCircle, Heart, ShoppingBag, Moon, HelpCircle, LogOut, BarChart3, Lock, ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useIsDemoMode } from "@/hooks/useIsDemoMode";
-import { useToast } from "@/hooks/use-toast";
 
 interface ProfileMenuProps {
   onClose?: () => void;
@@ -17,27 +13,7 @@ interface ProfileMenuProps {
 
 export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
   const navigate = useNavigate();
-  const { isDemoMode, disableDemoMode } = useIsDemoMode();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-        setProfile(data);
-      }
-    };
-    if (isOpen) {
-      fetchProfile();
-    }
-  }, [isOpen]);
 
   const menuItems = [
     {
@@ -77,30 +53,6 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
     onClose?.();
   };
 
-  const handleLogout = async () => {
-    try {
-      if (isDemoMode) {
-        await disableDemoMode();
-      } else {
-        await supabase.auth.signOut();
-      }
-      setIsOpen(false);
-      onClose?.();
-      navigate('/auth');
-      toast({
-        title: "התנתקת בהצלחה",
-        description: "נתראה בקרוב!",
-      });
-    } catch (error) {
-      console.error('Error logging out:', error);
-      toast({
-        title: "שגיאה",
-        description: "לא הצלחנו להתנתק. נסה שוב.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -115,32 +67,6 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
         
         <ScrollArea className="h-[calc(100vh-8rem)] mt-6">
           <div className="space-y-4 pr-4">
-            {/* Profile Button */}
-            <Button
-              variant="ghost"
-              className="w-full justify-start h-auto p-3 hover:bg-accent"
-              onClick={() => handleItemClick(() => navigate('/profile'))}
-            >
-              <div className="flex items-center gap-3 w-full">
-                <Avatar className="w-12 h-12">
-                  <AvatarImage src={profile?.avatar_url} />
-                  <AvatarFallback>
-                    <UserIcon className="w-6 h-6" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 text-right">
-                  <div className="font-semibold">
-                    {profile?.first_name} {profile?.last_name}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    צפה בפרופיל
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4" />
-              </div>
-            </Button>
-            
-            <Separator />
             {menuItems.map((category, categoryIndex) => (
               <div key={categoryIndex}>
                 <h3 className="text-sm font-semibold text-muted-foreground mb-2 text-right">
@@ -176,7 +102,7 @@ export const ProfileMenu = ({ onClose }: ProfileMenuProps) => {
             <Button
               variant="ghost"
               className="w-full justify-start h-auto p-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={handleLogout}
+              onClick={() => handleItemClick(() => navigate("/"))}
             >
               <LogOut className="w-5 h-5 ml-3" />
               <div className="text-right">

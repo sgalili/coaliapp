@@ -35,7 +35,7 @@ const AuthPage = () => {
   const { t } = useTranslation();
   const { saveAffiliateLink } = useAffiliateLinks();
   const { toast } = useToast();
-  const { enableDemoMode, isDemoMode } = useIsDemoMode();
+  const { enableDemoMode } = useIsDemoMode();
 
   useEffect(() => {
     // Save affiliate link if present in URL
@@ -45,25 +45,6 @@ const AuthPage = () => {
       saveAffiliateLink(ref);
     }
   }, [location, saveAffiliateLink]);
-
-  // Auto-redirect when demo mode is active and session becomes available
-  useEffect(() => {
-    let cancelled = false;
-    const run = async () => {
-      if (!isDemoMode) return;
-      const { supabase } = await import('@/integrations/supabase/client');
-      for (let i = 0; i < 20 && !cancelled; i++) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          navigate('/');
-          return;
-        }
-        await new Promise((r) => setTimeout(r, 200));
-      }
-    };
-    run();
-    return () => { cancelled = true; };
-  }, [isDemoMode, navigate]);
 
   const handlePhoneSubmit = async (phone: string) => {
     setIsLoading(true);
@@ -272,35 +253,9 @@ const AuthPage = () => {
   const handleDemoAccount = async () => {
     setIsLoading(true);
     try {
-      // Enable demo mode and ensure session
-      const ok = await enableDemoMode();
-      if (!ok) {
-        toast({
-          title: 'שגיאה',
-          description: 'לא ניתן להפעיל מצב דמו. נסו שוב.',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      // Wait briefly until Supabase session is available
-      const { supabase } = await import('@/integrations/supabase/client');
-      let user: any = null;
-      for (let i = 0; i < 10; i++) {
-        const { data: { user: u } } = await supabase.auth.getUser();
-        if (u) { user = u; break; }
-        await new Promise((r) => setTimeout(r, 200));
-      }
-
-      if (!user) {
-        toast({
-          title: 'שגיאה',
-          description: 'התחברות לחשבון הדמו נכשלה. נסו שוב.',
-          variant: 'destructive',
-        });
-        return;
-      }
-
+      // Enable demo mode without any authentication
+      await enableDemoMode();
+      
       toast({
         title: "ברוכים הבאים למצב דמו!",
         description: "אתם כעת צופים בחשבון הדמו של ירון זלקה",
