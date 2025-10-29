@@ -1,103 +1,28 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { VideoCreator } from "@/components/VideoCreator";
-import { VideoFeed } from "@/components/VideoFeed";
-import { FeedFilters } from "@/components/FeedFilters";
-import { useToast } from "@/hooks/use-toast";
-import { usePosts, PostData } from "@/hooks/usePosts";
-import { usePostInteractions } from "@/hooks/usePostInteractions";
-import { useAuth } from "@/hooks/useAuth";
-import { useRealtimePosts } from "@/hooks/useRealtimePosts";
-import { useActionProtection } from "@/hooks/useActionProtection";
-import { Plus } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const categories = [
+  { id: 'all', label: 'הכל' },
+  { id: 'politics', label: 'פוליטיקה' },
+  { id: 'tech', label: 'טכנולוגיה' },
+  { id: 'economy', label: 'כלכלה' },
+];
+
+const placeholderPosts = [
+  { id: '1', username: 'שם משתמש 1', content: 'זהו פוסט לדוגמה. תוכן יטען כאן בקרוב...', trust: '1.2K', watch: '3.4K', comments: '45', zooz: '250' },
+  { id: '2', username: 'שם משתמש 2', content: 'דוגמה נוספת לפוסט שיכול להכיל תוכן מעניין ורלוונטי למשתמשים.', trust: '856', watch: '2.1K', comments: '28', zooz: '180' },
+  { id: '3', username: 'שם משתמש 3', content: 'פוסט שלישי עם תוכן מדומה להדגמת הממשק והעיצוב של הפלטפורמה.', trust: '2.3K', watch: '5.2K', comments: '67', zooz: '420' },
+];
 
 export default function Index() {
-  const [showVideoCreator, setShowVideoCreator] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [feedFilter, setFeedFilter] = useState<{
-    type: 'all' | 'trusted' | 'category';
-    category?: string;
-  }>({ type: 'all' });
-
-  const { toast } = useToast();
-  const { user } = useAuth();
-  const { posts, loading, createPost, updatePostCounts } = usePosts();
-  const { 
-    userBalance, 
-    giveTrust, 
-    toggleWatch, 
-    sendZooz, 
-    updateView,
-    isTrusted,
-    isWatched
-  } = usePostInteractions();
-  const { executeProtectedAction } = useActionProtection();
-
-  // Real-time updates
-  useRealtimePosts(
-    posts,
-    (postId, updates) => updatePostCounts(postId, updates),
-    (newPost) => {
-      // New post added - could show a notification or auto-refresh
-      console.log('New post received:', newPost);
-    }
-  );
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
-    // Set RTL direction for the entire app
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
-
-  const handleTrust = async (postId: string) => {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-
-    const success = await giveTrust(postId, post.user_id);
-    if (success) {
-      // Update local post counts
-      const newCount = isTrusted(postId, post.user_id) 
-        ? post.trust_count + 1 
-        : post.trust_count - 1;
-      // Note: We could implement a real-time count update here
-    }
-  };
-
-  const handleWatch = async (postId: string) => {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-
-    const success = await toggleWatch(postId, post.user_id);
-    if (success) {
-      // Update local counts if needed
-      const newCount = isWatched(postId, post.user_id) 
-        ? post.watch_count + 1 
-        : post.watch_count - 1;
-    }
-  };
-
-  const handleZooz = async (postId: string) => {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-
-    const success = await sendZooz(postId, post.user_id, 1);
-    // Success feedback is handled in the hook
-  };
-
-  const handlePublish = async (postData: {
-    content: string;
-    videoBlob?: Blob;
-    category?: string;
-    isLive?: boolean;
-  }): Promise<boolean> => {
-    const result = await createPost(postData);
-    return result !== null;
-  };
-
-  const convertPostsToVideoFeed = (postsData: PostData[]) => {
-    return postsData.map(post => ({
-      id: post.id,
-      username: `${post.profiles?.first_name} ${post.profiles?.last_name}` || 'Utilisateur',
       handle: `user_${post.user_id.slice(0, 8)}`,
       profileImage: post.profiles?.avatar_url || undefined,
       videoUrl: post.video_url || '',
