@@ -227,40 +227,85 @@ export default function Index() {
   };
 
   return (
-    <div className="h-screen bg-background overflow-hidden">
-      {/* Category Filter */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
-          {categories.map((cat) => (
+    <div className="h-screen bg-black overflow-hidden">
+      {/* Top Bar with Decisions Button and Category Selector */}
+      <div className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-md">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Decisions Button (Left) */}
+          <button
+            onClick={() => navigate('/decisions')}
+            data-tour-id="decisions-filter"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
+          >
+            <span className="text-xs">החלטות</span>
+            {newDecisionsCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                {newDecisionsCount}
+              </span>
+            )}
+          </button>
+
+          {/* Category Selector (Center) - TikTok Style */}
+          <div className="relative">
             <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap",
-                selectedCategory === cat.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              )}
+              onClick={() => setShowCategoryMenu(!showCategoryMenu)}
+              className="flex items-center gap-2 text-white font-semibold text-base"
             >
-              {cat.label}
+              <span>{categories.find(c => c.id === selectedCategory)?.label || 'הכל'}</span>
+              <ChevronDown className={cn(
+                "w-4 h-4 transition-transform",
+                showCategoryMenu && "rotate-180"
+              )} />
             </button>
-          ))}
+
+            {/* Category Dropdown Menu */}
+            {showCategoryMenu && (
+              <>
+                {/* Backdrop */}
+                <div 
+                  className="fixed inset-0 bg-black/60 z-40"
+                  onClick={() => setShowCategoryMenu(false)}
+                />
+                
+                {/* Menu */}
+                <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-card rounded-xl shadow-xl border border-border z-50 min-w-[200px] overflow-hidden">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => selectCategory(cat.id)}
+                      className={cn(
+                        "w-full px-4 py-3 text-right transition-colors",
+                        selectedCategory === cat.id
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "text-foreground hover:bg-muted"
+                      )}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Spacer for balance */}
+          <div className="w-[60px]"></div>
         </div>
       </div>
 
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="h-full w-full overflow-y-scroll snap-y snap-mandatory pt-[68px]"
+        className="h-full w-full overflow-y-scroll snap-y snap-mandatory pt-[60px]"
         style={{ scrollSnapType: 'y mandatory' }}
       >
         {posts.map((post) => (
           <div 
             key={post.id}
             className="relative snap-start snap-always"
-            style={{ height: 'calc(100vh - 132px)' }}
+            style={{ height: 'calc(100vh - 124px)' }}
           >
-            {/* Post Content Based on Type */}
+            {/* Video Post */}
             {post.type === 'video' && (
               <div className="relative h-full w-full bg-black">
                 <video
@@ -285,66 +330,6 @@ export default function Index() {
                     <Volume2 className="w-5 h-5 text-white" />
                   )}
                 </button>
-              </div>
-            )}
-
-            {post.type === 'text' && (
-              <div 
-                className="h-full w-full flex items-center justify-center p-8"
-                style={{ background: post.background }}
-              >
-                <p className="text-white text-2xl font-bold text-center leading-relaxed max-w-2xl">
-                  {post.content}
-                </p>
-              </div>
-            )}
-
-            {post.type === 'poll' && (
-              <div className="h-full w-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-6">
-                <div className="w-full max-w-lg">
-                  <h3 className="text-2xl font-bold text-foreground mb-6 text-center">
-                    {post.content}
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    {post.pollOptions?.map((option) => (
-                      <button
-                        key={option.id}
-                        onClick={() => !post.userVoted && votePoll(post.id, option.id)}
-                        disabled={post.userVoted}
-                        className={cn(
-                          "w-full p-4 rounded-xl border-2 transition-all text-right",
-                          post.userVoted
-                            ? "bg-card border-border cursor-default"
-                            : "bg-card border-primary/20 hover:border-primary/50 hover:bg-card/80"
-                        )}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium">{option.text}</span>
-                          {post.userVoted && (
-                            <span className="text-sm text-primary font-bold">
-                              {option.percentage.toFixed(0)}%
-                            </span>
-                          )}
-                        </div>
-                        {post.userVoted && (
-                          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-primary transition-all duration-500"
-                              style={{ width: `${option.percentage}%` }}
-                            />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {post.userVoted && (
-                    <p className="text-center text-sm text-muted-foreground mt-4">
-                      {post.totalVotes} הצבעות
-                    </p>
-                  )}
-                </div>
               </div>
             )}
 
