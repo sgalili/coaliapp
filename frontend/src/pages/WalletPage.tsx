@@ -1,105 +1,112 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { WalletBalance } from "@/components/WalletBalance";
-import { WalletActions } from "@/components/WalletActions";
-import { EarnMoreZooz } from "@/components/EarnMoreZooz";
-import { TransactionHistory } from "@/components/TransactionHistory";
-import { BuyZoozModal } from "@/components/BuyZoozModal";
-import { SendZoozModal } from "@/components/SendZoozModal";
-import { RequestZoozModal } from "@/components/RequestZoozModal";
-import { WithdrawModal } from "@/components/WithdrawModal";
-import { WalletSettings } from "@/components/WalletSettings";
-import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
-import { useWalletData } from "@/hooks/useWalletData";
-import { useToast } from "@/hooks/use-toast";
+import { Wallet, Send, Download, CreditCard, Building2, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const WalletPage = () => {
-  const { zoozBalance, usdValue, percentageChange, transactions } = useWalletData();
-  const { toast } = useToast();
-  const [showBuyModal, setShowBuyModal] = useState(false);
-  const [showSendModal, setShowSendModal] = useState(false);
-  const [showRequestModal, setShowRequestModal] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
+const actionButtons = [
+  { id: 'send', label: 'Send Zooz', icon: Send, color: 'bg-primary' },
+  { id: 'request', label: 'Request Zooz', icon: Download, color: 'bg-watch' },
+  { id: 'buy', label: 'Buy Zooz', icon: CreditCard, color: 'bg-trust' },
+  { id: 'withdraw', label: 'Withdraw Zooz', icon: Building2, color: 'bg-muted' },
+];
 
-  const handleBuyClick = () => setShowBuyModal(true);
-  const handleRequestClick = () => setShowRequestModal(true);
-  const handleSendClick = () => setShowSendModal(true);
-  const handleWithdrawClick = () => setShowWithdrawModal(true);
+const placeholderTransactions = [
+  { id: '1', type: 'received', description: 'קיבלת Zooz מיוסי כהן', amount: '+250', time: 'לפני 2 שעות', icon: '🎉' },
+  { id: '2', type: 'sent', description: 'שלחת Zooz לשרה לוי', amount: '-300', time: 'לפני 5 שעות', icon: '📤' },
+  { id: '3', type: 'earned', description: 'הרווחת Zooz מפוסט', amount: '+180', time: 'לפני 8 שעות', icon: '⭐' },
+  { id: '4', type: 'received', description: 'קיבלת Zooz מדוד ישראלי', amount: '+420', time: 'לפני יום', icon: '🎉' },
+  { id: '5', type: 'earned', description: 'הרווחת Zooz מתגובה', amount: '+90', time: 'לפני יומיים', icon: '💬' },
+];
 
-  const handleRewardClick = (type: string) => {
-    const rewardTitles: Record<string, string> = {
-      referral: "הזמנת חברים",
-      comments: "תגובות על חדשות", 
-      surveys: "סקרים",
-      kyc: "אימות KYC"
-    };
-    
-    toast({
-      title: rewardTitles[type],
-      description: "פתיחת מידע נוסף...",
-    });
-  };
+export default function WalletPage() {
+  useEffect(() => {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'he');
+  }, []);
 
   return (
-    <div className="h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="sticky top-0 bg-background z-10 border-b px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowSettingsModal(true)}
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
-          <h1 className="text-xl font-bold">ארנק ZOOZ</h1>
-          <div className="w-10" />
+      <div className="sticky top-0 z-40 bg-background border-b border-border">
+        <div className="px-4 py-3 flex items-center gap-2">
+          <Wallet className="w-6 h-6 text-primary" />
+          <h1 className="text-2xl font-bold text-foreground">ארנק Zooz</h1>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="space-y-6 p-4 pb-24">
-          {/* Balance Card */}
-          <WalletBalance 
-            zoozBalance={zoozBalance}
-            usdValue={usdValue}
-            percentageChange={percentageChange}
-          />
+      <div className="max-w-2xl mx-auto p-4">
+        {/* Balance Card */}
+        <div className="bg-gradient-to-br from-zooz via-yellow-400 to-orange-400 rounded-2xl p-6 mb-6 shadow-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-3xl">💰</span>
+            <p className="text-zooz-foreground/80 font-medium">Zooz Balance</p>
+          </div>
+          <p className="text-5xl font-bold text-zooz-foreground mb-3">15,680</p>
+          <div className="flex items-center gap-2 text-zooz-foreground/80">
+            <ArrowUpRight className="w-4 h-4" />
+            <span className="text-sm font-medium">+340 השבוע זה</span>
+          </div>
+        </div>
 
-          {/* Action Buttons */}
-          <WalletActions
-            onBuyClick={handleBuyClick}
-            onRequestClick={handleRequestClick}
-            onSendClick={handleSendClick}
-            onWithdrawClick={handleWithdrawClick}
-          />
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {actionButtons.map((action) => {
+            const Icon = action.icon;
+            return (
+              <button
+                key={action.id}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 border-border hover:border-primary transition-colors bg-card",
+                  "hover:shadow-md"
+                )}
+              >
+                <div className={cn(action.color, "w-12 h-12 rounded-full flex items-center justify-center")}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-sm font-medium text-foreground text-center">{action.label}</span>
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Earn More Section */}
-          <EarnMoreZooz onRewardClick={handleRewardClick} />
+        {/* Transactions List */}
+        <div>
+          <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+            <span>עסקאות אחרונות</span>
+          </h2>
+          
+          <div className="space-y-2">
+            {placeholderTransactions.map((tx) => (
+              <div
+                key={tx.id}
+                className="flex items-center gap-3 p-4 bg-card rounded-xl border border-border hover:bg-muted/30 transition-colors"
+              >
+                {/* Icon */}
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                  <span>{tx.icon}</span>
+                </div>
 
-          {/* Transaction History */}
-          <TransactionHistory transactions={transactions} />
+                {/* Description */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground truncate">{tx.description}</p>
+                  <p className="text-xs text-muted-foreground">{tx.time}</p>
+                </div>
+
+                {/* Amount */}
+                <div className={cn(
+                  "font-bold text-lg",
+                  tx.amount.startsWith('+') ? "text-trust" : "text-destructive"
+                )}>
+                  {tx.amount}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <Navigation zoozBalance={Math.floor(zoozBalance)} />
-
-      {/* Modals */}
-      <BuyZoozModal isOpen={showBuyModal} onClose={() => setShowBuyModal(false)} />
-      <SendZoozModal 
-        isOpen={showSendModal} 
-        onClose={() => setShowSendModal(false)} 
-        currentBalance={zoozBalance}
-      />
-      <RequestZoozModal isOpen={showRequestModal} onClose={() => setShowRequestModal(false)} />
-      <WithdrawModal isOpen={showWithdrawModal} onClose={() => setShowWithdrawModal(false)} />
-      <WalletSettings isOpen={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
+      <Navigation zoozBalance={250} />
     </div>
   );
-};
-
-export default WalletPage;
+}
