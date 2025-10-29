@@ -209,36 +209,78 @@ export default function NewsPage() {
               </div>
 
               {/* Poll Section */}
-              <div className="bg-muted/50 rounded-lg p-4">
-                {/* Poll Question with Dropdown */}
-                <div className="flex items-center justify-between mb-3">
+              <div className="bg-card border border-border rounded-lg overflow-hidden">
+                {/* Poll Question Button - Always visible */}
+                <button
+                  onClick={() => togglePoll(news.id)}
+                  className="flex items-center justify-between w-full p-4 hover:bg-muted/30 transition-colors"
+                >
                   <span className="text-sm font-medium text-foreground">{news.pollQuestion}</span>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                </div>
+                  {expandedPolls[news.id] ? (
+                    <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </button>
 
-                {/* Voting Bar */}
-                <div className="space-y-2">
-                  {/* Visual Bar */}
-                  <div className="flex h-2 rounded-full overflow-hidden">
-                    {news.pollOptions.map((option, idx) => (
-                      <div
-                        key={idx}
-                        className={cn(option.color)}
-                        style={{ width: `${option.value}%` }}
-                      />
-                    ))}
+                {/* Voting Options - Shown when expanded and not voted */}
+                {expandedPolls[news.id] && !userVotes[news.id] && (
+                  <div className="border-t border-border/50 p-4 pt-3">
+                    <div className="bg-card p-4 border border-border/50 shadow-sm rounded-lg">
+                      <h3 className="text-base font-semibold mb-4 text-right text-foreground leading-relaxed">
+                        מה דעתך על {news.headline.split(' - ')[0]}?
+                      </h3>
+                      
+                      <div className="space-y-2 mb-4">
+                        {news.pollOptions.map((option, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleVote(news.id, option.label)}
+                            className="w-full h-12 text-right justify-start px-4 border-2 border-blue-200 bg-blue-50/20 hover:bg-blue-100/60 hover:border-blue-300 text-blue-800 hover:text-blue-900 transition-all duration-200 rounded-md font-medium"
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                      
+                      <div className="text-xs text-blue-600/70 text-center pt-3 border-t border-blue-100/60">
+                        הצבעה פתוחה למשתמשים מאומתים בלבד
+                      </div>
+                    </div>
                   </div>
+                )}
 
-                  {/* Results Text */}
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    {news.pollOptions.map((option, idx) => (
-                      <span key={idx}>
-                        {option.value}% {option.label}
-                        {idx < news.pollOptions.length - 1 && ' •'}
-                      </span>
-                    ))}
+                {/* Results - Always shown when collapsed or after voting */}
+                {(!expandedPolls[news.id] || userVotes[news.id]) && (
+                  <div className="border-t border-border/50 p-4">
+                    {/* Visual Bar */}
+                    <div className="flex h-2 rounded-full overflow-hidden mb-2">
+                      {news.pollOptions.map((option, idx) => (
+                        <div
+                          key={idx}
+                          className={cn(option.color)}
+                          style={{ width: `${option.value}%` }}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Results Text */}
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {news.pollOptions.map((option, idx) => (
+                        <span key={idx}>
+                          {option.value}% {option.label}
+                          {idx < news.pollOptions.length - 1 && ' •'}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    {userVotes[news.id] && (
+                      <div className="mt-2 text-xs text-trust font-medium">
+                        ✓ הצבעת: {userVotes[news.id]}
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
