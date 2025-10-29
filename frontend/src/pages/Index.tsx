@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Heart, Eye, MessageCircle, Share2, MapPin, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -79,19 +79,79 @@ const placeholderExperts = [
     comments: '6.8K',
     image: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
   },
+  {
+    id: '6',
+    name: 'דוד ישראלי',
+    expertise: 'אסטרטגיה וביטחון',
+    content: 'ניתוח המצב הביטחוני והמלצות לדרך פעולה',
+    location: 'תל אביב, ישראל',
+    isAuthentic: true,
+    isLive: false,
+    voteCount: '',
+    zooz: '45.2K',
+    trust: '198.3K',
+    watch: '650K',
+    comments: '12.1K',
+    image: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+  },
+  {
+    id: '7',
+    name: 'רחל אברהם',
+    expertise: 'כלכלה ופיננסים',
+    content: 'השקעות חכמות בשוק ההון הישראלי',
+    location: 'ירושלים, ישראל',
+    isAuthentic: true,
+    isLive: true,
+    voteCount: '567',
+    zooz: '92.4K',
+    trust: '412.7K',
+    watch: '1.8M',
+    comments: '28.3K',
+    image: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
+  },
+  {
+    id: '8',
+    name: 'נועה קירל',
+    expertise: 'מוזיקה ותרבות',
+    content: 'הופעה חיה מיוחדת - שירים חדשים והפתעות',
+    location: 'תל אביב, ישראל',
+    isAuthentic: true,
+    isLive: false,
+    voteCount: '',
+    zooz: '156.8K',
+    trust: '892.5K',
+    watch: '3.4M',
+    comments: '67.9K',
+    image: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
+  },
 ];
 
 export default function Index() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  const currentExpert = placeholderExperts[currentIndex];
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop;
+      const windowHeight = window.innerHeight;
+      const newIndex = Math.round(scrollTop / windowHeight);
+      
+      if (newIndex !== currentIndex && newIndex >= 0 && newIndex < placeholderExperts.length) {
+        setCurrentIndex(newIndex);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientY);
