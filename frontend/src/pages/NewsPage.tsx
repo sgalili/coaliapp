@@ -313,6 +313,120 @@ export default function NewsPage() {
         ))}
       </div>
 
+      {/* Expert Detail Modal */}
+      {selectedExpert && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+          <div className="bg-background w-full md:max-w-2xl md:rounded-lg overflow-hidden max-h-[90vh] overflow-y-auto">
+            {/* Close Button */}
+            <div className="sticky top-0 bg-background border-b border-border p-3 flex justify-between items-center">
+              <h3 className="font-semibold">דעת מומחה</h3>
+              <button
+                onClick={closeExpertDetail}
+                className="p-1 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4">
+              {/* Video Player */}
+              <div className="relative w-full h-48 bg-slate-900 rounded-lg mb-3 overflow-hidden">
+                <video
+                  src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
+                  className="w-full h-full object-cover"
+                  playsInline
+                  poster="https://images.unsplash.com/photo-1611605698335-8b1569810432?w=400&h=300&fit=crop"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <button className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                    <Play className="w-8 h-8 text-white ml-1" />
+                  </button>
+                </div>
+                <div className="absolute bottom-3 left-3 bg-black/50 px-2 py-1 rounded text-white text-xs">
+                  22s
+                </div>
+                <button className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/70 px-2 py-1 rounded text-white text-xs transition-colors">
+                  ⛶ מסך מלא
+                </button>
+              </div>
+
+              {/* Expert Info */}
+              <div className="flex items-start gap-3 mb-3">
+                <div className="relative">
+                  <img
+                    src={placeholderNews.find(n => n.id === selectedExpert.newsId)?.experts[selectedExpert.expertIndex]}
+                    alt="Expert"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium text-sm text-foreground">
+                      {expertNames[selectedExpert.expertIndex % expertNames.length]}
+                    </span>
+                    <span className="text-xs text-muted-foreground">•</span>
+                    <span className="text-xs text-muted-foreground">לפני 1 שעות</span>
+                    <span className="text-xs text-muted-foreground">•</span>
+                    <span className="text-xs text-primary font-medium">634 Trust</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
+                    <div className="flex items-center gap-1">
+                      <ThumbsUp className="w-3 h-3" />
+                      <span>78</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-3 h-3" />
+                      <span>12</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Eye className="w-3 h-3" />
+                      <span>נצפה</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed mb-3">
+                    {expertOpinions[selectedExpert.expertIndex % expertOpinions.length]}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-center gap-6 pt-4 mt-4 border-t border-border">
+                <button className="flex flex-col items-center gap-1 group">
+                  <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                    <div className="relative">
+                      <Handshake className="w-5 h-5 text-foreground" />
+                      <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+                    </div>
+                  </div>
+                  <span className="text-muted-foreground text-xs font-medium">634</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-1 group">
+                  <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                    <Eye className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-muted-foreground text-xs font-medium">78</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-1 group">
+                  <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                    <MessageCircle className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-muted-foreground text-xs font-medium">12</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-1 group">
+                  <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                    <Share2 className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <span className="text-muted-foreground text-xs font-medium">12</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <Navigation zoozBalance={999} />
     </div>
