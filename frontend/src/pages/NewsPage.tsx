@@ -4,13 +4,25 @@ import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share
 import { cn } from "@/lib/utils";
 
 const categories = [
-  { id: 'all', label: 'הכל' },
-  { id: 'politics', label: 'פוליטיקה' },
-  { id: 'tech', label: 'טכנולוגיה' },
-  { id: 'economy', label: 'כלכלה' },
-  { id: 'sport', label: 'ספורט' },
-  { id: 'culture', label: 'תרבות' },
-  { id: 'trending', label: 'חם עכשיו' },
+  { id: 'all', label: 'הכל', apiValue: null },
+  { id: 'politics', label: 'פוליטיקה', apiValue: 'politics' },
+  { id: 'technology', label: 'טכנולוגיה', apiValue: 'technology' },
+  { id: 'economy', label: 'כלכלה', apiValue: 'economy' },
+  { id: 'society', label: 'חברה', apiValue: 'society' },
+  { id: 'health', label: 'בריאות', apiValue: 'health' },
+  { id: 'culture', label: 'תרבות', apiValue: 'culture' },
+];
+
+const expertProfiles = [
+  'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
+  'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+  'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+  'https://trust.coali.app/assets/netanyahu-profile-C6yQFuUl.jpg',
+  'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
+  'https://trust.coali.app/assets/warren-buffett-profile-Bfn-yren.jpg',
+  'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
+  'https://trust.coali.app/assets/yaron-profile-DuwqrcEK.jpg',
+  'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
 ];
 
 const placeholderNews = [
