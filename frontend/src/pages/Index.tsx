@@ -23,103 +23,87 @@ export default function Index() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
-      handle: `user_${post.user_id.slice(0, 8)}`,
-      profileImage: post.profiles?.avatar_url || undefined,
-      videoUrl: post.video_url || '',
-      caption: post.content || '',
-      trustCount: post.trust_count,
-      watchCount: post.watch_count, 
-      commentCount: post.comment_count,
-      shareCount: post.share_count,
-      zoozCount: post.zooz_earned,
-      isVerified: true, // TODO: Add verification logic
-      kycLevel: 2 as const, // TODO: Get from user KYC
-      expertise: post.category || 'Expert',
-      category: post.category as any || 'expert',
-      isLive: post.is_live,
-      authenticityData: {
-        city: "Non disponible",
-        country: "Non disponible", 
-        localTime: new Date(post.created_at).toLocaleString('fr-FR'),
-        isAuthentic: false // TODO: Add authenticity verification
-      }
-    }));
-  };
-
-  const getFilteredPosts = () => {
-    const convertedPosts = convertPostsToVideoFeed(posts);
-    
-    switch (feedFilter.type) {
-      case 'trusted':
-        return convertedPosts.sort((a, b) => b.trustCount - a.trustCount);
-      case 'category':
-        if (feedFilter.category) {
-          return convertedPosts.filter(post => post.category === feedFilter.category);
-        }
-        return convertedPosts;
-      case 'all':
-      default:
-        return convertedPosts;
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Chargement des posts...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="h-screen bg-background relative overflow-hidden" dir="rtl">
-      {/* Create Post Button */}
-      <button
-        onClick={() => executeProtectedAction(
-          () => setShowVideoCreator(true),
-          'kyc1',
-          {
-            authMessage: 'יש להתחבר כדי ליצור פוסט',
-            kycMessage: 'נדרש אימות KYC רמה 1 כדי ליצור פוסט'
-          }
-        )}
-        className="fixed top-6 left-6 z-50 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
-        aria-label="Créer un post"
-      >
-        <Plus className="w-6 h-6 text-primary-foreground" />
-      </button>
+    <div className="min-h-screen bg-background pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-background border-b border-border">
+        <div className="px-4 py-3">
+          <h1 className="text-2xl font-bold text-foreground">בית</h1>
+        </div>
+        
+        {/* Category Filters */}
+        <div className="px-4 pb-3 flex gap-2 overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={cn(
+                "px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
+                selectedCategory === cat.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {/* Video Feed */}
-      <VideoFeed
-        posts={getFilteredPosts()}
-        onTrust={handleTrust}
-        onWatch={handleWatch}
-        onZooz={handleZooz}
-        userBalance={userBalance}
-        currentUserId={user?.id}
-        isMuted={isMuted}
-        onVolumeToggle={() => setIsMuted(!isMuted)}
-      />
+      {/* Posts Feed */}
+      <div className="max-w-2xl mx-auto">
+        {placeholderPosts.map((post) => (
+          <div key={post.id} className="border-b border-border bg-card">
+            <div className="p-4">
+              {/* User Info */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                  <span className="text-muted-foreground text-sm">👤</span>
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">{post.username}</p>
+                  <p className="text-xs text-muted-foreground">לפני 2 שעות</p>
+                </div>
+              </div>
 
-      {/* Feed Filters */}
-      <FeedFilters 
-        activeFilter={feedFilter}
-        onFilterChange={setFeedFilter}
-      />
+              {/* Post Content */}
+              <p className="text-foreground mb-4 leading-relaxed">{post.content}</p>
+
+              {/* Engagement Buttons */}
+              <div className="flex items-center justify-around border-t border-border pt-3">
+                <button className="flex flex-col items-center gap-1 text-trust hover:text-trust/80 transition-colors">
+                  <Heart className="w-5 h-5" />
+                  <span className="text-xs font-medium">{post.trust}</span>
+                </button>
+                
+                <button className="flex flex-col items-center gap-1 text-watch hover:text-watch/80 transition-colors">
+                  <Eye className="w-5 h-5" />
+                  <span className="text-xs font-medium">{post.watch}</span>
+                </button>
+                
+                <button className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+                  <MessageCircle className="w-5 h-5" />
+                  <span className="text-xs font-medium">{post.comments}</span>
+                </button>
+                
+                <button className="flex flex-col items-center gap-1 text-zooz hover:text-zooz/80 transition-colors">
+                  <span className="text-lg font-bold">Z</span>
+                  <span className="text-xs font-medium">{post.zooz}</span>
+                </button>
+                
+                <button className="flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+                  <Share2 className="w-5 h-5" />
+                  <span className="text-xs font-medium">שתף</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Navigation */}
-      <Navigation zoozBalance={userBalance} />
-
-      {/* Video Creator Modal */}
-      {showVideoCreator && (
-        <VideoCreator
-          onClose={() => setShowVideoCreator(false)}
-          onPublish={handlePublish}
-        />
-      )}
+      <Navigation zoozBalance={250} />
     </div>
   );
 }
