@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Navigation } from "@/components/Navigation";
-import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, Play, CheckCircle } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
-// Sample posts data
+// Sample VIDEO posts ONLY - verified users
 const samplePosts = [
   {
     id: '1',
@@ -23,51 +24,6 @@ const samplePosts = [
     commentCount: 235,
     zoozCount: 890,
     isTrusted: false,
-    isWatched: false,
-  },
-  {
-    id: '2',
-    type: 'text' as const,
-    category: 'טכנולוגיה',
-    author: {
-      name: 'ירון זליכה',
-      avatar: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-      verified: true,
-    },
-    content: 'הטכנולוגיה משנה את העולם שלנו מהר יותר ממה שאנחנו מבינים. הבינה המלאכותית כבר כאן, והיא תשנה את שוק העבודה לחלוטין בעשור הקרוב. השאלה היא לא אם, אלא מתי.',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    timestamp: 'לפני 5 שעות',
-    trustCount: 1567,
-    watchCount: 8900,
-    commentCount: 89,
-    zoozCount: 672,
-    isTrusted: false,
-    isWatched: true,
-  },
-  {
-    id: '3',
-    type: 'poll' as const,
-    category: 'כלכלה',
-    author: {
-      name: 'רחל אברהם',
-      avatar: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
-      verified: true,
-    },
-    content: 'מה הפתרון למשבר הדיור בישראל?',
-    pollOptions: [
-      { id: '1', text: 'בנייה ממשלתית', votes: 450, percentage: 45 },
-      { id: '2', text: 'הקלות מס', votes: 250, percentage: 25 },
-      { id: '3', text: 'פתרונות שוק חופשי', votes: 200, percentage: 20 },
-      { id: '4', text: 'שילוב של הכל', votes: 100, percentage: 10 },
-    ],
-    totalVotes: 1000,
-    userVoted: false,
-    timestamp: 'לפני 3 שעות',
-    trustCount: 892,
-    watchCount: 5600,
-    commentCount: 67,
-    zoozCount: 423,
-    isTrusted: true,
     isWatched: false,
   },
   {
@@ -91,21 +47,62 @@ const samplePosts = [
     isWatched: false,
   },
   {
-    id: '5',
-    type: 'text' as const,
+    id: '6',
+    type: 'video' as const,
+    category: 'טכנולוגיה',
+    author: {
+      name: 'ירון זליכה',
+      avatar: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
+      verified: true,
+    },
+    content: 'המהפכה הטכנולוגית הבאה - מה שאתם חייבים לדעת',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+    videoPoster: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
+    timestamp: 'לפני 3 שעות',
+    trustCount: 1567,
+    watchCount: 8900,
+    commentCount: 89,
+    zoozCount: 672,
+    isTrusted: false,
+    isWatched: true,
+  },
+  {
+    id: '7',
+    type: 'video' as const,
+    category: 'כלכלה',
+    author: {
+      name: 'רחל אברהם',
+      avatar: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
+      verified: true,
+    },
+    content: 'הסבר על המצב הכלכלי והשפעתו עלינו',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+    videoPoster: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
+    timestamp: 'לפני 4 שעות',
+    trustCount: 3421,
+    watchCount: 15600,
+    commentCount: 234,
+    zoozCount: 987,
+    isTrusted: true,
+    isWatched: false,
+  },
+  {
+    id: '8',
+    type: 'video' as const,
     category: 'בריאות',
     author: {
       name: 'ד״ר מאיה רוזמן',
       avatar: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
       verified: true,
     },
-    content: '5 דברים שאתם חייבים לדעת על תזונה נכונה 🥗',
-    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    timestamp: 'לפני 4 שעות',
-    trustCount: 3421,
-    watchCount: 15600,
-    commentCount: 234,
-    zoozCount: 987,
+    content: '5 טיפים לבריאות טובה שכולם צריכים לדעת',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    videoPoster: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
+    timestamp: 'לפני 5 שעות',
+    trustCount: 2890,
+    watchCount: 13400,
+    commentCount: 167,
+    zoozCount: 756,
     isTrusted: false,
     isWatched: false,
   },
@@ -121,10 +118,13 @@ const categories = [
 ];
 
 export default function Index() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
+  const [newDecisionsCount, setNewDecisionsCount] = useState(3); // Mock count
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
