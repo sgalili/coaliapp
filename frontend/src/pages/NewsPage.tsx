@@ -88,6 +88,8 @@ const placeholderNews = [
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
+  const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
+  const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
@@ -99,6 +101,27 @@ export default function NewsPage() {
       ...prev,
       [newsId]: !prev[newsId]
     }));
+  };
+
+  const togglePoll = (newsId: string) => {
+    setExpandedPolls(prev => ({
+      ...prev,
+      [newsId]: !prev[newsId]
+    }));
+  };
+
+  const handleVote = (newsId: string, option: string) => {
+    setUserVotes(prev => ({
+      ...prev,
+      [newsId]: option
+    }));
+    // Collapse poll after voting
+    setTimeout(() => {
+      setExpandedPolls(prev => ({
+        ...prev,
+        [newsId]: false
+      }));
+    }, 500);
   };
 
   return (
