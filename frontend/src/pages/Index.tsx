@@ -436,13 +436,11 @@ export default function Index() {
             </div>
 
             {/* Caption at Bottom */}
-            {(post.type === 'video' || post.type === 'poll') && (
-              <div className="absolute bottom-20 right-4 left-20 z-10">
-                <p className="text-white text-sm leading-relaxed drop-shadow-lg">
-                  {post.content}
-                </p>
-              </div>
-            )}
+            <div className="absolute bottom-20 right-4 left-20 z-10">
+              <p className="text-white text-sm leading-relaxed drop-shadow-lg">
+                {post.content}
+              </p>
+            </div>
           </div>
         ))}
       </div>
