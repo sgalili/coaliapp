@@ -153,166 +153,122 @@ export default function Index() {
     return () => container.removeEventListener('scroll', handleScroll);
   }, [currentIndex]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 75) {
-      // Swipe up
-      if (currentIndex < placeholderExperts.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      }
-    }
-
-    if (touchStart - touchEnd < -75) {
-      // Swipe down
-      if (currentIndex > 0) {
-        setCurrentIndex(currentIndex - 1);
-      }
-    }
-  };
-
-  const handleWheel = (e: React.WheelEvent) => {
-    if (e.deltaY > 0 && currentIndex < placeholderExperts.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else if (e.deltaY < 0 && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
   return (
     <div 
-      className="h-screen w-full bg-black overflow-hidden relative"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onWheel={handleWheel}
+      ref={containerRef}
+      className="h-screen w-full bg-black overflow-y-scroll snap-y snap-mandatory"
+      style={{ scrollSnapType: 'y mandatory' }}
     >
-      {/* Expert Card */}
-      <div className="h-full w-full relative flex items-center justify-center">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
-          <img 
-            src={currentExpert.image}
-            alt={currentExpert.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="600"%3E%3Crect fill="%23374151" width="400" height="600"/%3E%3C/svg%3E';
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60" />
-        </div>
-
-        {/* Top Header */}
-        <div className="absolute top-0 left-0 right-0 p-4 z-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img 
-                src={currentExpert.image}
-                alt={currentExpert.name}
-                className="w-12 h-12 rounded-full border-2 border-white object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48"%3E%3Crect fill="%239ca3af" width="48" height="48" rx="24"/%3E%3C/svg%3E';
-                }}
-              />
-              <div>
-                <h2 className="text-white font-bold text-lg">{currentExpert.name}</h2>
-                <p className="text-white/80 text-sm">{currentExpert.expertise}</p>
-              </div>
-            </div>
-            {currentExpert.isLive && (
-              <div className="bg-red-600 text-white px-3 py-1 rounded-md text-sm font-bold flex items-center gap-1">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                LIVE
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Side Actions */}
-        <div className="absolute left-4 bottom-32 flex flex-col gap-6 z-10">
-          {currentExpert.voteCount && (
-            <button className="flex flex-col items-center gap-1">
-              <div className="w-12 h-12 rounded-full bg-vote/90 backdrop-blur-sm flex items-center justify-center">
-                <img src="https://trust.coali.app/vote.png" alt="Vote" className="w-6 h-6" onError={(e) => e.currentTarget.style.display = 'none'} />
-              </div>
-              <span className="text-white text-xs font-bold">{currentExpert.voteCount}</span>
-            </button>
-          )}
-
-          <button className="flex flex-col items-center gap-1">
-            <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <span className="text-zooz text-xl font-bold">Z</span>
-            </div>
-            <span className="text-white text-xs font-bold">{currentExpert.zooz}</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1">
-            <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <Heart className="w-6 h-6 text-trust" />
-            </div>
-            <span className="text-white text-xs font-bold">{currentExpert.trust}</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1">
-            <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <Eye className="w-6 h-6 text-watch" />
-            </div>
-            <span className="text-white text-xs font-bold">{currentExpert.watch}</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1">
-            <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <MessageCircle className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-white text-xs font-bold">{currentExpert.comments}</span>
-          </button>
-
-          <button className="flex flex-col items-center gap-1">
-            <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <Share2 className="w-6 h-6 text-white" />
-            </div>
-          </button>
-        </div>
-
-        {/* Bottom Content */}
-        <div className="absolute bottom-24 right-4 left-20 z-10">
-          <p className="text-white text-base mb-3 leading-relaxed">
-            {currentExpert.content}
-          </p>
-          <div className="flex items-center gap-2 text-white/90 text-sm">
-            {currentExpert.isAuthentic && (
-              <>
-                <CheckCircle className="w-4 h-4 text-trust" />
-                <span>אותנטי</span>
-                <span>|</span>
-              </>
-            )}
-            <MapPin className="w-4 h-4" />
-            <span>{currentExpert.location}</span>
-          </div>
-        </div>
-
-        {/* Progress Indicators */}
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-20 flex gap-1 z-10">
-          {placeholderExperts.map((_, idx) => (
-            <div
-              key={idx}
-              className={cn(
-                "h-1 rounded-full transition-all",
-                idx === currentIndex
-                  ? "w-6 bg-white"
-                  : "w-1 bg-white/50"
-              )}
+      {placeholderExperts.map((expert, index) => (
+        <div 
+          key={expert.id}
+          className="h-screen w-full relative flex items-center justify-center snap-start snap-always"
+        >
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0">
+            <img 
+              src={expert.image}
+              alt={expert.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="600"%3E%3Crect fill="%23374151" width="400" height="600"/%3E%3C/svg%3E';
+              }}
             />
-          ))}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60" />
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="absolute left-4 bottom-32 flex flex-col gap-5 z-10">
+            {expert.voteCount && (
+              <button className="flex flex-col items-center gap-1">
+                <div className="w-12 h-12 rounded-full bg-vote/90 backdrop-blur-sm flex items-center justify-center">
+                  <img src="https://trust.coali.app/vote.png" alt="Vote" className="w-6 h-6" onError={(e) => e.currentTarget.style.display = 'none'} />
+                </div>
+                <span className="text-white text-xs font-bold">{expert.voteCount}</span>
+              </button>
+            )}
+
+            <button className="flex flex-col items-center gap-1">
+              <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <span className="text-zooz text-xl font-bold">Z</span>
+              </div>
+              <span className="text-white text-xs font-bold">{expert.zooz}</span>
+            </button>
+
+            <button className="flex flex-col items-center gap-1">
+              <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <Heart className="w-6 h-6 text-trust" />
+              </div>
+              <span className="text-white text-xs font-bold">{expert.trust}</span>
+            </button>
+
+            <button className="flex flex-col items-center gap-1">
+              <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <Eye className="w-6 h-6 text-watch" />
+              </div>
+              <span className="text-white text-xs font-bold">{expert.watch}</span>
+            </button>
+
+            <button className="flex flex-col items-center gap-1">
+              <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <MessageCircle className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-white text-xs font-bold">{expert.comments}</span>
+            </button>
+
+            <button className="flex flex-col items-center gap-1">
+              <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <Share2 className="w-6 h-6 text-white" />
+              </div>
+            </button>
+          </div>
+
+          {/* Bottom Left - Profile Info Above Content */}
+          <div className="absolute bottom-24 right-4 left-20 z-10">
+            {/* Profile Circle, Name, and Expertise */}
+            <div className="flex items-center gap-3 mb-3">
+              <div className="relative">
+                <img 
+                  src={expert.image}
+                  alt={expert.name}
+                  className="w-12 h-12 rounded-full border-2 border-white object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48"%3E%3Crect fill="%239ca3af" width="48" height="48" rx="24"/%3E%3C/svg%3E';
+                  }}
+                />
+                {expert.isLive && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-600 text-white px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
+                    <div className="w-1 h-1 bg-white rounded-full animate-pulse" />
+                    LIVE
+                  </div>
+                )}
+              </div>
+              <div>
+                <h2 className="text-white font-bold text-base leading-tight">{expert.name}</h2>
+                <p className="text-white/80 text-xs">{expert.expertise}</p>
+              </div>
+            </div>
+
+            {/* Content */}
+            <p className="text-white text-base mb-3 leading-relaxed">
+              {expert.content}
+            </p>
+
+            {/* Location and Authenticity */}
+            <div className="flex items-center gap-2 text-white/90 text-sm">
+              {expert.isAuthentic && (
+                <>
+                  <CheckCircle className="w-4 h-4 text-trust" />
+                  <span>אותנטי</span>
+                  <span>|</span>
+                </>
+              )}
+              <MapPin className="w-4 h-4" />
+              <span>{expert.location}</span>
+            </div>
+          </div>
         </div>
-      </div>
+      ))}
 
       {/* Navigation */}
       <Navigation zoozBalance={250} />
