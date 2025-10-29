@@ -105,6 +105,8 @@ const placeholderNews = [
 
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [newsArticles, setNewsArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
@@ -114,6 +116,55 @@ export default function NewsPage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
+
+  // Fetch news when category changes
+  useEffect(() => {
+    fetchNews();
+  }, [selectedCategory]);
+
+  const fetchNews = async () => {
+    setLoading(true);
+    try {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      
+      if (selectedCategory === 'all') {
+        // Fetch from all categories
+        const allNews: any[] = [];
+        for (const cat of categories) {
+          if (cat.apiValue) {
+            const response = await fetch(`${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=2`);
+            const data = await response.json();
+            if (data.articles) {
+              allNews.push(...data.articles.map((article: any) => ({
+                ...article,
+                categoryLabel: cat.label,
+                experts: expertProfiles.slice(0, Math.floor(Math.random() * 5) + 2),
+              })));
+            }
+          }
+        }
+        setNewsArticles(allNews);
+      } else {
+        // Fetch specific category
+        const category = categories.find(c => c.id === selectedCategory);
+        if (category?.apiValue) {
+          const response = await fetch(`${BACKEND_URL}/api/news/by-category/${category.apiValue}?max_results=5`);
+          const data = await response.json();
+          if (data.articles) {
+            setNewsArticles(data.articles.map((article: any) => ({
+              ...article,
+              categoryLabel: category.label,
+              experts: expertProfiles.slice(0, Math.floor(Math.random() * 5) + 2),
+            })));
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleExperts = (newsId: string) => {
     setExpandedNews(prev => ({
