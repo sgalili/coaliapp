@@ -203,42 +203,22 @@ export default function Index() {
     return count.toString();
   };
 
-  const filters = [
-    { id: 'candidates' as const, label: 'זירה' },
-    { id: 'for-me' as const, label: 'החלטות' }
-  ];
-
   return (
     <div className="h-screen bg-black overflow-hidden">
-      {/* Top Filter Bar - זירה / החלטות */}
-      <div className="fixed top-[68px] left-1/2 transform -translate-x-1/2 z-50">
-        <div className="flex items-center gap-1 px-2 py-1">
-          {filters.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => {
-                setActiveFilter(filter.id);
-                if (filter.id === 'for-me') {
-                  navigate('/decisions');
-                }
-              }}
-              data-tour-id={filter.id === 'for-me' ? 'decisions-filter' : 'circle-filter'}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 relative",
-                activeFilter === filter.id
-                  ? "bg-primary/20 text-white shadow-sm"
-                  : "text-white/80 hover:text-white bg-white/10"
-              )}
-            >
-              <span className="text-xs">{filter.label}</span>
-              {filter.id === 'for-me' && newDecisionsCount > 0 && (
-                <span className="ml-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                  {newDecisionsCount}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+      {/* Top Right - החלטות Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={() => navigate('/decisions')}
+          data-tour-id="decisions-filter"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
+        >
+          <span className="text-xs">החלטות</span>
+          {newDecisionsCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              {newDecisionsCount}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Posts Feed */}
@@ -250,44 +230,39 @@ export default function Index() {
         {posts.map((post) => (
           <div 
             key={post.id}
-            className="relative snap-start snap-always h-screen"
+            className="relative snap-start snap-always h-screen w-full"
           >
-            {/* Video */}
-            <div className="relative h-full w-full bg-black">
+            {/* Video - 9:16 aspect ratio, full cover */}
+            <div className="absolute inset-0 bg-black flex items-center justify-center">
               <video
                 ref={(el) => (videoRefs.current[post.id] = el)}
                 src={post.videoUrl}
                 poster={post.profileImage}
-                className="h-full w-full object-contain"
+                className="w-full h-full object-cover"
                 loop
                 playsInline
                 muted={mutedVideos[post.id]}
                 onClick={() => toggleMute(post.id)}
               />
               
-              {/* Mute Button */}
-              <button
-                onClick={() => toggleMute(post.id)}
-                className="absolute top-4 right-4 p-2 bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-colors"
-              >
-                {mutedVideos[post.id] ? (
-                  <VolumeX className="w-5 h-5 text-white" />
-                ) : (
-                  <Volume2 className="w-5 h-5 text-white" />
-                )}
-              </button>
-
-              {/* LIVE Badge (if applicable) */}
-              {post.isLive && (
-                <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1.5">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                  LIVE
-                </div>
-              )}
+              {/* Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
             </div>
+              
+            {/* Mute Button */}
+            <button
+              onClick={() => toggleMute(post.id)}
+              className="absolute top-4 left-4 p-2 bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-colors z-10"
+            >
+              {mutedVideos[post.id] ? (
+                <VolumeX className="w-5 h-5 text-white" />
+              ) : (
+                <Volume2 className="w-5 h-5 text-white" />
+              )}
+            </button>
 
-            {/* Left Side Action Buttons */}
-            <div className="absolute right-4 bottom-32 flex flex-col gap-5 z-10">
+            {/* LEFT Side Action Buttons */}
+            <div className="absolute left-4 bottom-32 flex flex-col gap-5 z-10">
               {/* Vote Button (if applicable) */}
               {post.voteCount > 0 && (
                 <button className="flex flex-col items-center gap-1">
@@ -376,15 +351,24 @@ export default function Index() {
               </button>
             </div>
 
-            {/* Bottom Left - Caption and Info */}
-            <div className="absolute bottom-20 left-4 right-20 z-10">
+            {/* Bottom Right - Caption and Info */}
+            <div className="absolute bottom-20 right-4 left-20 z-10">
               {/* Profile and Name */}
               <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={post.profileImage}
-                  alt={post.username}
-                  className="w-12 h-12 rounded-full border-2 border-white object-cover"
-                />
+                <div className="relative">
+                  <img
+                    src={post.profileImage}
+                    alt={post.username}
+                    className="w-12 h-12 rounded-full border-2 border-white object-cover"
+                  />
+                  {/* LIVE Badge below profile - 50% smaller */}
+                  {post.isLive && (
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-red-600 text-white px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 whitespace-nowrap">
+                      <div className="w-1 h-1 bg-white rounded-full animate-pulse" />
+                      LIVE
+                    </div>
+                  )}
+                </div>
                 <div>
                   <h3 className="text-white font-bold text-base drop-shadow-lg">
                     {post.username}
