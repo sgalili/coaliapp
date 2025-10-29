@@ -96,6 +96,7 @@ export default function NewsPage() {
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
+  const [selectedExpert, setSelectedExpert] = useState<{ newsId: string; expertIndex: number } | null>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
@@ -129,6 +130,21 @@ export default function NewsPage() {
       }));
     }, 500);
   };
+
+  const openExpertDetail = (newsId: string, expertIndex: number) => {
+    setSelectedExpert({ newsId, expertIndex });
+  };
+
+  const closeExpertDetail = () => {
+    setSelectedExpert(null);
+  };
+
+  const expertNames = ['יעקב אליעזרוב', 'שרה כהן', 'דוד לוי', 'בנימין נתניהו', 'נועה קירל', 'וורן באפט', 'ירון זלכה', 'ירון לונדון', 'יעקב נגוסה'];
+  const expertOpinions = [
+    'הניתוח שלי על החדשות האלה: ההשלכות הפוליטיות חשובות לשקול...',
+    'מנקודת מבט כלכלית, השינויים האלה יכולים להשפיע משמעותית...',
+    'אני רואה כאן הזדמנות ייחודית לשיפור המצב...',
+  ];
 
   return (
     <div className="min-h-screen bg-background pb-20">
