@@ -216,21 +216,7 @@ export default function Index() {
   };
 
   const votePoll = (postId: string, optionId: string) => {
-    setPosts(posts.map(post => {
-      if (post.id === postId && post.type === 'poll') {
-        return {
-          ...post,
-          userVoted: true,
-          pollOptions: post.pollOptions?.map(opt => 
-            opt.id === optionId 
-              ? { ...opt, votes: opt.votes + 1, percentage: ((opt.votes + 1) / (post.totalVotes! + 1)) * 100 }
-              : { ...opt, percentage: (opt.votes / (post.totalVotes! + 1)) * 100 }
-          ),
-          totalVotes: (post.totalVotes || 0) + 1
-        };
-      }
-      return post;
-    }));
+    // Polls moved to decisions page
   };
 
   const formatCount = (count: number) => {
