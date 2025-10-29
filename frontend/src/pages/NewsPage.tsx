@@ -1,409 +1,105 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { NewsItemComponent } from "@/components/NewsItem";
-import { NewsFilters } from "@/components/NewsFilters";
-import { FullscreenVideoPlayer } from "@/components/FullscreenVideoPlayer";
-import { ExpertVideoCreator } from "@/components/ExpertVideoCreator";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { useNews } from "@/hooks/useNews";
-import { useWalletData } from "@/hooks/useWalletData";
+import { MessageCircle, Eye, Heart, TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Import profile images for mock data
-import sarahProfile from "@/assets/sarah-profile.jpg";
-import davidProfile from "@/assets/david-profile.jpg";
-import mayaProfile from "@/assets/maya-profile.jpg";
-import amitProfile from "@/assets/amit-profile.jpg";
-import rachelProfile from "@/assets/rachel-profile.jpg";
-import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
-import noaProfile from "@/assets/noa-profile.jpg";
-import warrenProfile from "@/assets/warren-buffett-profile.jpg";
-import yaronProfile from "@/assets/yaron-profile.jpg";
-import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
-import yaakovProfile from "@/assets/yaakov-profile.jpg";
-
-// Mock news data with real video URLs
-const mockNews = [
-  {
-    id: "news-1",
-    title: "הכנסת אישרה את חוק השידור החדש - מה זה אומר על העתיד של התקשורת?",
-    description: "החוק החדש יעמיד אתגרים חדשים בפני התאגיד החדש של השידור הישראלי ויכול לשנות את פני התקשורת",
-    thumbnail: "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    category: "פוליטיקה",
-    source: "חדשות 12",
-    comments: [
-      {
-        id: "comment-1",
-        userId: "1",
-        username: "שרה כהן",
-        userImage: sarahProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        duration: 25,
-        likes: 45,
-        replies: 8,
-        trustLevel: 1247,
-        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const,
-        watchCount: 156,
-        shareCount: 12
-      },
-      {
-        id: "comment-2",
-        userId: "2",
-        username: "דוד לוי",
-        userImage: davidProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-        duration: 18,
-        likes: 23,
-        replies: 3,
-        trustLevel: 892,
-        timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 2 as const,
-        watchCount: 89,
-        shareCount: 7
-      },
-      {
-        id: "comment-3",
-        userId: "3",
-        username: "בנימין נתניהו",
-        userImage: netanyahuProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-        duration: 35,
-        likes: 156,
-        replies: 24,
-        trustLevel: 2450,
-        timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const,
-        watchCount: 423,
-        shareCount: 67
-      },
-      {
-        id: "comment-4",
-        userId: "4",
-        username: "נועה קירל",
-        userImage: noaProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-        duration: 22,
-        likes: 78,
-        replies: 12,
-        trustLevel: 634,
-        timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 2 as const,
-        watchCount: 187,
-        shareCount: 23
-      },
-      {
-        id: "comment-5",
-        userId: "5",
-        username: "וורן באפט",
-        userImage: warrenProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-        duration: 42,
-        likes: 234,
-        replies: 45,
-        trustLevel: 3890,
-        timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const,
-        watchCount: 567,
-        shareCount: 89
-      },
-      {
-        id: "comment-6",
-        userId: "6",
-        username: "ירון זלכה",
-        userImage: yaronZelekhaProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-        duration: 28,
-        likes: 67,
-        replies: 9,
-        trustLevel: 1125,
-        timestamp: new Date(Date.now() - 150 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 2 as const,
-        watchCount: 234,
-        shareCount: 17
-      },
-      {
-        id: "comment-7",
-        userId: "7",
-        username: "ירון לונדון",
-        userImage: yaronProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
-        duration: 31,
-        likes: 89,
-        replies: 15,
-        trustLevel: 1567,
-        timestamp: new Date(Date.now() - 180 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const,
-        watchCount: 298,
-        shareCount: 34
-      },
-      {
-        id: "comment-8",
-        userId: "8",
-        username: "יעקב נגוסה",
-        userImage: yaakovProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-        duration: 26,
-        likes: 43,
-        replies: 6,
-        trustLevel: 789,
-        timestamp: new Date(Date.now() - 210 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 1 as const,
-        watchCount: 145,
-        shareCount: 12
-      }
-    ]
-  },
-  {
-    id: "news-2",
-    title: "פריצת דרך בטכנולוגיית הבלוקצ'יין - סטארט-אפ ישראלי פיתח פתרון חדשני",
-    description: "הטכנולוגיה החדשה יכולה לשנות את עולם הפיננסים הדיגיטליים ולהביא לשקיפות רבה יותר",
-    thumbnail: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-    category: "טכנולוגיה",
-    source: "גלובס",
-    comments: [
-      {
-        id: "comment-3",
-        userId: "3",
-        username: "מיה רוזן",
-        userImage: mayaProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-        duration: 30,
-        likes: 67,
-        replies: 12,
-        trustLevel: 456,
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        category: "טכנולוגיה",
-        kycLevel: 1 as const,
-        watchCount: 234,
-        shareCount: 18
-      }
-    ]
-  },
-  {
-    id: "news-3",
-    title: "עליה חדה במחירי הדיור - מה הפתרונות האפשריים?",
-    description: "מחירי הדיור ממשיכים לטפס ומעוררים דאגה רבה בקרב צעירים הרוצים לרכוש דירה ראשונה",
-    thumbnail: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-    category: "כלכלה",
-    source: "כלכליסט",
-    comments: [
-      {
-        id: "comment-4",
-        userId: "4",
-        username: "עמית שטיין",
-        userImage: amitProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-        duration: 22,
-        likes: 34,
-        replies: 5,
-        trustLevel: 234,
-        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה",
-        kycLevel: 2 as const,
-        watchCount: 98,
-        shareCount: 5
-      },
-      {
-        id: "comment-5",
-        userId: "5",
-        username: "רחל גולד",
-        userImage: rachelProfile,
-        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-        duration: 28,
-        likes: 89,
-        replies: 15,
-        trustLevel: 678,
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה",
-        kycLevel: 3 as const,
-        watchCount: 167,
-        shareCount: 23
-      }
-    ]
-  },
-  {
-    id: "news-4",
-    title: "המכבי תל אביב זכתה באליפות - חגיגות ברחובות העיר",
-    description: "אלפי אוהדים יצאו לרחובות לחגוג את הזכייה המרגשת של המכבי תל אביב באליפות המדינה",
-    thumbnail: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    category: "ספורט",
-    source: "ספורט 5",
-    comments: []
-  }
+const categories = [
+  { id: 'all', label: 'הכל' },
+  { id: 'politics', label: 'פוליטיקה' },
+  { id: 'tech', label: 'טכנולוגיה' },
+  { id: 'economy', label: 'כלכלה' },
+  { id: 'social', label: 'חברה' },
 ];
 
-const NewsPage = () => {
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [expertsVisible, setExpertsVisible] = useState(true);
-  const [fullscreenVideo, setFullscreenVideo] = useState<{
-    comments: any[];
-    commentIndex: number;
-  } | null>(null);
-  const [expertVideoCreator, setExpertVideoCreator] = useState<{
-    newsId: string;
-    newsTitle: string;
-  } | null>(null);
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const { articles, loading, fetchNews, createNewsComment, interactWithNewsComment, incrementNewsView } = useNews();
-  const { zoozBalance } = useWalletData();
+const placeholderNews = [
+  { id: '1', headline: 'כותרת חדשה חשובה על אירוע משמעותי בארץ', source: 'מקור חדשות', time: 'לפני 2 שעות', comments: '45', watch: '1.2K', trust: '230' },
+  { id: '2', headline: 'פיתוח טכנולוגי חדש שמשנה את השוק הישראלי', source: 'טכנולוגיה עכשיו', time: 'לפני 3 שעות', comments: '67', watch: '2.4K', trust: '415' },
+  { id: '3', headline: 'שינוי כלכלי משמעותי צפוי בחודשים הקרובים', source: 'כלכליסט', time: 'לפני 5 שעות', comments: '89', watch: '3.1K', trust: '520' },
+  { id: '4', headline: 'דיון חברתי חם סביב נושא רגיש במדינה', source: 'חברה וכלכלה', time: 'לפני 6 שעות', comments: '123', watch: '4.2K', trust: '680' },
+  { id: '5', headline: 'עדכון חשוב על מצב הביטחון והפוליטיקה', source: 'חדשות 12', time: 'לפני 8 שעות', comments: '34', watch: '950', trust: '180' },
+];
 
-  const getFilteredNews = () => {
-    return articles; // News filtering is now handled by the useNews hook
-  };
+export default function NewsPage() {
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const handleNewsClick = async (newsId: string) => {
-    await incrementNewsView(newsId);
-    navigate(`/news/${newsId}`);
-  };
-
-  const handleProfileClick = (newsId: string, comment: any) => {
-    // Find the news item and get all its comments for fullscreen navigation
-    const newsItem = articles.find(news => news.id === newsId);
-    if (newsItem && newsItem.comments && newsItem.comments.length > 0) {
-      const commentIndex = newsItem.comments.findIndex(c => c.id === comment.id);
-      setFullscreenVideo({
-        comments: newsItem.comments,
-        commentIndex: commentIndex >= 0 ? commentIndex : 0
-      });
-    }
-  };
-
-  const handleVideoInteraction = async (commentId: string, action: string) => {
-    try {
-      const interactionType = action.toLowerCase() as 'trust' | 'watch' | 'like' | 'share';
-      await interactWithNewsComment(commentId, interactionType);
-      
-      const actionTexts: { [key: string]: { title: string; description: string } } = {
-        trust: { title: "אמון נוסף!", description: "הוספת אמון לתגובה זו." },
-        watch: { title: "נצפה!", description: "התגובה נוספה לרשימת הצפייה שלך." },
-        like: { title: "לייק!", description: "התגובה קיבלה לייק." },
-        share: { title: "שותף!", description: "התגובה שותפה בהצלחה." }
-      };
-      
-      const actionText = actionTexts[interactionType] || { title: action, description: `פעולה ${action} בוצעה.` };
-      
-      toast({
-        title: actionText.title,
-        description: actionText.description,
-      });
-
-      // Refresh news to show updated counts
-      await fetchNews(activeFilter);
-    } catch (error: any) {
-      toast({
-        title: "שגיאה",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleExpertReply = (newsId: string) => {
-    // Find the news item to get the title
-    const newsItem = articles.find(news => news.id === newsId);
-    if (newsItem) {
-      setExpertVideoCreator({
-        newsId,
-        newsTitle: newsItem.title
-      });
-    }
-  };
-
-  const handleExpertVideoPublish = async (videoData: any) => {
-    try {
-      if (expertVideoCreator) {
-        await createNewsComment(
-          expertVideoCreator.newsId,
-          videoData.content || "תגובת וידאו מומחה",
-          videoData.videoUrl,
-          videoData.duration
-        );
-        
-        toast({
-          title: "תגובה פורסמה!",
-          description: "תגובת המומחה שלך פורסמה בהצלחה.",
-        });
-
-        // Refresh news to show new comment
-        await fetchNews(activeFilter);
-      }
-    } catch (error: any) {
-      toast({
-        title: "שגיאה בפרסום",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-    
-    setExpertVideoCreator(null);
-  };
+  useEffect(() => {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'he');
+  }, []);
 
   return (
-    <div className="h-screen bg-slate-100 flex flex-col">
-      <NewsFilters 
-        activeFilter={activeFilter}
-        onFilterChange={(filter) => {
-          setActiveFilter(filter);
-          fetchNews(filter);
-        }}
-      />
-
-      <div className="flex-1 overflow-y-auto pb-20">
-        <div>
-          {getFilteredNews().map((newsItem) => (
-            <NewsItemComponent
-              key={newsItem.id}
-              item={newsItem}
-              onNewsClick={handleNewsClick}
-              onProfileClick={handleProfileClick}
-              onExpertReply={handleExpertReply}
-              expertsVisible={expertsVisible}
-              onToggleExperts={() => setExpertsVisible(!expertsVisible)}
-            />
+    <div className="min-h-screen bg-background pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-background border-b border-border">
+        <div className="px-4 py-3 flex items-center gap-2">
+          <TrendingUp className="w-6 h-6 text-primary" />
+          <h1 className="text-2xl font-bold text-foreground">אימפקט</h1>
+        </div>
+        
+        {/* Category Filters */}
+        <div className="px-4 pb-3 flex gap-2 overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={cn(
+                "px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
+                selectedCategory === cat.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              {cat.label}
+            </button>
           ))}
         </div>
       </div>
 
-      <Navigation zoozBalance={zoozBalance} />
+      {/* News Feed */}
+      <div className="max-w-2xl mx-auto">
+        {placeholderNews.map((news) => (
+          <div key={news.id} className="border-b border-border bg-card hover:bg-muted/30 transition-colors cursor-pointer">
+            <div className="p-4">
+              {/* News Thumbnail */}
+              <div className="w-full aspect-video bg-muted rounded-lg mb-3 flex items-center justify-center">
+                <span className="text-muted-foreground text-sm">📰 תמונה</span>
+              </div>
 
-      {/* Fullscreen Video Player */}
-      {fullscreenVideo && (
-        <FullscreenVideoPlayer
-          comments={fullscreenVideo.comments}
-          initialCommentIndex={fullscreenVideo.commentIndex}
-          onClose={() => setFullscreenVideo(null)}
-          onTrust={(commentId) => handleVideoInteraction(commentId, "Trust")}
-          onWatch={(commentId) => handleVideoInteraction(commentId, "Watch")}
-          onComment={(commentId) => handleVideoInteraction(commentId, "Comment")}
-          onShare={(commentId) => handleVideoInteraction(commentId, "Share")}
-        />
-      )}
+              {/* News Content */}
+              <h3 className="text-lg font-bold text-foreground mb-2 leading-snug">
+                {news.headline}
+              </h3>
+              
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                <span>{news.source}</span>
+                <span>•</span>
+                <span>{news.time}</span>
+              </div>
 
-      {/* Expert Video Creator */}
-      {expertVideoCreator && (
-        <ExpertVideoCreator
-          newsId={expertVideoCreator.newsId}
-          newsTitle={expertVideoCreator.newsTitle}
-          onClose={() => setExpertVideoCreator(null)}
-          onPublish={handleExpertVideoPublish}
-        />
-      )}
+              {/* Engagement Stats */}
+              <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MessageCircle className="w-4 h-4" />
+                  <span>{news.comments}</span>
+                </div>
+                
+                <div className="flex items-center gap-1 text-watch">
+                  <Eye className="w-4 h-4" />
+                  <span>{news.watch}</span>
+                </div>
+                
+                <div className="flex items-center gap-1 text-trust">
+                  <Heart className="w-4 h-4" />
+                  <span>{news.trust}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation */}
+      <Navigation zoozBalance={250} />
     </div>
   );
-};
-
-export default NewsPage;
+}
