@@ -140,7 +140,6 @@ export default function Index() {
       const video = videoRefs.current[currentPost.id];
       if (video) {
         video.play().catch(() => {
-          // Auto-play prevented, mute and try again
           video.muted = true;
           setMutedVideos(prev => ({ ...prev, [currentPost.id]: true }));
           video.play();
@@ -148,7 +147,6 @@ export default function Index() {
       }
     }
 
-    // Pause other videos
     Object.entries(videoRefs.current).forEach(([id, video]) => {
       if (id !== currentPost?.id && video) {
         video.pause();
@@ -156,14 +154,13 @@ export default function Index() {
     });
   }, [currentPostIndex, posts]);
 
-  // Scroll handling
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const handleScroll = () => {
       const scrollTop = container.scrollTop;
-      const windowHeight = window.innerHeight - 64; // minus nav height
+      const windowHeight = window.innerHeight - 64;
       const newIndex = Math.round(scrollTop / windowHeight);
       
       if (newIndex !== currentPostIndex && newIndex >= 0 && newIndex < posts.length) {
@@ -174,6 +171,12 @@ export default function Index() {
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
   }, [currentPostIndex, posts.length]);
+
+  const selectCategory = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setShowCategoryMenu(false);
+    // Filter posts by category (for now just update state, filtering can be implemented)
+  };
 
   const toggleTrust = (postId: string) => {
     setPosts(posts.map(post => {
