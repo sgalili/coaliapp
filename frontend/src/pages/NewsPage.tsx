@@ -207,7 +207,11 @@ export default function NewsPage() {
                 {/* Expert Circles - Always visible */}
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-2">
                   {news.experts.map((expert, idx) => (
-                    <div key={idx} className="relative flex-shrink-0">
+                    <button
+                      key={idx}
+                      onClick={() => openExpertDetail(news.id, idx)}
+                      className="relative flex-shrink-0 hover:opacity-80 transition-opacity"
+                    >
                       <img
                         src={expert}
                         alt={`Expert ${idx + 1}`}
@@ -218,7 +222,7 @@ export default function NewsPage() {
                           <Plus className="w-2.5 h-2.5 text-white" />
                         </div>
                       )}
-                    </div>
+                    </button>
                   ))}
                 </div>
 
