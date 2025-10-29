@@ -33,7 +33,9 @@ const placeholderNews = [
     pollQuestion: 'מה דעתך?',
     pollOptions: [
       { label: 'תומך', value: 67, color: 'bg-primary' },
-      { label: 'מתנגד', value: 33, color: 'bg-gray-300' },
+      { label: 'מתנגד', value: 20, color: 'bg-gray-400' },
+      { label: 'צריך שינויים', value: 10, color: 'bg-gray-300' },
+      { label: 'לא בטוח', value: 3, color: 'bg-gray-200' },
     ],
   },
   {
@@ -48,7 +50,9 @@ const placeholderNews = [
     pollQuestion: 'מה דעתך?',
     pollOptions: [
       { label: 'מהפכני', value: 50, color: 'bg-primary' },
-      { label: 'חיובי', value: 50, color: 'bg-gray-300' },
+      { label: 'חיובי', value: 35, color: 'bg-gray-400' },
+      { label: 'צריך להמתין', value: 10, color: 'bg-gray-300' },
+      { label: 'לא בטוח', value: 5, color: 'bg-gray-200' },
     ],
   },
   {
@@ -64,8 +68,9 @@ const placeholderNews = [
     pollQuestion: 'מה דעתך?',
     pollOptions: [
       { label: 'בנייה ממשלתית', value: 50, color: 'bg-primary' },
-      { label: 'הקלות מס', value: 25, color: 'bg-gray-300' },
-      { label: 'אחר', value: 25, color: 'bg-gray-200' },
+      { label: 'הקלות מס', value: 25, color: 'bg-gray-400' },
+      { label: 'שילוב פתרונות', value: 20, color: 'bg-gray-300' },
+      { label: 'לא בטוח', value: 5, color: 'bg-gray-200' },
     ],
   },
   {
@@ -79,8 +84,9 @@ const placeholderNews = [
     pollQuestion: 'היה הראשון לתת את דעתך כמומחה',
     pollOptions: [
       { label: 'מרגש מאוד', value: 40, color: 'bg-primary' },
-      { label: 'משמח', value: 40, color: 'bg-gray-300' },
-      { label: 'אחר', value: 20, color: 'bg-gray-200' },
+      { label: 'משמח', value: 40, color: 'bg-gray-400' },
+      { label: 'מגיע להם', value: 15, color: 'bg-gray-300' },
+      { label: 'אדיש', value: 5, color: 'bg-gray-200' },
     ],
   },
 ];
