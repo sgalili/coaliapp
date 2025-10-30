@@ -174,22 +174,17 @@ export default function NewsPage() {
             )}
           </div>
           
-          {/* Center - Page Title */}
-          <h1 className="text-xl font-bold text-foreground">אימפקט</h1>
-          
-          {/* Left - Search Icon */}
-          <button className="p-2 hover:bg-muted rounded-full transition-colors">
-            <Search className="w-5 h-5 text-muted-foreground" />
-          </button>
-        </div>
-        
-        {/* TikTok-Style Category Dropdown */}
-        <div className="px-4 pb-3 flex justify-center">
+          {/* Center - Category Dropdown (TikTok Style) */}
           <CategoryDropdown
             categories={selectedChannel.categories}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
           />
+          
+          {/* Left - Search Icon */}
+          <button className="p-2 hover:bg-muted rounded-full transition-colors">
+            <Search className="w-5 h-5 text-muted-foreground" />
+          </button>
         </div>
       </div>
 
