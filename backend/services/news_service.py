@@ -120,23 +120,41 @@ class NewsService:
             data = json.loads(content)
             
             for idx, item in enumerate(data.get('articles', [])):
+                # Generate image URL based on category and image description
+                image_keywords = item.get('image_description', category.value).replace(' ', '-')
+                image_url = f"https://images.unsplash.com/photo-{self._get_category_image_id(category)}?w=800&h=400&fit=crop&q=80"
+                
                 article = NewsArticle(
                     id=f"{category.value}_{idx}_{int(datetime.now().timestamp())}",
                     title=item.get('title', ''),
-                    content=item.get('content', ''),
-                    url=item.get('url', '#'),
+                    content=item.get('full_content', item.get('summary', item.get('content', ''))),
+                    url=f"#/news/{category.value}_{idx}",
                     category=category.value,
                     source=item.get('source', 'Unknown'),
                     published_at=datetime.now(),
                     expert_opinions=[],
                     poll_options=self._generate_poll_options(item.get('title', ''))
                 )
+                # Store image URL in content for now
+                article.content = f"IMAGE_URL:{image_url}\n\n{article.content}"
                 articles.append(article)
         except Exception as e:
             self.logger.error(f"Error parsing response: {str(e)}")
             # Return empty list if parsing fails
             
         return articles
+    
+    def _get_category_image_id(self, category: NewsCategory) -> str:
+        """Get Unsplash image ID based on category."""
+        category_images = {
+            NewsCategory.POLITICS: '1495020689067-958852a7765e',
+            NewsCategory.TECHNOLOGY: '1639762681485-074b7f938ba0',
+            NewsCategory.ECONOMY: '1560518883-ce09059eeffa',
+            NewsCategory.SOCIETY: '1529156069898-49953e39b3ac',
+            NewsCategory.HEALTH: '1576091160550-2173dba999ef',
+            NewsCategory.CULTURE: '1514306191717-452ec28c7814',
+        }
+        return category_images.get(category, '1495020689067-958852a7765e')
     
     def _generate_poll_options(self, title: str) -> List[dict]:
         """Generate poll options based on news title."""
