@@ -25,7 +25,7 @@ const defaultChannel: Channel = {
   id: null,
   name: 'Coali',
   description: 'All Public Content',
-  logo_url: '🌐',
+  logo_url: '/coali-logo.webp',
   is_public: true,
   member_count: null,
   categories: ['הכל', 'פוליטיקה', 'טכנולוגיה', 'כלכלה', 'חברה', 'בריאות', 'תרבות'],
