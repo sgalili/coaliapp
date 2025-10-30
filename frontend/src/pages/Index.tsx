@@ -107,7 +107,7 @@ const samplePosts = [
 
 export default function Index() {
   const navigate = useNavigate();
-  const { selectedChannel } = useChannel();
+  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
   const [activeFilter, setActiveFilter] = useState<'candidates' | 'for-me'>('candidates');
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
