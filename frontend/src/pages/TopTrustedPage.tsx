@@ -60,17 +60,35 @@ export default function TopTrustedPage() {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background border-b border-border">
         <div className="px-4 py-3 flex items-center justify-between">
+          {/* Left - Search Icon */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="p-2 hover:bg-muted rounded-full transition-colors"
+          >
+            <Search className="w-5 h-5 text-muted-foreground" />
+          </button>
+          
+          {/* Center - Page Title */}
           <div className="flex items-center gap-2">
             <Crown className="w-6 h-6 text-primary" />
             <h1 className="text-xl font-bold text-foreground">מובילים בקואלי</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="p-2 hover:bg-muted rounded-full transition-colors"
-            >
-              <Search className="w-5 h-5 text-muted-foreground" />
-            </button>
+          
+          {/* Right - Channel Selector (same layout as homepage) */}
+          <div className="flex items-center gap-2">
+            {selectedChannel.id !== null && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
+                <span className="text-xs font-medium">{selectedChannel.name}</span>
+                <button
+                  onClick={() => {
+                    // Will be handled properly later
+                  }}
+                  className="hover:bg-white/20 rounded-full p-0.5 transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            )}
             <ChannelSelector />
           </div>
         </div>
