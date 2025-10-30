@@ -48,9 +48,9 @@ export const ChannelSelector = () => {
         {selectedChannel.logo_url}
       </button>
 
-      {/* Channel Dropdown Menu - Opens below icon */}
+      {/* Channel Dropdown Menu - Opens below icon, positioned from right */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 bg-background border border-border rounded-xl shadow-xl min-w-[280px] max-w-[320px] z-50 overflow-hidden">
+        <div className="absolute top-full right-0 mt-2 bg-background border border-border rounded-xl shadow-xl min-w-[280px] max-w-[320px] z-50 overflow-hidden mr-5">
           {/* Coali Main */}
           <button
             onClick={() => handleSelectChannel(availableChannels[0])}
