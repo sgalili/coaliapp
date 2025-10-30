@@ -492,9 +492,15 @@ export default function NewsPage() {
       )}
 
       {/* Empty State */}
-      {!loading && newsArticles.length === 0 && (
+      {!loading && filteredNews.length === 0 && (
         <div className="max-w-2xl mx-auto p-8 text-center">
-          <p className="text-muted-foreground">אין חדשות להצגה</p>
+          <p className="text-muted-foreground">אין חדשות בקטגוריה {selectedCategory}</p>
+          <button
+            onClick={() => setSelectedCategory('הכל')}
+            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg"
+          >
+            הצג את כל החדשות
+          </button>
         </div>
       )}
 
