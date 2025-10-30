@@ -220,28 +220,40 @@ export default function WalletPage() {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-3 mb-6">
-          <button className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-primary hover:bg-primary/5 rounded-xl transition-all">
+          <button 
+            onClick={() => setShowSendModal(true)}
+            className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-primary hover:bg-primary/5 rounded-xl transition-all"
+          >
             <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center">
               <Send className="w-7 h-7 text-primary-foreground" />
             </div>
             <span className="text-sm font-semibold text-foreground">העברה</span>
           </button>
 
-          <button className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-watch hover:bg-watch/5 rounded-xl transition-all">
+          <button 
+            onClick={() => setShowRequestModal(true)}
+            className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-watch hover:bg-watch/5 rounded-xl transition-all"
+          >
             <div className="w-14 h-14 bg-watch rounded-full flex items-center justify-center">
               <Download className="w-7 h-7 text-watch-foreground" />
             </div>
             <span className="text-sm font-semibold text-foreground">בקשה</span>
           </button>
 
-          <button className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-trust hover:bg-trust/5 rounded-xl transition-all">
+          <button 
+            onClick={() => setShowBuyModal(true)}
+            className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-trust hover:bg-trust/5 rounded-xl transition-all"
+          >
             <div className="w-14 h-14 bg-trust rounded-full flex items-center justify-center">
               <CreditCard className="w-7 h-7 text-trust-foreground" />
             </div>
             <span className="text-sm font-semibold text-foreground">קניה</span>
           </button>
 
-          <button className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-border hover:bg-muted/30 rounded-xl transition-all">
+          <button 
+            onClick={() => setShowWithdrawModal(true)}
+            className="flex flex-col items-center gap-3 p-5 bg-card border-2 border-border hover:bg-muted/30 rounded-xl transition-all"
+          >
             <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center">
               <Building2 className="w-7 h-7 text-foreground" />
             </div>
