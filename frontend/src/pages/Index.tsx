@@ -272,21 +272,23 @@ export default function Index() {
               {/* Dark Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
             </div>
-              
-            {/* Mute Button */}
-            <button
-              onClick={() => toggleMute(post.id)}
-              className="absolute top-4 left-4 p-2 bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-colors z-10"
-            >
-              {mutedVideos[post.id] ? (
-                <VolumeX className="w-5 h-5 text-white" />
-              ) : (
-                <Volume2 className="w-5 h-5 text-white" />
-              )}
-            </button>
 
             {/* LEFT Side Action Buttons */}
             <div className="absolute left-4 bottom-32 flex flex-col gap-5 z-10">
+              {/* Mute Button - At top of vertical stack */}
+              <button
+                onClick={() => toggleMute(post.id)}
+                className="flex flex-col items-center gap-1"
+              >
+                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
+                  {mutedVideos[post.id] ? (
+                    <VolumeX className="w-6 h-6 text-white" />
+                  ) : (
+                    <Volume2 className="w-6 h-6 text-white" />
+                  )}
+                </div>
+              </button>
+
               {/* Vote Button (if applicable) */}
               {post.voteCount > 0 && (
                 <button className="flex flex-col items-center gap-1">
