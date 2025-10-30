@@ -85,6 +85,7 @@ const ChannelContext = createContext<ChannelContextType | undefined>(undefined);
 export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedChannel, setSelectedChannelState] = useState<Channel>(defaultChannel);
   const [selectedCategory, setSelectedCategoryState] = useState<string>('הכל');
+  const [showChannelIndicator, setShowChannelIndicatorState] = useState<boolean>(true);
   const [availableChannels] = useState<Channel[]>(demoChannels);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -115,7 +116,8 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
       localStorage.removeItem('selected_channel_id');
     }
     
-    // Don't reset category when changing channels - keep it
+    // Show indicator when channel changes
+    setShowChannelIndicatorState(true);
     
     // Simulate loading
     setTimeout(() => {
@@ -130,6 +132,10 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem('selected_category', category);
   };
 
+  const setShowChannelIndicator = (show: boolean) => {
+    setShowChannelIndicatorState(show);
+  };
+
   return (
     <ChannelContext.Provider
       value={{
@@ -138,6 +144,8 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
         availableChannels,
         selectedCategory,
         setSelectedCategory,
+        showChannelIndicator,
+        setShowChannelIndicator,
         isLoading,
       }}
     >
