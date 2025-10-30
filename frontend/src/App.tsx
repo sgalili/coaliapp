@@ -13,6 +13,7 @@ import MessagesPage from "./pages/MessagesPage";
 import TopTrustedPage from "./pages/TopTrustedPage";
 import WalletPage from "./pages/WalletPage";
 import ProfilePage from "./pages/ProfilePage";
+import DecisionsPage from "./pages/DecisionsPage";
 import DataManagementPage from "./pages/DataManagementPage";
 import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import InviteFriendsPage from "./pages/InviteFriendsPage";
