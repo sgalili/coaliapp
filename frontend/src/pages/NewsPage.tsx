@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share2, Handshake, Crown, X } from "lucide-react";
+import { ChannelSelector } from "@/components/ChannelSelector";
+import { CategoryDropdown } from "@/components/CategoryDropdown";
+import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share2, Handshake, Crown, X, CheckCircle, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useChannel } from "@/contexts/ChannelContext";
 
 const categories = [
   { id: 'all', label: 'הכל', apiValue: null },
