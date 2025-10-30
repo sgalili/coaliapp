@@ -232,11 +232,6 @@ export default function Index() {
     return count.toString();
   };
 
-  const closeComments = () => {
-    setCommentsOpen(false);
-    setActivePostId(null);
-  };
-
   return (
     <div className="h-screen bg-black overflow-hidden">
       {/* Top Left Corner - החלטות Button */}
