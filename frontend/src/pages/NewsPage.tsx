@@ -257,16 +257,28 @@ export default function NewsPage() {
         <div className="max-w-2xl mx-auto">
           {newsArticles.map((news) => (
             <div key={news.id} className="mb-4">
-              <img
-                src={news.image}
-                alt={news.title}
-                className="w-full aspect-[2/1] object-cover"
-              />
+              {/* Clickable image */}
+              <button
+                onClick={() => navigate(`/news/${news.id}`)}
+                className="w-full"
+              >
+                <img
+                  src={news.image}
+                  alt={news.title}
+                  className="w-full aspect-[2/1] object-cover hover:opacity-95 transition-opacity"
+                />
+              </button>
 
               <div className="px-4 py-4">
-                <h3 className="text-xl font-bold text-foreground mb-2 leading-tight">
-                  {news.title}
-                </h3>
+                {/* Clickable headline */}
+                <button
+                  onClick={() => navigate(`/news/${news.id}`)}
+                  className="w-full text-right"
+                >
+                  <h3 className="text-xl font-bold text-foreground mb-2 leading-tight hover:text-primary transition-colors">
+                    {news.title}
+                  </h3>
+                </button>
 
                 <p className="text-sm text-muted-foreground mb-4">{news.categoryLabel || news.category}</p>
 
