@@ -30,7 +30,8 @@ type TimeFilter = 'all' | 'week' | 'month';
 
 export default function TopTrustedPage() {
   const navigate = useNavigate();
-  const { selectedChannel } = useChannel();
+  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
+  const [showChannelIndicator, setShowChannelIndicator] = useState(true);
   const [users] = useState(generateDemoUsers());
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [searchOpen, setSearchOpen] = useState(false);
@@ -40,6 +41,11 @@ export default function TopTrustedPage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
+
+  // Reset indicator when channel changes
+  useEffect(() => {
+    setShowChannelIndicator(true);
+  }, [selectedChannel.id]);
 
   const topThree = users.slice(0, 3);
   const rankedList = users.slice(3);
