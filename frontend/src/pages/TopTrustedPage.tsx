@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
+import { ChannelSelector } from "@/components/ChannelSelector";
 import { Crown, Search, Heart, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useChannel } from "@/contexts/ChannelContext";
 
 // Demo users data (50 users)
 const generateDemoUsers = () => {
