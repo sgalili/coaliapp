@@ -374,7 +374,10 @@ export default function Index() {
               </button>
 
               {/* Comment Button */}
-              <button className="flex flex-col items-center gap-1">
+              <button 
+                onClick={() => openComments(post.id)}
+                className="flex flex-col items-center gap-1"
+              >
                 <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
                   <MessageCircle className="w-6 h-6 text-white" />
                 </div>
