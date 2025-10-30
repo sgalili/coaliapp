@@ -61,14 +61,14 @@ export const ChannelSelector = () => {
                 : "hover:bg-muted/30 border-b border-border"
             )}
           >
-            <div className="text-2xl">{availableChannels[0].logo_url}</div>
             <div className="flex-1 text-right">
               <div className="flex items-center gap-2 justify-end">
                 {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
                 <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
               </div>
-              <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
+              <p className="text-xs text-muted-foreground text-right">{availableChannels[0].description}</p>
             </div>
+            <div className="text-2xl">{availableChannels[0].logo_url}</div>
           </button>
 
           {/* Public Channels */}
