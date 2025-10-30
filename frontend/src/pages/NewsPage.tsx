@@ -5,6 +5,7 @@ import { CategoryDropdown } from "@/components/CategoryDropdown";
 import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share2, Handshake, Crown, X, CheckCircle, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { id: 'all', label: 'הכל', apiValue: null },
