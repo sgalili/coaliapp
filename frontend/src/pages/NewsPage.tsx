@@ -99,8 +99,7 @@ const placeholderNewsData = [
 
 export default function NewsPage() {
   const navigate = useNavigate();
-  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
   const [loading, setLoading] = useState(false);
   const [showChannelIndicator, setShowChannelIndicator] = useState(true);
@@ -114,9 +113,8 @@ export default function NewsPage() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  // Reset category and fetch news when channel changes
+  // Fetch news when channel changes
   useEffect(() => {
-    setSelectedCategory('הכל');
     setShowChannelIndicator(true);
     fetchRealNews();
   }, [selectedChannel.id]);
