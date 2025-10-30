@@ -34,10 +34,10 @@ export const ChannelSelector = () => {
   }, [isOpen]);
 
   return (
-    <>
+    <div ref={dropdownRef} className="relative">
       {/* Channel Button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all",
           selectedChannel.id === null
