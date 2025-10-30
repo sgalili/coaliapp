@@ -82,17 +82,24 @@ const ChannelContext = createContext<ChannelContextType | undefined>(undefined);
 
 export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedChannel, setSelectedChannelState] = useState<Channel>(defaultChannel);
+  const [selectedCategory, setSelectedCategoryState] = useState<string>('הכל');
   const [availableChannels] = useState<Channel[]>(demoChannels);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load saved channel from localStorage on mount
+  // Load saved channel and category from localStorage on mount
   useEffect(() => {
     const savedChannelId = localStorage.getItem('selected_channel_id');
+    const savedCategory = localStorage.getItem('selected_category');
+    
     if (savedChannelId) {
       const savedChannel = demoChannels.find(ch => ch.id === savedChannelId);
       if (savedChannel) {
         setSelectedChannelState(savedChannel);
       }
+    }
+    
+    if (savedCategory) {
+      setSelectedCategoryState(savedCategory);
     }
   }, []);
 
@@ -106,11 +113,19 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
       localStorage.removeItem('selected_channel_id');
     }
     
+    // Don't reset category when changing channels - keep it
+    
     // Simulate loading
     setTimeout(() => {
       setSelectedChannelState(channel);
       setIsLoading(false);
     }, 300);
+  };
+
+  const setSelectedCategory = (category: string) => {
+    setSelectedCategoryState(category);
+    // Save to localStorage
+    localStorage.setItem('selected_category', category);
   };
 
   return (
@@ -119,6 +134,8 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
         selectedChannel,
         setSelectedChannel,
         availableChannels,
+        selectedCategory,
+        setSelectedCategory,
         isLoading,
       }}
     >
