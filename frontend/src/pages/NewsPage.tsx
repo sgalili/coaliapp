@@ -106,15 +106,7 @@ export default function NewsPage() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
-    // Fetch real news on mount
-    fetchNews();
   }, []);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchNews();
-    }
-  }, [selectedCategory]);
 
   const fetchNews = async () => {
     setLoading(true);
