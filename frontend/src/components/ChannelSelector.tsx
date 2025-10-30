@@ -85,8 +85,8 @@ export const ChannelSelector = () => {
                         <div className="text-3xl">{channel.logo_url}</div>
                         <div className="flex-1 text-right">
                           <div className="flex items-center gap-2 justify-end">
-                            <p className="font-semibold text-foreground">{channel.name}</p>
                             {selectedChannel.id === channel.id && <Check className="w-5 h-5 text-primary" />}
+                            <p className="font-semibold text-foreground">{channel.name}</p>
                           </div>
                           <p className="text-xs text-muted-foreground">{channel.description}</p>
                           <p className="text-xs text-muted-foreground">{channel.member_count?.toLocaleString()} חברים</p>
