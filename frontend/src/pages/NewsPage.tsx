@@ -195,44 +195,82 @@ export default function NewsPage() {
 
                 <p className="text-sm text-muted-foreground mb-4">{news.categoryLabel || news.category}</p>
 
-                {/* Expert Opinions */}
+                {/* Expert Comments Section - Expandable Accordion */}
                 <div className="mb-4">
                   <button
                     onClick={() => toggleExperts(news.id)}
-                    className="flex items-center justify-between w-full mb-3"
+                    className="w-full flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
                   >
-                    <span className="text-sm font-medium text-foreground">דעת המומחים</span>
-                    {expandedNews[news.id] ? (
-                      <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-foreground">תגובות מומחים ({news.experts?.length || 0})</span>
+                      <ChevronDown className={cn(
+                        "w-4 h-4 text-muted-foreground transition-transform duration-200",
+                        expandedNews[news.id] && "rotate-180"
+                      )} />
+                    </div>
+
+                    {/* Expert Avatars - Only when collapsed */}
+                    {!expandedNews[news.id] && (
+                      <div className="flex -space-x-2">
+                        {news.experts?.slice(0, 3).map((expert: string, idx: number) => (
+                          <img
+                            key={idx}
+                            src={expert}
+                            alt={`Expert ${idx + 1}`}
+                            className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                          />
+                        ))}
+                        {news.experts && news.experts.length > 3 && (
+                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-white flex items-center justify-center text-xs font-medium">
+                            +{news.experts.length - 3}
+                          </div>
+                        )}
+                      </div>
                     )}
                   </button>
 
-                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-2">
-                    {news.experts?.map((expert: string, idx: number) => (
-                      <button
-                        key={idx}
-                        onClick={() => openExpertDetail(news.id, idx)}
-                        className="relative flex-shrink-0 hover:opacity-80 transition-opacity"
-                      >
-                        <img
-                          src={expert}
-                          alt={`Expert ${idx + 1}`}
-                          className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                        />
-                        {idx === 0 && (
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                            <Plus className="w-2.5 h-2.5 text-white" />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-
+                  {/* Expanded Expert Comments */}
                   {expandedNews[news.id] && (
-                    <div className="mt-3 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
-                      <p>{news.content}</p>
+                    <div className="mt-2 space-y-2">
+                      {news.experts?.slice(0, 3).map((expert: string, idx: number) => (
+                        <div key={idx} className="p-4 bg-card rounded-lg border border-border">
+                          <div className="flex items-start gap-3 mb-2">
+                            <img
+                              src={expert}
+                              alt={expertNames[idx]}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-sm">{expertNames[idx % expertNames.length]}</span>
+                                <CheckCircle className="w-4 h-4 text-trust" />
+                              </div>
+                              <div className="text-xs text-muted-foreground mb-2">
+                                {(Math.random() * 10000).toFixed(0)} Trust • לפני {Math.floor(Math.random() * 24) + 1} שעות
+                              </div>
+                              <p className="text-sm text-foreground leading-relaxed mb-3">
+                                {idx === 0 ? news.content : 
+                                 idx === 1 ? 'מסכים עם הניתוח, אבל חשוב לקחת בחשבון גם השלכות נוספות.' :
+                                 'נקודה חשובה שלא הוזכרה - ההשפעה על המגזר הציבורי תהיה משמעותית.'}
+                              </p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <button className="flex items-center gap-1 hover:text-primary transition-colors">
+                                  <ThumbsUp className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 300) + 50}</span>
+                                </button>
+                                <button className="flex items-center gap-1 hover:text-primary transition-colors">
+                                  <MessageCircle className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 50) + 5}</span>
+                                </button>
+                                <span className="flex items-center gap-1">
+                                  <Eye className="w-3 h-3" />
+                                  <span>נצפה</span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
