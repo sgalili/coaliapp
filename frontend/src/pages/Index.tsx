@@ -232,11 +232,6 @@ export default function Index() {
     return count.toString();
   };
 
-  const openComments = (postId: string) => {
-    setActivePostId(postId);
-    setCommentsOpen(true);
-  };
-
   const closeComments = () => {
     setCommentsOpen(false);
     setActivePostId(null);
