@@ -109,12 +109,11 @@ const samplePosts = [
 
 export default function Index() {
   const navigate = useNavigate();
-  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
+  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [newDecisionsCount] = useState(3);
-  const [showChannelIndicator, setShowChannelIndicator] = useState(true);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
