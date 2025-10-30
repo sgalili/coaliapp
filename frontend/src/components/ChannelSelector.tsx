@@ -6,6 +6,7 @@ import { useChannel } from "@/contexts/ChannelContext";
 export const ChannelSelector = () => {
   const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
@@ -14,6 +15,23 @@ export const ChannelSelector = () => {
     setSelectedChannel(channel);
     setIsOpen(false);
   };
+
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
     <>
