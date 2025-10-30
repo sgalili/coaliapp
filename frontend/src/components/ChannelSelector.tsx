@@ -72,7 +72,11 @@ export const ChannelSelector = () => {
               </div>
               <p className="text-xs text-muted-foreground text-right">{availableChannels[0].description}</p>
             </div>
-            <div className="text-2xl">{availableChannels[0].logo_url}</div>
+            {availableChannels[0].logo_url.startsWith('/') ? (
+              <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 object-contain" />
+            ) : (
+              <div className="text-2xl">{availableChannels[0].logo_url}</div>
+            )}
           </button>
 
           {/* Public Channels */}
