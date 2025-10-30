@@ -531,7 +531,7 @@ export default function NewsPage() {
 
                   {(!expandedPolls[news.id] || userVotes[news.id]) && (
                     <div className="border-t border-border/50 p-4">
-                      <div className="flex h-2 rounded-full overflow-hidden mb-2">
+                      <div className="flex h-2 rounded-full overflow-hidden mb-2 flex-row-reverse">
                         {news.poll_options?.map((option: any, idx: number) => (
                           <div
                             key={idx}
