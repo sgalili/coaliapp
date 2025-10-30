@@ -114,9 +114,56 @@ export default function NewsPage() {
 
   // Fetch news when channel changes
   useEffect(() => {
-    setShowChannelIndicator(true);
     fetchRealNews();
   }, [selectedChannel.id]);
+
+  const refreshNews = async () => {
+    // Fetch 5 more news for selected category
+    setLoading(true);
+    try {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      
+      if (selectedCategory !== 'הכל') {
+        // Find the API value for selected category
+        const cat = categories.find(c => c.label === selectedCategory);
+        if (cat?.apiValue) {
+          const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=5`;
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.articles && data.articles.length > 0) {
+            const newArticles = data.articles.map((article: any) => {
+              let imageUrl = '';
+              let cleanContent = article.content;
+              if (article.content.startsWith('IMAGE_URL:')) {
+                const parts = article.content.split('\n\n');
+                imageUrl = parts[0].replace('IMAGE_URL:', '');
+                cleanContent = parts.slice(1).join('\n\n');
+              }
+              
+              return {
+                ...article,
+                content: cleanContent,
+                categoryLabel: cat.label,
+                image: imageUrl,
+                experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
+              };
+            });
+            
+            // Prepend new articles to existing ones
+            setNewsArticles(prev => [...newArticles, ...prev]);
+          }
+        }
+      } else {
+        // Refresh all categories
+        fetchRealNews();
+      }
+    } catch (error) {
+      console.error('Error refreshing news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchRealNews = async () => {
     setLoading(true);
