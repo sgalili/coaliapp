@@ -132,6 +132,16 @@ export default function Index() {
     setSelectedCategory('הכל'); // Reset category when channel changes
   }, [selectedChannel.id]);
 
+  const openComments = (postId: string) => {
+    setActivePostId(postId);
+    setCommentsOpen(true);
+  };
+
+  const closeComments = () => {
+    setCommentsOpen(false);
+    setActivePostId(null);
+  };
+
   // Show channel indicator when channel changes
   useEffect(() => {
     setShowChannelIndicator(true);
