@@ -204,6 +204,11 @@ export default function NewsPage() {
     setSelectedExpert(null);
   };
 
+  // Filter news by selected category
+  const filteredNews = selectedCategory === 'הכל' 
+    ? newsArticles 
+    : newsArticles.filter(news => news.categoryLabel === selectedCategory || news.category === selectedCategory);
+
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
