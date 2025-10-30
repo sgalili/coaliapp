@@ -428,8 +428,8 @@ export default function NewsPage() {
                               </div>
                               <p className="text-sm text-foreground leading-relaxed mb-3">
                                 {idx === 0 ? news.content : 
-                                 idx === 1 ? 'מסכים עם הניתוח, אבל חשוב לקחת בחשבון גם השלכות נוספות.' :
-                                 'נקודה חשובה שלא הוזכרה - ההשפעה על המגזר הציבורי תהיה משמעותית.'}
+                                 idx === 1 ? 'מסכים עם הניתוח, אבל חשוב לקחת בחשבון גם השלכות נוספות על המגזר הפרטי והשפעות ארוכות טווח.' :
+                                 'נקודה חשובה שלא הוזכרה במאמר - ההשפעה על המגזר הציבורי תהיה משמעותית ויש להתכונן מראש.'}
                               </p>
                             </div>
                           </div>
@@ -477,6 +477,14 @@ export default function NewsPage() {
                           </div>
                         </div>
                       ))}
+                      
+                      {/* Add Your Comment - For Verified Users */}
+                      <div className="p-4 bg-primary/5 rounded-lg border-2 border-dashed border-primary/20">
+                        <p className="text-sm font-medium text-foreground mb-3">הוסף את דעתך כמומחה</p>
+                        <button className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                          + הוסף תגובת מומחה
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
