@@ -59,8 +59,8 @@ export const ChannelSelector = () => {
                 <div className="text-3xl">{availableChannels[0].logo_url}</div>
                 <div className="flex-1 text-right">
                   <div className="flex items-center gap-2 justify-end">
-                    <p className="font-semibold text-foreground">{availableChannels[0].name}</p>
                     {selectedChannel.id === null && <Check className="w-5 h-5 text-primary" />}
+                    <p className="font-semibold text-foreground">{availableChannels[0].name}</p>
                   </div>
                   <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
                 </div>
