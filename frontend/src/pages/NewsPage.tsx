@@ -215,9 +215,9 @@ export default function NewsPage() {
                   )}
                 </button>
 
-                {/* Expert Circles - Always visible */}
+                {/* Expert Circles */}
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-2">
-                  {news.experts.map((expert, idx) => (
+                  {news.experts?.map((expert: string, idx: number) => (
                     <button
                       key={idx}
                       onClick={() => openExpertDetail(news.id, idx)}
@@ -237,10 +237,10 @@ export default function NewsPage() {
                   ))}
                 </div>
 
-                {/* Expanded Expert Details - Only show when expanded */}
+                {/* Expanded Expert Details */}
                 {expandedNews[news.id] && (
-                  <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                    <p>פרטי דעות המומחים יוצגו כאן...</p>
+                  <div className="mt-3 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
+                    <p>{news.content}</p>
                   </div>
                 )}
               </div>
