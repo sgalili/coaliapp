@@ -122,6 +122,11 @@ export default function Index() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
+  // Show channel indicator when channel changes
+  useEffect(() => {
+    setShowChannelIndicator(true);
+  }, [selectedChannel]);
+
   // Auto-play videos in viewport
   useEffect(() => {
     const currentPost = posts[currentPostIndex];
