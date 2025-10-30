@@ -52,30 +52,30 @@ export const ChannelSelector = () => {
         )}
       </button>
 
-      {/* Channel Dropdown Menu - Opens below icon, positioned from right */}
+      {/* Channel Dropdown Menu - Opens below icon, aligned to right */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 bg-background border border-border rounded-xl shadow-xl min-w-[280px] max-w-[320px] z-50 overflow-hidden mr-5">
+        <div className="absolute top-full right-0 mt-2 bg-background border border-border rounded-xl shadow-xl w-[280px] z-50 overflow-hidden">
           {/* Coali Main */}
           <button
             onClick={() => handleSelectChannel(availableChannels[0])}
             className={cn(
-              "w-full flex items-center gap-3 p-3 transition-colors",
+              "w-full flex items-center justify-end gap-3 p-3 transition-colors",
               selectedChannel.id === null
                 ? "bg-primary/10 border-b-2 border-primary"
                 : "hover:bg-muted/30 border-b border-border"
             )}
           >
-            <div className="flex-1 text-right">
+            <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
                 {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
                 <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
               </div>
-              <p className="text-xs text-muted-foreground text-right">{availableChannels[0].description}</p>
+              <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
             </div>
             {availableChannels[0].logo_url.startsWith('/') ? (
-              <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 object-contain" />
+              <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 object-contain flex-shrink-0" />
             ) : (
-              <div className="text-2xl">{availableChannels[0].logo_url}</div>
+              <div className="text-2xl flex-shrink-0">{availableChannels[0].logo_url}</div>
             )}
           </button>
 
