@@ -127,6 +127,7 @@ export default function Index() {
   // Reset channel indicator when channel changes
   useEffect(() => {
     setShowChannelIndicator(true);
+    setSelectedCategory('הכל'); // Reset category when channel changes
   }, [selectedChannel.id]);
 
   // Show channel indicator when channel changes
