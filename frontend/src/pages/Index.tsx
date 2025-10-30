@@ -113,6 +113,7 @@ export default function Index() {
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [newDecisionsCount, setNewDecisionsCount] = useState(3);
+  const [showChannelIndicator, setShowChannelIndicator] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
