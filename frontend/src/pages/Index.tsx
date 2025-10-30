@@ -224,6 +224,30 @@ export default function Index() {
         </button>
       </div>
 
+      {/* Top Left - Channel Selector */}
+      <div className="fixed top-4 left-4 z-50">
+        <ChannelSelector />
+      </div>
+
+      {/* Channel Indicator (if not Coali main) */}
+      {selectedChannel.id !== null && (
+        <div className="fixed top-16 left-4 z-40">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
+            <span>{selectedChannel.logo_url}</span>
+            <span>{selectedChannel.name}</span>
+            <button
+              onClick={() => {
+                const mainChannel = { id: null, name: 'Coali', description: 'All Public Content', logo_url: '🌐', is_public: true, member_count: null, categories: [] };
+                // Will be handled by context
+              }}
+              className="hover:bg-white/20 rounded-full p-0.5"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Posts Feed */}
       <div 
         ref={containerRef}
