@@ -115,6 +115,8 @@ export default function Index() {
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [newDecisionsCount, setNewDecisionsCount] = useState(3);
   const [showChannelIndicator, setShowChannelIndicator] = useState(true);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [activePostId, setActivePostId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
