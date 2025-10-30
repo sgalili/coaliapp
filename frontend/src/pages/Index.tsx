@@ -134,11 +134,6 @@ export default function Index() {
     setActivePostId(null);
   };
 
-  // Show channel indicator when channel changes
-  useEffect(() => {
-    setShowChannelIndicator(true);
-  }, [selectedChannel]);
-
   // Auto-play videos in viewport
   useEffect(() => {
     const currentPost = posts[currentPostIndex];
