@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { ArrowLeft, Settings, Send, Download, CreditCard, Building2, TrendingUp, X } from "lucide-react";
+import { ArrowLeft, Settings, Send, Download, CreditCard, Building2, TrendingUp, X, Search, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+
+// Demo users for sending
+const demoUsers = [
+  { id: '1', name: 'נועה רותם', avatar: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg', verified: true, trust: 3200, isRecent: true },
+  { id: '2', name: 'דוד לוי', avatar: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg', verified: true, trust: 5100, isRecent: true },
+  { id: '3', name: 'רחל כהן', avatar: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg', verified: true, trust: 2400, isRecent: false },
+  { id: '4', name: 'אמית ברק', avatar: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg', verified: true, trust: 1800, isRecent: false },
+  { id: '5', name: 'מיכל שמיר', avatar: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg', verified: false, trust: 1200, isRecent: false },
+  { id: '6', name: 'יוסי בן-דוד', avatar: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg', verified: false, trust: 980, isRecent: false },
+  { id: '7', name: 'תמר פרץ', avatar: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg', verified: true, trust: 1500, isRecent: false },
+];
 
 // Demo wallet data
 const walletData = {
