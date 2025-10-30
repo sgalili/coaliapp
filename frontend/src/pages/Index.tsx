@@ -208,8 +208,8 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
-      {/* Top Left - החלטות Button */}
-      <div className="fixed top-4 right-4 z-50">
+      {/* Top Left Corner - החלטות Button */}
+      <div className="fixed top-4 left-4 z-50">
         <button
           onClick={() => navigate('/decisions')}
           data-tour-id="decisions-filter"
@@ -224,14 +224,14 @@ export default function Index() {
         </button>
       </div>
 
-      {/* Top Right - Channel Selector */}
-      <div className="fixed top-4 left-4 z-50">
+      {/* Top Right Corner - Channel Selector */}
+      <div className="fixed top-4 right-4 z-50">
         <ChannelSelector />
       </div>
 
       {/* Channel Indicator (if not Coali main) - Below channel selector on right */}
       {selectedChannel.id !== null && (
-        <div className="fixed top-16 left-4 z-40">
+        <div className="fixed top-16 right-4 z-40">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
             <span>{selectedChannel.logo_url}</span>
             <span>{selectedChannel.name}</span>
