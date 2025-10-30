@@ -238,20 +238,20 @@ export default function NewsPage() {
                       )} />
                     </div>
 
-                    {/* Expert Avatars - Only when collapsed */}
+                    {/* Expert Avatars - Only when collapsed, show up to 10 */}
                     {!expandedNews[news.id] && (
-                      <div className="flex -space-x-2">
-                        {news.experts?.slice(0, 3).map((expert: string, idx: number) => (
+                      <div className="flex -space-x-3">
+                        {news.experts?.slice(0, 10).map((expert: string, idx: number) => (
                           <img
                             key={idx}
                             src={expert}
                             alt={`Expert ${idx + 1}`}
-                            className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                            className="w-12 h-12 rounded-full border-2 border-white object-cover"
                           />
                         ))}
-                        {news.experts && news.experts.length > 3 && (
-                          <div className="w-8 h-8 rounded-full bg-muted border-2 border-white flex items-center justify-center text-xs font-medium">
-                            +{news.experts.length - 3}
+                        {news.experts && news.experts.length > 10 && (
+                          <div className="w-12 h-12 rounded-full bg-muted border-2 border-white flex items-center justify-center text-xs font-medium">
+                            +{news.experts.length - 10}
                           </div>
                         )}
                       </div>
