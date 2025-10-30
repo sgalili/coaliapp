@@ -323,6 +323,23 @@ export default function NewsPage() {
                     <div className="mt-2 space-y-2">
                       {news.experts?.slice(0, 3).map((expert: string, idx: number) => (
                         <div key={idx} className="p-4 bg-card rounded-lg border border-border">
+                          {/* Video Thumbnail - 9x16 */}
+                          <div className="relative w-full mb-3">
+                            <div className="relative aspect-[9/16] max-w-[200px] mx-auto bg-slate-900 rounded-lg overflow-hidden">
+                              <video
+                                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
+                                className="w-full h-full object-cover"
+                                poster={expert}
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <button className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                                  <Play className="w-6 h-6 text-white ml-0.5" />
+                                </button>
+                              </div>
+                              <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-white text-xs">0:22</div>
+                            </div>
+                          </div>
+
                           <div className="flex items-start gap-3 mb-2">
                             <img
                               src={expert}
@@ -342,21 +359,49 @@ export default function NewsPage() {
                                  idx === 1 ? 'מסכים עם הניתוח, אבל חשוב לקחת בחשבון גם השלכות נוספות.' :
                                  'נקודה חשובה שלא הוזכרה - ההשפעה על המגזר הציבורי תהיה משמעותית.'}
                               </p>
-                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                                  <ThumbsUp className="w-3 h-3" />
-                                  <span>{Math.floor(Math.random() * 300) + 50}</span>
-                                </button>
-                                <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                                  <MessageCircle className="w-3 h-3" />
-                                  <span>{Math.floor(Math.random() * 50) + 5}</span>
-                                </button>
-                                <span className="flex items-center gap-1">
-                                  <Eye className="w-3 h-3" />
-                                  <span>נצפה</span>
-                                </span>
-                              </div>
                             </div>
+                          </div>
+
+                          {/* Engagement Actions */}
+                          <div className="flex items-center justify-center gap-6 pt-4 mt-4 border-t border-border">
+                            <button className="flex flex-col items-center gap-1 group">
+                              <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                                <div className="relative">
+                                  <Handshake className="w-5 h-5 text-foreground" />
+                                  <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+                                </div>
+                              </div>
+                              <span className="text-muted-foreground text-xs font-medium">
+                                {(Math.random() * 3000 + 500).toFixed(0)}
+                              </span>
+                            </button>
+
+                            <button className="flex flex-col items-center gap-1 group">
+                              <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                                <Eye className="w-5 h-5 text-muted-foreground" />
+                              </div>
+                              <span className="text-muted-foreground text-xs font-medium">
+                                {Math.floor(Math.random() * 500 + 50)}
+                              </span>
+                            </button>
+
+                            <button className="flex flex-col items-center gap-1 group">
+                              <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                                <MessageCircle className="w-5 h-5 text-muted-foreground" />
+                              </div>
+                              <span className="text-muted-foreground text-xs font-medium">
+                                {Math.floor(Math.random() * 100 + 10)}
+                              </span>
+                            </button>
+
+                            <button className="flex flex-col items-center gap-1 group">
+                              <div className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors group-active:scale-95">
+                                <Share2 className="w-5 h-5 text-muted-foreground" />
+                              </div>
+                              <span className="text-muted-foreground text-xs font-medium">
+                                {Math.floor(Math.random() * 50 + 5)}
+                              </span>
+                            </button>
                           </div>
                         </div>
                       ))}
