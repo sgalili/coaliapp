@@ -30,6 +30,7 @@ type TimeFilter = 'all' | 'week' | 'month';
 
 export default function TopTrustedPage() {
   const navigate = useNavigate();
+  const { selectedChannel } = useChannel();
   const [users] = useState(generateDemoUsers());
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [searchOpen, setSearchOpen] = useState(false);
