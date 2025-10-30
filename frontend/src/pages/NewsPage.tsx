@@ -97,6 +97,7 @@ const placeholderNewsData = [
 ];
 
 export default function NewsPage() {
+  const { selectedChannel } = useChannel();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
   const [loading, setLoading] = useState(false);
@@ -109,6 +110,11 @@ export default function NewsPage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
+
+  // Reset category when channel changes
+  useEffect(() => {
+    setSelectedCategory('הכל');
+  }, [selectedChannel.id]);
 
   const toggleExperts = (newsId: string) => {
     setExpandedNews(prev => ({
