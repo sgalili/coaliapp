@@ -248,6 +248,15 @@ export default function Index() {
         </button>
       </div>
 
+      {/* Category Dropdown - Center Top (TikTok Style) */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+        <CategoryDropdown
+          categories={selectedChannel.categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+        />
+      </div>
+
       {/* Top Right Corner - Channel Selector */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <ChannelSelector />
