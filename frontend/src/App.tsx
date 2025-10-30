@@ -41,14 +41,14 @@ const App = () => (
           <Route path="/user/:userId/post/:postId" element={<PostDetailPage />} />
           <Route path="/toptrusted" element={<TopTrustedPage />} />
           
-          {/* Protected routes - require authentication */}
-          <Route path="/messages" element={<ProtectedPage><MessagesPage /></ProtectedPage>} />
-          <Route path="/wallet" element={<ProtectedPage><WalletPage /></ProtectedPage>} />
-          <Route path="/profile" element={<ProtectedPage><ProfilePage /></ProtectedPage>} />
-          <Route path="/data-management" element={<ProtectedPage><DataManagementPage /></ProtectedPage>} />
-          <Route path="/notifications-settings" element={<ProtectedPage><NotificationsSettingsPage /></ProtectedPage>} />
-          <Route path="/invite-friends" element={<ProtectedPage><InviteFriendsPage /></ProtectedPage>} />
-          <Route path="/my-stats" element={<ProtectedPage><MyStatsPage /></ProtectedPage>} />
+          {/* Temporarily public for development - will add auth in Phase 2 */}
+          <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/wallet" element={<WalletPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/data-management" element={<DataManagementPage />} />
+          <Route path="/notifications-settings" element={<NotificationsSettingsPage />} />
+          <Route path="/invite-friends" element={<InviteFriendsPage />} />
+          <Route path="/my-stats" element={<MyStatsPage />} />
           
           {/* Settings routes - can be public but some features require auth */}
           <Route path="/language-settings" element={<LanguageSettingsPage />} />
