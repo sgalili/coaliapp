@@ -258,9 +258,9 @@ export default function NewsPage() {
       )}
 
       {/* News Feed */}
-      {!loading && newsArticles.length > 0 && (
+      {!loading && filteredNews.length > 0 && (
         <div className="max-w-2xl mx-auto">
-          {newsArticles.map((news) => (
+          {filteredNews.map((news) => (
             <div key={news.id} className="mb-4">
               {/* Clickable image */}
               <button
