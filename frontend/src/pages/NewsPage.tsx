@@ -25,82 +25,16 @@ const expertProfiles = [
   'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
 ];
 
-const placeholderNews = [
-  {
-    id: '1',
-    headline: 'הכנסת אישרה את חוק השידור החדש - מה זה אומר על העתיד של התקשורת?',
-    category: 'פוליטיקה',
-    image: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop',
-    experts: [
-      'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-      'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-      'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-      'https://trust.coali.app/assets/netanyahu-profile-C6yQFuUl.jpg',
-      'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
-      'https://trust.coali.app/assets/warren-buffett-profile-Bfn-yren.jpg',
-      'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-      'https://trust.coali.app/assets/yaron-profile-DuwqrcEK.jpg',
-      'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-    ],
-    pollQuestion: 'מה דעתך?',
-    pollOptions: [
-      { label: 'תומך', value: 67, color: 'bg-primary' },
-      { label: 'מתנגד', value: 20, color: 'bg-gray-400' },
-      { label: 'צריך שינויים', value: 10, color: 'bg-gray-300' },
-      { label: 'לא בטוח', value: 3, color: 'bg-gray-200' },
-    ],
-  },
-  {
-    id: '2',
-    headline: 'פריצת דרך בטכנולוגיית הבלוקצ\'יין - סטארט-אפ ישראלי פיתח פתרון חדשני',
-    category: 'טכנולוגיה',
-    image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop',
-    experts: [
-      'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
-      'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-    ],
-    pollQuestion: 'מה דעתך?',
-    pollOptions: [
-      { label: 'מהפכני', value: 50, color: 'bg-primary' },
-      { label: 'חיובי', value: 35, color: 'bg-gray-400' },
-      { label: 'צריך להמתין', value: 10, color: 'bg-gray-300' },
-      { label: 'לא בטוח', value: 5, color: 'bg-gray-200' },
-    ],
-  },
-  {
-    id: '3',
-    headline: 'עליה חדה במחירי הדיור - מה הפתרונות האפשריים?',
-    category: 'כלכלה',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=400&fit=crop',
-    experts: [
-      'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg',
-      'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
-      'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-    ],
-    pollQuestion: 'מה דעתך?',
-    pollOptions: [
-      { label: 'בנייה ממשלתית', value: 50, color: 'bg-primary' },
-      { label: 'הקלות מס', value: 25, color: 'bg-gray-400' },
-      { label: 'שילוב פתרונות', value: 20, color: 'bg-gray-300' },
-      { label: 'לא בטוח', value: 5, color: 'bg-gray-200' },
-    ],
-  },
-  {
-    id: '4',
-    headline: 'המכבי תל אביב זכתה באליפות - חגיגות ברחובות העיר',
-    category: 'ספורט',
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop',
-    experts: [
-      'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-    ],
-    pollQuestion: 'היה הראשון לתת את דעתך כמומחה',
-    pollOptions: [
-      { label: 'מרגש מאוד', value: 40, color: 'bg-primary' },
-      { label: 'משמח', value: 40, color: 'bg-gray-400' },
-      { label: 'מגיע להם', value: 15, color: 'bg-gray-300' },
-      { label: 'אדיש', value: 5, color: 'bg-gray-200' },
-    ],
-  },
+const expertProfiles = [
+  'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
+  'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+  'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+  'https://trust.coali.app/assets/netanyahu-profile-C6yQFuUl.jpg',
+  'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
+  'https://trust.coali.app/assets/warren-buffett-profile-Bfn-yren.jpg',
+  'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
+  'https://trust.coali.app/assets/yaron-profile-DuwqrcEK.jpg',
+  'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
 ];
 
 export default function NewsPage() {
