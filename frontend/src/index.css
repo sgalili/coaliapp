@@ -376,4 +376,20 @@ All colors MUST be HSL.
   .animate-primary-glow {
     animation: primary-glow 4s ease-in-out infinite;
   }
+
+  /* Slide up animation for modals */
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out forwards;
+  }
 }
