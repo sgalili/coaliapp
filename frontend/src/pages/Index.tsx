@@ -125,6 +125,11 @@ export default function Index() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
+  // Reset channel indicator when channel changes
+  useEffect(() => {
+    setShowChannelIndicator(true);
+  }, [selectedChannel.id]);
+
   // Show channel indicator when channel changes
   useEffect(() => {
     setShowChannelIndicator(true);
