@@ -283,10 +283,33 @@ export default function NewsPage() {
             onCategoryChange={setSelectedCategory}
           />
           
-          {/* Left - Search Icon */}
-          <button className="p-2 hover:bg-muted rounded-full transition-colors">
-            <Search className="w-5 h-5 text-muted-foreground" />
-          </button>
+          {/* Left - Search & Refresh Icons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={refreshNews}
+              disabled={loading}
+              className="p-2 hover:bg-muted rounded-full transition-colors disabled:opacity-50"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={cn("text-muted-foreground", loading && "animate-spin")}
+              >
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+              </svg>
+            </button>
+            <button className="p-2 hover:bg-muted rounded-full transition-colors">
+              <Search className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </div>
         </div>
       </div>
 
