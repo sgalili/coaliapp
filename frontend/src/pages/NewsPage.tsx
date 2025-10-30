@@ -112,11 +112,62 @@ export default function NewsPage() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  // Reset category and show indicator when channel changes
+  // Reset category and fetch news when channel changes
   useEffect(() => {
     setSelectedCategory('הכל');
     setShowChannelIndicator(true);
+    fetchRealNews();
   }, [selectedChannel.id]);
+
+  const fetchRealNews = async () => {
+    setLoading(true);
+    try {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      const allNews: any[] = [];
+      
+      // Fetch from all categories
+      for (const cat of categories) {
+        if (cat.apiValue) {
+          try {
+            const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=5`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.articles && data.articles.length > 0) {
+              allNews.push(...data.articles.map((article: any) => {
+                // Extract image URL from content
+                let imageUrl = '';
+                let cleanContent = article.content;
+                if (article.content.startsWith('IMAGE_URL:')) {
+                  const parts = article.content.split('\n\n');
+                  imageUrl = parts[0].replace('IMAGE_URL:', '');
+                  cleanContent = parts.slice(1).join('\n\n');
+                }
+                
+                return {
+                  ...article,
+                  content: cleanContent,
+                  categoryLabel: cat.label,
+                  image: imageUrl || `https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop`,
+                  experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
+                };
+              }));
+            }
+          } catch (err) {
+            console.error(`Error fetching ${cat.apiValue}:`, err);
+          }
+        }
+      }
+      
+      if (allNews.length > 0) {
+        setNewsArticles(allNews);
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleExperts = (newsId: string) => {
     setExpandedNews(prev => ({
