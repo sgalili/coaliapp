@@ -99,10 +99,9 @@ const placeholderNewsData = [
 
 export default function NewsPage() {
   const navigate = useNavigate();
-  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
+  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
   const [loading, setLoading] = useState(false);
-  const [showChannelIndicator, setShowChannelIndicator] = useState(true);
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
