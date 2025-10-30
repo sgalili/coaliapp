@@ -48,14 +48,90 @@ type FilterType = 'all' | 'earned' | 'sent' | 'received';
 
 export default function WalletPage() {
   const navigate = useNavigate();
-  const [transactions] = useState(generateTransactions());
+  const { toast } = useToast();
+  const [transactions, setTransactions] = useState(generateTransactions());
   const [filter, setFilter] = useState<FilterType>('all');
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [balance, setBalance] = useState(walletData.balance);
+  
+  // Send Zooz modal states
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [sendStep, setSendStep] = useState(1);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [sendAmount, setSendAmount] = useState('');
+  const [sendNote, setSendNote] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sending, setSending] = useState(false);
+  
+  // Request Zooz modal
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [requestAmount, setRequestAmount] = useState('');
+  const [requestNote, setRequestNote] = useState('');
+  
+  // Buy/Withdraw modals
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
+
+  const filteredUsers = demoUsers.filter(user =>
+    user.name.includes(searchQuery)
+  );
+
+  const recentUsers = filteredUsers.filter(u => u.isRecent);
+  const followingUsers = filteredUsers.filter(u => !u.isRecent);
+
+  const handleSendZooz = async () => {
+    const amount = parseInt(sendAmount);
+    if (!amount || amount <= 0 || amount > balance) return;
+
+    setSending(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Update balance
+    setBalance(prev => prev - amount);
+    
+    // Add transaction
+    const newTransaction = {
+      id: `tx-new-${Date.now()}`,
+      type: 'sent',
+      icon: '📤',
+      title: `שלחת ל-${selectedUser.name}`,
+      subtitle: sendNote || undefined,
+      amount: -amount,
+      time: 'עכשיו',
+    };
+    
+    setTransactions(prev => [newTransaction, ...prev]);
+    
+    // Reset and close
+    setSending(false);
+    setShowSendModal(false);
+    setSendStep(1);
+    setSelectedUser(null);
+    setSendAmount('');
+    setSendNote('');
+    
+    // Success toast
+    toast({
+      title: "✅ הועבר בהצלחה!",
+      description: `${amount} Zooz נשלח ל-${selectedUser.name}`,
+    });
+  };
+
+  const copyRequestLink = () => {
+    const link = `https://trust.coali.app/pay/${Math.random().toString(36).substring(7)}`;
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "הועתק!",
+      description: "הקישור הועתק ללוח",
+    });
+  };
 
   const filteredTransactions = transactions.filter(tx => {
     if (filter === 'all') return true;
