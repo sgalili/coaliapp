@@ -98,6 +98,7 @@ const placeholderNewsData = [
 ];
 
 export default function NewsPage() {
+  const navigate = useNavigate();
   const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
