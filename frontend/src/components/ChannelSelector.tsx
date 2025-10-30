@@ -30,113 +30,148 @@ export const ChannelSelector = () => {
         {selectedChannel.logo_url}
       </button>
 
-      {/* Channel Dropdown Modal */}
+import { useState, useEffect, useRef } from "react";
+import { Check, Plus, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useChannel } from "@/contexts/ChannelContext";
+
+export const ChannelSelector = () => {
+  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
+  const privateChannels = availableChannels.filter(ch => !ch.is_public);
+
+  const handleSelectChannel = (channel: any) => {
+    setSelectedChannel(channel);
+    setIsOpen(false);
+  };
+
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      {/* Channel Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          "w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all",
+          selectedChannel.id === null
+            ? "bg-gradient-to-br from-primary to-watch border-2 border-primary shadow-md"
+            : "bg-card border-2 border-primary shadow-md"
+        )}
+      >
+        {selectedChannel.logo_url}
+      </button>
+
+      {/* Channel Dropdown Menu - Opens below icon */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
-          <div className="bg-background w-full md:max-w-lg md:rounded-t-2xl md:rounded-lg overflow-hidden max-h-[80vh] overflow-y-auto animate-slide-up">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-background">
-              <h3 className="text-lg font-semibold text-foreground">בחר ערוץ</h3>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-1 hover:bg-muted rounded-full transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <div className="absolute top-full left-0 mt-2 bg-background border border-border rounded-xl shadow-xl min-w-[280px] max-w-[320px] z-50 overflow-hidden">
+          {/* Coali Main */}
+          <button
+            onClick={() => handleSelectChannel(availableChannels[0])}
+            className={cn(
+              "w-full flex items-center gap-3 p-3 transition-colors",
+              selectedChannel.id === null
+                ? "bg-primary/10 border-b-2 border-primary"
+                : "hover:bg-muted/30 border-b border-border"
+            )}
+          >
+            <div className="text-2xl">{availableChannels[0].logo_url}</div>
+            <div className="flex-1 text-right">
+              <div className="flex items-center gap-2 justify-end">
+                {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
+                <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
             </div>
+          </button>
 
-            <div className="p-4">
-              {/* Coali Main */}
-              <button
-                onClick={() => handleSelectChannel(availableChannels[0])}
-                className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-xl transition-colors mb-4",
-                  selectedChannel.id === null
-                    ? "bg-primary/10 border-2 border-primary"
-                    : "bg-card border border-border hover:bg-muted/30"
-                )}
-              >
-                <div className="text-3xl">{availableChannels[0].logo_url}</div>
-                <div className="flex-1 text-right">
-                  <div className="flex items-center gap-2 justify-end">
-                    {selectedChannel.id === null && <Check className="w-5 h-5 text-primary" />}
-                    <p className="font-semibold text-foreground">{availableChannels[0].name}</p>
+          {/* Public Channels */}
+          {publicChannels.length > 0 && (
+            <>
+              <div className="px-3 py-2 bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground">ערוצים ציבוריים</p>
+              </div>
+              {publicChannels.map(channel => (
+                <button
+                  key={channel.id}
+                  onClick={() => handleSelectChannel(channel)}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50",
+                    selectedChannel.id === channel.id
+                      ? "bg-primary/10"
+                      : "hover:bg-muted/30"
+                  )}
+                >
+                  <div className="text-2xl">{channel.logo_url}</div>
+                  <div className="flex-1 text-right">
+                    <div className="flex items-center gap-2 justify-end">
+                      {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
+                      <p className="font-semibold text-sm text-foreground">{channel.name}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{channel.description}</p>
+                    <p className="text-xs text-muted-foreground">{channel.member_count?.toLocaleString()} חברים</p>
                   </div>
-                  <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
-                </div>
-              </button>
+                </button>
+              ))}
+            </>
+          )}
 
-              {/* Public Channels */}
-              {publicChannels.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-muted-foreground mb-2 px-1">ערוצים ציבוריים:</p>
-                  <div className="space-y-2">
-                    {publicChannels.map(channel => (
-                      <button
-                        key={channel.id}
-                        onClick={() => handleSelectChannel(channel)}
-                        className={cn(
-                          "w-full flex items-center gap-3 p-3 rounded-xl transition-colors",
-                          selectedChannel.id === channel.id
-                            ? "bg-primary/10 border-2 border-primary"
-                            : "bg-card border border-border hover:bg-muted/30"
-                        )}
-                      >
-                        <div className="text-3xl">{channel.logo_url}</div>
-                        <div className="flex-1 text-right">
-                          <div className="flex items-center gap-2 justify-end">
-                            {selectedChannel.id === channel.id && <Check className="w-5 h-5 text-primary" />}
-                            <p className="font-semibold text-foreground">{channel.name}</p>
-                          </div>
-                          <p className="text-xs text-muted-foreground">{channel.description}</p>
-                          <p className="text-xs text-muted-foreground">{channel.member_count?.toLocaleString()} חברים</p>
-                        </div>
-                      </button>
-                    ))}
+          {/* Private Channels */}
+          {privateChannels.length > 0 && (
+            <>
+              <div className="px-3 py-2 bg-muted/30">
+                <p className="text-xs font-medium text-muted-foreground">הערוצים הפרטיים שלי</p>
+              </div>
+              {privateChannels.map(channel => (
+                <button
+                  key={channel.id}
+                  onClick={() => handleSelectChannel(channel)}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50",
+                    selectedChannel.id === channel.id
+                      ? "bg-primary/10"
+                      : "hover:bg-muted/30"
+                  )}
+                >
+                  <div className="text-2xl">{channel.logo_url}</div>
+                  <div className="flex-1 text-right">
+                    <div className="flex items-center gap-2 justify-end">
+                      {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
+                      <p className="font-semibold text-sm text-foreground">{channel.name}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{channel.description}</p>
+                    <p className="text-xs text-muted-foreground">{channel.member_count} חברים</p>
                   </div>
-                </div>
-              )}
+                </button>
+              ))}
+            </>
+          )}
 
-              {/* Private Channels */}
-              {privateChannels.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-muted-foreground mb-2 px-1">הערוצים הפרטיים שלי:</p>
-                  <div className="space-y-2">
-                    {privateChannels.map(channel => (
-                      <button
-                        key={channel.id}
-                        onClick={() => handleSelectChannel(channel)}
-                        className={cn(
-                          "w-full flex items-center gap-3 p-3 rounded-xl transition-colors",
-                          selectedChannel.id === channel.id
-                            ? "bg-primary/10 border-2 border-primary"
-                            : "bg-card border border-border hover:bg-muted/30"
-                        )}
-                      >
-                        <div className="text-3xl">{channel.logo_url}</div>
-                        <div className="flex-1 text-right">
-                          <div className="flex items-center gap-2 justify-end">
-                            {selectedChannel.id === channel.id && <Check className="w-5 h-5 text-primary" />}
-                            <p className="font-semibold text-foreground">{channel.name}</p>
-                          </div>
-                          <p className="text-xs text-muted-foreground">{channel.description}</p>
-                          <p className="text-xs text-muted-foreground">{channel.member_count} חברים</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Create Channel Button */}
-              <button className="w-full flex items-center gap-3 p-4 bg-muted hover:bg-muted/80 rounded-xl transition-colors border border-dashed border-border">
-                <Plus className="w-6 h-6 text-muted-foreground" />
-                <p className="font-medium text-foreground">צור ערוץ חדש</p>
-              </button>
-            </div>
-          </div>
+          {/* Create Channel Button */}
+          <button className="w-full flex items-center gap-3 p-3 bg-muted/50 hover:bg-muted transition-colors">
+            <Plus className="w-5 h-5 text-muted-foreground" />
+            <p className="text-sm font-medium text-foreground">צור ערוץ חדש</p>
+          </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
