@@ -160,20 +160,18 @@ export default function NewsPage() {
         <div className="px-4 py-3 flex items-center justify-between">
           {/* Right - Channel Selector (same layout as homepage) */}
           <div className="flex items-center gap-2">
-            {selectedChannel.id !== null && (
+            <ChannelSelector />
+            {selectedChannel.id !== null && showChannelIndicator && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
                 <span className="text-xs font-medium">{selectedChannel.name}</span>
                 <button
-                  onClick={() => {
-                    // Will be handled properly later
-                  }}
+                  onClick={() => setShowChannelIndicator(false)}
                   className="hover:bg-white/20 rounded-full p-0.5 transition-colors"
                 >
                   ×
                 </button>
               </div>
             )}
-            <ChannelSelector />
           </div>
           
           {/* Center - Page Title */}
