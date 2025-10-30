@@ -97,7 +97,7 @@ const placeholderNewsData = [
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Start with placeholder showing
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
@@ -106,10 +106,14 @@ export default function NewsPage() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
+    // Fetch real news on mount
+    fetchNews();
   }, []);
 
   useEffect(() => {
-    fetchNews();
+    if (selectedCategory) {
+      fetchNews();
+    }
   }, [selectedCategory]);
 
   const fetchNews = async () => {
