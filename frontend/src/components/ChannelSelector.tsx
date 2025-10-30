@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Check, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
