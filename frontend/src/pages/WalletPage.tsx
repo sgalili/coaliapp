@@ -326,7 +326,6 @@ export default function WalletPage() {
       {selectedTransaction && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
           <div className="bg-background w-full md:max-w-lg md:rounded-lg overflow-hidden">
-            {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
               <h3 className="text-lg font-semibold text-foreground">פרטי עסקה</h3>
               <button
@@ -337,7 +336,6 @@ export default function WalletPage() {
               </button>
             </div>
 
-            {/* Content */}
             <div className="p-6 text-center">
               <div className="text-6xl mb-4">{selectedTransaction.icon}</div>
               
@@ -374,8 +372,378 @@ export default function WalletPage() {
         </div>
       )}
 
+      {/* Send Zooz Modal */}
+      {showSendModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+          <div className="bg-background w-full md:max-w-lg md:rounded-t-2xl md:rounded-lg overflow-hidden animate-slide-up">
+            {/* Step 1: Select User */}
+            {sendStep === 1 && (
+              <>
+                <div className="flex items-center justify-between p-4 border-b border-border">
+                  <h3 className="text-lg font-semibold text-foreground">שלח Zooz ל...</h3>
+                  <button
+                    onClick={() => {
+                      setShowSendModal(false);
+                      setSendStep(1);
+                      setSelectedUser(null);
+                    }}
+                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="p-4">
+                  {/* Search */}
+                  <div className="relative mb-4">
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder="חפש משתמש..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pr-10 pl-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+
+                  {/* Recent Users */}
+                  {recentUsers.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-sm font-medium text-muted-foreground mb-2">אחרונים:</p>
+                      <div className="space-y-2">
+                        {recentUsers.map(user => (
+                          <button
+                            key={user.id}
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setSendStep(2);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:bg-muted/30 transition-colors"
+                          >
+                            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                            <div className="flex-1 text-right">
+                              <div className="flex items-center gap-1 justify-end">
+                                <span className="font-medium text-sm">{user.name}</span>
+                                {user.verified && <CheckCircle className="w-4 h-4 text-trust" />}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{user.trust.toLocaleString()} אמון</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Following/Trusted */}
+                  {followingUsers.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-2">עוקבים / נותני אמון:</p>
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {followingUsers.map(user => (
+                          <button
+                            key={user.id}
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setSendStep(2);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:bg-muted/30 transition-colors"
+                          >
+                            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                            <div className="flex-1 text-right">
+                              <div className="flex items-center gap-1 justify-end">
+                                <span className="font-medium text-sm">{user.name}</span>
+                                {user.verified && <CheckCircle className="w-4 h-4 text-trust" />}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{user.trust.toLocaleString()} אמון</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* Step 2: Enter Amount */}
+            {sendStep === 2 && selectedUser && (
+              <>
+                <div className="flex items-center justify-between p-4 border-b border-border">
+                  <h3 className="text-lg font-semibold text-foreground">שלח ל: {selectedUser.name}</h3>
+                  <button
+                    onClick={() => {
+                      setShowSendModal(false);
+                      setSendStep(1);
+                      setSelectedUser(null);
+                    }}
+                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="p-6">
+                  {/* Amount Input */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-foreground mb-2 block">סכום:</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={sendAmount}
+                        onChange={(e) => setSendAmount(e.target.value)}
+                        placeholder="0"
+                        className="flex-1 text-2xl font-bold p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-center"
+                      />
+                      <span className="text-2xl font-bold text-zooz">Z</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">היתרה שלך: {balance.toLocaleString()} Zooz</p>
+                    {sendAmount && parseInt(sendAmount) > balance && (
+                      <p className="text-xs text-destructive mt-1">יתרה לא מספיקה</p>
+                    )}
+                  </div>
+
+                  {/* Quick Amounts */}
+                  <div className="flex gap-2 mb-4">
+                    {[100, 250, 500, 1000].map(amount => (
+                      <button
+                        key={amount}
+                        onClick={() => setSendAmount(amount.toString())}
+                        className="flex-1 py-2 bg-muted hover:bg-muted/80 rounded-lg text-sm font-medium transition-colors"
+                      >
+                        {amount}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Note */}
+                  <div className="mb-6">
+                    <label className="text-sm font-medium text-foreground mb-2 block">הוסף הודעה (אופציונלי):</label>
+                    <textarea
+                      value={sendNote}
+                      onChange={(e) => setSendNote(e.target.value)}
+                      placeholder="הוסף הודעה..."
+                      maxLength={100}
+                      rows={3}
+                      className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">{sendNote.length}/100</p>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setSendStep(1)}
+                      className="flex-1 py-3 bg-muted text-foreground rounded-lg font-medium hover:bg-muted/80 transition-colors"
+                    >
+                      חזור
+                    </button>
+                    <button
+                      onClick={() => setSendStep(3)}
+                      disabled={!sendAmount || parseInt(sendAmount) <= 0 || parseInt(sendAmount) > balance}
+                      className="flex-1 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      המשך →
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Step 3: Confirm */}
+            {sendStep === 3 && selectedUser && (
+              <>
+                <div className="flex items-center justify-between p-4 border-b border-border">
+                  <h3 className="text-lg font-semibold text-foreground">אישור העברה</h3>
+                  <button
+                    onClick={() => {
+                      setShowSendModal(false);
+                      setSendStep(1);
+                      setSelectedUser(null);
+                    }}
+                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="p-6 text-center">
+                  <p className="text-sm text-muted-foreground mb-4">אתה עומד לשלוח:</p>
+                  
+                  <p className="text-4xl font-bold text-zooz mb-6">
+                    {sendAmount} Zooz
+                  </p>
+
+                  <div className="flex items-center justify-center gap-3 mb-6">
+                    <img src={selectedUser.avatar} alt={selectedUser.name} className="w-12 h-12 rounded-full" />
+                    <div className="text-right">
+                      <p className="font-semibold text-foreground">{selectedUser.name}</p>
+                      {selectedUser.verified && <p className="text-xs text-trust">✓ מאומת</p>}
+                    </div>
+                  </div>
+
+                  {sendNote && (
+                    <div className="bg-muted/50 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-foreground italic">"{sendNote}"</p>
+                    </div>
+                  )}
+
+                  <p className="text-sm text-muted-foreground mb-6">
+                    היתרה החדשה: {(balance - parseInt(sendAmount)).toLocaleString()} Zooz
+                  </p>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setSendStep(2)}
+                      className="flex-1 py-3 bg-muted text-foreground rounded-lg font-medium hover:bg-muted/80 transition-colors"
+                    >
+                      ביטול
+                    </button>
+                    <button
+                      onClick={handleSendZooz}
+                      disabled={sending}
+                      className="flex-1 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    >
+                      {sending ? 'שולח...' : 'אשר שליחה'}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Request Zooz Modal */}
+      {showRequestModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+          <div className="bg-background w-full md:max-w-lg md:rounded-lg overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="text-lg font-semibold text-foreground">בקש Zooz</h3>
+              <button
+                onClick={() => setShowRequestModal(false)}
+                className="p-1 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {/* QR Code Placeholder */}
+              <div className="w-48 h-48 mx-auto mb-6 bg-muted rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-2">📱</div>
+                  <p className="text-xs text-muted-foreground">QR Code</p>
+                </div>
+              </div>
+
+              {/* Amount */}
+              <div className="mb-4">
+                <label className="text-sm font-medium text-foreground mb-2 block">סכום לבקשה (אופציונלי):</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={requestAmount}
+                    onChange={(e) => setRequestAmount(e.target.value)}
+                    placeholder="השאר ריק לסכום פתוח"
+                    className="flex-1 p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <span className="text-lg font-bold text-zooz">Z</span>
+                </div>
+              </div>
+
+              {/* Note */}
+              <div className="mb-4">
+                <label className="text-sm font-medium text-foreground mb-2 block">הערה/סיבה (אופציונלי):</label>
+                <textarea
+                  value={requestNote}
+                  onChange={(e) => setRequestNote(e.target.value)}
+                  placeholder="למה אתה מבקש..."
+                  maxLength={100}
+                  rows={3}
+                  className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                />
+              </div>
+
+              {/* Shareable Link */}
+              <div className="mb-4">
+                <label className="text-sm font-medium text-foreground mb-2 block">קישור לשיתוף:</label>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
+                    trust.coali.app/pay/{Math.random().toString(36).substring(7)}
+                  </div>
+                  <button
+                    onClick={copyRequestLink}
+                    className="px-4 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    📋 העתק
+                  </button>
+                </div>
+              </div>
+
+              {/* Share Buttons */}
+              <div className="mb-4">
+                <p className="text-sm font-medium text-foreground mb-2">שתף דרך:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button className="py-3 bg-[#25D366] text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
+                    📱 WhatsApp
+                  </button>
+                  <button className="py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                    ✉️ הודעות
+                  </button>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowRequestModal(false)}
+                className="w-full py-3 bg-muted text-foreground rounded-lg font-medium hover:bg-muted/80 transition-colors"
+              >
+                סגור
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Buy Zooz - Coming Soon */}
+      {showBuyModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-background w-full max-w-sm rounded-lg overflow-hidden">
+            <div className="p-6 text-center">
+              <div className="text-6xl mb-4">💳</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">🚧 בקרוב!</h3>
+              <p className="text-sm text-muted-foreground mb-6">רכישת Zooz תהיה זמינה בקרוב</p>
+              <button
+                onClick={() => setShowBuyModal(false)}
+                className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90"
+              >
+                סגור
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Withdraw - Coming Soon */}
+      {showWithdrawModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-background w-full max-w-sm rounded-lg overflow-hidden">
+            <div className="p-6 text-center">
+              <div className="text-6xl mb-4">🏦</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">🚧 בקרוב!</h3>
+              <p className="text-sm text-muted-foreground mb-6">משיכת Zooz תהיה זמינה בקרוב</p>
+              <button
+                onClick={() => setShowWithdrawModal(false)}
+                className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90"
+              >
+                סגור
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
-      <Navigation zoozBalance={walletData.balance} />
+      <Navigation zoozBalance={balance} />
     </div>
   );
 }
