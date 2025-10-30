@@ -39,13 +39,17 @@ export const ChannelSelector = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all",
+          "w-10 h-10 rounded-full flex items-center justify-center transition-all overflow-hidden",
           selectedChannel.id === null
-            ? "bg-gradient-to-br from-primary to-watch border-2 border-primary shadow-md"
+            ? "bg-white border-2 border-primary shadow-md"
             : "bg-card border-2 border-primary shadow-md"
         )}
       >
-        {selectedChannel.logo_url}
+        {selectedChannel.logo_url.startsWith('/') ? (
+          <img src={selectedChannel.logo_url} alt={selectedChannel.name} className="w-full h-full object-contain p-1" />
+        ) : (
+          <span className="text-xl">{selectedChannel.logo_url}</span>
+        )}
       </button>
 
       {/* Channel Dropdown Menu - Opens below icon, positioned from right */}
