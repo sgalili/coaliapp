@@ -365,7 +365,7 @@ export default function NewsPage() {
               <div className="flex items-start gap-3 mb-3">
                 <div className="relative">
                   <img
-                    src={placeholderNews.find(n => n.id === selectedExpert.newsId)?.experts[selectedExpert.expertIndex]}
+                    src={newsArticles.find(n => n.id === selectedExpert.newsId)?.experts?.[selectedExpert.expertIndex] || expertProfiles[selectedExpert.expertIndex]}
                     alt="Expert"
                     className="w-10 h-10 rounded-full object-cover"
                   />
