@@ -27,10 +27,77 @@ const expertProfiles = [
 
 const expertNames = ['יעקב אליעזרוב', 'שרה כהן', 'דוד לוי', 'בנימין נתניהו', 'נועה קירל', 'וורן באפט', 'ירון זלכה', 'ירון לונדון', 'מאיה רוזמן'];
 
+// Placeholder news to show while loading or if API fails
+const placeholderNewsData = [
+  {
+    id: 'placeholder-1',
+    title: 'ההייטק הישראלי שבר שיאים בהשקעות ואקזיטים ב-2025',
+    content: 'בשנת 2025 שבר ההייטק הישראלי שיאים בהיקף ההשקעות והאקזיטים, כאשר תחום הסייבר מוביל עם כ-30% מההשקעות.',
+    category: 'technology',
+    categoryLabel: 'טכנולוגיה',
+    source: 'כלכליסט',
+    image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 5),
+    poll_options: [
+      { id: "1", label: "תומך", value: 67 },
+      { id: "2", label: "מתנגד", value: 20 },
+      { id: "3", label: "צריך שינויים", value: 10 },
+      { id: "4", label: "לא בטוח", value: 3 },
+    ],
+  },
+  {
+    id: 'placeholder-2',
+    title: 'הכנסת אישרה את חוק השידור החדש - מה זה אומר על העתיד של התקשורת?',
+    content: 'הכנסת אישרה את חוק השידור החדש בקריאה שנייה ושלישית. השינויים החדשים צפויים להשפיע על עתיד התקשורת בישראל.',
+    category: 'politics',
+    categoryLabel: 'פוליטיקה',
+    source: 'חדשות 13',
+    image: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 7),
+    poll_options: [
+      { id: "1", label: "תומך", value: 45 },
+      { id: "2", label: "מתנגד", value: 35 },
+      { id: "3", label: "צריך שינויים", value: 15 },
+      { id: "4", label: "לא בטוח", value: 5 },
+    ],
+  },
+  {
+    id: 'placeholder-3',
+    title: 'עליה חדה במחירי הדיור - מה הפתרונות האפשריים?',
+    content: 'מחירי הדיור בישראל ממשיכים לעלות. המומחים דנים בפתרונות אפשריים למשבר.',
+    category: 'economy',
+    categoryLabel: 'כלכלה',
+    source: 'גלובס',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 4),
+    poll_options: [
+      { id: "1", label: "בנייה ממשלתית", value: 50 },
+      { id: "2", label: "הקלות מס", value: 25 },
+      { id: "3", label: "שילוב פתרונות", value: 20 },
+      { id: "4", label: "לא בטוח", value: 5 },
+    ],
+  },
+  {
+    id: 'placeholder-4',
+    title: 'מחקר חדש בתחום הבריאות מגלה דרכים לשיפור איכות החיים',
+    content: 'מחקר חדש שפורסם היום מראה כי שינויים פשוטים בהרגלי התזונה יכולים להוביל לשיפור משמעותי בבריאות.',
+    category: 'health',
+    categoryLabel: 'בריאות',
+    source: 'הארץ',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 3),
+    poll_options: [
+      { id: "1", label: "מעניין", value: 60 },
+      { id: "2", label: "חשוב", value: 30 },
+      { id: "3", label: "אחר", value: 10 },
+    ],
+  },
+];
+
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [newsArticles, setNewsArticles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
+  const [loading, setLoading] = useState(false);
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
@@ -49,15 +116,20 @@ export default function NewsPage() {
     setLoading(true);
     try {
       const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      console.log('Fetching from:', BACKEND_URL);
       
       if (selectedCategory === 'all') {
         const allNews: any[] = [];
         for (const cat of categories) {
           if (cat.apiValue) {
             try {
-              const response = await fetch(`${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=2`);
+              const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=2`;
+              console.log('Fetching:', url);
+              const response = await fetch(url);
               const data = await response.json();
-              if (data.articles) {
+              console.log(`Got ${data.articles?.length || 0} articles for ${cat.apiValue}`);
+              
+              if (data.articles && data.articles.length > 0) {
                 allNews.push(...data.articles.map((article: any) => ({
                   ...article,
                   categoryLabel: cat.label,
@@ -70,13 +142,19 @@ export default function NewsPage() {
             }
           }
         }
-        setNewsArticles(allNews);
+        if (allNews.length > 0) {
+          setNewsArticles(allNews);
+        }
       } else {
         const category = categories.find(c => c.id === selectedCategory);
         if (category?.apiValue) {
-          const response = await fetch(`${BACKEND_URL}/api/news/by-category/${category.apiValue}?max_results=5`);
+          const url = `${BACKEND_URL}/api/news/by-category/${category.apiValue}?max_results=5`;
+          console.log('Fetching:', url);
+          const response = await fetch(url);
           const data = await response.json();
-          if (data.articles) {
+          console.log(`Got ${data.articles?.length || 0} articles`);
+          
+          if (data.articles && data.articles.length > 0) {
             setNewsArticles(data.articles.map((article: any) => ({
               ...article,
               categoryLabel: category.label,
@@ -88,6 +166,7 @@ export default function NewsPage() {
       }
     } catch (error) {
       console.error('Error fetching news:', error);
+      // Keep showing placeholder data on error
     } finally {
       setLoading(false);
     }
