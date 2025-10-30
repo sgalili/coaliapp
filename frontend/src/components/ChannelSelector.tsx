@@ -90,21 +90,21 @@ export const ChannelSelector = () => {
                   key={channel.id}
                   onClick={() => handleSelectChannel(channel)}
                   className={cn(
-                    "w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50",
+                    "w-full flex items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
                     selectedChannel.id === channel.id
                       ? "bg-primary/10"
                       : "hover:bg-muted/30"
                   )}
                 >
-                  <div className="flex-1 text-right">
+                  <div className="text-right">
                     <div className="flex items-center gap-2 justify-end">
                       {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
                       <p className="font-semibold text-sm text-foreground">{channel.name}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground text-right">{channel.description}</p>
-                    <p className="text-xs text-muted-foreground text-right">{channel.member_count?.toLocaleString()} חברים</p>
+                    <p className="text-xs text-muted-foreground">{channel.description}</p>
+                    <p className="text-xs text-muted-foreground">{channel.member_count?.toLocaleString()} חברים</p>
                   </div>
-                  <div className="text-2xl">{channel.logo_url}</div>
+                  <div className="text-2xl flex-shrink-0">{channel.logo_url}</div>
                 </button>
               ))}
             </>
