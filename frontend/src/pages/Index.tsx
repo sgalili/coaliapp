@@ -109,8 +109,7 @@ const samplePosts = [
 
 export default function Index() {
   const navigate = useNavigate();
-  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
-  const [selectedCategory, setSelectedCategory] = useState('הכל');
+  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
