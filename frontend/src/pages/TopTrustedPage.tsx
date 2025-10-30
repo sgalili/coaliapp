@@ -60,17 +60,19 @@ export default function TopTrustedPage() {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background border-b border-border">
         <div className="px-4 py-3 flex items-center justify-between">
-          <div className="w-10" /> {/* Spacer */}
           <div className="flex items-center gap-2">
             <Crown className="w-6 h-6 text-primary" />
             <h1 className="text-xl font-bold text-foreground">מובילים בקואלי</h1>
           </div>
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="p-2 hover:bg-muted rounded-full transition-colors"
-          >
-            <Search className="w-5 h-5 text-muted-foreground" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-2 hover:bg-muted rounded-full transition-colors"
+            >
+              <Search className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <ChannelSelector />
+          </div>
         </div>
 
         {/* Time Filter Tabs */}
