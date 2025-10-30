@@ -229,7 +229,6 @@ export default function Index() {
         {/* Channel Indicator (if not Coali main) - Same row as selector */}
         {selectedChannel.id !== null && (
           <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
-            <span className="text-xs font-medium">{selectedChannel.name}</span>
             <button
               onClick={() => {
                 const mainChannel = { id: null, name: 'Coali', description: 'All Public Content', logo_url: '🌐', is_public: true, member_count: null, categories: [] };
@@ -239,6 +238,7 @@ export default function Index() {
             >
               ×
             </button>
+            <span className="text-xs font-medium">{selectedChannel.name}</span>
           </div>
         )}
         
