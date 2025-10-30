@@ -119,15 +119,15 @@ export const ChannelSelector = () => {
                       : "hover:bg-muted/30"
                   )}
                 >
-                  <div className="text-2xl">{channel.logo_url}</div>
                   <div className="flex-1 text-right">
                     <div className="flex items-center gap-2 justify-end">
                       {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
                       <p className="font-semibold text-sm text-foreground">{channel.name}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">{channel.description}</p>
-                    <p className="text-xs text-muted-foreground">{channel.member_count} חברים</p>
+                    <p className="text-xs text-muted-foreground text-right">{channel.description}</p>
+                    <p className="text-xs text-muted-foreground text-right">{channel.member_count} חברים</p>
                   </div>
+                  <div className="text-2xl">{channel.logo_url}</div>
                 </button>
               ))}
             </>
