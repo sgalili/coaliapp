@@ -446,6 +446,16 @@ export default function Index() {
 
       {/* Navigation */}
       <Navigation zoozBalance={999} />
+
+      {/* Comments Modal */}
+      {activePostId && (
+        <Comments
+          postId={activePostId}
+          isOpen={commentsOpen}
+          onClose={closeComments}
+          commentCount={posts.find(p => p.id === activePostId)?.commentCount || 0}
+        />
+      )}
     </div>
   );
 }
