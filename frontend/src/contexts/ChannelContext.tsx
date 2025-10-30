@@ -16,6 +16,8 @@ interface ChannelContextType {
   availableChannels: Channel[];
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
+  showChannelIndicator: boolean;
+  setShowChannelIndicator: (show: boolean) => void;
   isLoading: boolean;
 }
 
