@@ -208,12 +208,28 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
-      {/* Top Left - Channel Selector */}
+      {/* Top Left - החלטות Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={() => navigate('/decisions')}
+          data-tour-id="decisions-filter"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
+        >
+          <span className="text-xs">החלטות</span>
+          {newDecisionsCount > 0 && (
+            <span className="absolute -top-1 -left-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              {newDecisionsCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Top Right - Channel Selector */}
       <div className="fixed top-4 left-4 z-50">
         <ChannelSelector />
       </div>
 
-      {/* Channel Indicator (if not Coali main) - Below channel selector on left */}
+      {/* Channel Indicator (if not Coali main) - Below channel selector on right */}
       {selectedChannel.id !== null && (
         <div className="fixed top-16 left-4 z-40">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
@@ -231,22 +247,6 @@ export default function Index() {
           </div>
         </div>
       )}
-
-      {/* Top Right - החלטות Button */}
-      <div className="fixed top-4 right-4 z-50">
-        <button
-          onClick={() => navigate('/decisions')}
-          data-tour-id="decisions-filter"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
-        >
-          <span className="text-xs">החלטות</span>
-          {newDecisionsCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-              {newDecisionsCount}
-            </span>
-          )}
-        </button>
-      </div>
 
       {/* Posts Feed */}
       <div 
