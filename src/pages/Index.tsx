@@ -22,11 +22,11 @@ export default function Index() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { posts, loading, createPost, updatePostCounts } = usePosts();
-  const { 
-    userBalance, 
-    giveTrust, 
-    toggleWatch, 
-    sendZooz, 
+  const {
+    userBalance,
+    giveTrust,
+    toggleWatch,
+    sendZooz,
     updateView,
     isTrusted,
     isWatched
@@ -56,8 +56,8 @@ export default function Index() {
     const success = await giveTrust(postId, post.user_id);
     if (success) {
       // Update local post counts
-      const newCount = isTrusted(postId, post.user_id) 
-        ? post.trust_count + 1 
+      const newCount = isTrusted(postId, post.user_id)
+        ? post.trust_count + 1
         : post.trust_count - 1;
       // Note: We could implement a real-time count update here
     }
@@ -70,8 +70,8 @@ export default function Index() {
     const success = await toggleWatch(postId, post.user_id);
     if (success) {
       // Update local counts if needed
-      const newCount = isWatched(postId, post.user_id) 
-        ? post.watch_count + 1 
+      const newCount = isWatched(postId, post.user_id)
+        ? post.watch_count + 1
         : post.watch_count - 1;
     }
   };
@@ -103,7 +103,7 @@ export default function Index() {
       videoUrl: post.video_url || '',
       caption: post.content || '',
       trustCount: post.trust_count,
-      watchCount: post.watch_count, 
+      watchCount: post.watch_count,
       commentCount: post.comment_count,
       shareCount: post.share_count,
       zoozCount: post.zooz_earned,
@@ -114,7 +114,7 @@ export default function Index() {
       isLive: post.is_live,
       authenticityData: {
         city: "Non disponible",
-        country: "Non disponible", 
+        country: "Non disponible",
         localTime: new Date(post.created_at).toLocaleString('fr-FR'),
         isAuthentic: false // TODO: Add authenticity verification
       }
@@ -123,7 +123,7 @@ export default function Index() {
 
   const getFilteredPosts = () => {
     const convertedPosts = convertPostsToVideoFeed(posts);
-    
+
     switch (feedFilter.type) {
       case 'trusted':
         return convertedPosts.sort((a, b) => b.trustCount - a.trustCount);
@@ -180,7 +180,7 @@ export default function Index() {
       />
 
       {/* Feed Filters */}
-      <FeedFilters 
+      <FeedFilters
         activeFilter={feedFilter}
         onFilterChange={setFeedFilter}
       />

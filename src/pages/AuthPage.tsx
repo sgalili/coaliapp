@@ -32,7 +32,7 @@ export const AuthPage = () => {
     lastName: ''
   });
   const [authError, setAuthError] = useState('');
-  
+
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
@@ -43,7 +43,7 @@ export const AuthPage = () => {
     // Check for optional referral code in URL
     const urlParams = new URLSearchParams(location.search);
     const ref = urlParams.get('ref');
-    
+
     if (ref) {
       saveAffiliateLink(ref);
       setAuthData(prev => ({ ...prev, invitationCode: ref }));
@@ -69,7 +69,7 @@ export const AuthPage = () => {
   const handleOTPVerify = async (otp: string) => {
     try {
       setAuthError(''); // Clear any previous errors
-      
+
       const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify-and-login', {
         body: { phone: authData.phone, otp }
       });
@@ -88,7 +88,7 @@ export const AuthPage = () => {
       setCurrentStep('profile');
     } catch (error: any) {
       console.error('OTP verification error:', error);
-      
+
       let errorMessage = 'שגיאה באימות הקוד';
       if (error.message?.includes('expired') || error.message?.includes('otp_expired')) {
         errorMessage = 'הקוד פג תוקף';
@@ -102,7 +102,7 @@ export const AuthPage = () => {
       } else {
         toast.error('Code incorrect');
       }
-      
+
       setAuthError(errorMessage);
     }
   };
@@ -110,10 +110,10 @@ export const AuthPage = () => {
   const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
     try {
       setAuthError(''); // Clear any previous errors
-      
+
       // User is already authenticated via OTP, just update profile
       const { error: updateError } = await updateProfile(firstName, lastName, profilePicture);
-      
+
       if (updateError) {
         console.error('Error updating profile:', updateError);
         toast.error('Erreur lors de la mise à jour du profil');
@@ -122,13 +122,13 @@ export const AuthPage = () => {
       }
 
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
-      
+
       // Handle invitation code or trust intent if present
       if (authData.invitationCode) {
         // TODO: Consume invitation code
         console.log('Consuming invitation code:', authData.invitationCode);
       }
-      
+
       toast.success('Profil créé avec succès !');
       navigate('/');
     } catch (error) {
@@ -166,14 +166,14 @@ export const AuthPage = () => {
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          
+
           {currentStep === 'phone' && (
             <PhoneInput
               onSubmit={handlePhoneSubmit}
               isLoading={authLoading}
             />
           )}
-          
+
           {currentStep === 'otp' && (
             <OTPInput
               phone={authData.phone}
@@ -183,7 +183,7 @@ export const AuthPage = () => {
               isLoading={authLoading}
             />
           )}
-          
+
           {currentStep === 'profile' && (
             <ProfileCompletion
               onComplete={handleProfileComplete}
@@ -197,7 +197,7 @@ export const AuthPage = () => {
               <p className="text-sm text-destructive">{authError}</p>
             </div>
           )}
-          
+
           {currentStep === 'onboarding' && (
             <OnboardingFlow
               initialStep="profile-completion"

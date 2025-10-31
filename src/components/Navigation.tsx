@@ -35,15 +35,15 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
   return (
     <div className={cn(
       "fixed bottom-0 left-0 right-0 z-50 transition-colors duration-300",
-      isHomePage 
-        ? "bg-black border-t border-gray-800" 
+      isHomePage
+        ? "bg-black border-t border-gray-800"
         : "bg-card border-t border-border"
     )}>
       <div className="flex items-center justify-around py-2">
         {tabs.map((tab) => {
           const IconComponent = tab.icon;
           const isActive = activeTab === tab.id;
-          
+
           return (
             <button
               key={tab.id}
@@ -55,27 +55,27 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
             >
               <div className="relative">
                 {tab.id === 'news' ? (
-                  <ImpactIcon 
+                  <ImpactIcon
                     className={cn(
                       "w-6 h-6 transition-colors",
-                      isActive 
-                        ? "text-primary" 
-                        : isHomePage 
-                          ? "text-white" 
+                      isActive
+                        ? "text-primary"
+                        : isHomePage
+                          ? "text-white"
                           : "text-muted-foreground"
-                    )} 
+                    )}
                     isActive={isActive}
                   />
                 ) : (
-                  <IconComponent 
+                  <IconComponent
                     className={cn(
                       "w-6 h-6 transition-colors",
-                      isActive 
-                        ? "text-primary" 
-                        : isHomePage 
-                          ? "text-white" 
+                      isActive
+                        ? "text-primary"
+                        : isHomePage
+                          ? "text-white"
                           : "text-muted-foreground"
-                    )} 
+                    )}
                   />
                 )}
                 {tab.id === 'wallet' && zoozBalance > 0 && (
@@ -86,10 +86,10 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
               </div>
               <span className={cn(
                 "text-xs transition-colors",
-                isActive 
-                  ? "text-primary font-medium" 
-                  : isHomePage 
-                    ? "text-white" 
+                isActive
+                  ? "text-primary font-medium"
+                  : isHomePage
+                    ? "text-white"
                     : "text-muted-foreground"
               )}>
                 {tab.label}
