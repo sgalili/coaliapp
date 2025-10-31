@@ -12,8 +12,9 @@ export default defineConfig(({ mode }) => ({
     outDir: 'build'
   },
   server: {
-    port: 8080,
-    host: "::",
+    port: 3000,
+    host: '0.0.0.0',
+    allowedHosts: true
   },
   plugins: [
     react(),
