@@ -30,6 +30,11 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        {import.meta.env.DEV && (
+          <div className="fixed top-2 left-2 z-[9999] bg-primary text-primary-foreground px-2 py-1 rounded-md shadow">
+            Preview running
+          </div>
+        )}
         <BrowserRouter>
           <Routes>
             {/* Public routes */}
