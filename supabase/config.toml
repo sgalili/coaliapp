@@ -1,0 +1,10 @@
+project_id = "hcqygoupvgcsdxtzyest"
+
+[functions.whatsapp-otp-send]
+verify_jwt = false
+
+[functions.whatsapp-otp-verify]
+verify_jwt = false
+
+[functions.whatsapp-otp-verify-and-login]
+verify_jwt = false
