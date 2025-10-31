@@ -78,7 +78,8 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error('Error in whatsapp-otp-verify:', e);
-    return new Response(e?.message ?? "error", { 
+    const errorMessage = e instanceof Error ? e.message : "error";
+    return new Response(errorMessage, { 
       status: 500, 
       headers: corsHeaders 
     });

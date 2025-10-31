@@ -1,34 +1,3 @@
-There are 2 critical bugs in supabase/functions/whatsapp-otp-send/index.ts:
-
-1. Line 13: Change "phoneNumber" to "phone" - the frontend sends { phone: "+972..." } not { phoneNumber: "..." }
-
-2. Line 60: Fix syntax error - change:
-   throw new Error`Failed to send WhatsApp message: ${errorData}`);
-   to:
-   throw new Error(`Failed to send WhatsApp message: ${errorData}`);
-
-Also add detailed logging throughout the function:
-- After line 13: console.log('Received phone:', phone)
-- After line 17: console.log('Generated OTP:', otp)
-- After line 33: console.log('OTP stored in database')
-- After line 38: console.log('GreenAPI credentials found')
-- After line 43: console.log('Formatted chatId:', `${phone.replace(/[^\d]/g, '')}@c.us`)
-- After line 45: console.log('Calling GreenAPI URL:', greenApiUrl)
-- After line 58: console.log('GreenAPI response status:', greenApiResponse.status)
-
-And update line 55 to format the phone properly by removing + sign:
-const formattedPhone = phone.replace(/[^\d]/g, ''); // Remove all non-digits including +
-const chatId = `${formattedPhone}@c.us`;
-
-Then use chatId in the body instead of `${phoneNumber}@c.us`
-```
-
----
-
-## **OR - Complete Fixed Code to Replace:**
-```
-Replace the entire content of supabase/functions/whatsapp-otp-send/index.ts with this corrected version:
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -65,14 +34,12 @@ serve(async (req) => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     await supabaseClient
-      .from('otp_verifications')
-      .upsert({
-        phone_number: phone,
-        otp_code: otp,
+      .from('otps')
+      .insert({
+        phone: phone,
+        otp: otp,
         expires_at: expiresAt.toISOString(),
-        verified: false,
-      }, {
-        onConflict: 'phone_number'
+        created_at: new Date().toISOString(),
       });
 
     console.log('OTP stored in database');
@@ -136,9 +103,10 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in whatsapp-otp-send:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Internal server error',
+        error: errorMessage,
         success: false 
       }),
       { 
