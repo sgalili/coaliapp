@@ -21,7 +21,7 @@ const samplePosts = [
     username: 'בנימין נתניהו',
     expertise: 'מנהיגות ופוליטיקה',
     profileImage: netanyahuProfile,
-    videoUrl: '/videos/netanyahu-debate.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     caption: 'עמדתי לגבי הרפורמה המשפטית ומה שצריך להיעשות עכשיו',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -40,7 +40,7 @@ const samplePosts = [
     username: 'ירון זליכה',
     expertise: 'כלכלה אקדמית',
     profileImage: yaronZelekhaProfile,
-    videoUrl: '/videos/netanyahu-debate.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     caption: 'ניתוח כלכלי מעמיק של המצב הנוכחי ודרכי הפתרון',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -59,7 +59,7 @@ const samplePosts = [
     username: 'יעקב אליעזרוב',
     expertise: 'תכשיטים ועסקים',
     profileImage: yaakovProfile,
-    videoUrl: '/videos/netanyahu-debate.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     caption: 'תודה לה\' על הברכות בעסק התכשיטים והיהלומים',
     location: 'תל אביב, ישראל',
     isVerified: true,
@@ -78,7 +78,7 @@ const samplePosts = [
     username: 'Warren Buffett',
     expertise: 'השקעות ופיננסים',
     profileImage: warrenBuffettProfile,
-    videoUrl: '/videos/netanyahu-debate.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     caption: 'Best investment advice ever - lessons for long-term wealth building',
     location: 'Omaha, USA',
     isVerified: true,
@@ -97,7 +97,7 @@ const samplePosts = [
     username: 'ד״ר מאיה רוזמן',
     expertise: 'דיאטה ותזונה',
     profileImage: mayaProfile,
-    videoUrl: '/videos/netanyahu-debate.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
     caption: 'משרד החקלאות - למה חשוב לשלב ירקות בכל ארוחה',
     location: 'חיפה, ישראל',
     isVerified: true,
@@ -146,6 +146,10 @@ export default function Index() {
 
   // Auto-play videos in viewport
   useEffect(() => {
+    console.log('Video refs:', videoRefs.current);
+    console.log('Current post index:', currentPostIndex);
+    console.log('Current post:', posts[currentPostIndex]);
+    
     const currentPost = posts[currentPostIndex];
     const video = videoRefs.current[currentPost?.id];
     if (video) {
@@ -293,11 +297,12 @@ export default function Index() {
                 src={post.videoUrl}
                 poster={post.profileImage}
                 className="w-full h-full object-cover"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 loop
                 playsInline
                 autoPlay
+                muted
                 preload="auto"
-                muted={mutedVideos[post.id] ?? true}
                 onClick={() => toggleMute(post.id)}
                 onLoadedMetadata={() => {
                   const v = videoRefs.current[post.id];
@@ -312,6 +317,8 @@ export default function Index() {
                 }}
                 onError={(e) => {
                   console.error('Video error for post', post.id, e);
+                  console.log('Video URL:', post.videoUrl);
+                  console.log('Video element:', videoRefs.current[post.id]);
                 }}
               />
               {!videoReady[post.id] && (
