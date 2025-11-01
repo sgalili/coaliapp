@@ -132,6 +132,12 @@ export default function Index() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
+
+    // Debug: inspect first video element in DOM
+    const firstVideo = document.querySelector('video') as HTMLVideoElement | null;
+    console.log('First video element found:', firstVideo);
+    console.log('Video src:', firstVideo?.src);
+    console.log('Video readyState:', firstVideo?.readyState);
   }, []);
 
   const openComments = (postId: string) => {
@@ -282,8 +288,7 @@ export default function Index() {
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="h-full w-full overflow-y-scroll snap-y snap-mandatory"
-        style={{ scrollSnapType: 'y mandatory' }}
+        className="h-full w-full overflow-y-scroll"
       >
         {posts.map((post) => (
           <div 
@@ -292,6 +297,7 @@ export default function Index() {
           >
             {/* Video - 9:16 aspect ratio, full cover */}
             <div className="absolute inset-0 bg-black flex items-center justify-center">
+              <div className="absolute top-0 left-0 bg-red-500 text-white p-2 z-50">DEBUG: Container visible</div>
               <video
                 ref={(el) => (videoRefs.current[post.id] = el)}
                 src={post.videoUrl}
@@ -447,6 +453,10 @@ export default function Index() {
                     src={post.profileImage}
                     alt={post.username}
                     className="w-12 h-12 rounded-full border-2 border-white object-cover"
+                    onError={(e) => {
+                      console.error('Profile image failed to load:', post.username);
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150';
+                    }}
                   />
                   {/* LIVE Badge below profile - 50% smaller */}
                   {post.isLive && (

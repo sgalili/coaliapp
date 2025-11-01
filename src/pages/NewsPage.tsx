@@ -281,6 +281,7 @@ export default function NewsPage() {
             categories={selectedChannel.categories}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
+            variant="default"
           />
           
           {/* Left - Search & Refresh Icons */}
