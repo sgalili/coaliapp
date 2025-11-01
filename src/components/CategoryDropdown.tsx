@@ -6,9 +6,10 @@ interface CategoryDropdownProps {
   categories: string[];
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
+  variant?: 'default' | 'light'; // light = white text for dark backgrounds
 }
 
-export const CategoryDropdown = ({ categories, selectedCategory, onCategoryChange }: CategoryDropdownProps) => {
+export const CategoryDropdown = ({ categories, selectedCategory, onCategoryChange, variant = 'default' }: CategoryDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +52,10 @@ export const CategoryDropdown = ({ categories, selectedCategory, onCategoryChang
       {/* Trigger Button - TikTok Style */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2 py-2 text-white font-semibold text-base transition-opacity hover:opacity-80"
+        className={cn(
+          "flex items-center gap-1.5 px-2 py-2 font-semibold text-base transition-opacity hover:opacity-80",
+          variant === 'light' ? "text-white" : "text-foreground"
+        )}
       >
         <span>{selectedCategory}</span>
         <ChevronDown 

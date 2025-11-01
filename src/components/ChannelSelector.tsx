@@ -41,8 +41,8 @@ export const ChannelSelector = () => {
         className={cn(
           "w-10 h-10 rounded-full flex items-center justify-center transition-all overflow-hidden",
           selectedChannel.id === null
-            ? "bg-white border-2 border-primary shadow-md"
-            : "bg-card border-2 border-primary shadow-md"
+            ? "bg-white shadow-md"
+            : "bg-card shadow-md"
         )}
       >
         {selectedChannel.logo_url.startsWith('/') ? (

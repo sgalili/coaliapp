@@ -253,6 +253,7 @@ export default function Index() {
           categories={selectedChannel.categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
+          variant="light"
         />
       </div>
 
@@ -304,7 +305,22 @@ export default function Index() {
                     v.play().catch(() => {});
                   }
                 }}
+                onCanPlay={() => {
+                  setVideoReady(prev => ({ ...prev, [post.id]: true }));
+                  const v = videoRefs.current[post.id];
+                  if (v && v.paused) v.play().catch(() => {});
+                }}
+                onError={(e) => {
+                  console.error('Video error for post', post.id, e);
+                }}
               />
+              {!videoReady[post.id] && (
+                <img
+                  src={post.profileImage}
+                  alt="poster"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              )}
               
               {/* Dark Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
