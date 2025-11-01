@@ -8,14 +8,20 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
 
+// Local posters to avoid remote failures
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
+import warrenBuffettProfile from "@/assets/warren-buffett-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
 // Sample VIDEO posts ONLY - verified users
 const samplePosts = [
   {
     id: '1',
     username: 'בנימין נתניהו',
     expertise: 'מנהיגות ופוליטיקה',
-    profileImage: 'https://trust.coali.app/assets/netanyahu-profile-C6yQFuUl.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    profileImage: netanyahuProfile,
+    videoUrl: '/videos/netanyahu-debate.mp4',
     caption: 'עמדתי לגבי הרפורמה המשפטית ומה שצריך להיעשות עכשיו',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -33,8 +39,8 @@ const samplePosts = [
     id: '2',
     username: 'ירון זליכה',
     expertise: 'כלכלה אקדמית',
-    profileImage: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    profileImage: yaronZelekhaProfile,
+    videoUrl: '/videos/netanyahu-debate.mp4',
     caption: 'ניתוח כלכלי מעמיק של המצב הנוכחי ודרכי הפתרון',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -52,8 +58,8 @@ const samplePosts = [
     id: '3',
     username: 'יעקב אליעזרוב',
     expertise: 'תכשיטים ועסקים',
-    profileImage: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+    profileImage: yaakovProfile,
+    videoUrl: '/videos/netanyahu-debate.mp4',
     caption: 'תודה לה\' על הברכות בעסק התכשיטים והיהלומים',
     location: 'תל אביב, ישראל',
     isVerified: true,
@@ -71,8 +77,8 @@ const samplePosts = [
     id: '4',
     username: 'Warren Buffett',
     expertise: 'השקעות ופיננסים',
-    profileImage: 'https://trust.coali.app/assets/warren-buffett-profile-Bfn-yren.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+    profileImage: warrenBuffettProfile,
+    videoUrl: '/videos/netanyahu-debate.mp4',
     caption: 'Best investment advice ever - lessons for long-term wealth building',
     location: 'Omaha, USA',
     isVerified: true,
@@ -90,8 +96,8 @@ const samplePosts = [
     id: '5',
     username: 'ד״ר מאיה רוזמן',
     expertise: 'דיאטה ותזונה',
-    profileImage: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    profileImage: mayaProfile,
+    videoUrl: '/videos/netanyahu-debate.mp4',
     caption: 'משרד החקלאות - למה חשוב לשלב ירקות בכל ארוחה',
     location: 'חיפה, ישראל',
     isVerified: true,
@@ -112,12 +118,16 @@ export default function Index() {
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
-  const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
+  const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>(
+    () => Object.fromEntries(samplePosts.map(p => [p.id, true]))
+  );
+  const [videoReady, setVideoReady] = useState<Record<string, boolean>>({});
   const [newDecisionsCount] = useState(3);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
@@ -284,8 +294,16 @@ export default function Index() {
                 className="w-full h-full object-cover"
                 loop
                 playsInline
-                muted={mutedVideos[post.id]}
+                autoPlay
+                preload="auto"
+                muted={mutedVideos[post.id] ?? true}
                 onClick={() => toggleMute(post.id)}
+                onLoadedMetadata={() => {
+                  const v = videoRefs.current[post.id];
+                  if (v && v.paused) {
+                    v.play().catch(() => {});
+                  }
+                }}
               />
               
               {/* Dark Gradient Overlay */}
