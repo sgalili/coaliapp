@@ -295,6 +295,11 @@ export default function Index() {
             key={post.id}
             className="relative h-screen w-full bg-black"
           >
+            {/* Debug overlay - temporary */}
+            <div className="absolute top-0 left-0 bg-red-600 text-white text-xs p-2 z-50">
+              DEBUG: Container visible
+            </div>
+
             {/* Video */}
             <video
               ref={(el) => (videoRefs.current[post.id] = el)}
@@ -304,11 +309,21 @@ export default function Index() {
               playsInline
               autoPlay
               muted
+              controls
+              crossOrigin="anonymous"
+              poster={post.profileImage}
               preload="auto"
-              onLoadedData={() => console.log('Video loaded:', post.id)}
+              onLoadedMetadata={() => console.log('onLoadedMetadata:', post.id)}
+              onCanPlay={() => console.log('onCanPlay:', post.id)}
+              onProgress={(e) => console.log('onProgress:', post.id, (e.target as HTMLVideoElement).buffered?.length)}
+              onStalled={() => console.warn('onStalled:', post.id)}
+              onWaiting={() => console.warn('onWaiting:', post.id)}
+              onLoadedData={() => console.log('onLoadedData:', post.id)}
               onError={(e) => {
+                const v = e.currentTarget as HTMLVideoElement;
                 console.error('Video error for post', post.id, e);
                 console.log('Video URL:', post.videoUrl);
+                console.log('NetworkState:', v.networkState, 'ReadyState:', v.readyState);
               }}
             />
 
