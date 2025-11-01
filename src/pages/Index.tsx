@@ -21,7 +21,7 @@ const samplePosts = [
     username: 'בנימין נתניהו',
     expertise: 'מנהיגות ופוליטיקה',
     profileImage: netanyahuProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
     caption: 'עמדתי לגבי הרפורמה המשפטית ומה שצריך להיעשות עכשיו',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -40,7 +40,7 @@ const samplePosts = [
     username: 'ירון זליכה',
     expertise: 'כלכלה אקדמית',
     profileImage: yaronZelekhaProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    videoUrl: 'https://www.w3schools.com/html/movie.mp4',
     caption: 'ניתוח כלכלי מעמיק של המצב הנוכחי ודרכי הפתרון',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -59,7 +59,7 @@ const samplePosts = [
     username: 'יעקב אליעזרוב',
     expertise: 'תכשיטים ועסקים',
     profileImage: yaakovProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
     caption: 'תודה לה\' על הברכות בעסק התכשיטים והיהלומים',
     location: 'תל אביב, ישראל',
     isVerified: true,
@@ -78,7 +78,7 @@ const samplePosts = [
     username: 'Warren Buffett',
     expertise: 'השקעות ופיננסים',
     profileImage: warrenBuffettProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    videoUrl: 'https://www.w3schools.com/html/movie.mp4',
     caption: 'Best investment advice ever - lessons for long-term wealth building',
     location: 'Omaha, USA',
     isVerified: true,
@@ -97,7 +97,7 @@ const samplePosts = [
     username: 'ד״ר מאיה רוזמן',
     expertise: 'דיאטה ותזונה',
     profileImage: mayaProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
     caption: 'משרד החקלאות - למה חשוב לשלב ירקות בכל ארוחה',
     location: 'חיפה, ישראל',
     isVerified: true,
@@ -288,56 +288,32 @@ export default function Index() {
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="h-full w-full overflow-y-scroll"
+        className="h-full w-full overflow-y-auto"
       >
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <div 
             key={post.id}
-            className="relative snap-start snap-always h-screen w-full"
+            className="relative h-screen w-full bg-black"
           >
-            {/* Video - 9:16 aspect ratio, full cover */}
-            <div className="absolute inset-0 bg-black flex items-center justify-center">
-              <div className="absolute top-0 left-0 bg-red-500 text-white p-2 z-50">DEBUG: Container visible</div>
-              <video
-                ref={(el) => (videoRefs.current[post.id] = el)}
-                src={post.videoUrl}
-                poster={post.profileImage}
-                className="w-full h-full object-cover"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                loop
-                playsInline
-                autoPlay
-                muted
-                preload="auto"
-                onClick={() => toggleMute(post.id)}
-                onLoadedMetadata={() => {
-                  const v = videoRefs.current[post.id];
-                  if (v && v.paused) {
-                    v.play().catch(() => {});
-                  }
-                }}
-                onCanPlay={() => {
-                  setVideoReady(prev => ({ ...prev, [post.id]: true }));
-                  const v = videoRefs.current[post.id];
-                  if (v && v.paused) v.play().catch(() => {});
-                }}
-                onError={(e) => {
-                  console.error('Video error for post', post.id, e);
-                  console.log('Video URL:', post.videoUrl);
-                  console.log('Video element:', videoRefs.current[post.id]);
-                }}
-              />
-              {!videoReady[post.id] && (
-                <img
-                  src={post.profileImage}
-                  alt="poster"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              )}
-              
-              {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
-            </div>
+            {/* Video */}
+            <video
+              ref={(el) => (videoRefs.current[post.id] = el)}
+              src={post.videoUrl}
+              className="absolute inset-0 w-full h-full object-cover"
+              loop
+              playsInline
+              autoPlay
+              muted
+              preload="auto"
+              onLoadedData={() => console.log('Video loaded:', post.id)}
+              onError={(e) => {
+                console.error('Video error for post', post.id, e);
+                console.log('Video URL:', post.videoUrl);
+              }}
+            />
+
+            {/* Dark Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 
             {/* Mute Button - Top right, below channel selector */}
             <button
