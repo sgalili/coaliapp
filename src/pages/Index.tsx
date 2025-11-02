@@ -11,117 +11,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 // Local posters to avoid remote failures
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
-import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
-import yaakovProfile from "@/assets/yaakov-profile.jpg";
-import warrenBuffettProfile from "@/assets/warren-buffett-profile.jpg";
-import mayaProfile from "@/assets/maya-profile.jpg";
-// Sample VIDEO posts ONLY - verified users
-const samplePosts = [
-  {
-    id: '1',
-    username: 'בנימין נתניהו',
-    expertise: 'מנהיגות ופוליטיקה',
-    profileImage: netanyahuProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    caption: 'עמדתי לגבי הרפורמה המשפטית ומה שצריך להיעשות עכשיו',
-    location: 'ירושלים, ישראל',
-    isVerified: true,
-    isLive: true,
-    category: 'politics',
-    voteCount: 1200,
-    zoozCount: 89000,
-    trustCount: 234600,
-    watchCount: 1200000,
-    commentCount: 23500,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: '2',
-    username: 'ירון זליכה',
-    expertise: 'כלכלה אקדמית',
-    profileImage: yaronZelekhaProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    caption: 'ניתוח כלכלי מעמיק של המצב הנוכחי ודרכי הפתרון',
-    location: 'ירושלים, ישראל',
-    isVerified: true,
-    isLive: false,
-    category: 'economy',
-    voteCount: 892,
-    zoozCount: 67200,
-    trustCount: 156800,
-    watchCount: 890000,
-    commentCount: 18900,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: '3',
-    username: 'יעקב אליעזרוב',
-    expertise: 'תכשיטים ועסקים',
-    profileImage: yaakovProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    caption: "תודה לה' על הברכות בעסק התכשיטים והיהלומים",
-    location: 'תל אביב, ישראל',
-    isVerified: true,
-    isLive: false,
-    category: 'business',
-    voteCount: 0,
-    zoozCount: 15400,
-    trustCount: 45700,
-    watchCount: 230000,
-    commentCount: 4600,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: '4',
-    username: 'Warren Buffett',
-    expertise: 'השקעות ופיננסים',
-    profileImage: warrenBuffettProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    caption: 'Best investment advice ever - lessons for long-term wealth building',
-    location: 'Omaha, USA',
-    isVerified: true,
-    isLive: false,
-    category: 'economy',
-    voteCount: 0,
-    zoozCount: 123500,
-    trustCount: 567900,
-    watchCount: 2100000,
-    commentCount: 45700,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: '5',
-    username: 'ד״ר מאיה רוזמן',
-    expertise: 'דיאטה ותזונה',
-    profileImage: mayaProfile,
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-    caption: 'משרד החקלאות - למה חשוב לשלב ירקות בכל ארוחה',
-    location: 'חיפה, ישראל',
-    isVerified: true,
-    isLive: false,
-    category: 'health',
-    voteCount: 0,
-    zoozCount: 18900,
-    trustCount: 67200,
-    watchCount: 320000,
-    commentCount: 6800,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-];
 
 export default function Index() {
   const navigate = useNavigate();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
-  const [posts, setPosts] = useState(samplePosts);
+  const [posts, setPosts] = useState<any[]>([]);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
-  const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>(
-    () => Object.fromEntries(samplePosts.map(p => [p.id, true]))
-  );
+  const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [videoReady, setVideoReady] = useState<Record<string, boolean>>({});
   const [newDecisionsCount] = useState(3);
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -135,11 +31,15 @@ export default function Index() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
+  useEffect(() => {
+    setMutedVideos(Object.fromEntries(posts.map((p: any) => [p.id, true])));
+  }, [posts]);
+
   // Filter posts by selected category
   useEffect(() => {
     const getCategoryApiValue = (hebrewCategory: string): string => {
       const categoryMap: Record<string, string> = {
-        'הכל': 'all',
+        'הכל': 'politics',
         'פוליטיקה': 'politics',
         'כלכלה': 'economy',
         'טכנולוגיה': 'technology',
@@ -153,11 +53,6 @@ export default function Index() {
 
     const apiCategory = getCategoryApiValue(selectedCategory);
     
-    if (apiCategory === 'all') {
-      setPosts(samplePosts);
-      setCurrentPostIndex(0);
-      return;
-    }
 
     // Fetch videos from edge function for selected category
     (async () => {
@@ -168,8 +63,7 @@ export default function Index() {
 
         if (error) {
           console.error('Edge function error:', error);
-          const filtered = samplePosts.filter(post => post.category === apiCategory);
-          setPosts(filtered.length > 0 ? filtered : samplePosts);
+          setPosts([]);
         } else if (data?.videos?.length) {
           const mapped = data.videos.map((v: any, idx: number) => ({
             id: v.id || `${apiCategory}-${idx}`,
@@ -192,13 +86,11 @@ export default function Index() {
           }));
           setPosts(mapped);
         } else {
-          const filtered = samplePosts.filter(post => post.category === apiCategory);
-          setPosts(filtered.length > 0 ? filtered : samplePosts);
+          setPosts([]);
         }
       } catch (e) {
         console.error('Fetch category videos failed', e);
-        const filtered = samplePosts.filter(post => post.category === apiCategory);
-        setPosts(filtered.length > 0 ? filtered : samplePosts);
+        setPosts([]);
       } finally {
         setCurrentPostIndex(0);
       }
@@ -362,11 +254,6 @@ export default function Index() {
             className="relative snap-start snap-always w-full bg-black"
             style={{ height: '100vh', minHeight: '100vh' }}
           >
-            {/* Debug overlay - temporary */}
-            <div className="absolute top-0 left-0 bg-red-600 text-white text-xs p-2 z-50">
-              DEBUG: Container visible
-            </div>
-
             {/* Video */}
             <video
               ref={(el) => (videoRefs.current[post.id] = el)}
