@@ -596,6 +596,9 @@ export default function Index() {
       console.log('🎉 Upload complete!');
       toast.success('הפוסט פורסם בהצלחה! 🎉');
       
+      // Reload posts from database
+      await loadPostsFromDB();
+      
       setShowUploadModal(false);
       setSelectedVideo(null);
       setCaption('');
