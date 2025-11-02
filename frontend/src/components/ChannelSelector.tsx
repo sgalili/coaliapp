@@ -38,15 +38,10 @@ export const ChannelSelector = () => {
       {/* Channel Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "w-10 h-10 rounded-lg flex items-center justify-center transition-all overflow-hidden",
-          selectedChannel.id === null
-            ? "bg-white border-2 border-primary shadow-md"
-            : "bg-card border-2 border-primary shadow-md"
-        )}
+        className="w-10 h-10 rounded-lg flex items-center justify-center transition-all overflow-hidden bg-transparent border-0"
       >
         {selectedChannel.logo_url.startsWith('/') ? (
-          <img src={selectedChannel.logo_url} alt={selectedChannel.name} className="w-full h-full object-contain p-1" />
+          <img src={selectedChannel.logo_url} alt={selectedChannel.name} className="w-full h-full object-contain" />
         ) : (
           <span className="text-xl">{selectedChannel.logo_url}</span>
         )}
