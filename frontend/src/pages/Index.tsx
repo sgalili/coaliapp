@@ -165,14 +165,93 @@ export default function Index() {
     setShowOptionsMenu(true);
   };
 
-  const handleRecordVideo = () => {
+  const handleRecordVideo = async () => {
     setShowOptionsMenu(false);
-    setUploadMethod('camera');
-    setShowUploadModal(true);
-    // Pre-fill
-    setUploadChannel(selectedChannel.id);
-    setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
-    setAlsoPostToCoali(selectedChannel.id !== null);
+    
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'user',
+          width: { ideal: 1080 },
+          height: { ideal: 1920 }
+        }, 
+        audio: true 
+      });
+      
+      setRecordingStream(stream);
+      setShowRecordingInterface(true);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Camera access denied:', error);
+      alert('לא ניתן לגשת למצלמה. אנא אפשר הרשאות מצלמה.');
+    }
+  };
+
+  const startRecording = () => {
+    if (!recordingStream) return;
+    
+    const mediaRecorder = new MediaRecorder(recordingStream);
+    mediaRecorderRef.current = mediaRecorder;
+    recordedChunksRef.current = [];
+    
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunksRef.current.push(event.data);
+      }
+    };
+    
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      const file = new File([blob], `video-${Date.now()}.webm`, { type: 'video/webm' });
+      
+      recordingStream?.getTracks().forEach(track => track.stop());
+      setRecordingStream(null);
+      
+      setSelectedVideo(file);
+      setShowRecordingInterface(false);
+      setShowUploadModal(true);
+      
+      // Pre-fill
+      setUploadChannel(selectedChannel.id);
+      setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
+      setAlsoPostToCoali(selectedChannel.id !== null);
+    };
+    
+    mediaRecorder.start();
+    setIsRecording(true);
+    
+    // Start timer
+    let seconds = 0;
+    timerIntervalRef.current = setInterval(() => {
+      seconds++;
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      setRecordingTime(`${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`);
+    }, 1000);
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        setRecordingTime('00:00');
+      }
+    }
+  };
+
+  const closeRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    }
+    recordingStream?.getTracks().forEach(track => track.stop());
+    setRecordingStream(null);
+    setShowRecordingInterface(false);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
