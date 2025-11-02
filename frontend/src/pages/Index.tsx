@@ -299,6 +299,24 @@ export default function Index() {
     loadDecisionsCount();
   }, [selectedChannel.id]);
 
+  // Monitor channel changes and verify category reset
+  useEffect(() => {
+    console.log('🔄 Channel monitoring useEffect triggered');
+    console.log('Selected channel ID:', selectedChannel.id);
+    console.log('Selected channel name:', selectedChannel.name);
+    console.log('Current category:', selectedCategory);
+    console.log('Available categories:', selectedChannel.categories);
+    
+    // Force reset if category not in channel categories
+    const firstCat = selectedChannel.categories[0];
+    if (!selectedChannel.categories.includes(selectedCategory)) {
+      console.log('⚠️ Category not in channel! Forcing reset to:', firstCat);
+      setSelectedCategory(firstCat);
+    } else {
+      console.log('✅ Category is valid for this channel');
+    }
+  }, [selectedChannel.id]);
+
   const loadPostsFromDB = async () => {
     setIsLoadingPosts(true);
     try {
