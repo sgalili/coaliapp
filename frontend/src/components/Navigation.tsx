@@ -16,7 +16,7 @@ const tabs = [
   { id: 'profile', icon: User, label: 'פרופיל', path: '/profile' },
 ];
 
-export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
+export const Navigation = ({ zoozBalance = 0, show = true }: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,10 +35,11 @@ export const Navigation = ({ zoozBalance = 0 }: NavigationProps) => {
 
   return (
     <div className={cn(
-      "fixed bottom-0 left-0 right-0 z-50 transition-colors duration-300",
+      "fixed bottom-0 left-0 right-0 z-50 transition-all duration-300",
       isHomePage 
         ? "bg-black border-t border-gray-800" 
-        : "bg-card border-t border-border"
+        : "bg-card border-t border-border",
+      !show && "translate-y-full"
     )}>
       <div className="flex items-center justify-around py-2">
         {tabs.map((tab) => {
