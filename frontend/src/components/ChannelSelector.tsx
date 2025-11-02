@@ -147,6 +147,11 @@ export const ChannelSelector = () => {
                       )}
                       dir="rtl"
                     >
+                      {channel.logo_url.startsWith('/') ? (
+                        <img src={channel.logo_url} alt={channel.name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
+                      ) : (
+                        <div className="text-2xl flex-shrink-0">{channel.logo_url}</div>
+                      )}
                       <div className="flex-1 text-right">
                         <div className="flex items-center gap-2 justify-end">
                           <p className="font-semibold text-sm text-foreground">{channel.name}</p>
@@ -155,7 +160,6 @@ export const ChannelSelector = () => {
                         <p className="text-xs text-muted-foreground">{channel.description}</p>
                         <p className="text-xs text-muted-foreground">{channel.member_count} חברים</p>
                       </div>
-                      <div className="text-2xl flex-shrink-0">{channel.logo_url}</div>
                     </button>
                   ))}
                 </>
