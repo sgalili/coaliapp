@@ -12,10 +12,14 @@ export const ChannelSelector = () => {
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
 
   const handleSelectChannel = (channel: any) => {
+    console.log('📺 Switching to channel:', channel.name);
+    console.log('📂 Channel categories:', channel.categories);
+    
     setSelectedChannel(channel);
     
     // Reset category to first category of new channel
     const firstCategory = channel.categories[0] || 'הכל';
+    console.log('📂 Resetting category to:', firstCategory);
     setSelectedCategory(firstCategory);
     
     setIsOpen(false);
