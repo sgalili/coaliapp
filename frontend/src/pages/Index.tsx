@@ -436,39 +436,47 @@ export default function Index() {
     }
   };
 
-  const handleUploadSubmit = () => {
+  const handleUploadSubmit = async () => {
     if (!selectedVideo || !uploadCategory) return;
     
-    const newPost = {
-      id: `post-${Date.now()}`,
-      username: 'אתה',
-      expertise: 'משתמש',
-      profileImage: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-      videoUrl: URL.createObjectURL(selectedVideo),
-      caption: caption,
-      location: 'ישראל',
-      isVerified: true,
-      isLive: false,
-      category: uploadCategory,
-      voteCount: 0,
-      zoozCount: 0,
-      trustCount: 0,
-      watchCount: 0,
-      commentCount: 0,
-      hasUserTrusted: false,
-      hasUserWatched: false,
-    };
+    setIsUploading(true);
     
-    setPosts(prev => [newPost, ...prev]);
-    
-    if (alsoPostToCoali && selectedChannel.id !== null) {
-      const coaliPost = { ...newPost, id: `post-coali-${Date.now()}` };
-      setPosts(prev => [coaliPost, ...prev]);
+    try {
+      const newPost = {
+        id: `post-${Date.now()}`,
+        username: 'אתה',
+        expertise: 'משתמש',
+        profileImage: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+        videoUrl: URL.createObjectURL(selectedVideo),
+        caption: caption,
+        location: 'ישראל',
+        isVerified: true,
+        isLive: false,
+        category: uploadCategory,
+        voteCount: 0,
+        zoozCount: 0,
+        trustCount: 0,
+        watchCount: 0,
+        commentCount: 0,
+        hasUserTrusted: false,
+        hasUserWatched: false,
+      };
+      
+      setPosts(prev => [newPost, ...prev]);
+      
+      if (alsoPostToCoali && selectedChannel.id !== null) {
+        const coaliPost = { ...newPost, id: `post-coali-${Date.now()}` };
+        setPosts(prev => [coaliPost, ...prev]);
+      }
+      
+      setShowUploadModal(false);
+      setSelectedVideo(null);
+      setCaption('');
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setIsUploading(false);
     }
-    
-    setShowUploadModal(false);
-    setSelectedVideo(null);
-    setCaption('');
   };
 
   // Auto-play videos in viewport
