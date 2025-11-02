@@ -116,7 +116,9 @@ export default function Index() {
   const [newDecisionsCount] = useState(3);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
   const [caption, setCaption] = useState('');
   const [uploadChannel, setUploadChannel] = useState(selectedChannel.id);
