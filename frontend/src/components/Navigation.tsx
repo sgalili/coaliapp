@@ -5,6 +5,7 @@ import { ImpactIcon } from "./ImpactIcon";
 
 interface NavigationProps {
   zoozBalance?: number;
+  show?: boolean;
 }
 
 const tabs = [
