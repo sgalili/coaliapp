@@ -34,6 +34,15 @@ const defaultChannel: Channel = {
 const demoChannels: Channel[] = [
   defaultChannel,
   {
+    id: 'channel-10-economy',
+    name: 'ערוץ 10 | ערוץ הכלכלה',
+    description: 'Channel 10 Economy News',
+    logo_url: '/channel-10-logo.jpeg',
+    is_public: true,
+    member_count: 3450,
+    categories: ['הכל', 'שוק ההון', 'נדל׳ן', 'טכנולוגיה', 'קריפטו'],
+  },
+  {
     id: 'channel-economy',
     name: 'ערוץ כלכלה',
     description: 'Economy & Finance Channel',
