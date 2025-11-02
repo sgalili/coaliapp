@@ -281,6 +281,14 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
+      {/* FAB - Floating Action Button */}
+      <button
+        onClick={handleFABClick}
+        className="fixed top-2 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+      >
+        <Plus className="w-6 h-6 text-white" />
+      </button>
+
       {/* Top Left Corner - החלטות Button */}
       <div className="fixed top-4 left-4 z-50">
         <button
