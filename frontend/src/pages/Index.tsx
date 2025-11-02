@@ -311,8 +311,19 @@ export default function Index() {
         hasUserWatched: false,
       }));
       
-      // Combine with sample posts (fallback)
-      const allPosts = [...mappedPosts, ...samplePosts];
+      // Filter out invalid posts
+      const validPosts = mappedPosts.filter(post => {
+        const hasMedia = post.videoUrl || post.imageUrl;
+        const hasRequiredFields = post.id && post.username && post.category;
+        const hasValidUrl = post.videoUrl?.trim() || post.imageUrl?.trim();
+        
+        return hasMedia && hasRequiredFields && hasValidUrl;
+      });
+      
+      console.log(`📊 Filtered ${mappedPosts.length} → ${validPosts.length} valid posts`);
+      
+      // Combine with sample posts
+      const allPosts = [...validPosts, ...samplePosts];
       
       // Remove duplicates by ID
       const uniqueByID = allPosts.filter((post, index, self) => 
