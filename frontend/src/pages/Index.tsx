@@ -282,6 +282,22 @@ export default function Index() {
     loadPostsFromDB();
   }, [selectedChannel.id, selectedCategory]);
 
+  // Load decisions count
+  useEffect(() => {
+    const loadDecisionsCount = async () => {
+      try {
+        const decisions = await fetchDemoDecisions(selectedChannel.id);
+        console.log(`🗳️ Decisions in ${selectedChannel.name}:`, decisions.length);
+        setDecisionsCount(decisions.length);
+      } catch (error) {
+        console.error('Failed to load decisions count:', error);
+        setDecisionsCount(0);
+      }
+    };
+    
+    loadDecisionsCount();
+  }, [selectedChannel.id]);
+
   const loadPostsFromDB = async () => {
     setIsLoadingPosts(true);
     try {
