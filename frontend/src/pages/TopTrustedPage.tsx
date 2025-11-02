@@ -69,17 +69,6 @@ export default function TopTrustedPage() {
           {/* Right - Channel Selector (same layout as homepage) */}
           <div className="flex items-center gap-2">
             <ChannelSelector />
-            {selectedChannel.id !== null && showChannelIndicator && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-xs">
-                <span className="text-xs font-medium">{selectedChannel.name}</span>
-                <button
-                  onClick={() => setShowChannelIndicator(false)}
-                  className="hover:bg-white/20 rounded-full p-0.5 transition-colors"
-                >
-                  ×
-                </button>
-              </div>
-            )}
           </div>
           
           {/* Center - Page Title */}
