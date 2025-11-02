@@ -896,8 +896,12 @@ export default function Index() {
                 className="w-full h-full object-cover"
                 loop
                 playsInline
-                muted={mutedVideos[post.id]}
-                onClick={() => toggleMute(post.id)}
+                muted={mutedVideos[post.id] ?? true}
+                preload="metadata"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  togglePlayPause(post.id);
+                }}
                 onError={(e) => {
                   console.error('❌ Video error for:', post.id, post.videoUrl, e);
                 }}
