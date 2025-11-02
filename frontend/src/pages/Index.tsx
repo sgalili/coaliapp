@@ -761,14 +761,18 @@ export default function Index() {
       )}
 
       {/* Upload Modal */}
-      {showUploadModal && (
+      {showUploadModal && selectedVideo && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-background rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">העלאת וידאו</h2>
+                <h2 className="text-2xl font-bold">פרסום תוכן</h2>
                 <button
-                  onClick={() => setShowUploadModal(false)}
+                  onClick={() => {
+                    setShowUploadModal(false);
+                    setSelectedVideo(null);
+                    setCaption('');
+                  }}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   ✕
@@ -776,19 +780,20 @@ export default function Index() {
               </div>
 
               <div className="space-y-4">
-                {/* Video Upload */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">בחר וידאו</label>
-                  <input
-                    type="file"
-                    accept="video/*"
-                    onChange={handleVideoSelect}
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                  />
-                  {selectedVideo && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {selectedVideo.name}
-                    </p>
+                {/* Video/Image Preview */}
+                <div className="relative bg-muted rounded-lg overflow-hidden">
+                  {selectedVideo.type.startsWith('video/') ? (
+                    <video
+                      src={URL.createObjectURL(selectedVideo)}
+                      controls
+                      className="w-full max-h-[400px] object-contain"
+                    />
+                  ) : (
+                    <img
+                      src={URL.createObjectURL(selectedVideo)}
+                      alt="Preview"
+                      className="w-full max-h-[400px] object-contain"
+                    />
                   )}
                 </div>
 
@@ -798,35 +803,13 @@ export default function Index() {
                   <textarea
                     value={caption}
                     onChange={(e) => setCaption(e.target.value)}
-                    placeholder="הוסף כיתוב לוידאו..."
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background min-h-[100px] resize-none"
+                    placeholder="הוסף כיתוב..."
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background min-h-[100px] resize-none"
+                    maxLength={400}
+                    dir="rtl"
                   />
-                </div>
-
-                {/* Channel Selection */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">ערוץ</label>
-                  <select
-                    value={uploadChannel || ''}
-                    onChange={(e) => {
-                      const newChannel = e.target.value || null;
-                      setUploadChannel(newChannel);
-                      // Update category to first category of new channel
-                      const channel = availableChannels.find(ch => (ch.id || '') === (newChannel || ''));
-                      if (channel) {
-                        setUploadCategory(channel.categories[0]);
-                      }
-                    }}
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                  >
-                    {availableChannels.map(channel => (
-                      <option key={channel.id || 'coali'} value={channel.id || ''}>
-                        {channel.name}
-                      </option>
-                    ))}
-                  </select>
                   <p className="text-xs text-muted-foreground text-right mt-1">
-                    הערוץ הנוכחי נבחר אוטומטית
+                    {caption.length}/400
                   </p>
                 </div>
 
@@ -836,26 +819,24 @@ export default function Index() {
                   <select
                     value={uploadCategory}
                     onChange={(e) => setUploadCategory(e.target.value)}
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background"
+                    dir="rtl"
                   >
-                    {(availableChannels.find(ch => (ch.id || '') === (uploadChannel || ''))?.categories || selectedChannel.categories).map(category => (
+                    {selectedChannel.categories.map(category => (
                       <option key={category} value={category}>
                         {category}
                       </option>
                     ))}
                   </select>
-                  <p className="text-xs text-muted-foreground text-right mt-1">
-                    הקטגוריה הנוכחית נבחרה אוטומטית
-                  </p>
                 </div>
 
                 {/* Also Post to Coali Checkbox */}
-                {uploadChannel !== null && uploadChannel !== '' && (
+                {selectedChannel.id !== null && (
                   <div className="p-4 bg-muted/30 rounded-lg">
                     <label className="flex items-center justify-end gap-3 cursor-pointer">
                       <div className="text-right">
                         <p className="text-sm font-medium">פרסם גם בערוץ Coali הראשי</p>
-                        <p className="text-xs text-muted-foreground">הוידאו יופיע גם בערוץ הראשי של Coali</p>
+                        <p className="text-xs text-muted-foreground">התוכן יופיע גם בערוץ הראשי</p>
                       </div>
                       <input
                         type="checkbox"
@@ -870,8 +851,8 @@ export default function Index() {
                 {/* Submit Button */}
                 <button
                   onClick={handleUploadSubmit}
-                  disabled={!selectedVideo || !uploadCategory}
-                  className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!uploadCategory}
+                  className="w-full py-4 bg-primary text-primary-foreground rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   פרסם
                 </button>
