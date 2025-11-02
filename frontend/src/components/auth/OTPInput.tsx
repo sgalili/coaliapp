@@ -81,7 +81,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
           <div className="space-y-4">
             <div className="flex justify-center" dir="ltr">
               <InputOTP
-                maxLength={4}
+                maxLength={6}
                 value={otp}
                 onChange={handleOTPChange}
                 disabled={isLoading}
