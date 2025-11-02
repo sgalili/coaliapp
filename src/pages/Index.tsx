@@ -21,7 +21,7 @@ const samplePosts = [
     username: 'בנימין נתניהו',
     expertise: 'מנהיגות ופוליטיקה',
     profileImage: netanyahuProfile,
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    videoUrl: '/videos/flower.mp4',
     caption: 'עמדתי לגבי הרפורמה המשפטית ומה שצריך להיעשות עכשיו',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -40,7 +40,7 @@ const samplePosts = [
     username: 'ירון זליכה',
     expertise: 'כלכלה אקדמית',
     profileImage: yaronZelekhaProfile,
-    videoUrl: 'https://www.w3schools.com/html/movie.mp4',
+    videoUrl: '/videos/flower.mp4',
     caption: 'ניתוח כלכלי מעמיק של המצב הנוכחי ודרכי הפתרון',
     location: 'ירושלים, ישראל',
     isVerified: true,
@@ -59,7 +59,7 @@ const samplePosts = [
     username: 'יעקב אליעזרוב',
     expertise: 'תכשיטים ועסקים',
     profileImage: yaakovProfile,
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    videoUrl: '/videos/flower.mp4',
     caption: 'תודה לה\' על הברכות בעסק התכשיטים והיהלומים',
     location: 'תל אביב, ישראל',
     isVerified: true,
@@ -78,7 +78,7 @@ const samplePosts = [
     username: 'Warren Buffett',
     expertise: 'השקעות ופיננסים',
     profileImage: warrenBuffettProfile,
-    videoUrl: 'https://www.w3schools.com/html/movie.mp4',
+    videoUrl: '/videos/flower.mp4',
     caption: 'Best investment advice ever - lessons for long-term wealth building',
     location: 'Omaha, USA',
     isVerified: true,
@@ -97,7 +97,7 @@ const samplePosts = [
     username: 'ד״ר מאיה רוזמן',
     expertise: 'דיאטה ותזונה',
     profileImage: mayaProfile,
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    videoUrl: '/videos/flower.mp4',
     caption: 'משרד החקלאות - למה חשוב לשלב ירקות בכל ארוחה',
     location: 'חיפה, ישראל',
     isVerified: true,
@@ -328,7 +328,7 @@ export default function Index() {
             />
 
             {/* Dark Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+            <div className="absolute inset-0 pointer-events-none" />
 
             {/* Mute Button - Top right, below channel selector */}
             <button
