@@ -3,7 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { ChannelSelector } from "@/components/ChannelSelector";
 import { CategoryDropdown } from "@/components/CategoryDropdown";
 import { Comments } from "@/components/Comments";
-import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPin } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPin, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
