@@ -374,63 +374,16 @@ export default function Index() {
     }
   };
 
-  // Test Supabase connection
+  // Test Supabase connection (commented out to prevent blocking)
+  /*
   useEffect(() => {
     const testSupabaseConnection = async () => {
       console.log('🔍 Testing Supabase connection...');
-      
-      try {
-        console.log('📡 Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-        console.log('🔑 Supabase Key exists:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
-        
-        // Test demo_posts table
-        const { data: posts, error: postsError } = await supabase
-          .from('demo_posts')
-          .select('count');
-        
-        if (postsError) {
-          console.error('❌ Failed to query demo_posts:', postsError.message);
-        } else {
-          console.log('✅ demo_posts table accessible:', posts);
-        }
-        
-        // Test storage bucket directly
-        try {
-          const { data: files, error: filesError } = await supabase
-            .storage
-            .from('demo-media')
-            .list('', { limit: 1 });
-          
-          if (filesError) {
-            console.error('❌ demo-media bucket error:', filesError.message);
-          } else {
-            console.log('✅ demo-media bucket accessible!', files?.length || 0, 'files');
-          }
-        } catch (e) {
-          console.error('❌ demo-media bucket test failed:', e);
-        }
-        
-        // Also try listing all buckets
-        const { data: buckets, error: bucketsError } = await supabase
-          .storage
-          .listBuckets();
-        
-        if (bucketsError) {
-          console.error('❌ Failed to list storage buckets:', bucketsError.message);
-        } else {
-          console.log('✅ Storage buckets found:', buckets?.length || 0);
-          console.log('Buckets:', buckets?.map(b => b.name).join(', '));
-        }
-        
-        console.log('📊 Supabase test completed!');
-        
-      } catch (error) {
-        console.error('❌ Supabase connection test failed:', error);
-      }
+      // ... test code
     };
-    
     testSupabaseConnection();
   }, []);
+  */
 
   const openComments = (postId: string) => {
     setActivePostId(postId);
