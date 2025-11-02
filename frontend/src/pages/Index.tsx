@@ -443,14 +443,22 @@ export default function Index() {
 
   // Reset to first post when filters change
   useEffect(() => {
+    console.log('📺 Filters changed - scrolling to top');
+    console.log('Channel:', selectedChannel.name, 'Category:', selectedCategory);
+    
     setIsFilteringPosts(true);
     setCurrentPostIndex(0);
+    
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
+      console.log('✅ Scrolled to top');
     }
     
     setTimeout(() => {
       setIsFilteringPosts(false);
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0; // Ensure it's at top
+      }
     }, 300);
   }, [selectedChannel.id, selectedCategory]);
 
