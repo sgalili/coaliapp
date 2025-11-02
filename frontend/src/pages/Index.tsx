@@ -832,6 +832,44 @@ export default function Index() {
     }
   };
 
+  const toggleTrust = (postId: string) => {
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        const newTrusted = !post.hasUserTrusted;
+        const newCount = newTrusted ? post.trustCount + 1 : post.trustCount - 1;
+        
+        console.log('🛡️ Toggling trust:', postId, newTrusted);
+        
+        if (newTrusted) {
+          toast.success('נתת אמון! 🛡️');
+        }
+        
+        return {
+          ...post,
+          hasUserTrusted: newTrusted,
+          trustCount: newCount
+        };
+      }
+      return post;
+    }));
+  };
+
+  const toggleWatch = (postId: string) => {
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        const newWatched = !post.hasUserWatched;
+        const newCount = newWatched ? post.watchCount + 1 : post.watchCount - 1;
+        
+        return {
+          ...post,
+          hasUserWatched: newWatched,
+          watchCount: newCount
+        };
+      }
+      return post;
+    }));
+  };
+
   const formatCount = (count: number) => {
     if (!count && count !== 0) {
       return '0'; // Handle undefined/null
