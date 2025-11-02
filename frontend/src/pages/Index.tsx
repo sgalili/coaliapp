@@ -1078,7 +1078,10 @@ export default function Index() {
             </div>
             
             <button
-              onClick={handleRecordVideo}
+              onClick={() => {
+                console.log('🎥 Camera button clicked!');
+                handleRecordVideo();
+              }}
               className="w-full p-5 border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-between group"
             >
               <div className="text-right flex-1">
