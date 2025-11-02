@@ -243,7 +243,7 @@ export default function DecisionsPage() {
 
         {/* Progress Indicator */}
         <div className="flex items-center justify-center gap-2 mt-4">
-          {decisions.map((_, idx) => (
+          {filteredDecisions.map((_, idx) => (
             <div
               key={idx}
               className={`h-1 rounded-full transition-all ${
