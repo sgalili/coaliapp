@@ -119,8 +119,9 @@ export default function NewsPage() {
   }, [selectedChannel.id]);
 
   const refreshNews = async () => {
-    // Fetch 5 more news for selected category
-    setLoading(true);
+    if (isRefreshing) return;
+    
+    setIsRefreshing(true);
     try {
       const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
       
@@ -144,14 +145,15 @@ export default function NewsPage() {
               
               return {
                 ...article,
+                id: `${article.id}_refresh_${Date.now()}`, // Unique ID for refresh
                 content: cleanContent,
                 categoryLabel: cat.label,
-                image: imageUrl,
+                image: imageUrl || `https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop`,
                 experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
               };
             });
             
-            // Prepend new articles to existing ones
+            // Prepend new articles to top
             setNewsArticles(prev => [...newArticles, ...prev]);
           }
         }
@@ -162,7 +164,7 @@ export default function NewsPage() {
     } catch (error) {
       console.error('Error refreshing news:', error);
     } finally {
-      setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
