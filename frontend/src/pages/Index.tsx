@@ -681,6 +681,9 @@ export default function Index() {
   };
 
   const formatCount = (count: number) => {
+    if (!count && count !== 0) {
+      return '0'; // Handle undefined/null
+    }
     if (count >= 1000000) {
       return `${(count / 1000000).toFixed(1)}M`;
     }
