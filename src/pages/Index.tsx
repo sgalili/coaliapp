@@ -240,7 +240,7 @@ export default function Index() {
   };
 
   return (
-    <div className="relative w-full h-screen bg-background">
+    <div className="relative w-full h-screen bg-black">
       {/* Top Left Corner - החלטות Button */}
       <div className="fixed top-4 left-4 z-50">
         <button
@@ -294,7 +294,7 @@ export default function Index() {
         {posts.map((post, index) => (
           <div 
             key={post.id}
-            className="relative snap-start snap-always w-full bg-background"
+            className="relative snap-start snap-always w-full bg-black"
             style={{ height: '100vh', minHeight: '100vh' }}
           >
             {/* Debug overlay - temporary */}
@@ -306,7 +306,7 @@ export default function Index() {
             <video
               ref={(el) => (videoRefs.current[post.id] = el)}
               src={post.videoUrl}
-              className="absolute inset-0 w-full h-full object-contain bg-background"
+              className="absolute inset-0 w-full h-full object-contain bg-black"
               style={{ zIndex: 0 }}
               loop
               playsInline
