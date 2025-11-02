@@ -1,1 +1,4 @@
 project_id = "disiaqzqfhmopynlsguw"
+
+[functions.fetch-category-videos]
+verify_jwt = false

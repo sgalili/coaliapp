@@ -81,9 +81,9 @@ serve(async (req) => {
       console.error("Parse error", e);
     }
 
-    // Fallback if model didn't comply
+    // If model didn't comply, return empty list (no placeholders)
     if (!Array.isArray(videos) || videos.length === 0) {
-      videos = fallback(category);
+      videos = [];
     }
 
     // Ensure max 5
@@ -95,7 +95,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("fetch-category-videos failure:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "error", videos: fallback("politics") }),
+      JSON.stringify({ error: e instanceof Error ? e.message : "error", videos: [] }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
