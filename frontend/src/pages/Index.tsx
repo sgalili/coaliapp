@@ -152,6 +152,19 @@ export default function Index() {
     setActivePostId(null);
   };
 
+  // Filter posts by channel and category
+  const filteredPosts = posts.filter(post => {
+    // Filter by channel (for now all posts are in main channel)
+    // In Phase 2, we'll add channel_id to posts
+    
+    // Filter by category
+    if (selectedCategory === 'הכל') {
+      return true; // Show all if "הכל" selected
+    }
+    
+    return post.category === selectedCategory;
+  });
+
   const handleFABClick = () => {
     // Check authentication
     const isAuthenticated = localStorage.getItem('isAuthenticated');
