@@ -702,18 +702,25 @@ export default function Index() {
 
   // Auto-play videos in viewport
   useEffect(() => {
+    console.log('🎬 Current post index:', currentPostIndex);
+    
     const currentPost = uniquePosts[currentPostIndex];
-    const video = videoRefs.current[currentPost?.id];
-    if (video) {
-      video.play().catch(() => {
-        video.muted = true;
+    if (!currentPost) return;
+    
+    const currentVideo = videoRefs.current[currentPost.id];
+    if (currentVideo && currentVideo.paused) {
+      console.log('▶️ Auto-playing current video:', currentPost.id);
+      currentVideo.play().catch(() => {
+        currentVideo.muted = true;
         setMutedVideos(prev => ({ ...prev, [currentPost.id]: true }));
-        video.play();
+        currentVideo.play().catch(err => console.error('Play failed:', err));
       });
     }
 
+    // Pause all other videos
     Object.entries(videoRefs.current).forEach(([id, video]) => {
-      if (id !== currentPost?.id && video) {
+      if (id !== currentPost.id && video && !video.paused) {
+        console.log('⏸️ Pausing other video:', id);
         video.pause();
       }
     });
