@@ -151,6 +151,11 @@ export default function Index() {
       return;
     }
     
+    // Pre-fill with currently viewed channel and category
+    setUploadChannel(selectedChannel.id);
+    setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
+    setAlsoPostToCoali(selectedChannel.id !== null); // Only if not already in Coali
+    
     setShowUploadModal(true);
   };
 
