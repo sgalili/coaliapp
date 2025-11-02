@@ -230,7 +230,7 @@ export default function DecisionsPage() {
         <div className="mt-8 mb-40 md:mb-20 max-w-md mx-auto w-full">
           <button
             onClick={() => {
-              if (!currentDecision.hasVoted && currentIndex < decisions.length - 1) {
+              if (!currentDecision.hasVoted && currentIndex < filteredDecisions.length - 1) {
                 setCurrentIndex(currentIndex + 1);
               }
             }}
