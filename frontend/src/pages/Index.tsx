@@ -122,6 +122,8 @@ export default function Index() {
   const [uploadChannel, setUploadChannel] = useState(selectedChannel.id);
   const [uploadCategory, setUploadCategory] = useState(selectedCategory);
   const [alsoPostToCoali, setAlsoPostToCoali] = useState(true);
+  const [showNav, setShowNav] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
