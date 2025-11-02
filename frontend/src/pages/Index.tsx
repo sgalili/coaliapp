@@ -243,6 +243,7 @@ export default function Index() {
   const navigate = useNavigate();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [posts, setPosts] = useState(samplePosts);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [newDecisionsCount] = useState(3);
