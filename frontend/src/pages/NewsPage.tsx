@@ -118,86 +118,44 @@ export default function NewsPage() {
   }, [selectedChannel.id]);
 
   const refreshNews = async () => {
-    // Fetch 5 more news for selected category
-    setLoading(true);
-    try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
-      
-      if (selectedCategory !== 'הכל') {
-        // Find the API value for selected category
-        const cat = categories.find(c => c.label === selectedCategory);
-        if (cat?.apiValue) {
-          const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=5`;
-          const response = await fetch(url);
-          const data = await response.json();
-          
-          if (data.articles && data.articles.length > 0) {
-            const newArticles = data.articles.map((article: any) => {
-              let imageUrl = '';
-              let cleanContent = article.content;
-              if (article.content.startsWith('IMAGE_URL:')) {
-                const parts = article.content.split('\n\n');
-                imageUrl = parts[0].replace('IMAGE_URL:', '');
-                cleanContent = parts.slice(1).join('\n\n');
-              }
-              
-              return {
-                ...article,
-                content: cleanContent,
-                categoryLabel: cat.label,
-                image: imageUrl,
-                experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
-              };
-            });
-            
-            // Prepend new articles to existing ones
-            setNewsArticles(prev => [...newArticles, ...prev]);
-          }
-        }
-      } else {
-        // Refresh all categories
-        fetchRealNews();
-      }
-    } catch (error) {
-      console.error('Error refreshing news:', error);
-    } finally {
-      setLoading(false);
-    }
+    await fetchRealNews();
   };
 
   const fetchRealNews = async () => {
     setLoading(true);
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      const { supabase } = await import('@/integrations/supabase/client');
       const allNews: any[] = [];
       
       // Fetch from all categories
       for (const cat of categories) {
         if (cat.apiValue) {
           try {
-            const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=5`;
-            const response = await fetch(url);
-            const data = await response.json();
+            const { data, error } = await supabase.functions.invoke('fetch-category-videos', {
+              body: { category: cat.apiValue }
+            });
             
-            if (data.articles && data.articles.length > 0) {
-              allNews.push(...data.articles.map((article: any) => {
-                // Extract image URL from content
-                let imageUrl = '';
-                let cleanContent = article.content;
-                if (article.content.startsWith('IMAGE_URL:')) {
-                  const parts = article.content.split('\n\n');
-                  imageUrl = parts[0].replace('IMAGE_URL:', '');
-                  cleanContent = parts.slice(1).join('\n\n');
-                }
-                
-                return {
-                  ...article,
-                  content: cleanContent,
-                  categoryLabel: cat.label,
-                  image: imageUrl || `https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop`,
-                  experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
-                };
-              }));
+            if (error) {
+              console.error(`Error fetching ${cat.apiValue}:`, error);
+              continue;
+            }
+            
+            if (data?.videos && data.videos.length > 0) {
+              allNews.push(...data.videos.map((video: any) => ({
+                id: video.id,
+                title: video.title,
+                content: video.description,
+                category: cat.apiValue,
+                categoryLabel: cat.label,
+                source: video.source,
+                image: video.thumbnail,
+                experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
+                poll_options: [
+                  { id: "1", label: "מעניין", value: 60 },
+                  { id: "2", label: "חשוב", value: 30 },
+                  { id: "3", label: "אחר", value: 10 },
+                ],
+              })));
             }
           } catch (err) {
             console.error(`Error fetching ${cat.apiValue}:`, err);

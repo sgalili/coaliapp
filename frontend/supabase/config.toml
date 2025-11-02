@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.whatsapp-otp-verify-and-login]
 verify_jwt = false
+
+[functions.fetch-category-videos]
+verify_jwt = false
