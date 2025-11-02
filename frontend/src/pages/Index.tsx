@@ -826,6 +826,15 @@ export default function Index() {
                 playsInline
                 muted={mutedVideos[post.id]}
                 onClick={() => toggleMute(post.id)}
+                onError={(e) => {
+                  console.error('❌ Video error for:', post.id, post.videoUrl, e);
+                }}
+                onLoadStart={() => {
+                  console.log('📺 Loading video:', post.id, post.videoUrl);
+                }}
+                onCanPlay={() => {
+                  console.log('✅ Video ready:', post.id);
+                }}
               />
               
               {/* Dark Gradient Overlay */}
