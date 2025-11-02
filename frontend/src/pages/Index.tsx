@@ -276,7 +276,7 @@ export default function Index() {
   };
 
   const handleUploadSubmit = () => {
-    if (!selectedVideo || !uploadChannel || !uploadCategory) return;
+    if (!selectedVideo || !uploadCategory) return;
     
     const newPost = {
       id: `post-${Date.now()}`,
@@ -300,7 +300,7 @@ export default function Index() {
     
     setPosts(prev => [newPost, ...prev]);
     
-    if (alsoPostToCoali && uploadChannel !== null) {
+    if (alsoPostToCoali && selectedChannel.id !== null) {
       const coaliPost = { ...newPost, id: `post-coali-${Date.now()}` };
       setPosts(prev => [coaliPost, ...prev]);
     }
