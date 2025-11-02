@@ -912,35 +912,53 @@ export default function Index() {
             key={post.id}
             className="relative snap-start snap-always h-screen w-full"
           >
-            {/* Video - 9:16 aspect ratio, full cover */}
-            <div className="absolute inset-0 bg-black flex items-center justify-center">
-              <video
-                ref={(el) => (videoRefs.current[post.id] = el)}
-                src={post.videoUrl}
-                poster={post.profileImage}
-                className="w-full h-full object-cover"
-                loop
-                playsInline
-                muted={mutedVideos[post.id] ?? true}
-                preload="metadata"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  togglePlayPause(post.id);
-                }}
-                onError={(e) => {
-                  console.error('❌ Video error for:', post.id, post.videoUrl, e);
-                }}
-                onLoadStart={() => {
-                  console.log('📺 Loading video:', post.id, post.videoUrl);
-                }}
-                onCanPlay={() => {
-                  console.log('✅ Video ready:', post.id);
-                }}
-              />
-              
-              {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
-            </div>
+            {/* Black Background */}
+            <div className="absolute inset-0 bg-black" />
+            
+            {/* Elegant Loader - shows while video loading */}
+            {!videoReady[post.id] && (
+              <div className="absolute inset-0 bg-black flex items-center justify-center">
+                <div className="relative w-20 h-20">
+                  {/* Outer ring */}
+                  <div className="absolute inset-0 border-4 border-gray-800 rounded-full opacity-25" />
+                  
+                  {/* Spinning ring */}
+                  <div className="absolute inset-0 border-4 border-transparent border-t-gray-600 rounded-full animate-spin" />
+                  
+                  {/* Inner pulsing circle */}
+                  <div className="absolute inset-3 bg-gray-800 rounded-full animate-pulse" />
+                </div>
+              </div>
+            )}
+
+            {/* Video */}
+            <video
+              ref={(el) => (videoRefs.current[post.id] = el)}
+              src={post.videoUrl}
+              className="absolute inset-0 w-full h-full object-cover"
+              loop
+              playsInline
+              muted={mutedVideos[post.id] ?? true}
+              preload="metadata"
+              onClick={(e) => {
+                e.stopPropagation();
+                togglePlayPause(post.id);
+              }}
+              onCanPlay={() => {
+                console.log('✅ Video ready:', post.id);
+                setVideoReady(prev => ({ ...prev, [post.id]: true }));
+              }}
+              onLoadedData={() => {
+                setVideoReady(prev => ({ ...prev, [post.id]: true }));
+              }}
+              onError={(e) => {
+                console.error('❌ Video error for:', post.id, post.videoUrl);
+                setVideoReady(prev => ({ ...prev, [post.id]: false }));
+              }}
+            />
+            
+            {/* Dark Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 
             {/* Mute Button - Top right, below channel selector */}
             <button
