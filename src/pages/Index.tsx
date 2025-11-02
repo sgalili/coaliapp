@@ -444,6 +444,15 @@ export default function Index() {
         ))}
       </div>
 
+      {posts.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center text-center">
+          <div className="px-4 py-6 rounded-xl bg-black/40 backdrop-blur-sm">
+            <p className="text-white text-lg font-semibold">לא נמצאו סרטונים</p>
+            <p className="text-white/70 text-sm mt-1">נסה לבחור קטגוריה אחרת למעלה</p>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <Navigation zoozBalance={999} />
 

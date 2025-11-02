@@ -48,11 +48,11 @@ serve(async (req) => {
           {
             role: "system",
             content:
-              "Return ONLY a JSON array of 5 items. Each item must have id, title, description, url, thumbnail, source, publishedAt (ISO). Only include real recent video news links.",
+              "Return ONLY a valid JSON array (no prose) with 3-5 items. Each item: id, title, description, url, thumbnail, source, publishedAt (ISO). The 'url' MUST be a direct playable video file (mp4, webm, m3u8) and not a webpage or YouTube link. Prefer reputable news CDNs.",
           },
           {
             role: "user",
-            content: `${search}. Output strictly as JSON array.`,
+            content: `${search}. Output strictly as JSON array with direct mp4/webm/m3u8 links.`,
           },
         ],
         temperature: 0.2,
@@ -61,6 +61,22 @@ serve(async (req) => {
         return_images: false,
         return_related_questions: false,
         search_recency_filter: "week",
+        // Prefer domains that often host direct video assets
+        search_domain_filter: [
+          "akamaihd.net",
+          "akamaized.net",
+          "cdn-",
+          "nyt.com",
+          "nytimes.com",
+          "washingtonpost.com",
+          "guardian.co.uk",
+          "haaretz.co.il",
+          "ynet.co.il",
+          "bbc.co.uk",
+          "bbc.com",
+          "reuters.com",
+          "apnews.com"
+        ]
       }),
     });
 
