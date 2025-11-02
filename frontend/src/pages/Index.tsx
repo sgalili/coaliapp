@@ -1010,95 +1010,84 @@ export default function Index() {
               )}
             </button>
 
-            {/* LEFT Side Action Buttons */}
-            <div className="absolute left-4 bottom-32 flex flex-col gap-5 z-10">
-              {/* Vote Button (if applicable) */}
-              {post.voteCount > 0 && (
-                <button className="flex flex-col items-center gap-1">
-                  <div className="w-12 h-12 rounded-full bg-vote/90 backdrop-blur-sm flex items-center justify-center hover:bg-vote transition-all">
-                    <img 
-                      src="https://trust.coali.app/vote.png" 
-                      alt="Vote" 
-                      className="w-6 h-6"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <span className="text-white text-xs font-bold drop-shadow-lg">
-                    {formatCount(post.voteCount)}
-                  </span>
-                </button>
-              )}
-
-              {/* Zooz Button */}
-              <button className="flex flex-col items-center gap-1">
-                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
-                  <span className="text-zooz text-xl font-bold">Z</span>
-                </div>
-                <span className="text-white text-xs font-bold drop-shadow-lg">
-                  {formatCount(post.zoozCount)}
-                </span>
-              </button>
-
+            {/* Action Buttons - Right Side */}
+            <div className="absolute right-4 bottom-32 flex flex-col gap-6">
               {/* Trust Button */}
               <button
-                onClick={() => toggleTrust(post.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleTrust(post.id);
+                }}
                 className="flex flex-col items-center gap-1"
               >
                 <div className={cn(
-                  "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center transition-all",
+                  "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
                   post.hasUserTrusted 
-                    ? "bg-trust/90 scale-110" 
-                    : "bg-black/50 hover:bg-black/70"
+                    ? "bg-blue-500 shadow-lg shadow-blue-500/50" 
+                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50"
                 )}>
-                  <Heart 
-                    className={cn(
-                      "w-6 h-6 transition-all",
-                      post.hasUserTrusted ? "text-white fill-white" : "text-white"
-                    )} 
-                  />
+                  {post.hasUserTrusted ? (
+                    <ShieldCheck className="w-6 h-6 text-white" />
+                  ) : (
+                    <Shield className="w-6 h-6 text-white" />
+                  )}
                 </div>
-                <span className="text-white text-xs font-bold drop-shadow-lg">
+                <span className={cn(
+                  "text-xs font-bold drop-shadow-lg",
+                  post.hasUserTrusted ? "text-blue-400" : "text-white"
+                )}>
                   {formatCount(post.trustCount)}
                 </span>
               </button>
 
-              {/* Watch Button */}
+              {/* Watch/Bookmark Button */}
               <button
-                onClick={() => toggleWatch(post.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleWatch(post.id);
+                }}
                 className="flex flex-col items-center gap-1"
               >
                 <div className={cn(
-                  "w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center transition-all",
+                  "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
                   post.hasUserWatched 
-                    ? "bg-watch/90" 
-                    : "bg-black/50 hover:bg-black/70"
+                    ? "bg-yellow-500 shadow-lg shadow-yellow-500/50" 
+                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50"
                 )}>
-                  <Eye className="w-6 h-6 text-white" />
+                  <Bookmark className={cn(
+                    "w-5 h-5 text-white",
+                    post.hasUserWatched && "fill-white"
+                  )} />
                 </div>
-                <span className="text-white text-xs font-bold drop-shadow-lg">
+                <span className={cn(
+                  "text-xs font-bold drop-shadow-lg",
+                  post.hasUserWatched ? "text-yellow-400" : "text-white"
+                )}>
                   {formatCount(post.watchCount)}
                 </span>
               </button>
 
-              {/* Comment Button */}
-              <button 
-                onClick={() => openComments(post.id)}
+              {/* Share Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
                 className="flex flex-col items-center gap-1"
               >
-                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
-                  <MessageCircle className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200">
+                  <Share2 className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-white text-xs font-bold drop-shadow-lg">
-                  {formatCount(post.commentCount)}
-                </span>
               </button>
 
-              {/* Share Button */}
-              <button className="flex flex-col items-center gap-1">
-                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
-                  <Share2 className="w-6 h-6 text-white" />
+              {/* Menu Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="flex flex-col items-center gap-1"
+              >
+                <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200">
+                  <MoreVertical className="w-5 h-5 text-white" />
                 </div>
               </button>
             </div>
