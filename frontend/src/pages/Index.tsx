@@ -583,16 +583,26 @@ export default function Index() {
                   <label className="block text-sm font-medium mb-2">ערוץ</label>
                   <select
                     value={uploadChannel || ''}
-                    onChange={(e) => setUploadChannel(e.target.value ? parseInt(e.target.value) : null)}
+                    onChange={(e) => {
+                      const newChannel = e.target.value || null;
+                      setUploadChannel(newChannel);
+                      // Update category to first category of new channel
+                      const channel = availableChannels.find(ch => (ch.id || '') === (newChannel || ''));
+                      if (channel) {
+                        setUploadCategory(channel.categories[0]);
+                      }
+                    }}
                     className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                   >
-                    <option value="">Coali (ראשי)</option>
-                    {availableChannels.filter(ch => ch.id !== null).map(channel => (
-                      <option key={channel.id} value={channel.id}>
+                    {availableChannels.map(channel => (
+                      <option key={channel.id || 'coali'} value={channel.id || ''}>
                         {channel.name}
                       </option>
                     ))}
                   </select>
+                  <p className="text-xs text-muted-foreground text-right mt-1">
+                    הערוץ הנוכחי נבחר אוטומטית
+                  </p>
                 </div>
 
                 {/* Category Selection */}
@@ -603,26 +613,31 @@ export default function Index() {
                     onChange={(e) => setUploadCategory(e.target.value)}
                     className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                   >
-                    {selectedChannel.categories.map(category => (
+                    {(availableChannels.find(ch => (ch.id || '') === (uploadChannel || ''))?.categories || selectedChannel.categories).map(category => (
                       <option key={category} value={category}>
                         {category}
                       </option>
                     ))}
                   </select>
+                  <p className="text-xs text-muted-foreground text-right mt-1">
+                    הקטגוריה הנוכחית נבחרה אוטומטית
+                  </p>
                 </div>
 
                 {/* Also Post to Coali Checkbox */}
-                {uploadChannel !== null && (
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="alsoPostToCoali"
-                      checked={alsoPostToCoali}
-                      onChange={(e) => setAlsoPostToCoali(e.target.checked)}
-                      className="w-4 h-4"
-                    />
-                    <label htmlFor="alsoPostToCoali" className="text-sm">
-                      פרסם גם ב-Coali הראשי
+                {uploadChannel !== null && uploadChannel !== '' && (
+                  <div className="p-4 bg-muted/30 rounded-lg">
+                    <label className="flex items-center justify-end gap-3 cursor-pointer">
+                      <div className="text-right">
+                        <p className="text-sm font-medium">פרסם גם בערוץ Coali הראשי</p>
+                        <p className="text-xs text-muted-foreground">הוידאו יופיע גם בערוץ הראשי של Coali</p>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={alsoPostToCoali}
+                        onChange={(e) => setAlsoPostToCoali(e.target.checked)}
+                        className="w-5 h-5 rounded"
+                      />
                     </label>
                   </div>
                 )}
