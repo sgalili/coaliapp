@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
+import { ChannelSelector } from "@/components/ChannelSelector";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useChannel } from "@/contexts/ChannelContext";
 
-const demoDecisions = [
+const allDecisions = [
   {
     id: 'dec-1',
+    channel_id: null, // Coali main
     organization: 'עיריית תל אביב',
     question: 'האם להקים פארק חדש ברחוב הרצל?',
     description: 'העירייה מציעה להקים פארק משפחות במקום חניון ישן',
@@ -20,6 +23,7 @@ const demoDecisions = [
   },
   {
     id: 'dec-2',
+    channel_id: null,
     organization: 'משרד החינוך',
     question: 'האם להאריך את שנת הלימודים ב-10 ימים?',
     description: 'הצעה להאריך את שנת הלימודים כדי להשלים חומר לימוד',
@@ -33,16 +37,49 @@ const demoDecisions = [
     hasVoted: false,
   },
   {
-    id: 'dec-3',
-    organization: 'משרד התחבורה',
-    question: 'האם לפתוח נתיב תחבורה ציבורית בכביש איילון?',
-    description: 'פתיחת נתיב ייעודי לתחבורה ציבורית בשעות העומס',
-    postedDaysAgo: 15,
-    daysRemaining: 45,
-    totalVotes: 1567,
+    id: 'dec-10-1',
+    channel_id: 'channel-10-economy',
+    organization: 'ערוץ 10 - סקר כלכלי',
+    question: 'מה צריך להיות העדיפות הכלכלית של הממשלה?',
+    description: 'סקר דעת קהל על מדיניות כלכלית',
+    postedDaysAgo: 20,
+    daysRemaining: 30,
+    totalVotes: 3456,
     options: [
-      { id: '1', label: 'בעד', votes: 1097, percentage: 70 },
-      { id: '2', label: 'נגד', votes: 470, percentage: 30 },
+      { id: '1', label: 'הפחתת יוקר המחיה', votes: 1555, percentage: 45 },
+      { id: '2', label: 'תמיכה בהייטק', votes: 968, percentage: 28 },
+      { id: '3', label: 'שיפור תחבורה', votes: 622, percentage: 18 },
+      { id: '4', label: 'חיזוק שוק הדיור', votes: 311, percentage: 9 },
+    ],
+    hasVoted: false,
+  },
+  {
+    id: 'dec-achva-1',
+    channel_id: 'channel-achva',
+    organization: 'מכללת אחווה',
+    question: 'האם לפתוח קורסים נוספים בסופי שבוע?',
+    description: 'הצבעה על הרחבת שעות הלימוד',
+    postedDaysAgo: 10,
+    daysRemaining: 40,
+    totalVotes: 890,
+    options: [
+      { id: '1', label: 'בעד', votes: 623, percentage: 70 },
+      { id: '2', label: 'נגד', votes: 267, percentage: 30 },
+    ],
+    hasVoted: false,
+  },
+  {
+    id: 'dec-maccabi-1',
+    channel_id: 'channel-maccabi',
+    organization: 'מכבי צבי יבנה',
+    question: 'איזה שחקן חדש להחתים?',
+    description: 'הצבעת אוהדים על שחקן זר',
+    postedDaysAgo: 5,
+    daysRemaining: 20,
+    totalVotes: 5678,
+    options: [
+      { id: '1', label: 'שחקן A', votes: 3407, percentage: 60 },
+      { id: '2', label: 'שחקן B', votes: 2271, percentage: 40 },
     ],
     hasVoted: false,
   },
@@ -50,7 +87,8 @@ const demoDecisions = [
 
 export default function DecisionsPage() {
   const navigate = useNavigate();
-  const [decisions, setDecisions] = useState(demoDecisions);
+  const { selectedChannel } = useChannel();
+  const [filteredDecisions, setFilteredDecisions] = useState(allDecisions);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -58,7 +96,21 @@ export default function DecisionsPage() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  const currentDecision = decisions[currentIndex];
+  // Filter decisions by channel
+  useEffect(() => {
+    const filtered = allDecisions.filter(decision => {
+      if (selectedChannel.id === null) {
+        return decision.channel_id === null;
+      } else {
+        return decision.channel_id === selectedChannel.id;
+      }
+    });
+    
+    setFilteredDecisions(filtered);
+    setCurrentIndex(0); // Reset to first decision
+  }, [selectedChannel.id]);
+
+  const currentDecision = filteredDecisions[currentIndex];
 
   const handleVote = (optionId: string) => {
     setDecisions(prev => prev.map(dec => {
