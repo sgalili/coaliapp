@@ -393,3 +393,8 @@ All colors MUST be HSL.
     animation: slide-up 0.3s ease-out forwards;
   }
 }
+
+/* Dark category dropdown for Impact page */
+.category-dropdown-dark button {
+  color: hsl(var(--foreground)) !important;
+}
