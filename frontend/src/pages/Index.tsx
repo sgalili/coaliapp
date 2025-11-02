@@ -785,6 +785,21 @@ export default function Index() {
     }
   };
 
+  const togglePlayPause = (postId: string) => {
+    const video = videoRefs.current[postId];
+    if (!video) return;
+    
+    if (video.paused) {
+      console.log('▶️ Playing video:', postId);
+      video.play().catch(err => {
+        console.error('Play failed:', err);
+      });
+    } else {
+      console.log('⏸️ Pausing video:', postId);
+      video.pause();
+    }
+  };
+
   const formatCount = (count: number) => {
     if (!count && count !== 0) {
       return '0'; // Handle undefined/null
