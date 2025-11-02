@@ -255,6 +255,7 @@ export default function Index() {
   const [alsoPostToCoali, setAlsoPostToCoali] = useState(true);
   const [showNav, setShowNav] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isFilteringPosts, setIsFilteringPosts] = useState(false);
   const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState('00:00');
