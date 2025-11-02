@@ -293,7 +293,23 @@ export default function Index() {
           console.log('✅ demo_posts table accessible:', posts);
         }
         
-        // Test storage buckets
+        // Test storage bucket directly
+        try {
+          const { data: files, error: filesError } = await supabase
+            .storage
+            .from('demo-media')
+            .list('', { limit: 1 });
+          
+          if (filesError) {
+            console.error('❌ demo-media bucket error:', filesError.message);
+          } else {
+            console.log('✅ demo-media bucket accessible!', files?.length || 0, 'files');
+          }
+        } catch (e) {
+          console.error('❌ demo-media bucket test failed:', e);
+        }
+        
+        // Also try listing all buckets
         const { data: buckets, error: bucketsError } = await supabase
           .storage
           .listBuckets();
@@ -301,13 +317,8 @@ export default function Index() {
         if (bucketsError) {
           console.error('❌ Failed to list storage buckets:', bucketsError.message);
         } else {
-          console.log('✅ Storage buckets:', buckets?.length || 0, 'found');
-          const demoMediaBucket = buckets?.find(b => b.name === 'demo-media');
-          if (demoMediaBucket) {
-            console.log('✅ demo-media bucket found!');
-          } else {
-            console.log('❌ demo-media bucket not found');
-          }
+          console.log('✅ Storage buckets found:', buckets?.length || 0);
+          console.log('Buckets:', buckets?.map(b => b.name).join(', '));
         }
         
         console.log('📊 Supabase test completed!');
