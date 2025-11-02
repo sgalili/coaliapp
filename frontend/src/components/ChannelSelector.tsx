@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 
 export const ChannelSelector = () => {
-  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
+  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
