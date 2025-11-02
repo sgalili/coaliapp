@@ -51,7 +51,7 @@ export const CategoryDropdown = ({ categories, selectedCategory, onCategoryChang
       {/* Trigger Button - TikTok Style */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2 py-2 text-foreground font-semibold text-base transition-opacity hover:opacity-80"
+        className="flex items-center gap-1.5 px-2 py-2 text-white font-semibold text-base transition-opacity hover:opacity-80"
       >
         <span>{selectedCategory}</span>
         <ChevronDown 
