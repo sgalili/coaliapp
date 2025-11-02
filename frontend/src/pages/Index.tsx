@@ -301,10 +301,15 @@ export default function Index() {
 
   // Reset to first post when filters change
   useEffect(() => {
+    setIsFilteringPosts(true);
     setCurrentPostIndex(0);
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
     }
+    
+    setTimeout(() => {
+      setIsFilteringPosts(false);
+    }, 300);
   }, [selectedChannel.id, selectedCategory]);
 
   const handleFABClick = () => {
