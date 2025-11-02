@@ -7,6 +7,7 @@ import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPi
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
+import { supabase } from "@/integrations/supabase/client";
 
 // Sample VIDEO posts ONLY - verified users
 const originalCoaliPosts = [
