@@ -288,7 +288,7 @@ export default function Index() {
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory hide-scrollbar"
         style={{ scrollSnapType: 'y mandatory', paddingBottom: '64px' }}
       >
         {posts.map((post, index) => (
