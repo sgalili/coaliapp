@@ -813,7 +813,7 @@ export default function Index() {
       </button>
 
       {/* Top Left Corner - החלטות Button */}
-      <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
+      <div className="fixed top-4 left-4 z-50">
         <button
           onClick={() => navigate('/decisions')}
           data-tour-id="decisions-filter"
@@ -825,30 +825,6 @@ export default function Index() {
               {newDecisionsCount}
             </span>
           )}
-        </button>
-        
-        {/* Camera Test Button */}
-        <button
-          onClick={async () => {
-            console.log('🔍 Testing camera access...');
-            console.log('URL:', window.location.href);
-            console.log('Protocol:', window.location.protocol);
-            console.log('Is HTTPS:', window.location.protocol === 'https:');
-            console.log('Is localhost:', window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-            
-            try {
-              const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-              console.log('✅ Camera access granted!');
-              stream.getTracks().forEach(track => track.stop());
-              alert('✅ מצלמה עובדת! Camera works!');
-            } catch (err: any) {
-              console.error('❌ Camera blocked:', err.name, err.message);
-              alert('❌ מצלמה חסומה: ' + err.message);
-            }
-          }}
-          className="px-3 py-1.5 bg-blue-500 text-white rounded-full text-xs font-medium"
-        >
-          🎥
         </button>
       </div>
 
