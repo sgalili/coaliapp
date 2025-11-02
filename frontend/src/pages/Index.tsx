@@ -277,6 +277,30 @@ export default function Index() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
+  // Load posts from database
+  useEffect(() => {
+    loadPostsFromDB();
+  }, [selectedChannel.id, selectedCategory]);
+
+  const loadPostsFromDB = async () => {
+    setIsLoadingPosts(true);
+    try {
+      console.log('📥 Loading posts from database...');
+      const dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
+      console.log('✅ Loaded', dbPosts.length, 'posts from database');
+      
+      // Combine with sample posts (fallback)
+      const allPosts = [...dbPosts, ...samplePosts];
+      setPosts(allPosts);
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+      // Fallback to sample posts
+      setPosts(samplePosts);
+    } finally {
+      setIsLoadingPosts(false);
+    }
+  };
+
   // Test Supabase connection
   useEffect(() => {
     const testSupabaseConnection = async () => {
