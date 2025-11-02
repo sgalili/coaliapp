@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadMediaFile } from "@/services/uploadService";
+import { saveDemoPost } from "@/services/database";
+import { toast } from "sonner";
 
 // Sample VIDEO posts ONLY - verified users
 const originalCoaliPosts = [
