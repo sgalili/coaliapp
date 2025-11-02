@@ -6,6 +6,7 @@ import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   { id: 'all', label: 'הכל', apiValue: null },
@@ -124,7 +125,6 @@ export default function NewsPage() {
   const fetchRealNews = async () => {
     setLoading(true);
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
       const allNews: any[] = [];
       
       // Fetch from all categories
