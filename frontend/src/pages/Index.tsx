@@ -296,7 +296,10 @@ export default function Index() {
       {/* FAB - Floating Action Button - 15px above bottom nav */}
       <button
         onClick={handleFABClick}
-        className="fixed bottom-[79px] left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className={cn(
+          "fixed bottom-[79px] left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300",
+          !showNav && "translate-y-24 opacity-0"
+        )}
       >
         <Plus className="w-6 h-6 text-white" />
       </button>
