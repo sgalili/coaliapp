@@ -116,6 +116,12 @@ export default function Index() {
   const [newDecisionsCount] = useState(3);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [caption, setCaption] = useState('');
+  const [uploadChannel, setUploadChannel] = useState(selectedChannel.id);
+  const [uploadCategory, setUploadCategory] = useState(selectedCategory);
+  const [alsoPostToCoali, setAlsoPostToCoali] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
