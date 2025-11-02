@@ -39,8 +39,8 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     setOtp(value);
     setError('');
     
-    if (value.length === 4) {
-      // Auto-verify when 4 digits are entered
+    if (value.length === 6) {
+      // Auto-verify when 6 digits are entered
       onVerify(value);
     }
   };
