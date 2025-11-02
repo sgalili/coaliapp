@@ -153,12 +153,32 @@ export default function Index() {
       return;
     }
     
-    // Pre-fill with currently viewed channel and category
+    // Show options menu
+    setShowOptionsMenu(true);
+  };
+
+  const handleRecordVideo = () => {
+    setShowOptionsMenu(false);
+    setUploadMethod('camera');
+    setShowUploadModal(true);
+    // Pre-fill
     setUploadChannel(selectedChannel.id);
     setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
-    setAlsoPostToCoali(selectedChannel.id !== null); // Only if not already in Coali
-    
-    setShowUploadModal(true);
+    setAlsoPostToCoali(selectedChannel.id !== null);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedVideo(file);
+      setShowOptionsMenu(false);
+      setShowUploadModal(true);
+      setUploadMethod('file');
+      // Pre-fill
+      setUploadChannel(selectedChannel.id);
+      setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
+      setAlsoPostToCoali(selectedChannel.id !== null);
+    }
   };
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
