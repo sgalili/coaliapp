@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
 
 // Sample VIDEO posts ONLY - verified users
-const samplePosts = [
+const originalCoaliPosts = [
   {
     id: '1',
     username: 'בנימין נתניהו',
