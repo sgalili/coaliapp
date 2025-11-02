@@ -499,15 +499,29 @@ export default function Index() {
   };
 
   const handleUploadSubmit = async () => {
-    if (!selectedVideo || !uploadCategory) return;
+    if (!selectedVideo || !uploadCategory) {
+      console.error('❌ Missing required fields:', { 
+        hasFile: !!selectedVideo, 
+        category: uploadCategory 
+      });
+      return;
+    }
+    
+    console.log('🚀 Starting upload process...');
+    console.log('📁 File:', selectedVideo.name, selectedVideo.type, selectedVideo.size);
+    console.log('📂 Category:', uploadCategory);
+    console.log('📺 Channel:', selectedChannel.id, selectedChannel.name);
     
     setIsUploading(true);
     
     try {
       // Upload file to Supabase Storage
       console.log('📤 Uploading file to Supabase...');
+      toast.info('מעלה קובץ...');
+      
       const permanentUrl = await uploadMediaFile(selectedVideo);
       console.log('✅ File uploaded:', permanentUrl);
+      toast.success('הקובץ הועלה בהצלחה!');
       
       const newPost = {
         id: `post-${Date.now()}`,
@@ -530,16 +544,21 @@ export default function Index() {
         comment_count: 0,
       };
       
+      console.log('📄 Post object:', newPost);
+      
       // Save to database
       console.log('💾 Saving to database...');
+      toast.info('שומר פוסט...');
+      
       await saveDemoPost(newPost);
       console.log('✅ Post saved to database');
       
-      // Add to local state (optimistic update)
+      // Add to local state
       setPosts(prev => [newPost, ...prev]);
       
       // Also post to Coali if checked
       if (alsoPostToCoali && selectedChannel.id !== null) {
+        console.log('📤 Also posting to Coali...');
         const coaliPost = { 
           ...newPost, 
           id: `post-coali-${Date.now()}`,
@@ -549,14 +568,28 @@ export default function Index() {
         setPosts(prev => [coaliPost, ...prev]);
       }
       
+      console.log('🎉 Upload complete!');
       toast.success('הפוסט פורסם בהצלחה! 🎉');
       
       setShowUploadModal(false);
       setSelectedVideo(null);
       setCaption('');
-    } catch (error) {
-      console.error('Upload failed:', error);
-      toast.error('שגיאה בפרסום הפוסט. נסה שוב.');
+    } catch (error: any) {
+      console.error('❌ UPLOAD ERROR:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        fullError: error
+      });
+      
+      if (error.message?.includes('storage')) {
+        toast.error('שגיאה בהעלאת הקובץ');
+      } else if (error.message?.includes('demo_posts')) {
+        toast.error('שגיאה בשמירה למסד נתונים');
+      } else {
+        toast.error(`שגיאה: ${error.message || 'שגיאה לא ידועה'}`);
+      }
     } finally {
       setIsUploading(false);
     }
