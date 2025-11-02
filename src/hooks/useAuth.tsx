@@ -56,18 +56,8 @@ export const useAuth = () => {
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-      
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-      
-      setProfile(data);
+      // Temporarily disabled until database schema is created
+      setProfile(null);
     } catch (error) {
       console.error('Error in fetchProfile:', error);
     }
@@ -75,14 +65,8 @@ export const useAuth = () => {
 
   const initializeUserData = async (userId: string) => {
     try {
-      // Initialize user balance if not exists
-      const { error: balanceError } = await supabase.rpc('init_user_balance', {
-        p_user: userId
-      });
-      
-      if (balanceError) {
-        console.error('Error initializing balance:', balanceError);
-      }
+      // Temporarily disabled until database schema is created
+      console.log('initializeUserData called for:', userId);
     } catch (error) {
       console.error('Error in initializeUserData:', error);
     }
@@ -126,18 +110,9 @@ export const useAuth = () => {
 
     setLoading(true);
     try {
-      // Update or create profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          user_id: user.id,
-          first_name: firstName,
-          last_name: lastName,
-          avatar_url: avatarUrl,
-          phone: user.phone || '',
-        });
-
-      if (profileError) throw profileError;
+      // Temporarily disabled until database schema is created
+      console.log('updateProfile called for:', user.id, firstName, lastName);
+      return { error: null };
 
       // Refetch profile after update
       await fetchProfile(user.id);
