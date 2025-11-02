@@ -860,6 +860,10 @@ export default function Index() {
         const newWatched = !post.hasUserWatched;
         const newCount = newWatched ? post.watchCount + 1 : post.watchCount - 1;
         
+        if (newWatched) {
+          toast.success('נשמר! 🔖');
+        }
+        
         return {
           ...post,
           hasUserWatched: newWatched,
