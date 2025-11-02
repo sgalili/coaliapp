@@ -79,11 +79,6 @@ export const ChannelSelector = () => {
                 )}
                 dir="rtl"
               >
-                {availableChannels[0].logo_url.startsWith('/') ? (
-                  <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 object-contain flex-shrink-0" />
-                ) : (
-                  <div className="text-2xl flex-shrink-0">{availableChannels[0].logo_url}</div>
-                )}
                 <div className="flex-1 text-right">
                   <div className="flex items-center gap-2 justify-end">
                     <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
@@ -91,6 +86,11 @@ export const ChannelSelector = () => {
                   </div>
                   <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
                 </div>
+                {availableChannels[0].logo_url.startsWith('/') ? (
+                  <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
+                ) : (
+                  <div className="text-2xl flex-shrink-0">{availableChannels[0].logo_url}</div>
+                )}
               </button>
 
               {/* Public Channels */}
