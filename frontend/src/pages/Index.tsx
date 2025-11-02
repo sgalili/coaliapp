@@ -352,7 +352,7 @@ export default function Index() {
       const windowHeight = window.innerHeight - 64;
       const newIndex = Math.round(scrollTop / windowHeight);
       
-      if (newIndex !== currentPostIndex && newIndex >= 0 && newIndex < posts.length) {
+      if (newIndex !== currentPostIndex && newIndex >= 0 && newIndex < filteredPosts.length) {
         setCurrentPostIndex(newIndex);
       }
 
