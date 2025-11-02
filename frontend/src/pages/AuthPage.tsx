@@ -204,6 +204,24 @@ export const AuthPage = () => {
               onComplete={handleOnboardingComplete}
             />
           )}
+          
+          {/* Demo Mode Button */}
+          {currentStep === 'phone' && (
+            <div className="mt-8">
+              <button
+                onClick={() => {
+                  localStorage.setItem('isAuthenticated', 'true');
+                  navigate('/');
+                }}
+                className="w-full py-3 bg-gradient-to-r from-primary to-watch text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+              >
+                🎮 כניסה למצב דמו
+              </button>
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                גישה מיידית ללא הרשמה
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
