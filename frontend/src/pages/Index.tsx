@@ -557,6 +557,59 @@ export default function Index() {
         />
       )}
 
+      {/* Options Menu */}
+      {showOptionsMenu && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center md:justify-center">
+          <div 
+            className="absolute inset-0" 
+            onClick={() => setShowOptionsMenu(false)}
+          />
+          
+          <div className="relative bg-background rounded-t-3xl md:rounded-2xl w-full md:max-w-md p-6 space-y-4 animate-slide-up">
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold">יצירת תוכן חדש</h2>
+              <p className="text-sm text-muted-foreground mt-1">בחר אופן העלאה</p>
+            </div>
+            
+            <button
+              onClick={handleRecordVideo}
+              className="w-full p-5 border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-between group"
+            >
+              <div className="text-right flex-1">
+                <p className="font-bold text-lg mb-1">הקלטת וידאו</p>
+                <p className="text-sm text-muted-foreground">צלם וידאו חדש עם המצלמה</p>
+              </div>
+              <div className="w-14 h-14 bg-red-50 group-hover:bg-red-100 rounded-full flex items-center justify-center">
+                <Video className="w-7 h-7 text-red-500" />
+              </div>
+            </button>
+            
+            <label className="w-full p-5 border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-between cursor-pointer group">
+              <div className="text-right flex-1">
+                <p className="font-bold text-lg mb-1">העלאת קובץ</p>
+                <p className="text-sm text-muted-foreground">בחר וידאו או תמונה קיימת</p>
+              </div>
+              <div className="w-14 h-14 bg-blue-50 group-hover:bg-blue-100 rounded-full flex items-center justify-center">
+                <Upload className="w-7 h-7 text-blue-500" />
+              </div>
+              <input
+                type="file"
+                accept="video/*,image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+            
+            <button
+              onClick={() => setShowOptionsMenu(false)}
+              className="w-full p-4 text-muted-foreground hover:text-foreground"
+            >
+              ביטול
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Upload Modal */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
