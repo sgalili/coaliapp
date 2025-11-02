@@ -289,12 +289,39 @@ export default function Index() {
       const dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
       console.log('✅ Loaded', dbPosts.length, 'posts from database');
       
+      // Map database fields to component format
+      const mappedPosts = dbPosts.map((post: any) => ({
+        id: post.id,
+        username: post.username,
+        expertise: post.expertise,
+        profileImage: post.profile_image,
+        videoUrl: post.video_url,
+        imageUrl: post.image_url,
+        caption: post.caption,
+        location: post.location,
+        isVerified: post.is_verified,
+        isLive: post.is_live,
+        category: post.category,
+        voteCount: post.vote_count || 0,
+        zoozCount: post.zooz_count || 0,
+        trustCount: post.trust_count || 0,
+        watchCount: post.watch_count || 0,
+        commentCount: post.comment_count || 0,
+        hasUserTrusted: false,
+        hasUserWatched: false,
+      }));
+      
       // Combine with sample posts (fallback)
-      const allPosts = [...dbPosts, ...samplePosts];
-      setPosts(allPosts);
+      const allPosts = [...mappedPosts, ...samplePosts];
+      
+      // Remove duplicates by ID
+      const uniqueByID = allPosts.filter((post, index, self) => 
+        index === self.findIndex(p => p.id === post.id)
+      );
+      
+      setPosts(uniqueByID);
     } catch (error) {
       console.error('Failed to load posts:', error);
-      // Fallback to sample posts
       setPosts(samplePosts);
     } finally {
       setIsLoadingPosts(false);
