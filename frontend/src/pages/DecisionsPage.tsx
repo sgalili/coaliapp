@@ -6,9 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
 
 const allDecisions = [
+  // Coali Main Decisions (3)
   {
     id: 'dec-1',
-    channel_id: null, // Coali main
+    channel_id: null,
     organization: 'עיריית תל אביב',
     question: 'האם להקים פארק חדש ברחוב הרצל?',
     description: 'העירייה מציעה להקים פארק משפחות במקום חניון ישן',
@@ -37,6 +38,23 @@ const allDecisions = [
     hasVoted: false,
   },
   {
+    id: 'dec-3',
+    channel_id: null,
+    organization: 'משרד התחבורה',
+    question: 'האם לפתוח נתיב תחבורה ציבורית בכביש איילון?',
+    description: 'פתיחת נתיב ייעודי לתחבורה ציבורית בשעות העומס',
+    postedDaysAgo: 15,
+    daysRemaining: 45,
+    totalVotes: 1567,
+    options: [
+      { id: '1', label: 'בעד', votes: 1097, percentage: 70 },
+      { id: '2', label: 'נגד', votes: 470, percentage: 30 },
+    ],
+    hasVoted: false,
+  },
+  
+  // Channel 10 Decisions (3)
+  {
     id: 'dec-10-1',
     channel_id: 'channel-10-economy',
     organization: 'ערוץ 10 - סקר כלכלי',
@@ -54,6 +72,39 @@ const allDecisions = [
     hasVoted: false,
   },
   {
+    id: 'dec-10-2',
+    channel_id: 'channel-10-economy',
+    organization: 'ערוץ 10',
+    question: 'האם להעלות את שכר המינימום ל-7000 ש״ח?',
+    description: 'הצבעה על העלאת שכר המינימום',
+    postedDaysAgo: 12,
+    daysRemaining: 18,
+    totalVotes: 4567,
+    options: [
+      { id: '1', label: 'בעד', votes: 3197, percentage: 70 },
+      { id: '2', label: 'נגד', votes: 1370, percentage: 30 },
+    ],
+    hasVoted: false,
+  },
+  {
+    id: 'dec-10-3',
+    channel_id: 'channel-10-economy',
+    organization: 'ערוץ 10 - סקר טכנולוגיה',
+    question: 'איזו טכנולוגיה תשנה הכי הרבה את העולם ב-5 השנים הקרובות?',
+    description: 'סקר על טכנולוגיות עתיד',
+    postedDaysAgo: 8,
+    daysRemaining: 22,
+    totalVotes: 2345,
+    options: [
+      { id: '1', label: 'בינה מלאכותית', votes: 1056, percentage: 45 },
+      { id: '2', label: 'קריפטו', votes: 703, percentage: 30 },
+      { id: '3', label: 'אנרגיה מתחדשת', votes: 586, percentage: 25 },
+    ],
+    hasVoted: false,
+  },
+  
+  // Achva College Decisions (2)
+  {
     id: 'dec-achva-1',
     channel_id: 'channel-achva',
     organization: 'מכללת אחווה',
@@ -69,6 +120,23 @@ const allDecisions = [
     hasVoted: false,
   },
   {
+    id: 'dec-achva-2',
+    channel_id: 'channel-achva',
+    organization: 'מכללת אחווה - אגודת הסטודנטים',
+    question: 'היכן לקיים את מסיבת הסיום של השנה?',
+    description: 'בחירת מקום למסיבת סיום שנה',
+    postedDaysAgo: 5,
+    daysRemaining: 15,
+    totalVotes: 567,
+    options: [
+      { id: '1', label: 'אולם המכללה', votes: 227, percentage: 40 },
+      { id: '2', label: 'חוף הים', votes: 340, percentage: 60 },
+    ],
+    hasVoted: false,
+  },
+  
+  // Maccabi Decisions (3)
+  {
     id: 'dec-maccabi-1',
     channel_id: 'channel-maccabi',
     organization: 'מכבי צבי יבנה',
@@ -78,8 +146,39 @@ const allDecisions = [
     daysRemaining: 20,
     totalVotes: 5678,
     options: [
-      { id: '1', label: 'שחקן A', votes: 3407, percentage: 60 },
-      { id: '2', label: 'שחקן B', votes: 2271, percentage: 40 },
+      { id: '1', label: 'שחקן A - ארה״ב', votes: 3407, percentage: 60 },
+      { id: '2', label: 'שחקן B - אירופה', votes: 2271, percentage: 40 },
+    ],
+    hasVoted: false,
+  },
+  {
+    id: 'dec-maccabi-2',
+    channel_id: 'channel-maccabi',
+    organization: 'מכבי צבי יבנה - אוהדים',
+    question: 'איזה צבע יהיה החולצה החדשה?',
+    description: 'בחירת עיצוב החולצה לעונה הבאה',
+    postedDaysAgo: 25,
+    daysRemaining: 35,
+    totalVotes: 3456,
+    options: [
+      { id: '1', label: 'כחול קלאסי', votes: 2075, percentage: 60 },
+      { id: '2', label: 'כחול-זהב', votes: 1035, percentage: 30 },
+      { id: '3', label: 'עיצוב חדש', votes: 346, percentage: 10 },
+    ],
+    hasVoted: false,
+  },
+  {
+    id: 'dec-maccabi-3',
+    channel_id: 'channel-maccabi',
+    organization: 'מכבי - הנהלה',
+    question: 'האם לשדרג את אולם האימונים?',
+    description: 'השקעה בשדרוג מתקני האימון',
+    postedDaysAgo: 35,
+    daysRemaining: 5,
+    totalVotes: 1234,
+    options: [
+      { id: '1', label: 'בעד', votes: 987, percentage: 80 },
+      { id: '2', label: 'נגד', votes: 247, percentage: 20 },
     ],
     hasVoted: false,
   },
