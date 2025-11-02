@@ -113,13 +113,45 @@ export default function DecisionsPage() {
   const currentDecision = filteredDecisions[currentIndex];
 
   const handleVote = (optionId: string) => {
-    setDecisions(prev => prev.map(dec => {
+    setFilteredDecisions(prev => prev.map(dec => {
       if (dec.id === currentDecision.id) {
         return { ...dec, hasVoted: true };
       }
       return dec;
     }));
   };
+
+  if (!currentDecision) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-900/40 to-black pb-20">
+        <div className="fixed top-4 right-4 z-50">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </button>
+        </div>
+        
+        <div className="fixed top-4 left-4 z-50">
+          <ChannelSelector />
+        </div>
+
+        <div className="flex flex-col items-center justify-center h-screen text-white px-6">
+          <div className="text-6xl mb-4">🗳️</div>
+          <h3 className="text-2xl font-bold mb-2">אין החלטות פעילות</h3>
+          <p className="text-white/60 text-center">
+            {selectedChannel.id === null 
+              ? 'אין החלטות פעילות כרגע ב-Coali'
+              : `אין החלטות פעילות ב${selectedChannel.name}`
+            }
+          </p>
+        </div>
+        
+        <Navigation zoozBalance={999} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black overflow-hidden relative">
@@ -134,6 +166,11 @@ export default function DecisionsPage() {
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
+      </div>
+
+      {/* Channel Selector */}
+      <div className="fixed top-4 left-4 z-50">
+        <ChannelSelector />
       </div>
 
       {/* Decision Card */}
