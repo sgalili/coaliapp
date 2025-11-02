@@ -13,6 +13,11 @@ export const ChannelSelector = () => {
 
   const handleSelectChannel = (channel: any) => {
     setSelectedChannel(channel);
+    
+    // Reset category to first category of new channel
+    const firstCategory = channel.categories[0] || 'הכל';
+    setSelectedCategory(firstCategory);
+    
     setIsOpen(false);
   };
 
