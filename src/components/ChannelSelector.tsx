@@ -39,10 +39,7 @@ export const ChannelSelector = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-10 h-10 rounded-full flex items-center justify-center transition-all overflow-hidden",
-          selectedChannel.id === null
-            ? "bg-white shadow-md"
-            : "bg-card shadow-md"
+          "w-10 h-10 rounded-full flex items-center justify-center transition-all overflow-hidden bg-transparent shadow-none"
         )}
       >
         {selectedChannel.logo_url.startsWith('/') ? (
@@ -54,12 +51,12 @@ export const ChannelSelector = () => {
 
       {/* Channel Dropdown Menu - Opens below icon, aligned to right */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 bg-background border border-border rounded-xl shadow-xl w-[280px] z-50 overflow-hidden">
+        <div className="absolute top-full right-0 mt-2 bg-background border border-border rounded-xl shadow-xl w-[280px] z-50 overflow-hidden max-h-[70vh] overflow-y-auto pb-24" dir="rtl">
           {/* Coali Main */}
           <button
             onClick={() => handleSelectChannel(availableChannels[0])}
             className={cn(
-              "w-full flex items-center justify-end gap-3 p-3 transition-colors",
+              "w-full flex flex-row-reverse items-center justify-end gap-3 p-3 transition-colors",
               selectedChannel.id === null
                 ? "bg-primary/10 border-b-2 border-primary"
                 : "hover:bg-muted/30 border-b border-border"
@@ -90,7 +87,7 @@ export const ChannelSelector = () => {
                   key={channel.id}
                   onClick={() => handleSelectChannel(channel)}
                   className={cn(
-                    "w-full flex items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
+                    "w-full flex flex-row-reverse items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
                     selectedChannel.id === channel.id
                       ? "bg-primary/10"
                       : "hover:bg-muted/30"
@@ -121,7 +118,7 @@ export const ChannelSelector = () => {
                   key={channel.id}
                   onClick={() => handleSelectChannel(channel)}
                   className={cn(
-                    "w-full flex items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
+                    "w-full flex flex-row-reverse items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
                     selectedChannel.id === channel.id
                       ? "bg-primary/10"
                       : "hover:bg-muted/30"

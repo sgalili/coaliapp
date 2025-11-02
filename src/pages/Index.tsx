@@ -240,7 +240,7 @@ export default function Index() {
   };
 
   return (
-    <div className="h-screen bg-black overflow-hidden">
+    <div className="h-screen bg-background overflow-hidden">
       {/* Top Left Corner - החלטות Button */}
       <div className="fixed top-4 left-4 z-50">
         <button
@@ -263,7 +263,7 @@ export default function Index() {
           categories={selectedChannel.categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
-          variant="light"
+          variant="default"
         />
       </div>
 
@@ -293,7 +293,7 @@ export default function Index() {
         {posts.map((post, index) => (
           <div 
             key={post.id}
-            className="relative h-screen w-full bg-black"
+            className="relative h-screen w-full bg-background"
           >
             {/* Debug overlay - temporary */}
             <div className="absolute top-0 left-0 bg-red-600 text-white text-xs p-2 z-50">
@@ -304,7 +304,7 @@ export default function Index() {
             <video
               ref={(el) => (videoRefs.current[post.id] = el)}
               src={post.videoUrl}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain bg-background"
               loop
               playsInline
               autoPlay
