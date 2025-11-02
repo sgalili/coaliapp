@@ -527,6 +527,112 @@ export default function Index() {
           commentCount={posts.find(p => p.id === activePostId)?.commentCount || 0}
         />
       )}
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">העלאת וידאו</h2>
+                <button
+                  onClick={() => setShowUploadModal(false)}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Video Upload */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">בחר וידאו</label>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoSelect}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                  />
+                  {selectedVideo && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {selectedVideo.name}
+                    </p>
+                  )}
+                </div>
+
+                {/* Caption */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">כיתוב</label>
+                  <textarea
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    placeholder="הוסף כיתוב לוידאו..."
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background min-h-[100px] resize-none"
+                  />
+                </div>
+
+                {/* Channel Selection */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">ערוץ</label>
+                  <select
+                    value={uploadChannel || ''}
+                    onChange={(e) => setUploadChannel(e.target.value ? parseInt(e.target.value) : null)}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                  >
+                    <option value="">Coali (ראשי)</option>
+                    {availableChannels.filter(ch => ch.id !== null).map(channel => (
+                      <option key={channel.id} value={channel.id}>
+                        {channel.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Category Selection */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">קטגוריה</label>
+                  <select
+                    value={uploadCategory}
+                    onChange={(e) => setUploadCategory(e.target.value)}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                  >
+                    {selectedChannel.categories.map(category => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Also Post to Coali Checkbox */}
+                {uploadChannel !== null && (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="alsoPostToCoali"
+                      checked={alsoPostToCoali}
+                      onChange={(e) => setAlsoPostToCoali(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    <label htmlFor="alsoPostToCoali" className="text-sm">
+                      פרסם גם ב-Coali הראשי
+                    </label>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  onClick={handleUploadSubmit}
+                  disabled={!selectedVideo || !uploadCategory}
+                  className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  פרסם
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
