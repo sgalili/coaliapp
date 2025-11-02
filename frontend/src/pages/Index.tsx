@@ -869,9 +869,9 @@ export default function Index() {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
         >
           <span className="text-xs">החלטות</span>
-          {newDecisionsCount > 0 && (
+          {decisionsCount > 0 && (
             <span className="absolute -top-1 -left-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-              {newDecisionsCount}
+              {decisionsCount > 9 ? '9+' : decisionsCount}
             </span>
           )}
         </button>
