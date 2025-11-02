@@ -273,6 +273,53 @@ export default function Index() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
+  // Test Supabase connection
+  useEffect(() => {
+    const testSupabaseConnection = async () => {
+      console.log('🔍 Testing Supabase connection...');
+      
+      try {
+        console.log('📡 Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+        console.log('🔑 Supabase Key exists:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+        
+        // Test demo_posts table
+        const { data: posts, error: postsError } = await supabase
+          .from('demo_posts')
+          .select('count');
+        
+        if (postsError) {
+          console.error('❌ Failed to query demo_posts:', postsError.message);
+        } else {
+          console.log('✅ demo_posts table accessible:', posts);
+        }
+        
+        // Test storage buckets
+        const { data: buckets, error: bucketsError } = await supabase
+          .storage
+          .listBuckets();
+        
+        if (bucketsError) {
+          console.error('❌ Failed to list storage buckets:', bucketsError.message);
+        } else {
+          console.log('✅ Storage buckets:', buckets?.length || 0, 'found');
+          const demoMediaBucket = buckets?.find(b => b.name === 'demo-media');
+          if (demoMediaBucket) {
+            console.log('✅ demo-media bucket found!');
+          } else {
+            console.log('❌ demo-media bucket not found');
+          }
+        }
+        
+        console.log('📊 Supabase test completed!');
+        
+      } catch (error) {
+        console.error('❌ Supabase connection test failed:', error);
+      }
+    };
+    
+    testSupabaseConnection();
+  }, []);
+
   const openComments = (postId: string) => {
     setActivePostId(postId);
     setCommentsOpen(true);
