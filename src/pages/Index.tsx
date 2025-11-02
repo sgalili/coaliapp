@@ -7,6 +7,7 @@ import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPi
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
+import { supabase } from "@/integrations/supabase/client";
 
 // Local posters to avoid remote failures
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -154,11 +155,54 @@ export default function Index() {
     
     if (apiCategory === 'all') {
       setPosts(samplePosts);
-    } else {
-      const filtered = samplePosts.filter(post => post.category === apiCategory);
-      setPosts(filtered.length > 0 ? filtered : samplePosts);
+      setCurrentPostIndex(0);
+      return;
     }
-    setCurrentPostIndex(0);
+
+    // Fetch videos from edge function for selected category
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('fetch-category-videos', {
+          body: { category: apiCategory }
+        });
+
+        if (error) {
+          console.error('Edge function error:', error);
+          const filtered = samplePosts.filter(post => post.category === apiCategory);
+          setPosts(filtered.length > 0 ? filtered : samplePosts);
+        } else if (data?.videos?.length) {
+          const mapped = data.videos.map((v: any, idx: number) => ({
+            id: v.id || `${apiCategory}-${idx}`,
+            username: v.source || 'News Source',
+            expertise: selectedCategory,
+            profileImage: v.thumbnail || netanyahuProfile,
+            videoUrl: v.url,
+            caption: v.title || '',
+            location: 'ישראל',
+            isVerified: true,
+            isLive: false,
+            category: apiCategory,
+            voteCount: 0,
+            zoozCount: 10000 + Math.floor(Math.random() * 90000),
+            trustCount: 50000 + Math.floor(Math.random() * 200000),
+            watchCount: 100000 + Math.floor(Math.random() * 2000000),
+            commentCount: 1000 + Math.floor(Math.random() * 20000),
+            hasUserTrusted: false,
+            hasUserWatched: false,
+          }));
+          setPosts(mapped);
+        } else {
+          const filtered = samplePosts.filter(post => post.category === apiCategory);
+          setPosts(filtered.length > 0 ? filtered : samplePosts);
+        }
+      } catch (e) {
+        console.error('Fetch category videos failed', e);
+        const filtered = samplePosts.filter(post => post.category === apiCategory);
+        setPosts(filtered.length > 0 ? filtered : samplePosts);
+      } finally {
+        setCurrentPostIndex(0);
+      }
+    })();
   }, [selectedCategory]);
 
   const openComments = (postId: string) => {
