@@ -288,8 +288,13 @@ export default function Index() {
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory"
-        style={{ scrollSnapType: 'y mandatory', paddingBottom: '64px' }}
+        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory scrollbar-dark"
+        style={{ 
+          scrollSnapType: 'y mandatory', 
+          paddingBottom: '64px',
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#000 #1a1a1a'
+        }}
       >
         {posts.map((post, index) => (
           <div 
