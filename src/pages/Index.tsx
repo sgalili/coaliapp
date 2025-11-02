@@ -7,6 +7,7 @@ import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPi
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
+import { useCategoryVideos } from "@/hooks/useCategoryVideos";
 
 // Local posters to avoid remote failures
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -116,6 +117,25 @@ const samplePosts = [
 export default function Index() {
   const navigate = useNavigate();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
+  
+  // Map Hebrew category names to English API values
+  const getCategoryApiValue = (hebrewCategory: string): string => {
+    const categoryMap: Record<string, string> = {
+      'הכל': 'all',
+      'פוליטיקה': 'politics',
+      'כלכלה': 'economy',
+      'טכנולוגיה': 'technology',
+      'בריאות': 'health',
+      'חברה': 'society',
+      'תרבות': 'culture',
+      'עסקים': 'business'
+    };
+    return categoryMap[hebrewCategory] || 'politics';
+  };
+
+  const apiCategory = getCategoryApiValue(selectedCategory);
+  const { videos: categoryVideos, loading: loadingVideos } = useCategoryVideos(apiCategory);
+  
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>(
@@ -139,6 +159,19 @@ export default function Index() {
     console.log('Video src:', firstVideo?.src);
     console.log('Video readyState:', firstVideo?.readyState);
   }, []);
+
+  // Update posts when category videos are loaded
+  useEffect(() => {
+    if (categoryVideos.length > 0 && !loadingVideos) {
+      console.log('Setting posts from category videos:', categoryVideos);
+      setPosts(categoryVideos);
+      setCurrentPostIndex(0);
+    } else if (selectedCategory === 'הכל' || apiCategory === 'all') {
+      // Show sample posts when "All" is selected
+      setPosts(samplePosts);
+      setCurrentPostIndex(0);
+    }
+  }, [categoryVideos, loadingVideos, selectedCategory, apiCategory]);
 
   const openComments = (postId: string) => {
     setActivePostId(postId);
