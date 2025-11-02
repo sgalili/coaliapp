@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadMediaFile } from "@/services/uploadService";
-import { saveDemoPost, fetchDemoPosts } from "@/services/database";
+import { saveDemoPost, fetchDemoPosts, fetchDemoDecisions } from "@/services/database";
 import { toast } from "sonner";
 
 // Sample VIDEO posts ONLY - verified users
