@@ -60,7 +60,7 @@ const samplePosts = [
     expertise: 'תכשיטים ועסקים',
     profileImage: yaakovProfile,
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    caption: 'תודה לה\' על הברכות בעסק התכשיטים והיהלומים',
+    caption: "תודה לה' על הברכות בעסק התכשיטים והיהלומים",
     location: 'תל אביב, ישראל',
     isVerified: true,
     isLive: false,
