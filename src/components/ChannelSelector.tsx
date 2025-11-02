@@ -62,8 +62,8 @@ export const ChannelSelector = () => {
                 : "hover:bg-muted/30 border-b border-border"
             )}
           >
-            <div className="text-right">
-              <div className="flex items-center gap-2 justify-end">
+            <div className="text-left">
+              <div className="flex items-center gap-2 justify-start">
                 {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
                 <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
               </div>
@@ -93,8 +93,8 @@ export const ChannelSelector = () => {
                       : "hover:bg-muted/30"
                   )}
                 >
-                  <div className="text-right">
-                    <div className="flex items-center gap-2 justify-end">
+                  <div className="text-left">
+                    <div className="flex items-center gap-2 justify-start">
                       {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
                       <p className="font-semibold text-sm text-foreground">{channel.name}</p>
                     </div>
@@ -124,8 +124,8 @@ export const ChannelSelector = () => {
                       : "hover:bg-muted/30"
                   )}
                 >
-                  <div className="text-right">
-                    <div className="flex items-center gap-2 justify-end">
+                  <div className="text-left">
+                    <div className="flex items-center gap-2 justify-start">
                       {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
                       <p className="font-semibold text-sm text-foreground">{channel.name}</p>
                     </div>
