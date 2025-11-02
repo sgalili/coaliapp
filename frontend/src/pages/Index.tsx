@@ -117,6 +117,7 @@ export default function Index() {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [showRecordingInterface, setShowRecordingInterface] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
@@ -126,8 +127,15 @@ export default function Index() {
   const [alsoPostToCoali, setAlsoPostToCoali] = useState(true);
   const [showNav, setShowNav] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState('00:00');
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
