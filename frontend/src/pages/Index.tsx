@@ -751,32 +751,6 @@ export default function Index() {
     return () => container.removeEventListener('scroll', handleScroll);
   }, [currentPostIndex, posts.length, lastScrollY]);
 
-  const toggleTrust = (postId: string) => {
-    setPosts(posts.map(post => {
-      if (post.id === postId) {
-        return {
-          ...post,
-          hasUserTrusted: !post.hasUserTrusted,
-          trustCount: post.hasUserTrusted ? post.trustCount - 1 : post.trustCount + 1
-        };
-      }
-      return post;
-    }));
-  };
-
-  const toggleWatch = (postId: string) => {
-    setPosts(posts.map(post => {
-      if (post.id === postId) {
-        return {
-          ...post,
-          hasUserWatched: !post.hasUserWatched,
-          watchCount: post.hasUserWatched ? post.watchCount - 1 : post.watchCount + 1
-        };
-      }
-      return post;
-    }));
-  };
-
   const toggleMute = (postId: string) => {
     setMutedVideos(prev => ({
       ...prev,
