@@ -467,7 +467,7 @@ export default function Index() {
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory"
         style={{ scrollSnapType: 'y mandatory' }}
       >
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <div 
             key={post.id}
             className="relative snap-start snap-always h-screen w-full"
