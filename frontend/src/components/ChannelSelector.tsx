@@ -39,7 +39,7 @@ export const ChannelSelector = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-10 h-10 rounded-full flex items-center justify-center transition-all overflow-hidden",
+          "w-10 h-10 rounded-lg flex items-center justify-center transition-all overflow-hidden",
           selectedChannel.id === null
             ? "bg-white border-2 border-primary shadow-md"
             : "bg-card border-2 border-primary shadow-md"
