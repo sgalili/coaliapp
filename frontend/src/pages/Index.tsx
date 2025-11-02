@@ -531,7 +531,7 @@ export default function Index() {
       </div>
 
       {/* Navigation */}
-      <Navigation zoozBalance={999} />
+      <Navigation zoozBalance={999} show={showNav} />
 
       {/* Comments Modal */}
       {activePostId && (
