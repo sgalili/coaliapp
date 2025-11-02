@@ -263,7 +263,7 @@ export default function Index() {
           categories={selectedChannel.categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
-          variant="default"
+          variant="light"
         />
       </div>
 
@@ -288,13 +288,8 @@ export default function Index() {
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory scrollbar-dark"
-        style={{ 
-          scrollSnapType: 'y mandatory', 
-          paddingBottom: '64px',
-          scrollbarWidth: 'thin',
-          scrollbarColor: '#000 #1a1a1a'
-        }}
+        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        style={{ scrollSnapType: 'y mandatory', paddingBottom: '64px' }}
       >
         {posts.map((post, index) => (
           <div 
