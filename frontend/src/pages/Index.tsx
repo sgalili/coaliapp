@@ -140,6 +140,60 @@ export default function Index() {
     setActivePostId(null);
   };
 
+  const handleFABClick = () => {
+    // Check authentication
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    
+    if (!isAuthenticated) {
+      navigate('/auth');
+      return;
+    }
+    
+    setShowUploadModal(true);
+  };
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      setSelectedVideo(file);
+    }
+  };
+
+  const handleUploadSubmit = () => {
+    if (!selectedVideo || !uploadChannel || !uploadCategory) return;
+    
+    const newPost = {
+      id: `post-${Date.now()}`,
+      username: 'אתה',
+      expertise: 'משתמש',
+      profileImage: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+      videoUrl: URL.createObjectURL(selectedVideo),
+      caption: caption,
+      location: 'ישראל',
+      isVerified: true,
+      isLive: false,
+      category: uploadCategory,
+      voteCount: 0,
+      zoozCount: 0,
+      trustCount: 0,
+      watchCount: 0,
+      commentCount: 0,
+      hasUserTrusted: false,
+      hasUserWatched: false,
+    };
+    
+    setPosts(prev => [newPost, ...prev]);
+    
+    if (alsoPostToCoali && uploadChannel !== null) {
+      const coaliPost = { ...newPost, id: `post-coali-${Date.now()}` };
+      setPosts(prev => [coaliPost, ...prev]);
+    }
+    
+    setShowUploadModal(false);
+    setSelectedVideo(null);
+    setCaption('');
+  };
+
   // Auto-play videos in viewport
   useEffect(() => {
     const currentPost = posts[currentPostIndex];
