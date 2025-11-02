@@ -504,38 +504,59 @@ export default function Index() {
     setIsUploading(true);
     
     try {
+      // Upload file to Supabase Storage
+      console.log('📤 Uploading file to Supabase...');
+      const permanentUrl = await uploadMediaFile(selectedVideo);
+      console.log('✅ File uploaded:', permanentUrl);
+      
       const newPost = {
         id: `post-${Date.now()}`,
+        user_id: 'demo-user',
         username: 'אתה',
         expertise: 'משתמש',
-        profileImage: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-        videoUrl: URL.createObjectURL(selectedVideo),
-        caption: caption,
+        profile_image: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+        video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
+        image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
+        caption: caption.trim(),
         location: 'ישראל',
-        isVerified: true,
-        isLive: false,
+        is_verified: true,
+        is_live: false,
         category: uploadCategory,
-        voteCount: 0,
-        zoozCount: 0,
-        trustCount: 0,
-        watchCount: 0,
-        commentCount: 0,
-        hasUserTrusted: false,
-        hasUserWatched: false,
+        channel_id: selectedChannel.id,
+        vote_count: 0,
+        zooz_count: 0,
+        trust_count: 0,
+        watch_count: 0,
+        comment_count: 0,
       };
       
+      // Save to database
+      console.log('💾 Saving to database...');
+      await saveDemoPost(newPost);
+      console.log('✅ Post saved to database');
+      
+      // Add to local state (optimistic update)
       setPosts(prev => [newPost, ...prev]);
       
+      // Also post to Coali if checked
       if (alsoPostToCoali && selectedChannel.id !== null) {
-        const coaliPost = { ...newPost, id: `post-coali-${Date.now()}` };
+        const coaliPost = { 
+          ...newPost, 
+          id: `post-coali-${Date.now()}`,
+          channel_id: null 
+        };
+        await saveDemoPost(coaliPost);
         setPosts(prev => [coaliPost, ...prev]);
       }
+      
+      toast.success('הפוסט פורסם בהצלחה! 🎉');
       
       setShowUploadModal(false);
       setSelectedVideo(null);
       setCaption('');
     } catch (error) {
       console.error('Upload failed:', error);
+      toast.error('שגיאה בפרסום הפוסט. נסה שוב.');
     } finally {
       setIsUploading(false);
     }
