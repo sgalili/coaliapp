@@ -567,6 +567,18 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
+      {/* Filtering Loading Overlay */}
+      {isFilteringPosts && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
+          <div className="bg-background rounded-2xl p-6 shadow-xl">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm font-medium">טוען תוכן...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* FAB - Floating Action Button - 15px above bottom nav */}
       <button
         onClick={handleFABClick}
