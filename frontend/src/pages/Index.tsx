@@ -233,7 +233,7 @@ const maccabiPosts = [
   },
 ];
 
-const samplePosts = [...channel10Posts, ...achvaPosts, ...maccabiPosts, {
+const samplePosts = [...channel10Posts, ...achvaPosts, ...maccabiPosts, ...originalCoaliPosts];
 
 export default function Index() {
   const navigate = useNavigate();
