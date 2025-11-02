@@ -165,6 +165,19 @@ export default function Index() {
     return post.category === selectedCategory;
   });
 
+  // Remove duplicates by ID
+  const uniquePosts = filteredPosts.filter((post, index, self) => 
+    index === self.findIndex(p => p.id === post.id)
+  );
+
+  // Reset to first post when filters change
+  useEffect(() => {
+    setCurrentPostIndex(0);
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, [selectedChannel.id, selectedCategory]);
+
   const handleFABClick = () => {
     // Check authentication
     const isAuthenticated = localStorage.getItem('isAuthenticated');
