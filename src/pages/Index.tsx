@@ -7,7 +7,6 @@ import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPi
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
-import { useCategoryVideos } from "@/hooks/useCategoryVideos";
 
 // Local posters to avoid remote failures
 import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
@@ -117,25 +116,6 @@ const samplePosts = [
 export default function Index() {
   const navigate = useNavigate();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
-  
-  // Map Hebrew category names to English API values
-  const getCategoryApiValue = (hebrewCategory: string): string => {
-    const categoryMap: Record<string, string> = {
-      'הכל': 'all',
-      'פוליטיקה': 'politics',
-      'כלכלה': 'economy',
-      'טכנולוגיה': 'technology',
-      'בריאות': 'health',
-      'חברה': 'society',
-      'תרבות': 'culture',
-      'עסקים': 'business'
-    };
-    return categoryMap[hebrewCategory] || 'politics';
-  };
-
-  const apiCategory = getCategoryApiValue(selectedCategory);
-  const { videos: categoryVideos, loading: loadingVideos } = useCategoryVideos(apiCategory);
-  
   const [posts, setPosts] = useState(samplePosts);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>(
@@ -152,26 +132,34 @@ export default function Index() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
-
-    // Debug: inspect first video element in DOM
-    const firstVideo = document.querySelector('video') as HTMLVideoElement | null;
-    console.log('First video element found:', firstVideo);
-    console.log('Video src:', firstVideo?.src);
-    console.log('Video readyState:', firstVideo?.readyState);
   }, []);
 
-  // Update posts when category videos are loaded
+  // Filter posts by selected category
   useEffect(() => {
-    if (categoryVideos.length > 0 && !loadingVideos) {
-      console.log('Setting posts from category videos:', categoryVideos);
-      setPosts(categoryVideos);
-      setCurrentPostIndex(0);
-    } else if (selectedCategory === 'הכל' || apiCategory === 'all') {
-      // Show sample posts when "All" is selected
+    const getCategoryApiValue = (hebrewCategory: string): string => {
+      const categoryMap: Record<string, string> = {
+        'הכל': 'all',
+        'פוליטיקה': 'politics',
+        'כלכלה': 'economy',
+        'טכנולוגיה': 'technology',
+        'בריאות': 'health',
+        'חברה': 'society',
+        'תרבות': 'culture',
+        'עסקים': 'business'
+      };
+      return categoryMap[hebrewCategory] || 'all';
+    };
+
+    const apiCategory = getCategoryApiValue(selectedCategory);
+    
+    if (apiCategory === 'all') {
       setPosts(samplePosts);
-      setCurrentPostIndex(0);
+    } else {
+      const filtered = samplePosts.filter(post => post.category === apiCategory);
+      setPosts(filtered.length > 0 ? filtered : samplePosts);
     }
-  }, [categoryVideos, loadingVideos, selectedCategory, apiCategory]);
+    setCurrentPostIndex(0);
+  }, [selectedCategory]);
 
   const openComments = (postId: string) => {
     setActivePostId(postId);
