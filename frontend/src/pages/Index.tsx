@@ -441,9 +441,20 @@ export default function Index() {
   };
 
   const handleRecordVideo = async () => {
+    console.log('🎬 handleRecordVideo called');
+    console.log('📱 Navigator.mediaDevices available:', !!navigator.mediaDevices);
+    console.log('🎥 getUserMedia available:', !!navigator.mediaDevices?.getUserMedia);
+    
     setShowOptionsMenu(false);
+    console.log('✅ Options menu closed');
     
     try {
+      console.log('📸 Requesting camera access...');
+      
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera API not supported in this browser');
+      }
+      
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'user',
@@ -453,15 +464,43 @@ export default function Index() {
         audio: true 
       });
       
+      console.log('✅ Camera stream obtained:', stream.id);
+      console.log('📹 Video tracks:', stream.getVideoTracks().length);
+      console.log('🎤 Audio tracks:', stream.getAudioTracks().length);
+      
       setRecordingStream(stream);
       setShowRecordingInterface(true);
       
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+      console.log('✅ State updated, showing recording interface');
+      
+      setTimeout(() => {
+        if (videoRef.current) {
+          console.log('📺 Setting video source...');
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().then(() => {
+            console.log('▶️ Video playing');
+          }).catch(err => {
+            console.error('❌ Video play failed:', err);
+          });
+        } else {
+          console.error('❌ Video ref not available');
+        }
+      }, 100);
+      
+    } catch (error: any) {
+      console.error('❌ Camera access error:', error);
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      
+      if (error.name === 'NotAllowedError') {
+        alert('גישה למצלמה נדחתה. אנא אפשר הרשאות מצלמה בהגדרות הדפדפן.');
+      } else if (error.name === 'NotFoundError') {
+        alert('לא נמצאה מצלמה במכשיר.');
+      } else if (error.name === 'NotSupportedError') {
+        alert('הדפדפן אינו תומך בגישה למצלמה. נסה דפדפן אחר.');
+      } else {
+        alert('שגיאה בגישה למצלמה: ' + error.message);
       }
-    } catch (error) {
-      console.error('Camera access denied:', error);
-      alert('לא ניתן לגשת למצלמה. אנא אפשר הרשאות מצלמה.');
     }
   };
 
