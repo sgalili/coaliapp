@@ -240,7 +240,7 @@ export default function Index() {
   };
 
   return (
-    <div className="h-screen bg-background overflow-hidden">
+    <div className="relative w-full h-screen bg-background">
       {/* Top Left Corner - החלטות Button */}
       <div className="fixed top-4 left-4 z-50">
         <button
@@ -288,12 +288,14 @@ export default function Index() {
       {/* Posts Feed */}
       <div 
         ref={containerRef}
-        className="h-full w-full overflow-y-auto"
+        className="fixed inset-0 overflow-y-scroll snap-y snap-mandatory"
+        style={{ scrollSnapType: 'y mandatory', paddingBottom: '64px' }}
       >
         {posts.map((post, index) => (
           <div 
             key={post.id}
-            className="relative h-screen w-full bg-background"
+            className="relative snap-start snap-always w-full bg-background"
+            style={{ height: '100vh', minHeight: '100vh' }}
           >
             {/* Debug overlay - temporary */}
             <div className="absolute top-0 left-0 bg-red-600 text-white text-xs p-2 z-50">
@@ -305,6 +307,7 @@ export default function Index() {
               ref={(el) => (videoRefs.current[post.id] = el)}
               src={post.videoUrl}
               className="absolute inset-0 w-full h-full object-contain bg-background"
+              style={{ zIndex: 0 }}
               loop
               playsInline
               autoPlay
