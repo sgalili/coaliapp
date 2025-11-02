@@ -228,11 +228,21 @@ export default function Index() {
       if (newIndex !== currentPostIndex && newIndex >= 0 && newIndex < posts.length) {
         setCurrentPostIndex(newIndex);
       }
+
+      // Hide/show nav on scroll
+      if (scrollTop > lastScrollY && scrollTop > 100) {
+        // Scrolling down - hide nav
+        setShowNav(false);
+      } else {
+        // Scrolling up - show nav
+        setShowNav(true);
+      }
+      setLastScrollY(scrollTop);
     };
 
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [currentPostIndex, posts.length]);
+  }, [currentPostIndex, posts.length, lastScrollY]);
 
   const toggleTrust = (postId: string) => {
     setPosts(posts.map(post => {
