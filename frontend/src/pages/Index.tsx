@@ -325,7 +325,7 @@ export default function Index() {
 
   // Auto-play videos in viewport
   useEffect(() => {
-    const currentPost = posts[currentPostIndex];
+    const currentPost = filteredPosts[currentPostIndex];
     const video = videoRefs.current[currentPost?.id];
     if (video) {
       video.play().catch(() => {
@@ -340,7 +340,7 @@ export default function Index() {
         video.pause();
       }
     });
-  }, [currentPostIndex, posts]);
+  }, [currentPostIndex, filteredPosts]);
 
   // Scroll handling
   useEffect(() => {
