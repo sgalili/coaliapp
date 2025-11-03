@@ -1041,40 +1041,44 @@ export default function Index() {
             )}
 
             {/* Video */}
-            <video
-              ref={(el) => (videoRefs.current[post.id] = el)}
-              src={post.videoUrl}
-              className="absolute inset-0 w-full h-full object-cover cursor-pointer"
-              loop
-              playsInline
-              muted={globalMute}
-              preload="metadata"
+            <div 
+              className="absolute inset-0 cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🎥 Video clicked:', post.id);
+                console.log('🎥 Video container clicked:', post.id);
                 togglePlayPause(post.id);
               }}
-              onPlay={() => {
-                console.log('▶️ Video playing:', post.id);
-                setVideoPaused(prev => ({ ...prev, [post.id]: false }));
-              }}
-              onPause={() => {
-                console.log('⏸️ Video paused:', post.id);
-                setVideoPaused(prev => ({ ...prev, [post.id]: true }));
-              }}
-              onCanPlay={() => {
-                console.log('✅ Video ready:', post.id);
-                setVideoReady(prev => ({ ...prev, [post.id]: true }));
-              }}
-              onLoadedData={() => {
-                setVideoReady(prev => ({ ...prev, [post.id]: true }));
-              }}
-              onError={(e) => {
-                console.error('❌ Video error for:', post.id, post.videoUrl);
-                setVideoReady(prev => ({ ...prev, [post.id]: false }));
-              }}
-            />
+            >
+              <video
+                ref={(el) => (videoRefs.current[post.id] = el)}
+                src={post.videoUrl}
+                className="w-full h-full object-cover"
+                loop
+                playsInline
+                muted={globalMute}
+                preload="metadata"
+                onPlay={() => {
+                  console.log('▶️ Video playing:', post.id);
+                  setVideoPaused(prev => ({ ...prev, [post.id]: false }));
+                }}
+                onPause={() => {
+                  console.log('⏸️ Video paused:', post.id);
+                  setVideoPaused(prev => ({ ...prev, [post.id]: true }));
+                }}
+                onCanPlay={() => {
+                  console.log('✅ Video ready:', post.id);
+                  setVideoReady(prev => ({ ...prev, [post.id]: true }));
+                }}
+                onLoadedData={() => {
+                  setVideoReady(prev => ({ ...prev, [post.id]: true }));
+                }}
+                onError={(e) => {
+                  console.error('❌ Video error for:', post.id, post.videoUrl);
+                  setVideoReady(prev => ({ ...prev, [post.id]: false }));
+                }}
+              />
+            </div>
             
             {/* Play/Pause Icon Overlay */}
             {showPlayIcon[post.id] && (
