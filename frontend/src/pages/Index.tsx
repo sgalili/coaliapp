@@ -1093,8 +1093,11 @@ export default function Index() {
               )}
             </button>
 
-            {/* Action Buttons - LEFT Side, 20px above nav */}
-            <div className="absolute left-4 bottom-[84px] flex flex-col gap-6">
+            {/* Action Buttons - Responsive to nav visibility */}
+            <div className={cn(
+              "absolute left-4 flex flex-col gap-6 transition-all duration-300",
+              showNav ? "bottom-[84px]" : "bottom-[30px]"
+            )}>
               {/* Zooz Button - TOP */}
               <button
                 onClick={(e) => {
