@@ -369,6 +369,15 @@ export default function Index() {
       );
       
       setPosts(uniqueByID);
+      
+      // Always scroll to top when posts load
+      setTimeout(() => {
+        if (containerRef.current) {
+          containerRef.current.scrollTop = 0;
+          setCurrentPostIndex(0);
+          console.log('✅ Scrolled to first post');
+        }
+      }, 100);
     } catch (error) {
       console.error('Failed to load posts:', error);
       setPosts(samplePosts);
