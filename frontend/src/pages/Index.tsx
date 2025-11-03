@@ -1080,9 +1080,13 @@ export default function Index() {
               preload="metadata"
               onPlay={() => {
                 setVideoPaused(prev => ({ ...prev, [post.id]: false }));
+                // Hide icon when playing
+                setShowPlayIcon(prev => ({ ...prev, [post.id]: false }));
               }}
               onPause={() => {
                 setVideoPaused(prev => ({ ...prev, [post.id]: true }));
+                // Show pause icon when paused
+                setShowPlayIcon(prev => ({ ...prev, [post.id]: true }));
               }}
               onCanPlay={() => {
                 setVideoReady(prev => ({ ...prev, [post.id]: true }));
