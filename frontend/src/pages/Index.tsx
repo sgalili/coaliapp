@@ -959,6 +959,19 @@ export default function Index() {
               }}
             />
             
+            {/* Play/Pause Icon Overlay */}
+            {showPlayIcon[post.id] && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-20 h-20 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  {videoPaused[post.id] ? (
+                    <Play className="w-10 h-10 text-white fill-white" />
+                  ) : (
+                    <Pause className="w-10 h-10 text-white fill-white" />
+                  )}
+                </div>
+              </div>
+            )}
+            
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 
