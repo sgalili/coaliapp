@@ -90,18 +90,18 @@ export const ChannelSelector = () => {
                 )}
                 dir="rtl"
               >
+                <div className="flex-1 text-left">
+                  <div className="flex items-center gap-2 justify-start">
+                    {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
+                    <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground text-left">{availableChannels[0].description}</p>
+                </div>
                 {availableChannels[0].logo_url.startsWith('/') ? (
                   <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
                 ) : (
                   <div className="text-2xl flex-shrink-0">{availableChannels[0].logo_url}</div>
                 )}
-                <div className="flex-1 text-right">
-                  <div className="flex items-center gap-2 justify-end">
-                    <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
-                    {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
-                  </div>
-                  <p className="text-xs text-muted-foreground">{availableChannels[0].description}</p>
-                </div>
               </button>
 
               {/* Public Channels */}
