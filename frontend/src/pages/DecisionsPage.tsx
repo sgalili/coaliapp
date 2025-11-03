@@ -212,12 +212,29 @@ export default function DecisionsPage() {
   const currentDecision = filteredDecisions[currentIndex];
 
   const handleVote = (optionId: string) => {
-    setFilteredDecisions(prev => prev.map(dec => {
+    const updatedDecisions = filteredDecisions.map(dec => {
       if (dec.id === currentDecision.id) {
         return { ...dec, hasVoted: true };
       }
       return dec;
-    }));
+    });
+    
+    setFilteredDecisions(updatedDecisions);
+    
+    // Show results for 5 seconds then auto-advance
+    setTimeout(() => {
+      if (currentIndex < filteredDecisions.length - 1) {
+        // Scroll to next decision
+        const container = document.querySelector('.decisions-container');
+        if (container) {
+          container.scrollTo({
+            top: (currentIndex + 1) * window.innerHeight,
+            behavior: 'smooth'
+          });
+        }
+        setCurrentIndex(currentIndex + 1);
+      }
+    }, 5000);
   };
 
   if (!currentDecision) {
