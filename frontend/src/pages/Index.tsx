@@ -986,11 +986,12 @@ export default function Index() {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
         >
           <span className="text-xs">החלטות</span>
-          {decisionsCount > 0 && (
-            <div className="absolute -top-1 -left-1 min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg">
-              {decisionsCount > 9 ? '9+' : decisionsCount}
-            </div>
-          )}
+          <div className={cn(
+            "absolute -top-1 -left-1 min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shadow-lg text-[10px] font-bold",
+            decisionsCount > 0 ? "bg-red-500 text-white" : "bg-gray-500 text-white opacity-50"
+          )}>
+            {decisionsCount > 9 ? '9+' : decisionsCount}
+          </div>
         </button>
       </div>
 
