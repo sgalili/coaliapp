@@ -1183,8 +1183,11 @@ export default function Index() {
               </button>
             </div>
 
-            {/* Bottom Right - Caption and Info */}
-            <div className="absolute bottom-20 right-4 left-20 z-10">
+            {/* Bottom Left - Caption and Info - Responsive to nav */}
+            <div className={cn(
+              "absolute right-4 left-20 z-10 transition-all duration-300",
+              showNav ? "bottom-20" : "bottom-[30px]"
+            )}>
               {/* Profile and Name - Clickable */}
               <button
                 onClick={(e) => {
