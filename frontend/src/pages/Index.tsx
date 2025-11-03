@@ -600,15 +600,37 @@ export default function Index() {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    
     if (file) {
-      setSelectedVideo(file);
-      setShowOptionsMenu(false);
-      setShowUploadModal(true);
-      setUploadMethod('file');
-      // Pre-fill
-      setUploadChannel(selectedChannel.id);
-      setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
-      setAlsoPostToCoali(selectedChannel.id !== null);
+      // Validate: Only videos
+      if (!file.type.startsWith('video/')) {
+        toast.error('ניתן להעלות רק קבצי וידאו');
+        return;
+      }
+      
+      // Validate: Max 10 minutes (600 seconds)
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      
+      video.onloadedmetadata = () => {
+        const duration = video.duration;
+        
+        if (duration > 600) {
+          toast.error('הוידאו ארוך מדי. מקסימום 10 דקות');
+          return;
+        }
+        
+        // Valid video
+        setSelectedVideo(file);
+        setShowOptionsMenu(false);
+        setShowUploadModal(true);
+        setUploadMethod('file');
+        setUploadChannel(selectedChannel.id);
+        setUploadCategory(selectedCategory !== 'הכל' ? selectedCategory : selectedChannel.categories[1] || selectedChannel.categories[0]);
+        setAlsoPostToCoali(selectedChannel.id !== null);
+      };
+      
+      video.src = URL.createObjectURL(file);
     }
   };
 
