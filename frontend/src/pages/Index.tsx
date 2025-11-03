@@ -823,7 +823,46 @@ export default function Index() {
     }));
   };
 
-  const toggleWatch = (postId: string) => {
+  const sendZooz = async (postId: string) => {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    const newCount = (post.zoozCount || 0) + 1;
+    
+    // Optimistic update
+    setPosts(posts.map(p => 
+      p.id === postId ? { ...p, zoozCount: newCount } : p
+    ));
+    
+    try {
+      await updatePostEngagement(postId, 'zooz_count', newCount);
+      toast.success('שלחת 1 Zooz! 💰');
+    } catch (error) {
+      console.error('Failed to send Zooz:', error);
+      // Revert on error
+      setPosts(posts.map(p => 
+        p.id === postId ? { ...p, zoozCount: post.zoozCount } : p
+      ));
+    }
+  };
+
+  const handleShare = async (post: any) => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: post.caption || 'Coali Post',
+          text: post.caption,
+          url: window.location.href
+        });
+      } else {
+        // Fallback: Copy link
+        navigator.clipboard.writeText(window.location.href);
+        toast.success('קישור הועתק! 🔗');
+      }
+    } catch (error) {
+      console.error('Share failed:', error);
+    }
+  };
     setPosts(posts.map(post => {
       if (post.id === postId) {
         const newWatched = !post.hasUserWatched;
