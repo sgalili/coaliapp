@@ -322,7 +322,7 @@ export default function DecisionsPage() {
       </div>
 
       {/* Scrollable Decisions Feed */}
-      <div className="h-full w-full overflow-y-scroll snap-y snap-mandatory pt-[80px] pb-20" style={{ scrollSnapType: 'y mandatory' }}>
+      <div className="decisions-container h-full w-full overflow-y-scroll snap-y snap-mandatory pt-[80px] pb-20" style={{ scrollSnapType: 'y mandatory' }}>
         {filteredDecisions.map((decision, idx) => (
           <div key={decision.id} className="h-screen w-full snap-start snap-always flex flex-col relative">
             {/* Decision Card */}
