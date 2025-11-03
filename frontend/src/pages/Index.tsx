@@ -1347,7 +1347,7 @@ export default function Index() {
               </div>
               <input
                 type="file"
-                accept="video/*,image/*"
+                accept="video/*"
                 onChange={handleFileUpload}
                 className="hidden"
               />
