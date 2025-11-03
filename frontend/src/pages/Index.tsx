@@ -977,9 +977,9 @@ export default function Index() {
         >
           <span className="text-xs">החלטות</span>
           {decisionsCount > 0 && (
-            <span className="absolute -top-1 -left-1 min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+            <div className="absolute -top-1 -left-1 min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg">
               {decisionsCount > 9 ? '9+' : decisionsCount}
-            </span>
+            </div>
           )}
         </button>
       </div>
