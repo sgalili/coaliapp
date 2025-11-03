@@ -1062,49 +1062,47 @@ export default function Index() {
               </div>
             )}
 
-            {/* Video */}
-            <div 
-              className="absolute inset-0 cursor-pointer"
+            {/* Video with clickable overlay */}
+            <video
+              ref={(el) => (videoRefs.current[post.id] = el)}
+              src={post.videoUrl}
+              className="absolute inset-0 w-full h-full object-cover"
+              loop
+              playsInline
+              muted={globalMute}
+              preload="metadata"
+              onPlay={() => {
+                setVideoPaused(prev => ({ ...prev, [post.id]: false }));
+              }}
+              onPause={() => {
+                setVideoPaused(prev => ({ ...prev, [post.id]: true }));
+              }}
+              onCanPlay={() => {
+                setVideoReady(prev => ({ ...prev, [post.id]: true }));
+              }}
+              onLoadedData={() => {
+                setVideoReady(prev => ({ ...prev, [post.id]: true }));
+              }}
+              onError={(e) => {
+                console.error('❌ Video error for:', post.id);
+                setVideoReady(prev => ({ ...prev, [post.id]: false }));
+              }}
+            />
+            
+            {/* Clickable overlay for pause/play */}
+            <div
+              className="absolute inset-0 z-10 cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🎥 Video container clicked:', post.id);
+                console.log('🎥 Overlay clicked, toggling:', post.id);
                 togglePlayPause(post.id);
               }}
-            >
-              <video
-                ref={(el) => (videoRefs.current[post.id] = el)}
-                src={post.videoUrl}
-                className="w-full h-full object-cover"
-                loop
-                playsInline
-                muted={globalMute}
-                preload="metadata"
-                onPlay={() => {
-                  console.log('▶️ Video playing:', post.id);
-                  setVideoPaused(prev => ({ ...prev, [post.id]: false }));
-                }}
-                onPause={() => {
-                  console.log('⏸️ Video paused:', post.id);
-                  setVideoPaused(prev => ({ ...prev, [post.id]: true }));
-                }}
-                onCanPlay={() => {
-                  console.log('✅ Video ready:', post.id);
-                  setVideoReady(prev => ({ ...prev, [post.id]: true }));
-                }}
-                onLoadedData={() => {
-                  setVideoReady(prev => ({ ...prev, [post.id]: true }));
-                }}
-                onError={(e) => {
-                  console.error('❌ Video error for:', post.id, post.videoUrl);
-                  setVideoReady(prev => ({ ...prev, [post.id]: false }));
-                }}
-              />
-            </div>
+            />
             
             {/* Play/Pause Icon Overlay */}
             {showPlayIcon[post.id] && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                 <div className="w-20 h-20 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
                   {videoPaused[post.id] ? (
                     <Play className="w-10 h-10 text-white fill-white" />
@@ -1116,7 +1114,7 @@ export default function Index() {
             )}
             
             {/* Dark Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
             {/* Mute Button - No circle, 15px lower */}
             <button
