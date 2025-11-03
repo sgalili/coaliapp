@@ -808,20 +808,27 @@ export default function Index() {
 
   const togglePlayPause = (postId: string) => {
     const video = videoRefs.current[postId];
-    if (!video) return;
+    if (!video) {
+      console.error('❌ Video ref not found for:', postId);
+      return;
+    }
+    
+    console.log('🎥 Current video state - paused:', video.paused);
     
     if (video.paused) {
+      // Video is paused, play it
       console.log('▶️ Playing video:', postId);
       video.play().catch(err => {
         console.error('Play failed:', err);
       });
-      setVideoPaused(prev => ({ ...prev, [postId]: false }));
+      // Show play icon briefly then hide
       setShowPlayIcon(prev => ({ ...prev, [postId]: true }));
-      setTimeout(() => setShowPlayIcon(prev => ({ ...prev, [postId]: false })), 1500);
+      setTimeout(() => setShowPlayIcon(prev => ({ ...prev, [postId]: false })), 800);
     } else {
+      // Video is playing, pause it
       console.log('⏸️ Pausing video:', postId);
       video.pause();
-      setVideoPaused(prev => ({ ...prev, [postId]: true }));
+      // Show pause icon and keep it visible while paused
       setShowPlayIcon(prev => ({ ...prev, [postId]: true }));
     }
   };
