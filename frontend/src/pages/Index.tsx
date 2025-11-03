@@ -783,21 +783,13 @@ export default function Index() {
         console.error('Play failed:', err);
       });
       setVideoPaused(prev => ({ ...prev, [postId]: false }));
-      
-      // Show play icon briefly
-      setShowPlayIcon(prev => ({ ...prev, [postId]: false }));
+      setShowPlayIcon(prev => ({ ...prev, [postId]: true }));
+      setTimeout(() => setShowPlayIcon(prev => ({ ...prev, [postId]: false })), 1500);
     } else {
       console.log('⏸️ Pausing video:', postId);
       video.pause();
       setVideoPaused(prev => ({ ...prev, [postId]: true }));
-      
-      // Show pause icon
       setShowPlayIcon(prev => ({ ...prev, [postId]: true }));
-      
-      // Hide icon after 2 seconds
-      setTimeout(() => {
-        setShowPlayIcon(prev => ({ ...prev, [postId]: false }));
-      }, 2000);
     }
   };
 
