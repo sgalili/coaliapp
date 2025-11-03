@@ -959,8 +959,8 @@ export default function Index() {
               )}
             </button>
 
-            {/* Action Buttons - Right Side */}
-            <div className="absolute right-4 bottom-32 flex flex-col gap-6">
+            {/* Action Buttons - LEFT Side */}
+            <div className="absolute left-4 bottom-32 flex flex-col gap-6">
               {/* Trust Button */}
               <button
                 onClick={(e) => {
