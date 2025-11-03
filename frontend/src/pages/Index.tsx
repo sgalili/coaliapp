@@ -801,26 +801,64 @@ export default function Index() {
     }
   };
 
-  const toggleTrust = (postId: string) => {
-    setPosts(posts.map(post => {
-      if (post.id === postId) {
-        const newTrusted = !post.hasUserTrusted;
-        const newCount = newTrusted ? post.trustCount + 1 : post.trustCount - 1;
-        
-        console.log('🛡️ Toggling trust:', postId, newTrusted);
-        
-        if (newTrusted) {
-          toast.success('נתת אמון! 🛡️');
-        }
-        
-        return {
-          ...post,
-          hasUserTrusted: newTrusted,
-          trustCount: newCount
-        };
-      }
-      return post;
-    }));
+  const toggleTrust = async (postId: string) => {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    const newTrusted = !post.hasUserTrusted;
+    const newCount = newTrusted ? post.trustCount + 1 : post.trustCount - 1;
+    
+    console.log('🛡️ Toggling trust:', postId, newTrusted);
+    
+    // Optimistic update
+    setPosts(posts.map(p => 
+      p.id === postId 
+        ? { ...p, hasUserTrusted: newTrusted, trustCount: newCount }
+        : p
+    ));
+    
+    if (newTrusted) {
+      toast.success('נתת אמון! 🛡️');
+    }
+    
+    try {
+      await updatePostEngagement(postId, 'trust_count', newCount);
+    } catch (error) {
+      console.error('Failed to update trust:', error);
+      // Revert on error
+      setPosts(posts.map(p => 
+        p.id === postId ? { ...p, trustCount: post.trustCount, hasUserTrusted: post.hasUserTrusted } : p
+      ));
+    }
+  };
+
+  const toggleWatch = async (postId: string) => {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    const newWatched = !post.hasUserWatched;
+    const newCount = newWatched ? post.watchCount + 1 : post.watchCount - 1;
+    
+    // Optimistic update
+    setPosts(posts.map(p => 
+      p.id === postId 
+        ? { ...p, hasUserWatched: newWatched, watchCount: newCount }
+        : p
+    ));
+    
+    if (newWatched) {
+      toast.success('נשמר! 🔖');
+    }
+    
+    try {
+      await updatePostEngagement(postId, 'watch_count', newCount);
+    } catch (error) {
+      console.error('Failed to update watch:', error);
+      // Revert on error
+      setPosts(posts.map(p => 
+        p.id === postId ? { ...p, watchCount: post.watchCount, hasUserWatched: post.hasUserWatched } : p
+      ));
+    }
   };
 
   const sendZooz = async (postId: string) => {
@@ -862,24 +900,6 @@ export default function Index() {
     } catch (error) {
       console.error('Share failed:', error);
     }
-  };
-    setPosts(posts.map(post => {
-      if (post.id === postId) {
-        const newWatched = !post.hasUserWatched;
-        const newCount = newWatched ? post.watchCount + 1 : post.watchCount - 1;
-        
-        if (newWatched) {
-          toast.success('נשמר! 🔖');
-        }
-        
-        return {
-          ...post,
-          hasUserWatched: newWatched,
-          watchCount: newCount
-        };
-      }
-      return post;
-    }));
   };
 
   const formatCount = (count: number) => {
