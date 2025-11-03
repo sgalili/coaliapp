@@ -940,7 +940,7 @@ export default function Index() {
               className="absolute inset-0 w-full h-full object-cover"
               loop
               playsInline
-              muted={mutedVideos[post.id] ?? true}
+              muted={globalMute}
               preload="metadata"
               onClick={(e) => {
                 e.stopPropagation();
