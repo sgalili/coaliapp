@@ -926,6 +926,25 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
+      {/* Zooz Confetti Animation */}
+      {showZoozConfetti && (
+        <div className="fixed inset-0 z-[70] pointer-events-none">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-3 h-3 rounded-full animate-zooz-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                backgroundColor: i % 2 === 0 ? '#FFD700' : '#C0C0C0',
+                animationDelay: `${Math.random() * 0.5}s`,
+                animationDuration: `${1.5 + Math.random()}s`
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Filtering Loading Overlay */}
       {isFilteringPosts && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center">
