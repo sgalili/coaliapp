@@ -265,7 +265,8 @@ export default function Index() {
   const [videoReady, setVideoReady] = useState<{ [key: string]: boolean }>({});
   const [videoPaused, setVideoPaused] = useState<{ [key: string]: boolean }>({});
   const [showPlayIcon, setShowPlayIcon] = useState<{ [key: string]: boolean }>({});
-  const [globalMute, setGlobalMute] = useState(true); // Global mute state
+  const [showZoozConfetti, setShowZoozConfetti] = useState(false);
+  const [globalMute, setGlobalMute] = useState(true);
   const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState('00:00');
