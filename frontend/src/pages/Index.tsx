@@ -860,6 +860,10 @@ export default function Index() {
     
     const newCount = (post.zoozCount || 0) + 1;
     
+    // Show confetti animation
+    setShowZoozConfetti(true);
+    setTimeout(() => setShowZoozConfetti(false), 2000);
+    
     // Optimistic update
     setPosts(posts.map(p => 
       p.id === postId ? { ...p, zoozCount: newCount } : p
@@ -870,7 +874,6 @@ export default function Index() {
       toast.success('שלחת 1 Zooz! 💰');
     } catch (error) {
       console.error('Failed to send Zooz:', error);
-      // Revert on error
       setPosts(posts.map(p => 
         p.id === postId ? { ...p, zoozCount: post.zoozCount } : p
       ));
@@ -878,20 +881,33 @@ export default function Index() {
   };
 
   const handleShare = async (post: any) => {
+    console.log('📤 Sharing post:', post.id);
+    
     try {
+      const shareData = {
+        title: 'Coali - ' + (post.caption || 'פוסט מעניין'),
+        text: post.caption || 'צפה בפוסט ב-Coali',
+        url: window.location.origin + '/?post=' + post.id
+      };
+      
+      console.log('Share data:', shareData);
+      
       if (navigator.share) {
-        await navigator.share({
-          title: post.caption || 'Coali Post',
-          text: post.caption,
-          url: window.location.href
-        });
+        await navigator.share(shareData);
+        console.log('✅ Shared successfully');
+        toast.success('שותף! 🔗');
       } else {
         // Fallback: Copy link
-        navigator.clipboard.writeText(window.location.href);
+        const link = window.location.origin + '/?post=' + post.id;
+        await navigator.clipboard.writeText(link);
+        console.log('✅ Link copied');
         toast.success('קישור הועתק! 🔗');
       }
     } catch (error) {
       console.error('Share failed:', error);
+      if (error instanceof Error && error.name !== 'AbortError') {
+        toast.error('שיתוף נכשל');
+      }
     }
   };
 
