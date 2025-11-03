@@ -998,6 +998,22 @@ export default function Index() {
 
             {/* Action Buttons - LEFT Side */}
             <div className="absolute left-4 bottom-32 flex flex-col gap-6">
+              {/* Zooz Button - TOP */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sendZooz(post.id);
+                }}
+                className="flex flex-col items-center gap-1"
+              >
+                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
+                  <span className="text-zooz text-xl font-bold">Z</span>
+                </div>
+                <span className="text-white text-xs font-bold drop-shadow-lg">
+                  {formatCount(post.zoozCount || 0)}
+                </span>
+              </button>
+
               {/* Trust Button */}
               <button
                 onClick={(e) => {
