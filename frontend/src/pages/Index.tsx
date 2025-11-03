@@ -926,19 +926,19 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
-      {/* Zooz Confetti Animation */}
+      {/* Zooz Confetti Animation - Falling squares from top */}
       {showZoozConfetti && (
-        <div className="fixed inset-0 z-[70] pointer-events-none">
-          {[...Array(30)].map((_, i) => (
+        <div className="fixed inset-0 z-[70] pointer-events-none overflow-hidden">
+          {[...Array(40)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-3 h-3 rounded-full animate-zooz-float"
+              className="absolute w-3 h-3 animate-zooz-fall"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                left: `${10 + (i * 2)}%`,
+                top: '0',
                 backgroundColor: i % 2 === 0 ? '#FFD700' : '#C0C0C0',
                 animationDelay: `${Math.random() * 0.5}s`,
-                animationDuration: `${1.5 + Math.random()}s`
+                animationDuration: `${2 + Math.random()}s`
               }}
             />
           ))}
