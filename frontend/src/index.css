@@ -398,3 +398,19 @@ All colors MUST be HSL.
 .category-dropdown-dark button {
   color: hsl(var(--foreground)) !important;
 }
+
+/* Zooz confetti animation */
+@keyframes zooz-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) scale(0.5);
+  }
+}
+
+.animate-zooz-float {
+  animation: zooz-float 2s ease-out forwards;
+}
