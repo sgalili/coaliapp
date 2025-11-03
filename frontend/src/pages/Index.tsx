@@ -1132,6 +1132,7 @@ export default function Index() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  handleShare(post);
                 }}
                 className="flex flex-col items-center gap-1"
               >
