@@ -1172,8 +1172,14 @@ export default function Index() {
 
             {/* Bottom Right - Caption and Info */}
             <div className="absolute bottom-20 right-4 left-20 z-10">
-              {/* Profile and Name */}
-              <div className="flex items-center gap-3 mb-3">
+              {/* Profile and Name - Clickable */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/profile`); // Navigate to profile page
+                }}
+                className="flex items-center gap-3 mb-3"
+              >
                 <div className="relative">
                   <img
                     src={post.profileImage}
@@ -1188,7 +1194,7 @@ export default function Index() {
                     </div>
                   )}
                 </div>
-                <div>
+                <div className="text-right">
                   <h3 className="text-white font-bold text-base drop-shadow-lg">
                     {post.username}
                   </h3>
@@ -1196,7 +1202,7 @@ export default function Index() {
                     {post.expertise}
                   </p>
                 </div>
-              </div>
+              </button>
 
               {/* Caption */}
               <p className="text-white text-sm leading-relaxed mb-2 drop-shadow-lg">
