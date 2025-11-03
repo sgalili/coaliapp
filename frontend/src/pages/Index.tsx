@@ -1112,7 +1112,7 @@ export default function Index() {
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
                 <div className="w-20 h-20 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
                   {videoPaused[post.id] ? (
-                    <Play className="w-10 h-10 text-white fill-white" />
+                    <Play className="w-10 h-10 text-white fill-white ml-1" />
                   ) : (
                     <Pause className="w-10 h-10 text-white fill-white" />
                   )}
