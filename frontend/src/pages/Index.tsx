@@ -975,15 +975,15 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 
-            {/* Mute Button - Top right, below channel selector */}
+            {/* Mute Button - Fixed Position, 20% smaller */}
             <button
-              onClick={() => toggleMute(post.id)}
-              className="absolute top-16 right-4 p-2 bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-colors z-10"
+              onClick={toggleMute}
+              className="fixed top-20 right-4 p-1.5 bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-colors z-10"
             >
-              {mutedVideos[post.id] ? (
-                <VolumeX className="w-5 h-5 text-white" />
+              {globalMute ? (
+                <VolumeX className="w-4 h-4 text-white" />
               ) : (
-                <Volume2 className="w-5 h-5 text-white" />
+                <Volume2 className="w-4 h-4 text-white" />
               )}
             </button>
 
