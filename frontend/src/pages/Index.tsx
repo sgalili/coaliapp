@@ -984,15 +984,15 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
 
-            {/* Mute Button - Fixed Position, 20% smaller */}
+            {/* Mute Button - No circle, 15px lower */}
             <button
               onClick={toggleMute}
-              className="fixed top-20 right-4 p-1.5 bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-colors z-10"
+              className="fixed top-[95px] right-4 p-0 z-10"
             >
               {globalMute ? (
-                <VolumeX className="w-4 h-4 text-white" />
+                <VolumeX className="w-4 h-4 text-white drop-shadow-lg" />
               ) : (
-                <Volume2 className="w-4 h-4 text-white" />
+                <Volume2 className="w-4 h-4 text-white drop-shadow-lg" />
               )}
             </button>
 
