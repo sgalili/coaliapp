@@ -754,15 +754,14 @@ export default function Index() {
     return () => container.removeEventListener('scroll', handleScroll);
   }, [currentPostIndex, posts.length, lastScrollY]);
 
-  const toggleMute = (postId: string) => {
-    setMutedVideos(prev => ({
-      ...prev,
-      [postId]: !prev[postId]
-    }));
-    const video = videoRefs.current[postId];
-    if (video) {
-      video.muted = !video.muted;
-    }
+  const toggleMute = () => {
+    setGlobalMute(!globalMute);
+    // Apply to all videos
+    Object.values(videoRefs.current).forEach(video => {
+      if (video) {
+        video.muted = !globalMute;
+      }
+    });
   };
 
   const togglePlayPause = (postId: string) => {
