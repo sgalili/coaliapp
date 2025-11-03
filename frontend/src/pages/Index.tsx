@@ -291,9 +291,19 @@ export default function Index() {
   useEffect(() => {
     const loadDecisionsCount = async () => {
       try {
+        console.log('🗳️ Loading decisions count for:', selectedChannel.name, selectedChannel.id);
         const decisions = await fetchDemoDecisions(selectedChannel.id);
-        console.log(`🗳️ Decisions in ${selectedChannel.name}:`, decisions.length);
+        console.log('📊 Fetched decisions:', decisions);
+        console.log('📊 Total count:', decisions.length);
+        
         setDecisionsCount(decisions.length);
+        
+        // Force show badge for testing
+        if (decisions.length === 0) {
+          console.warn('⚠️ No decisions found for this channel');
+        } else {
+          console.log('✅ Badge should show:', decisions.length);
+        }
       } catch (error) {
         console.error('Failed to load decisions count:', error);
         setDecisionsCount(0);
