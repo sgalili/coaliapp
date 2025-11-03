@@ -1033,14 +1033,24 @@ export default function Index() {
             <video
               ref={(el) => (videoRefs.current[post.id] = el)}
               src={post.videoUrl}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover cursor-pointer"
               loop
               playsInline
               muted={globalMute}
               preload="metadata"
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
+                console.log('🎥 Video clicked:', post.id);
                 togglePlayPause(post.id);
+              }}
+              onPlay={() => {
+                console.log('▶️ Video playing:', post.id);
+                setVideoPaused(prev => ({ ...prev, [post.id]: false }));
+              }}
+              onPause={() => {
+                console.log('⏸️ Video paused:', post.id);
+                setVideoPaused(prev => ({ ...prev, [post.id]: true }));
               }}
               onCanPlay={() => {
                 console.log('✅ Video ready:', post.id);
