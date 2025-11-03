@@ -1083,8 +1083,8 @@ export default function Index() {
               )}
             </button>
 
-            {/* Action Buttons - LEFT Side */}
-            <div className="absolute left-4 bottom-32 flex flex-col gap-6">
+            {/* Action Buttons - LEFT Side, Above Nav */}
+            <div className="absolute left-4 bottom-[140px] flex flex-col gap-6">
               {/* Zooz Button - TOP */}
               <button
                 onClick={(e) => {
