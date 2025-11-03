@@ -1055,18 +1055,6 @@ export default function Index() {
                   <Share2 className="w-5 h-5 text-white" />
                 </div>
               </button>
-
-              {/* Menu Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="flex flex-col items-center gap-1"
-              >
-                <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200">
-                  <MoreVertical className="w-5 h-5 text-white" />
-                </div>
-              </button>
             </div>
 
             {/* Bottom Right - Caption and Info */}
