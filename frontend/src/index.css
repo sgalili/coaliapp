@@ -399,18 +399,18 @@ All colors MUST be HSL.
   color: hsl(var(--foreground)) !important;
 }
 
-/* Zooz confetti animation */
-@keyframes zooz-float {
+/* Zooz confetti animation - falls down naturally */
+@keyframes zooz-fall {
   0% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(-20px) rotate(0deg);
   }
   100% {
     opacity: 0;
-    transform: translateY(-100vh) scale(0.5);
+    transform: translateY(100vh) rotate(360deg);
   }
 }
 
-.animate-zooz-float {
-  animation: zooz-float 2s ease-out forwards;
+.animate-zooz-fall {
+  animation: zooz-fall 2.5s ease-in forwards;
 }
