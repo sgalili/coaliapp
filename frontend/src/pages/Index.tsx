@@ -111,29 +111,8 @@ const originalCoaliPosts = [
   },
 ];
 
-// Add Channel 10 posts
-const channel10Posts = [
-  {
-    id: 'achva-video-1',
-    username: 'המכללה האקדמית אחווה',
-    expertise: 'חינוך ואקדמיה',
-    profileImage: '/achva-logo-new.jpeg',
-    videoUrl: '/videos/achva_video1.mp4',
-    caption: 'תוכן מהמכללה האקדמית אחווה',
-    location: 'אחווה',
-    isVerified: true,
-    isLive: false,
-    category: 'חברה',
-    channel_id: 'channel-10-economy',
-    voteCount: 0,
-    zoozCount: 0,
-    trustCount: 0,
-    watchCount: 0,
-    commentCount: 0,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-];
+// Add Channel 10 posts - Empty
+const channel10Posts: any[] = [];
 
 // Add Achva College posts
 const achvaPosts = [
@@ -148,6 +127,7 @@ const achvaPosts = [
     isVerified: true,
     isLive: false,
     category: 'הרצאות',
+    channel_id: 'channel-achva',
     voteCount: 0,
     zoozCount: 1200,
     trustCount: 3400,
@@ -167,11 +147,32 @@ const achvaPosts = [
     isVerified: false,
     isLive: false,
     category: 'לימודים',
+    channel_id: 'channel-achva',
     voteCount: 0,
     zoozCount: 890,
     trustCount: 2100,
     watchCount: 5600,
     commentCount: 28,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+  },
+  {
+    id: 'achva-video-1',
+    username: 'המכללה האקדמית אחווה',
+    expertise: 'חינוך ואקדמיה',
+    profileImage: '/achva-logo-new.jpeg',
+    videoUrl: '/videos/achva_video1.mp4',
+    caption: 'תוכן מיוחד מהמכללה האקדמית אחווה',
+    location: 'אחווה',
+    isVerified: true,
+    isLive: false,
+    category: 'חברה',
+    channel_id: 'channel-achva',
+    voteCount: 0,
+    zoozCount: 0,
+    trustCount: 0,
+    watchCount: 0,
+    commentCount: 0,
     hasUserTrusted: false,
     hasUserWatched: false,
   },
