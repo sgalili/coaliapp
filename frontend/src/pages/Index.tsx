@@ -1331,12 +1331,11 @@ export default function Index() {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              const currentPost = uniquePosts[currentPostIndex];
-              const newState = openMenuPostId === currentPost.id ? null : currentPost.id;
+              const newState = openMenuPostId === uniquePosts[currentPostIndex]?.id ? null : uniquePosts[currentPostIndex]?.id;
               console.log('📋 Menu toggled:', newState !== null);
               setOpenMenuPostId(newState);
             }}
-            className="w-8 h-8 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80"
+            className="w-8 h-8 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/50"
           >
             <MoreVertical className="w-4 h-4 text-white" />
           </button>
