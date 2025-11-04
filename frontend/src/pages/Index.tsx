@@ -987,19 +987,17 @@ export default function Index() {
           onCategoryChange={setSelectedCategory}
         />
         
-        {/* החלטות Button - Matching style */}
+        {/* החלטות Button - Exact same style as category */}
         <button
           onClick={() => navigate('/decisions')}
-          className="relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
+          className="flex items-center gap-1.5 px-2 py-2 text-foreground font-semibold text-base transition-opacity hover:opacity-80"
         >
-          <div className="flex items-center gap-2">
-            <span>החלטות</span>
-            {decisionsCount > 0 && (
-              <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold bg-red-500 text-white">
-                {decisionsCount > 9 ? '9+' : decisionsCount}
-              </span>
-            )}
-          </div>
+          <span>החלטות</span>
+          {decisionsCount > 0 && (
+            <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1.5 rounded-full text-[10px] font-bold bg-red-500 text-white">
+              {decisionsCount > 9 ? '9+' : decisionsCount}
+            </span>
+          )}
         </button>
       </div>
 
