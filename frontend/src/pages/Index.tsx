@@ -1344,10 +1344,15 @@ export default function Index() {
           {openMenuPostId === uniquePosts[currentPostIndex]?.id && (
             <div className="absolute top-10 left-0 bg-white rounded-xl shadow-2xl w-[180px]">
               <button
-                onClick={async (e) => {
+                onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  alert('Edit feature coming soon');
+                  console.log('✏️ Edit clicked');
+                  
+                  const currentPost = uniquePosts[currentPostIndex];
+                  setEditingPost(currentPost);
+                  setEditCaption(currentPost.caption || '');
+                  setEditCategory(currentPost.category);
                   setOpenMenuPostId(null);
                 }}
                 className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-gray-50 active:bg-gray-100"
