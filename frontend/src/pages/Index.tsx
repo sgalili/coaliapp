@@ -1282,6 +1282,51 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
+            {/* Post Owner Menu - Three Dots */}
+            {post.user_id === 'demo-user' && (
+              <div className="absolute top-4 left-4 z-30">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenMenuPostId(openMenuPostId === post.id ? null : post.id);
+                  }}
+                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all"
+                >
+                  <MoreVertical className="w-5 h-5 text-white" />
+                </button>
+                
+                {/* Dropdown Menu */}
+                {openMenuPostId === post.id && (
+                  <div className="absolute top-12 left-0 bg-background rounded-xl shadow-xl overflow-hidden min-w-[160px]">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingPost(post);
+                        setEditCaption(post.caption || '');
+                        setEditCategory(post.category);
+                        setOpenMenuPostId(null);
+                      }}
+                      className="w-full px-4 py-3 text-right flex items-center gap-3 hover:bg-muted transition-colors"
+                    >
+                      <span className="text-sm font-medium">ערוך פוסט</span>
+                      <Edit2 className="w-4 h-4 text-primary" />
+                    </button>
+                    
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeletePost(post);
+                      }}
+                      className="w-full px-4 py-3 text-right flex items-center gap-3 hover:bg-red-50 transition-colors border-t"
+                    >
+                      <span className="text-sm font-medium text-destructive">מחק פוסט</span>
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Mute Button - No circle, 15px lower */}
             <button
               onClick={toggleMute}
