@@ -112,20 +112,16 @@ export const ChannelSelector = () => {
                       key={channel.id}
                       onClick={() => handleSelectChannel(channel)}
                       className={cn(
-                        "w-full flex items-center justify-between gap-3 p-3 transition-colors border-b border-border/50",
+                        "w-full flex items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
                         selectedChannel.id === channel.id
                           ? "bg-primary/10"
                           : "hover:bg-muted/30"
                       )}
                       dir="rtl"
                     >
-                      <div className="flex-1 text-right">
-                        <div className="flex items-center gap-2 justify-end">
-                          <p className="font-semibold text-sm text-foreground">{channel.name}</p>
-                          {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
-                        </div>
-                        <p className="text-xs text-muted-foreground text-right">{channel.description}</p>
-                        <p className="text-xs text-muted-foreground text-right">{channel.member_count?.toLocaleString()} חברים</p>
+                      <div className="flex items-center gap-2">
+                        {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
+                        <p className="font-semibold text-sm text-foreground">{channel.name}</p>
                       </div>
                       {channel.logo_url.startsWith('/') ? (
                         <img src={channel.logo_url} alt={channel.name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
