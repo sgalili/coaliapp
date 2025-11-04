@@ -1308,6 +1308,19 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
+
+      {/* Mute Button - Below channel selector, top right */}
+      <button
+        onClick={toggleMute}
+        className="fixed top-16 right-4 p-0 z-10"
+      >
+        {globalMute ? (
+          <VolumeX className="w-4 h-4 text-white drop-shadow-lg" />
+        ) : (
+          <Volume2 className="w-4 h-4 text-white drop-shadow-lg" />
+        )}
+      </button>
+
             {/* Post Owner Menu - Absolute positioned per post */}
             {post.user_id === 'demo-user' && (
               <div className="absolute top-4 left-4 z-[60]">
