@@ -1581,7 +1581,12 @@ export default function Index() {
             <div className="p-6 space-y-4">
               <div className="relative rounded-xl overflow-hidden bg-black" style={{ maxHeight: '300px' }}>
                 {editingPost.videoUrl ? (
-                  <video src={editingPost.videoUrl} controls className="w-full h-full object-cover" />
+                  <video 
+                    src={editingPost.videoUrl} 
+                    controls 
+                    playsInline
+                    className="w-full h-full object-cover" 
+                  />
                 ) : (
                   <img src={editingPost.imageUrl} className="w-full h-full object-cover" />
                 )}
