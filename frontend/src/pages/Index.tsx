@@ -495,8 +495,9 @@ export default function Index() {
 
   // Load posts from database
   useEffect(() => {
+    console.log('🔄 Reloading posts - Channel:', selectedChannel.name, 'Category:', selectedCategory);
     loadPostsFromDB();
-  }, [selectedChannel.id, selectedCategory]);
+  }, [selectedChannel.id, selectedCategory]); // Reload when category changes too
 
   // Load decisions count
   useEffect(() => {
