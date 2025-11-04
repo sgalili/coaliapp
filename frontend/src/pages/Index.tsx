@@ -1618,7 +1618,11 @@ export default function Index() {
                   try {
                     const { error } = await supabase
                       .from('demo_posts')
-                      .update({ caption: editCaption, category: editCategory })
+                      .update({ 
+                        caption: editCaption, 
+                        category: editCategory,
+                        updated_at: new Date().toISOString()
+                      })
                       .eq('id', editingPost.id);
                     
                     if (error) throw error;
