@@ -1142,6 +1142,37 @@ export default function Index() {
     }
   };
 
+  const handleDeletePost = async (post: any) => {
+    const confirmed = confirm(
+      `האם למחוק את הפוסט?\n\n"${post.caption?.substring(0, 50)}..."\n\nלא ניתן לשחזר!`
+    );
+    
+    if (!confirmed) {
+      setOpenMenuPostId(null);
+      return;
+    }
+    
+    try {
+      console.log('🗑️ Deleting post:', post.id);
+      
+      const { error } = await supabase
+        .from('demo_posts')
+        .delete()
+        .eq('id', post.id);
+      
+      if (error) throw error;
+      
+      setPosts(posts.filter(p => p.id !== post.id));
+      toast.success('הפוסט נמחק! 🗑️');
+      setOpenMenuPostId(null);
+      
+      await loadPostsFromDB();
+    } catch (error) {
+      console.error('Delete failed:', error);
+      toast.error('מחיקה נכשלה');
+    }
+  };
+
   const formatCount = (count: number) => {
     if (!count && count !== 0) {
       return '0'; // Handle undefined/null
