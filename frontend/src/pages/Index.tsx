@@ -121,7 +121,7 @@ const achvaPosts = [
     username: 'פרופ׳ שרה כהן',
     expertise: 'מרצה בכירה',
     profileImage: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-    videoUrl: 'http://167.71.129.40:7800/down/KiAGCzaINBDM.webm',
+    videoUrl: '/videos/achva_video1.webm',
     caption: 'הרצאה מרתקת מהמכללה האקדמית אחווה - טיפים ללימודים והצלחה',
     location: 'מכללת אחווה',
     isVerified: true,
@@ -130,12 +130,16 @@ const achvaPosts = [
     channel_id: 'channel-achva',
     voteCount: 0,
     zoozCount: 0,
-    trustCount: 0,
-    watchCount: 0,
+    trustCount: 120,
+    watchCount: 350,
     commentCount: 0,
     hasUserTrusted: false,
     hasUserWatched: false,
   },
+  // Placeholders for 3 more videos - READY FOR YOUR URLS
+  // Video 2: category: 'מחקר'
+  // Video 3: category: 'אירועים'
+  // Video 4: category: 'הרצאות'
 ];
 
 // Add Maccabi posts
