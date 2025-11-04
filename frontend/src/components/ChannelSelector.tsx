@@ -83,19 +83,16 @@ export const ChannelSelector = () => {
               <button
                 onClick={() => handleSelectChannel(availableChannels[0])}
                 className={cn(
-                  "w-full flex items-center justify-between gap-3 p-3 transition-colors",
+                  "w-full flex items-center justify-end gap-3 p-3 transition-colors",
                   selectedChannel.id === null
                     ? "bg-primary/10 border-b-2 border-primary"
                     : "hover:bg-muted/30 border-b border-border"
                 )}
                 dir="rtl"
               >
-                <div className="flex-1 text-right">
-                  <div className="flex items-center gap-2 justify-end">
-                    <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
-                    {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
-                  </div>
-                  <p className="text-xs text-muted-foreground text-right">{availableChannels[0].description}</p>
+                <div className="flex items-center gap-2">
+                  {selectedChannel.id === null && <Check className="w-4 h-4 text-primary" />}
+                  <p className="font-semibold text-sm text-foreground">{availableChannels[0].name}</p>
                 </div>
                 {availableChannels[0].logo_url.startsWith('/') ? (
                   <img src={availableChannels[0].logo_url} alt={availableChannels[0].name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
