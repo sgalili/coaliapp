@@ -1357,45 +1357,17 @@ export default function Index() {
               </button>
               
               <button
-                onClick={async (e) => {
+                onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   
                   const currentPost = uniquePosts[currentPostIndex];
-                  console.log('🗑️ Delete button CLICKED');
-                  console.log('Post to delete:', currentPost.id);
-                  console.log('Caption:', currentPost.caption);
+                  console.log('🗑️ Delete button clicked');
                   
-                  const shouldDelete = window.confirm(`האם למחוק את הפוסט?\n\n"${currentPost.caption}"`);
-                  console.log('User confirmed?', shouldDelete);
-                  
-                  if (!shouldDelete) {
-                    console.log('Delete cancelled');
-                    setOpenMenuPostId(null);
-                    return;
-                  }
-                  
-                  console.log('Proceeding with delete...');
-                  
-                  try {
-                    const { error } = await supabase
-                      .from('demo_posts')
-                      .delete()
-                      .eq('id', currentPost.id);
-                    
-                    if (error) {
-                      console.error('Supabase delete error:', error);
-                      throw error;
-                    }
-                    
-                    console.log('✅ Deleted from database');
-                    toast.success('הפוסט נמחק!');
-                    setOpenMenuPostId(null);
-                    await loadPostsFromDB();
-                  } catch (err) {
-                    console.error('Delete failed:', err);
-                    toast.error('מחיקה נכשלה');
-                  }
+                  // Show custom confirmation modal
+                  setPostToDelete(currentPost);
+                  setShowDeleteConfirm(true);
+                  setOpenMenuPostId(null);
                 }}
                 className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 active:bg-red-100 border-t"
               >
