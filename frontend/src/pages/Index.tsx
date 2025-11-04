@@ -114,69 +114,8 @@ const originalCoaliPosts = [
 // Add Channel 10 posts - Empty
 const channel10Posts: any[] = [];
 
-// Add Achva College posts
-const achvaPosts = [
-  {
-    id: 'achva-1',
-    username: 'פרופ׳ דוד כהן',
-    expertise: 'מרצה במכללה',
-    profileImage: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    caption: 'הרצאה מרתקת על בינה מלאכותית ועתיד הטכנולוגיה',
-    location: 'מכללת אחווה',
-    isVerified: true,
-    isLive: false,
-    category: 'הרצאות',
-    channel_id: 'channel-achva',
-    voteCount: 0,
-    zoozCount: 1200,
-    trustCount: 3400,
-    watchCount: 8900,
-    commentCount: 45,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: 'achva-2',
-    username: 'סטודנטית אחווה',
-    expertise: 'סטודנטית',
-    profileImage: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-    caption: 'הכנה לבחינות - טיפים ועצות ממני',
-    location: 'מכללת אחווה',
-    isVerified: false,
-    isLive: false,
-    category: 'לימודים',
-    channel_id: 'channel-achva',
-    voteCount: 0,
-    zoozCount: 890,
-    trustCount: 2100,
-    watchCount: 5600,
-    commentCount: 28,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: 'achva-video-1',
-    username: 'המכללה האקדמית אחווה',
-    expertise: 'חינוך ואקדמיה',
-    profileImage: '/achva-logo-new.jpeg',
-    videoUrl: '/videos/achva_video1.mp4',
-    caption: 'תוכן מיוחד מהמכללה האקדמית אחווה',
-    location: 'אחווה',
-    isVerified: true,
-    isLive: false,
-    category: 'חברה',
-    channel_id: 'channel-achva',
-    voteCount: 0,
-    zoozCount: 0,
-    trustCount: 0,
-    watchCount: 0,
-    commentCount: 0,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-];
+// Add Achva College posts - Empty for now
+const achvaPosts: any[] = [];
 
 // Add Maccabi posts
 const maccabiPosts = [
