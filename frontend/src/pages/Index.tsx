@@ -379,14 +379,29 @@ export default function Index() {
 
   // Filter posts by channel and category
   const filteredPosts = posts.filter(post => {
-    // Filter by channel (for now all posts are in main channel)
-    // In Phase 2, we'll add channel_id to posts
+    // CRITICAL: Filter by channel first
+    // For demo posts from samplePosts, they don't have channel_id
+    // Only show posts that match current channel OR are in samplePosts for that channel
     
-    // Filter by category
-    if (selectedCategory === 'הכל') {
-      return true; // Show all if "הכל" selected
+    if (selectedChannel.id === 'channel-10-economy') {
+      // Channel 10: ONLY show posts with channel_id = 'channel-10-economy'
+      // Don't show any sample posts
+      return post.id?.toString().startsWith('post-') && post.category !== undefined;
+    } else if (selectedChannel.id === 'channel-achva') {
+      // Achva: Only achva posts
+      return post.id?.startsWith('achva-');
+    } else if (selectedChannel.id === 'channel-maccabi') {
+      // Maccabi: Only maccabi posts
+      return post.id?.startsWith('maccabi-');
+    } else {
+      // Coali main: Show coali posts only (IDs 1-8)
+      return post.id && !post.id.startsWith('10-') && !post.id.startsWith('achva-') && !post.id.startsWith('maccabi-');
     }
-    
+  }).filter(post => {
+    // Then filter by category
+    if (selectedCategory === 'הכל') {
+      return true;
+    }
     return post.category === selectedCategory;
   });
 
