@@ -550,6 +550,7 @@ export default function Index() {
       // Map database fields to component format
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
+        user_id: post.user_id, // Keep for owner check
         username: post.username,
         expertise: post.expertise,
         profileImage: post.profile_image,
@@ -560,7 +561,7 @@ export default function Index() {
         isVerified: post.is_verified,
         isLive: post.is_live,
         category: post.category,
-        channel_id: post.channel_id, // Keep as channel_id for filtering
+        channel_id: post.channel_id,
         voteCount: post.vote_count || 0,
         zoozCount: post.zooz_count || 0,
         trustCount: post.trust_count || 0,
