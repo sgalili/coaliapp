@@ -978,19 +978,12 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white" />
       </button>
 
-      {/* Top Center - Category and Decisions */}
-      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
-        {/* Category Dropdown */}
-        <CategoryDropdown
-          categories={selectedChannel.categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
-        
-        {/* החלטות Button - Exact same style as category */}
+      {/* Top Center - Decisions Only */}
+      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50">
+        {/* החלטות Button */}
         <button
           onClick={() => navigate('/decisions')}
-          className="flex items-center gap-1.5 px-2 py-2 text-foreground font-semibold text-base transition-opacity hover:opacity-80"
+          className="flex items-center gap-1.5 px-2 py-2 text-white font-semibold text-base transition-opacity hover:opacity-80"
         >
           <span>החלטות</span>
           {decisionsCount > 0 && (
