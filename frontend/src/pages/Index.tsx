@@ -1039,7 +1039,7 @@ export default function Index() {
               "absolute left-4 flex flex-col gap-6 transition-all duration-300",
               showNav ? "bottom-[84px]" : "bottom-[30px]"
             )}>
-              {/* Zooz Button - TOP */}
+              {/* Zooz Button - Gift Icon */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1048,14 +1048,14 @@ export default function Index() {
                 className="flex flex-col items-center gap-1"
               >
                 <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
-                  <span className="text-zooz text-xl font-bold">Z</span>
+                  <Gift className="w-6 h-6 text-zooz" />
                 </div>
                 <span className="text-white text-xs font-bold drop-shadow-lg">
                   {formatCount(post.zoozCount || 0)}
                 </span>
               </button>
 
-              {/* Trust Button */}
+              {/* Trust Button - Handshake with Crown */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1064,20 +1064,20 @@ export default function Index() {
                 className="flex flex-col items-center gap-1"
               >
                 <div className={cn(
-                  "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
+                  "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative",
                   post.hasUserTrusted 
-                    ? "bg-blue-500 shadow-lg shadow-blue-500/50" 
+                    ? "bg-green-500 shadow-lg shadow-green-500/50" 
                     : "bg-black/30 backdrop-blur-sm hover:bg-black/50"
                 )}>
-                  {post.hasUserTrusted ? (
-                    <ShieldCheck className="w-6 h-6 text-white" />
-                  ) : (
-                    <Shield className="w-6 h-6 text-white" />
-                  )}
+                  <Handshake className={cn(
+                    "w-6 h-6",
+                    post.hasUserTrusted ? "text-white" : "text-white"
+                  )} />
+                  <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
                 </div>
                 <span className={cn(
                   "text-xs font-bold drop-shadow-lg",
-                  post.hasUserTrusted ? "text-blue-400" : "text-white"
+                  post.hasUserTrusted ? "text-green-400" : "text-white"
                 )}>
                   {formatCount(post.trustCount)}
                 </span>
