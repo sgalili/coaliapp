@@ -1309,7 +1309,8 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
 
-      {/* Mute Button - Below channel selector, top right */}
+      {/* Top Row - Mute and Menu */}
+      {/* Mute Button - Top right */}
       <button
         onClick={toggleMute}
         className="fixed top-16 right-4 p-0 z-10"
@@ -1320,6 +1321,73 @@ export default function Index() {
           <Volume2 className="w-4 h-4 text-white drop-shadow-lg" />
         )}
       </button>
+
+      {/* Three-Dot Menu - Top left, same row */}
+      {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
+        <div className="fixed top-16 left-4 z-30">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const currentPost = uniquePosts[currentPostIndex];
+              const newState = openMenuPostId === currentPost.id ? null : currentPost.id;
+              console.log('📋 Menu toggled:', newState !== null);
+              setOpenMenuPostId(newState);
+            }}
+            className="w-8 h-8 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80"
+          >
+            <MoreVertical className="w-4 h-4 text-white" />
+          </button>
+          
+          {openMenuPostId === uniquePosts[currentPostIndex]?.id && (
+            <div className="absolute top-10 left-0 bg-white rounded-xl shadow-2xl w-[180px]">
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  alert('Edit feature coming soon');
+                  setOpenMenuPostId(null);
+                }}
+                className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-gray-50 active:bg-gray-100"
+              >
+                <span className="text-sm font-medium">ערוך</span>
+                <Edit2 className="w-4 h-4 text-blue-600" />
+              </button>
+              
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🗑️ Delete clicked');
+                  const currentPost = uniquePosts[currentPostIndex];
+                  
+                  if (confirm(`למחוק "${currentPost.caption}"?`)) {
+                    try {
+                      const { error } = await supabase
+                        .from('demo_posts')
+                        .delete()
+                        .eq('id', currentPost.id);
+                      
+                      if (error) throw error;
+                      
+                      toast.success('נמחק!');
+                      setOpenMenuPostId(null);
+                      await loadPostsFromDB();
+                    } catch (err) {
+                      console.error(err);
+                      toast.error('מחיקה נכשלה');
+                    }
+                  }
+                }}
+                className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 active:bg-red-100 border-t"
+              >
+                <span className="text-sm font-medium text-red-600">מחק</span>
+                <Trash2 className="w-4 h-4 text-red-600" />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
             {/* Post Owner Menu - Absolute positioned per post */}
             {post.user_id === 'demo-user' && (
