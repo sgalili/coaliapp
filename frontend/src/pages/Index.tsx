@@ -196,6 +196,26 @@ const achvaPosts = [
     hasUserTrusted: false,
     hasUserWatched: false,
   },
+  {
+    id: 'achva-video-5',
+    username: 'נועה רותם',
+    expertise: 'סטודנטית מצטיינת',
+    profileImage: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
+    videoUrl: '/videos/achva_video5.webm',
+    caption: 'חוויות מהלימודים במכללת אחווה - מומלץ לצפות!',
+    location: 'מכללת אחווה',
+    isVerified: false,
+    isLive: false,
+    category: 'סטודנטים',
+    channel_id: 'channel-achva',
+    voteCount: 0,
+    zoozCount: 0,
+    trustCount: 67,
+    watchCount: 189,
+    commentCount: 0,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+  },
 ];
 
 // Add Maccabi posts
