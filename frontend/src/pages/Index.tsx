@@ -978,19 +978,27 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white" />
       </button>
 
-      {/* Top Left Corner - החלטות Button */}
-      <div className="fixed top-4 left-4 z-50">
+      {/* Top Center - Category and Decisions */}
+      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
+        {/* Category Dropdown */}
+        <CategoryDropdown
+          categories={selectedChannel.categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+        />
+        
+        {/* החלטות Button - Matching style */}
         <button
           onClick={() => navigate('/decisions')}
-          data-tour-id="decisions-filter"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 text-white/80 hover:text-white bg-white/10 relative"
+          className="relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
         >
-          <span className="text-xs">החלטות</span>
-          <div className={cn(
-            "absolute -top-1 -left-1 min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shadow-lg text-[10px] font-bold",
-            decisionsCount > 0 ? "bg-red-500 text-white" : "bg-gray-500 text-white opacity-50"
-          )}>
-            {decisionsCount > 9 ? '9+' : decisionsCount}
+          <div className="flex items-center gap-2">
+            <span>החלטות</span>
+            {decisionsCount > 0 && (
+              <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold bg-red-500 text-white">
+                {decisionsCount > 9 ? '9+' : decisionsCount}
+              </span>
+            )}
           </div>
         </button>
       </div>
