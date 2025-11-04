@@ -111,47 +111,8 @@ const originalCoaliPosts = [
   },
 ];
 
-// Add Channel 10 posts
-const channel10Posts = [
-  {
-    id: '10-1',
-    username: 'ערוץ 10 חדשות',
-    expertise: 'עיתונאות',
-    profileImage: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-    caption: 'סיקור מיוחד: מה קורה בשוק ההון הישראלי השבוע?',
-    location: 'תל אביב',
-    isVerified: true,
-    isLive: false,
-    category: 'שוק ההון',
-    voteCount: 0,
-    zoozCount: 5600,
-    trustCount: 12400,
-    watchCount: 45000,
-    commentCount: 234,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-  {
-    id: '10-2',
-    username: 'כתב ערוץ 10',
-    expertise: 'נדל״ן',
-    profileImage: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-    caption: 'מחירי הדירות ממשיכים לעלות - מה הסיבות?',
-    location: 'ירושלים',
-    isVerified: true,
-    isLive: true,
-    category: 'נדל׳ן',
-    voteCount: 0,
-    zoozCount: 3400,
-    trustCount: 8900,
-    watchCount: 28000,
-    commentCount: 156,
-    hasUserTrusted: false,
-    hasUserWatched: false,
-  },
-];
+// Add Channel 10 posts - EMPTY for now (will be uploaded by user)
+const channel10Posts: any[] = [];
 
 // Add Achva College posts
 const achvaPosts = [
