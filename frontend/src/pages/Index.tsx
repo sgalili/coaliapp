@@ -1314,22 +1314,34 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
-            {/* Post Owner Menu - Three Dots */}
+            {/* Mute Button - Top right */}
+            <button
+              onClick={toggleMute}
+              className="fixed top-[95px] right-4 p-0 z-10"
+            >
+              {globalMute ? (
+                <VolumeX className="w-4 h-4 text-white drop-shadow-lg" />
+              ) : (
+                <Volume2 className="w-4 h-4 text-white drop-shadow-lg" />
+              )}
+            </button>
+
+            {/* Post Owner Menu - Top left, same row as speaker */}
             {post.user_id === 'demo-user' && (
-              <div className="absolute top-4 left-4 z-30">
+              <div className="fixed top-[95px] left-4 z-30">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
+                    console.log('📋 Menu clicked for post:', post.id, 'user_id:', post.user_id);
                     setOpenMenuPostId(openMenuPostId === post.id ? null : post.id);
                   }}
-                  className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all"
+                  className="p-0"
                 >
-                  <MoreVertical className="w-5 h-5 text-white" />
+                  <MoreVertical className="w-4 h-4 text-white drop-shadow-lg" />
                 </button>
                 
-                {/* Dropdown Menu */}
                 {openMenuPostId === post.id && (
-                  <div className="absolute top-12 left-0 bg-background rounded-xl shadow-xl overflow-hidden min-w-[160px]">
+                  <div className="absolute top-6 left-0 bg-background rounded-xl shadow-xl overflow-hidden min-w-[160px]">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1358,18 +1370,6 @@ export default function Index() {
                 )}
               </div>
             )}
-
-            {/* Mute Button - No circle, 15px lower */}
-            <button
-              onClick={toggleMute}
-              className="fixed top-[95px] right-4 p-0 z-10"
-            >
-              {globalMute ? (
-                <VolumeX className="w-4 h-4 text-white drop-shadow-lg" />
-              ) : (
-                <Volume2 className="w-4 h-4 text-white drop-shadow-lg" />
-              )}
-            </button>
 
             {/* Action Buttons - Responsive to nav visibility */}
             <div className={cn(
