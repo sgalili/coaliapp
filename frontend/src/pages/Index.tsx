@@ -1358,25 +1358,41 @@ export default function Index() {
                 onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log('🗑️ Delete clicked');
-                  const currentPost = uniquePosts[currentPostIndex];
                   
-                  if (confirm(`למחוק "${currentPost.caption}"?`)) {
-                    try {
-                      const { error } = await supabase
-                        .from('demo_posts')
-                        .delete()
-                        .eq('id', currentPost.id);
-                      
-                      if (error) throw error;
-                      
-                      toast.success('נמחק!');
-                      setOpenMenuPostId(null);
-                      await loadPostsFromDB();
-                    } catch (err) {
-                      console.error(err);
-                      toast.error('מחיקה נכשלה');
+                  const currentPost = uniquePosts[currentPostIndex];
+                  console.log('🗑️ Delete button CLICKED');
+                  console.log('Post to delete:', currentPost.id);
+                  console.log('Caption:', currentPost.caption);
+                  
+                  const shouldDelete = window.confirm(`האם למחוק את הפוסט?\n\n"${currentPost.caption}"`);
+                  console.log('User confirmed?', shouldDelete);
+                  
+                  if (!shouldDelete) {
+                    console.log('Delete cancelled');
+                    setOpenMenuPostId(null);
+                    return;
+                  }
+                  
+                  console.log('Proceeding with delete...');
+                  
+                  try {
+                    const { error } = await supabase
+                      .from('demo_posts')
+                      .delete()
+                      .eq('id', currentPost.id);
+                    
+                    if (error) {
+                      console.error('Supabase delete error:', error);
+                      throw error;
                     }
+                    
+                    console.log('✅ Deleted from database');
+                    toast.success('הפוסט נמחק!');
+                    setOpenMenuPostId(null);
+                    await loadPostsFromDB();
+                  } catch (err) {
+                    console.error('Delete failed:', err);
+                    toast.error('מחיקה נכשלה');
                   }
                 }}
                 className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 active:bg-red-100 border-t"
