@@ -493,11 +493,19 @@ export default function Index() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  // Load posts from database
+  // Load posts from database - force reload when category changes
   useEffect(() => {
-    console.log('🔄 Reloading posts - Channel:', selectedChannel.name, 'Category:', selectedCategory);
-    loadPostsFromDB();
-  }, [selectedChannel.id, selectedCategory]); // Reload when category changes too
+    console.log('🔄 Category/Channel changed - Force reload');
+    console.log('Channel:', selectedChannel.name, 'Category:', selectedCategory);
+    
+    // Clear current posts first
+    setPosts([]);
+    
+    // Small delay then reload
+    setTimeout(() => {
+      loadPostsFromDB();
+    }, 50);
+  }, [selectedChannel.id, selectedCategory]);
 
   // Load decisions count
   useEffect(() => {
