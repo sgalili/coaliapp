@@ -114,8 +114,29 @@ const originalCoaliPosts = [
 // Add Channel 10 posts - Empty
 const channel10Posts: any[] = [];
 
-// Add Achva College posts - Empty for now
-const achvaPosts: any[] = [];
+// Add Achva College posts
+const achvaPosts = [
+  {
+    id: 'achva-youtube-1',
+    username: 'המכללה האקדמית אחווה',
+    expertise: 'חינוך ואקדמיה',
+    profileImage: '/achva-logo-new.jpeg',
+    videoUrl: 'https://www.youtube.com/embed/M0EuFHxkggw',
+    caption: 'סרטון מיוחד מהמכללה האקדמית אחווה',
+    location: 'אחווה',
+    isVerified: true,
+    isLive: false,
+    category: 'לימודים',
+    channel_id: 'channel-achva',
+    voteCount: 0,
+    zoozCount: 0,
+    trustCount: 0,
+    watchCount: 0,
+    commentCount: 0,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+  },
+];
 
 // Add Maccabi posts
 const maccabiPosts = [
