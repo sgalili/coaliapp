@@ -1308,59 +1308,58 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
-            {/* Mute Button - Top right */}
-            <button
-              onClick={toggleMute}
-              className="fixed top-[95px] right-4 p-0 z-10"
-            >
-              {globalMute ? (
-                <VolumeX className="w-4 h-4 text-white drop-shadow-lg" />
-              ) : (
-                <Volume2 className="w-4 h-4 text-white drop-shadow-lg" />
-              )}
-            </button>
-
             {/* Post Owner Menu - Top left, same row as speaker */}
             {post.user_id === 'demo-user' && (
-              <div className="fixed top-[95px] left-4 z-30">
+              <div className="absolute top-[95px] left-4 z-30">
                 <button
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
                     console.log('📋 Menu clicked for post:', post.id, 'user_id:', post.user_id);
                     setOpenMenuPostId(openMenuPostId === post.id ? null : post.id);
                   }}
-                  className="p-0"
+                  className="p-1 bg-black/50 rounded-full hover:bg-black/70"
                 >
-                  <MoreVertical className="w-4 h-4 text-white drop-shadow-lg" />
+                  <MoreVertical className="w-4 h-4 text-white" />
                 </button>
                 
                 {openMenuPostId === post.id && (
-                  <div className="absolute top-6 left-0 bg-background rounded-xl shadow-xl overflow-hidden min-w-[160px]">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingPost(post);
-                        setEditCaption(post.caption || '');
-                        setEditCategory(post.category);
-                        setOpenMenuPostId(null);
-                      }}
-                      className="w-full px-4 py-3 text-right flex items-center gap-3 hover:bg-muted transition-colors"
-                    >
-                      <span className="text-sm font-medium">ערוך פוסט</span>
-                      <Edit2 className="w-4 h-4 text-primary" />
-                    </button>
-                    
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeletePost(post);
-                      }}
-                      className="w-full px-4 py-3 text-right flex items-center gap-3 hover:bg-red-50 transition-colors border-t"
-                    >
-                      <span className="text-sm font-medium text-destructive">מחק פוסט</span>
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </button>
-                  </div>
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40"
+                      onClick={() => setOpenMenuPostId(null)}
+                    />
+                    <div className="absolute top-8 left-0 bg-background rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('✏️ Edit clicked');
+                          setEditingPost(post);
+                          setEditCaption(post.caption || '');
+                          setEditCategory(post.category);
+                          setOpenMenuPostId(null);
+                        }}
+                        className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-muted transition-colors"
+                      >
+                        <span className="text-sm font-medium">ערוך פוסט</span>
+                        <Edit2 className="w-4 h-4 text-primary" />
+                      </button>
+                      
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('🗑️ Delete clicked');
+                          handleDeletePost(post);
+                        }}
+                        className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 transition-colors border-t"
+                      >
+                        <span className="text-sm font-medium text-destructive">מחק פוסט</span>
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             )}
