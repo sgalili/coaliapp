@@ -151,15 +151,15 @@ export const ChannelSelector = () => {
                       )}
                       dir="rtl"
                     >
-                      <div className="flex items-center gap-2">
-                        {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
-                        <p className="font-semibold text-sm text-foreground">{channel.name}</p>
-                      </div>
                       {channel.logo_url.startsWith('/') ? (
                         <img src={channel.logo_url} alt={channel.name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
                       ) : (
                         <div className="text-2xl flex-shrink-0">{channel.logo_url}</div>
                       )}
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-sm text-foreground">{channel.name}</p>
+                        {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
+                      </div>
                     </button>
                   ))}
                 </>
