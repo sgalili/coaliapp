@@ -1389,62 +1389,6 @@ export default function Index() {
         </div>
       )}
 
-            {/* Post Owner Menu - Absolute positioned per post */}
-            {post.user_id === 'demo-user' && (
-              <div className="absolute top-4 left-4 z-[60]">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const newState = openMenuPostId === post.id ? null : post.id;
-                    console.log('📋 Menu button clicked:', post.id, 'Opening?', newState !== null);
-                    setOpenMenuPostId(newState);
-                  }}
-                  className="w-8 h-8 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  <MoreVertical className="w-4 h-4 text-white" />
-                </button>
-                
-                {openMenuPostId === post.id && (
-                  <div 
-                    className="absolute top-10 left-0 bg-white rounded-xl shadow-2xl overflow-hidden w-[180px] z-[70]"
-                    style={{ pointerEvents: 'auto' }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('✏️ Edit button clicked for:', post.id);
-                        alert('עריכה בפיתוח');
-                        setOpenMenuPostId(null);
-                      }}
-                      className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-gray-50 transition-colors active:bg-gray-100"
-                      style={{ pointerEvents: 'auto' }}
-                    >
-                      <span className="text-sm font-medium text-gray-900">ערוך פוסט</span>
-                      <Edit2 className="w-4 h-4 text-blue-600" />
-                    </button>
-                    
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🗑️ Delete button clicked for:', post.id);
-                        handleDeletePost(post);
-                      }}
-                      className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 transition-colors border-t active:bg-red-100"
-                      style={{ pointerEvents: 'auto' }}
-                    >
-                      <span className="text-sm font-medium text-red-600">מחק פוסט</span>
-                      <Trash2 className="w-4 h-4 text-red-600" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* Action Buttons - Responsive to nav visibility */}
             <div className={cn(
               "absolute left-4 flex flex-col gap-6 transition-all duration-300",
