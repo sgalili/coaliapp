@@ -560,6 +560,7 @@ export default function Index() {
         isVerified: post.is_verified,
         isLive: post.is_live,
         category: post.category,
+        channel_id: post.channel_id, // Keep as channel_id for filtering
         voteCount: post.vote_count || 0,
         zoozCount: post.zooz_count || 0,
         trustCount: post.trust_count || 0,
