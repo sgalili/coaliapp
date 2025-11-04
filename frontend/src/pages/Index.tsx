@@ -263,10 +263,8 @@ export default function Index() {
   const [isFilteringPosts, setIsFilteringPosts] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [videoReady, setVideoReady] = useState<{ [key: string]: boolean }>({});
-  const [videoPaused, setVideoPaused] = useState<{ [key: string]: boolean }>({});
-  const [showPlayIcon, setShowPlayIcon] = useState<{ [key: string]: boolean }>({});
-  const [showZoozConfetti, setShowZoozConfetti] = useState(false);
   const [globalMute, setGlobalMute] = useState(true);
+  const [showZoozConfetti, setShowZoozConfetti] = useState(false);
   const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState('00:00');
