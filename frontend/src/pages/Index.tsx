@@ -1558,6 +1558,55 @@ export default function Index() {
         />
       )}
 
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && postToDelete && (
+        <div className="fixed inset-0 bg-black/70 z-[80] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6">
+            <h3 className="text-xl font-bold text-center mb-4">מחיקת פוסט</h3>
+            <p className="text-center text-gray-600 mb-2">האם למחוק את הפוסט?</p>
+            <p className="text-center text-sm text-gray-500 mb-6 line-clamp-2">
+              "{postToDelete.caption}"
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setPostToDelete(null);
+                }}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200"
+              >
+                ביטול
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    console.log('🗑️ Deleting:', postToDelete.id);
+                    
+                    const { error } = await supabase
+                      .from('demo_posts')
+                      .delete()
+                      .eq('id', postToDelete.id);
+                    
+                    if (error) throw error;
+                    
+                    toast.success('הפוסט נמחק!');
+                    setShowDeleteConfirm(false);
+                    setPostToDelete(null);
+                    await loadPostsFromDB();
+                  } catch (err) {
+                    console.error(err);
+                    toast.error('מחיקה נכשלה');
+                  }
+                }}
+                className="flex-1 py-3 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600"
+              >
+                מחק
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Options Menu */}
       {showOptionsMenu && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center md:justify-center">
