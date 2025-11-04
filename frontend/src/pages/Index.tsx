@@ -1048,7 +1048,7 @@ export default function Index() {
               "absolute left-4 flex flex-col gap-6 transition-all duration-300",
               showNav ? "bottom-[84px]" : "bottom-[30px]"
             )}>
-              {/* Zooz Button - Gift Icon */}
+              {/* Zooz Button - Gift with Z coin overlay */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1056,15 +1056,19 @@ export default function Index() {
                 }}
                 className="flex flex-col items-center gap-1"
               >
-                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all">
+                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all relative">
                   <Gift className="w-6 h-6 text-zooz" />
+                  {/* Gold Z coin at top-right */}
+                  <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-zooz rounded-full flex items-center justify-center border border-yellow-600">
+                    <span className="text-[8px] font-bold text-yellow-900">Z</span>
+                  </div>
                 </div>
                 <span className="text-white text-xs font-bold drop-shadow-lg">
                   {formatCount(post.zoozCount || 0)}
                 </span>
               </button>
 
-              {/* Trust Button - Handshake with Crown */}
+              {/* Trust Button - Handshake with Crown inside */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1078,11 +1082,9 @@ export default function Index() {
                     ? "bg-green-500 shadow-lg shadow-green-500/50" 
                     : "bg-black/30 backdrop-blur-sm hover:bg-black/50"
                 )}>
-                  <Handshake className={cn(
-                    "w-6 h-6",
-                    post.hasUserTrusted ? "text-white" : "text-white"
-                  )} />
-                  <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+                  <Handshake className="w-6 h-6 text-white" />
+                  {/* Crown inside circle at top-right */}
+                  <Crown className="w-3 h-3 absolute top-1 right-1 text-yellow-400" />
                 </div>
                 <span className={cn(
                   "text-xs font-bold drop-shadow-lg",
