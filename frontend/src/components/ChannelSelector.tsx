@@ -110,7 +110,7 @@ export const ChannelSelector = () => {
                       key={channel.id}
                       onClick={() => handleSelectChannel(channel)}
                       className={cn(
-                        "w-full flex items-center justify-end gap-3 p-3 transition-colors border-b border-border/50",
+                        "w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50",
                         selectedChannel.id === channel.id
                           ? "bg-primary/10"
                           : "hover:bg-muted/30"
@@ -118,14 +118,12 @@ export const ChannelSelector = () => {
                       dir="rtl"
                     >
                       {channel.logo_url.startsWith('/') ? (
-                        <img src={channel.logo_url} alt={channel.name} className="w-8 h-8 rounded-lg object-contain flex-shrink-0" />
+                        <img src={channel.logo_url} alt={channel.name} className="w-8 h-8 rounded-lg object-contain" />
                       ) : (
-                        <div className="text-2xl flex-shrink-0">{channel.logo_url}</div>
+                        <div className="text-2xl">{channel.logo_url}</div>
                       )}
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold text-sm text-foreground">{channel.name}</p>
-                        {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary" />}
-                      </div>
+                      <p className="font-semibold text-sm text-foreground">{channel.name}</p>
+                      {selectedChannel.id === channel.id && <Check className="w-4 h-4 text-primary ml-auto" />}
                     </button>
                   ))}
                 </>
