@@ -978,8 +978,15 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white" />
       </button>
 
-      {/* Top Center - Decisions Only */}
-      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50">
+      {/* Top Center - Category and Decisions in same row */}
+      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
+        {/* Category Dropdown */}
+        <CategoryDropdown
+          categories={selectedChannel.categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+        />
+        
         {/* החלטות Button */}
         <button
           onClick={() => navigate('/decisions')}
