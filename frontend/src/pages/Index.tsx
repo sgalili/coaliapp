@@ -1308,58 +1308,58 @@ export default function Index() {
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
-            {/* Post Owner Menu - Top left, same row as speaker */}
+            {/* Post Owner Menu - Absolute positioned per post */}
             {post.user_id === 'demo-user' && (
-              <div className="absolute top-[95px] left-4 z-30">
+              <div className="absolute top-4 left-4 z-[60]">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('📋 Menu clicked for post:', post.id, 'user_id:', post.user_id);
-                    setOpenMenuPostId(openMenuPostId === post.id ? null : post.id);
+                    const newState = openMenuPostId === post.id ? null : post.id;
+                    console.log('📋 Menu button clicked:', post.id, 'Opening?', newState !== null);
+                    setOpenMenuPostId(newState);
                   }}
-                  className="p-1 bg-black/50 rounded-full hover:bg-black/70"
+                  className="w-8 h-8 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+                  style={{ pointerEvents: 'auto' }}
                 >
                   <MoreVertical className="w-4 h-4 text-white" />
                 </button>
                 
                 {openMenuPostId === post.id && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-40"
-                      onClick={() => setOpenMenuPostId(null)}
-                    />
-                    <div className="absolute top-8 left-0 bg-background rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          console.log('✏️ Edit clicked');
-                          setEditingPost(post);
-                          setEditCaption(post.caption || '');
-                          setEditCategory(post.category);
-                          setOpenMenuPostId(null);
-                        }}
-                        className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-muted transition-colors"
-                      >
-                        <span className="text-sm font-medium">ערוך פוסט</span>
-                        <Edit2 className="w-4 h-4 text-primary" />
-                      </button>
-                      
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          console.log('🗑️ Delete clicked');
-                          handleDeletePost(post);
-                        }}
-                        className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 transition-colors border-t"
-                      >
-                        <span className="text-sm font-medium text-destructive">מחק פוסט</span>
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </button>
-                    </div>
-                  </>
+                  <div 
+                    className="absolute top-10 left-0 bg-white rounded-xl shadow-2xl overflow-hidden w-[180px] z-[70]"
+                    style={{ pointerEvents: 'auto' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('✏️ Edit button clicked for:', post.id);
+                        alert('עריכה בפיתוח');
+                        setOpenMenuPostId(null);
+                      }}
+                      className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-gray-50 transition-colors active:bg-gray-100"
+                      style={{ pointerEvents: 'auto' }}
+                    >
+                      <span className="text-sm font-medium text-gray-900">ערוך פוסט</span>
+                      <Edit2 className="w-4 h-4 text-blue-600" />
+                    </button>
+                    
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🗑️ Delete button clicked for:', post.id);
+                        handleDeletePost(post);
+                      }}
+                      className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 transition-colors border-t active:bg-red-100"
+                      style={{ pointerEvents: 'auto' }}
+                    >
+                      <span className="text-sm font-medium text-red-600">מחק פוסט</span>
+                      <Trash2 className="w-4 h-4 text-red-600" />
+                    </button>
+                  </div>
                 )}
               </div>
             )}
