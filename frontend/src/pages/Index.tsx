@@ -1069,7 +1069,7 @@ export default function Index() {
               </div>
             )}
 
-            {/* Video with clickable overlay */}
+            {/* Video */}
             <video
               ref={(el) => (videoRefs.current[post.id] = el)}
               src={post.videoUrl}
@@ -1078,16 +1078,6 @@ export default function Index() {
               playsInline
               muted={globalMute}
               preload="metadata"
-              onPlay={() => {
-                setVideoPaused(prev => ({ ...prev, [post.id]: false }));
-                // Hide icon when playing
-                setShowPlayIcon(prev => ({ ...prev, [post.id]: false }));
-              }}
-              onPause={() => {
-                setVideoPaused(prev => ({ ...prev, [post.id]: true }));
-                // Show pause icon when paused
-                setShowPlayIcon(prev => ({ ...prev, [post.id]: true }));
-              }}
               onCanPlay={() => {
                 setVideoReady(prev => ({ ...prev, [post.id]: true }));
               }}
@@ -1099,30 +1089,6 @@ export default function Index() {
                 setVideoReady(prev => ({ ...prev, [post.id]: false }));
               }}
             />
-            
-            {/* Clickable overlay for pause/play */}
-            <div
-              className="absolute inset-0 z-10 cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('🎥 Overlay clicked, toggling:', post.id);
-                togglePlayPause(post.id);
-              }}
-            />
-            
-            {/* Play/Pause Icon Overlay */}
-            {showPlayIcon[post.id] && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                <div className="w-20 h-20 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  {videoPaused[post.id] ? (
-                    <Play className="w-10 h-10 text-white fill-white ml-1" />
-                  ) : (
-                    <Pause className="w-10 h-10 text-white fill-white" />
-                  )}
-                </div>
-              </div>
-            )}
             
             {/* Dark Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
