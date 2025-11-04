@@ -471,6 +471,11 @@ export default function Index() {
   const [videoReady, setVideoReady] = useState<{ [key: string]: boolean }>({});
   const [globalMute, setGlobalMute] = useState(true);
   const [showZoozConfetti, setShowZoozConfetti] = useState(false);
+  const [currentUserId] = useState('demo-user');
+  const [openMenuPostId, setOpenMenuPostId] = useState<string | null>(null);
+  const [editingPost, setEditingPost] = useState<any | null>(null);
+  const [editCaption, setEditCaption] = useState('');
+  const [editCategory, setEditCategory] = useState('');
   const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState('00:00');
