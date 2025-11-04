@@ -46,7 +46,7 @@ const demoChannels: Channel[] = [
     id: 'channel-achva',
     name: 'המכללה האקדמית אחווה',
     description: 'Achva Academic College',
-    logo_url: '/achva-logo.jpeg',
+    logo_url: '/achva-logo-new.jpeg',
     is_public: true,
     member_count: 8500,
     categories: ['הכל', 'לימודים', 'מחקר', 'אירועים', 'סטודנטים', 'הרצאות'],
