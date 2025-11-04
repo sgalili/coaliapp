@@ -111,8 +111,29 @@ const originalCoaliPosts = [
   },
 ];
 
-// Add Channel 10 posts - EMPTY for now (will be uploaded by user)
-const channel10Posts: any[] = [];
+// Add Channel 10 posts
+const channel10Posts = [
+  {
+    id: 'achva-video-1',
+    username: 'המכללה האקדמית אחווה',
+    expertise: 'חינוך ואקדמיה',
+    profileImage: '/achva-logo-new.jpeg',
+    videoUrl: '/videos/achva_video1.mp4',
+    caption: 'תוכן מהמכללה האקדמית אחווה',
+    location: 'אחווה',
+    isVerified: true,
+    isLive: false,
+    category: 'חברה',
+    channel_id: 'channel-10-economy',
+    voteCount: 0,
+    zoozCount: 0,
+    trustCount: 0,
+    watchCount: 0,
+    commentCount: 0,
+    hasUserTrusted: false,
+    hasUserWatched: false,
+  },
+];
 
 // Add Achva College posts
 const achvaPosts = [
