@@ -1563,6 +1563,84 @@ export default function Index() {
         />
       )}
 
+      {/* Edit Modal */}
+      {editingPost && (
+        <div className="fixed inset-0 bg-black/70 z-[80] flex items-end md:items-center md:justify-center">
+          <div className="bg-white rounded-t-3xl md:rounded-2xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b p-4 flex items-center justify-between">
+              <button
+                onClick={() => setEditingPost(null)}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <h2 className="text-lg font-bold">עריכת פוסט</h2>
+              <div className="w-9" />
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="relative rounded-xl overflow-hidden bg-black" style={{ maxHeight: '300px' }}>
+                {editingPost.videoUrl ? (
+                  <video src={editingPost.videoUrl} controls className="w-full h-full object-cover" />
+                ) : (
+                  <img src={editingPost.imageUrl} className="w-full h-full object-cover" />
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">כיתוב</label>
+                <textarea
+                  value={editCaption}
+                  onChange={(e) => setEditCaption(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg"
+                  rows={4}
+                  maxLength={400}
+                  dir="rtl"
+                />
+                <p className="text-xs text-gray-500 text-right mt-1">{editCaption.length}/400</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">קטגוריה</label>
+                <select
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg"
+                  dir="rtl"
+                >
+                  {selectedChannel.categories.filter(c => c !== 'הכל').map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <button
+                onClick={async () => {
+                  try {
+                    const { error } = await supabase
+                      .from('demo_posts')
+                      .update({ caption: editCaption, category: editCategory })
+                      .eq('id', editingPost.id);
+                    
+                    if (error) throw error;
+                    
+                    toast.success('הפוסט עודכן!');
+                    setEditingPost(null);
+                    await loadPostsFromDB();
+                  } catch (err) {
+                    console.error(err);
+                    toast.error('עדכון נכשל');
+                  }
+                }}
+                className="w-full py-4 bg-primary text-white rounded-lg font-bold"
+              >
+                שמור
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && postToDelete && (
         <div className="fixed inset-0 bg-black/70 z-[80] flex items-center justify-center p-4">
