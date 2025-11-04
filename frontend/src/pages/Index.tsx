@@ -379,23 +379,17 @@ export default function Index() {
 
   // Filter posts by channel and category
   const filteredPosts = posts.filter(post => {
-    // CRITICAL: Filter by channel first
-    // For demo posts from samplePosts, they don't have channel_id
-    // Only show posts that match current channel OR are in samplePosts for that channel
+    // CRITICAL: Filter by actual channel_id from database
+    // Uploaded posts have channel_id field
+    // Sample posts don't have channel_id
     
-    if (selectedChannel.id === 'channel-10-economy') {
-      // Channel 10: ONLY show posts with channel_id = 'channel-10-economy'
-      // Don't show any sample posts
-      return post.id?.toString().startsWith('post-') && post.category !== undefined;
-    } else if (selectedChannel.id === 'channel-achva') {
-      // Achva: Only achva posts
-      return post.id?.startsWith('achva-');
-    } else if (selectedChannel.id === 'channel-maccabi') {
-      // Maccabi: Only maccabi posts
-      return post.id?.startsWith('maccabi-');
+    if (selectedChannel.id === null) {
+      // Coali main: Show posts with null channel_id OR sample posts without channel_id
+      return !post.channel_id || (post.id && !post.id.toString().includes('10-') && !post.id.toString().includes('achva-') && !post.id.toString().includes('maccabi-'));
     } else {
-      // Coali main: Show coali posts only (IDs 1-8)
-      return post.id && !post.id.startsWith('10-') && !post.id.startsWith('achva-') && !post.id.startsWith('maccabi-');
+      // Specific channel: ONLY show posts with matching channel_id
+      // For Channel 10: post.channel_id === 'channel-10-economy'
+      return post.channel_id === selectedChannel.id;
     }
   }).filter(post => {
     // Then filter by category
