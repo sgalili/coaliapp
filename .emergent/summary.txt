@@ -1,0 +1,129 @@
+<analysis>
+The trajectory details the AI engineer's work on rebuilding the Coali social trust network application from scratch, adhering strictly to the design and functionality of . The process was broken down into phases, with significant focus on Phase 1 (Foundation) and early aspects of Phase 2 (Core Features). The engineer meticulously replicated UI elements, implemented mobile responsiveness, RTL support, and integrated core functionalities like dynamic news fetching (Perplexity), channel management, user profiles, wallet features, and basic content creation. Recurring challenges involved Supabase write permissions, which blocked full database persistence for some features, and persistent UI/rendering issues requiring detailed debugging and iterative fixes. The work transitioned from foundational UI to intricate feature development and extensive debugging.
+</analysis>
+
+<product_requirements>
+The primary goal is to rebuild Coali, a social trust network web application, as a mobile-responsive platform, matching the exact design, layout, colors, and visual style of . Key requirements include:
+*   **Design Fidelity**: Pixel-perfect replication of all visual elements, including color scheme (HSL values provided), typography, spacing, border-radius, shadows, icon styles (lucide-react), button states, card layouts, and navigation.
+*   **Mobile-First & RTL**: Optimized for mobile (375px-428px width) with fixed bottom navigation (5 tabs, Hebrew labels, RTL layout). Full RTL support across text, layouts, icons, and margins.
+*   **Tech Stack**: React 18 + TypeScript + Vite, Tailwind CSS, Supabase backend, React Router v6, shadcn/ui.
+*   **Core Features**: Implementation of Home feed (vertical video/card feed with categories, actions), Impact/News page (real news from Perplexity, expert comments, polls), Leaders page (top trusted users, podium, filtering), Wallet page (Zooz balance, transactions, Send/Request Zooz), Profile page (user details, stats, posts, editable info), Messages page (conversations, chat interface), and a comprehensive content creation flow (video/image upload, caption, category, channel selection).
+*   **Backend Integration**: Supabase for data persistence and media storage (videos/images). Perplexity API for real-time Hebrew news. GreenAPI for WhatsApp notifications.
+*   **Admin Panel**: Comprehensive admin tools for managing users, content, and system settings, including real-time statistics.
+*   **Polish & Performance**: Smooth animations, performance optimizations, robust error handling, and a high level of UI polish.
+</product_requirements>
+
+<key_technical_concepts>
+-   **React 18 + TypeScript + Vite**: Frontend framework.
+-   **Tailwind CSS with RTL**: Styling and responsive design,  support.
+-   **Supabase**: Backend-as-a-Service for database (PostgreSQL) and Storage.
+-   **React Router v6**: Client-side navigation.
+-   **Shadcn/ui**: Component library.
+-   **Context API**: Global state management (e.g., ).
+-   **Perplexity API**: Third-party integration for real-time news fetching.
+-   **GreenAPI**: Third-party integration for WhatsApp messaging.
+-   **MediaRecorder API**: For in-browser video recording.
+</key_technical_concepts>
+
+<code_architecture>
+The application follows a standard React/FastAPI/MongoDB full-stack architecture, though the current focus is on the React frontend and Supabase integration.
+
+
+
+**Key Files and Changes:**
+
+*   ****: Main application entry point. Configures React Router, sets up  and . Routes all main pages. Protected routes for Wallet and Profile were temporarily removed for development, then re-added.
+*   ****: The main Home feed.
+    *   **Importance**: Displays the vertical, swipeable video/image posts, category filters, channel selector, and action buttons. Central to user interaction.
+    *   **Changes**: Extensive refactoring to match 's TikTok-style feed, including dynamic content loading from Supabase, video autoplay/pause logic, responsive UI for buttons, integration of the content creation FAB, and display of  button with dynamic count. Implemented  to save to Supabase Storage and  table.
+*   ****: The Impact/News feed.
+    *   **Importance**: Shows news articles, expert comments, and poll features. Integrates real-time news.
+    *   **Changes**: Refactored to fetch news from Perplexity API, display news cards, include expandable expert comment sections with video thumbnails, and polls. Added channel selector and channel-specific category filtering.
+*   ****: User's profile.
+    *   **Importance**: Displays user information, stats, and a tabbed interface for posts, info, trust relationships.
+    *   **Changes**: Rebuilt to match the exact design of , including user stats (Trust, Votes, Decisions), expertise fields, edit profile functionality (not fully implemented in trajectory), and real-time updates for counters.
+*   ****: User's Zooz wallet.
+    *   **Importance**: Shows Zooz balance, transaction history, and actions like Send/Request Zooz.
+    *   **Changes**: Designed to match , featuring a prominent gold-gradient balance card, quick stats, action buttons (Send/Request/Buy/Withdraw), and a transaction list. Send/Request modals are implemented.
+*   ****: Leaderboard.
+    *   **Importance**: Displays top trusted users with a podium and ranked list.
+    *   **Changes**: Rebuilt to mirror , including a top-3 podium, ranked user cards, time-period filtering, and channel-specific leaderboards.
+*   ****: Direct messaging.
+    *   **Importance**: Provides a conversation list and a chat interface for user-to-user communication.
+    *   **Changes**: Implemented the core UI for conversation list and chat interface, matching a WhatsApp/Telegram-like experience, including message grouping, typing indicators, and attachment options.
+*   ****: Community decisions.
+    *   **Importance**: Shows active community polls/decisions, allowing users to vote.
+    *   **Changes**: Designed to display decisions dynamically, filterable by channel, with a voting mechanism and auto-advance after voting.
+*   ****: Authentication page.
+    *   **Importance**: Handles user login and signup.
+    *   **Changes**: Enhanced with a Demo Mode login button, 6-digit OTP support, and a complete UI matching the design.
+*   ****: Displays user notifications.
+    *   **Importance**: Central hub for all in-app notifications.
+    *   **Changes**: Basic page structure for displaying notifications, accessible via a new bell icon in the header.
+*   ****: Admin entry.
+    *   **Importance**: Overview for administrators.
+    *   **Changes**: Initial setup for the admin panel, with navigation to content, users, and notifications management.
+*   ****: Admin content management.
+    *   **Importance**: Allows admins to view, filter, edit, and delete user-generated content.
+    *   **Changes**: Implemented filters by channel, category, user, and date. Displays detailed post information with video previews.
+*   ****: Admin user management.
+    *   **Importance**: Allows admins to view, filter, add, edit, and delete users.
+    *   **Changes**: Displays user details including stats, expertise fields, verification status, and provides filtering options.
+*   ****: Admin notifications manager.
+    *   **Importance**: Allows admins to send push or WhatsApp notifications.
+    *   **Changes**: UI for composing and sending notifications via different channels, including GreenAPI WhatsApp integration.
+*   ****: Global channel state.
+    *   **Importance**: Manages the  and  across the application.
+    *   **Changes**: Stores channel and category, persists selection in , and provides data to components via  hook.
+*   ****: Channel switching UI.
+    *   **Importance**: Allows users to switch between different content channels.
+    *   **Changes**: Implemented as a dropdown menu with square channel logos and names, adhering to RTL, opening below the icon.
+*   ****: Category filter UI.
+    *   **Importance**: Provides TikTok-style category filtering for content.
+    *   **Changes**: Minimalistic text-only dropdown (not pills) that shows channel-specific categories.
+*   ****: Supabase database interactions.
+    *   **Importance**: Centralizes all database read/write operations for , , , and  tables.
+    *   **Changes**: Functions for fetching, saving, and updating data in Supabase.
+*   ****: Supabase Storage interactions.
+    *   **Importance**: Handles uploading and deleting media files to Supabase Storage.
+    *   **Changes**: Functions for  and .
+*   ****: Environment variables.
+    *   **Importance**: Stores sensitive API keys and database connection strings.
+    *   **Changes**: Added , , , .
+*   ****: Tailwind CSS configuration.
+    *   **Importance**: Defines custom design tokens and extends Tailwind.
+    *   **Changes**: Added custom HSL color palette and border radius.
+*   ****: Global CSS.
+    *   **Importance**: Base styles and custom utilities.
+    *   **Changes**: Included custom  font, and custom animations/styles for specific UI elements like the ZOOZ confetti and category dropdown text color.
+
+**Current Directory Structure (Condensed for brevity):**
+
+</code_architecture>
+
+<pending_tasks>
+-   Complete implementation of edit/delete functionality for posts (dialogs and backend logic are present, but the UI flow for editing all elements and showing timestamps in feed needs full verification).
+-   Full implementation of a robust user profile page (editing all details, displaying all activities).
+-   Comprehensive development of the Admin Panel (full CRUD for all data types, detailed statistics, WhatsApp template management, push notifications).
+-   Full implementation of the messages system, including real-time updates and notifications.
+-   Integrate NewsAPI (though Perplexity is working).
+-   Implement comprehensive demo data seeding for all tables once full database write access is consistently available.
+</pending_tasks>
+
+<current_work>
+The AI engineer was in the middle of a comprehensive UI overhaul and debugging session when the summary request was made. The immediate focus in the last few interactions was on refining the homepage UI elements and fixing persistent issues with the  animation and profile page redirects.
+
+Specifically:
+*   **Homepage UI Alignment**: Adjusting the vertical alignment and spacing of the Notifications Bell, FAB, Speaker (mute), and Three-dots (menu) buttons on the homepage to be vertically aligned with 30px spacing. This includes removing the red circle badge for Decisions and displaying it as X החלטות (X Decisions), reducing the gap between הכל and החלטות category pills by 25%, and replacing the circles of vertical action buttons with subtle black drop shadows.
+*   **Dynamic Action Button Labels**: Implementing a feature where the numbers on the action buttons (ZOOZ, Trust, Bookmarks, Shares) switch to text labels (שלח ZOOZ, תן אמון, הוסף למועדפים, שתף) every 10 seconds, stay for 3 seconds, and then transition back to numbers, using a horizontal swish animation.
+*   **Profile Page Demo User Name**: Changing the demo user's title to משתמש דמו מאומת (Verified Demo User).
+
+The last tool call was  on  to update the demo user's name, followed by a .
+
+The state of the application is feature-rich, with the core UI/UX largely matching , but undergoing continuous refinement. Key issues like Supabase integration for video uploads and data persistence have been largely resolved, but UI alignment and animation details are still being fine-tuned. The previous session concluded with the frontend restarting after the profile page update.
+</current_work>
+
+<optional_next_step>
+Complete the implementation of the UI refinements on the homepage, particularly the dynamic action button labels and precise button alignments.
+</optional_next_step>
+

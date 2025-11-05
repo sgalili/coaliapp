@@ -38,7 +38,7 @@ export default function AdminNotifications() {
     try {
       if (sendMethod === 'whatsapp') {
         // Send WhatsApp message - use production backend URL
-        const BACKEND_URL = 'https://trust-network-ui.preview.emergentagent.com';
+        const BACKEND_URL = 'https://trustnet-clone.preview.emergentagent.com';
         
         console.log('📤 Sending WhatsApp via:', BACKEND_URL);
         
