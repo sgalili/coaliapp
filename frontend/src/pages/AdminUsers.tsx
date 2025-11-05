@@ -254,9 +254,9 @@ export default function AdminUsers() {
                     )}
                   </div>
                   
-                  {/* Expertise Tags - Show 2-5 fields */}
+                  {/* Expertise Tags - Relevant to user */}
                   <div className="flex flex-wrap gap-1 mb-2 justify-end">
-                    {['כלכלה', 'פוליטיקה', 'טכנולוגיה'].slice(0, Math.floor(Math.random() * 4) + 2).map((exp, i) => (
+                    {user.expertise?.slice(0, 5).map((exp: string, i: number) => (
                       <span key={i} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded font-medium">
                         {exp}
                       </span>
