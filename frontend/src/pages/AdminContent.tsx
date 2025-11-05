@@ -218,7 +218,11 @@ export default function AdminContent() {
             className="px-3 py-2 border rounded-lg"
           >
             <option value="all">כל המשתמשים</option>
-            <option value="demo-user">Demo User</option>
+            {users.map(user => (
+              <option key={user.user_id} value={user.user_id}>
+                {user.username} {isDemoUser(user.user_id) && '(דמו)'}
+              </option>
+            ))}
           </select>
           
           <button
