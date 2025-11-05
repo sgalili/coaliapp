@@ -10,6 +10,7 @@ export default function AdminContent() {
   const [tab, setTab] = useState<'posts' | 'decisions' | 'news'>('posts');
   const [posts, setPosts] = useState<any[]>([]);
   const [decisions, setDecisions] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterChannel, setFilterChannel] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
@@ -18,7 +19,27 @@ export default function AdminContent() {
 
   useEffect(() => {
     loadContent();
-  }, [tab, filterChannel, filterCategory, filterUser]); // Reload when filters change
+    loadUsers();
+  }, [tab, filterChannel, filterCategory, filterUser]);
+
+  const loadUsers = async () => {
+    try {
+      const { data } = await supabase
+        .from('demo_posts')
+        .select('user_id, username')
+        .order('username');
+      
+      // Get unique users
+      const uniqueUsers = Array.from(new Map(data?.map(u => [u.user_id, u])).values());
+      setUsers(uniqueUsers);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  };
+
+  const isDemoUser = (userId: string) => {
+    return userId?.startsWith('user-') || userId === 'demo-user';
+  }; // Reload when filters change
 
   const loadContent = async () => {
     try {
