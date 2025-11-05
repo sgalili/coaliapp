@@ -16,12 +16,12 @@ export default function AdminUsers() {
 
   const loadUsers = async () => {
     try {
-      // Get unique users from posts
+      // Get all posts with user info and aggregate stats
       const { data: postsData } = await supabase
         .from('demo_posts')
-        .select('user_id, username, profile_image, is_verified');
+        .select('user_id, username, profile_image, is_verified, expertise, trust_count, watch_count, vote_count, zooz_count');
       
-      // Group by user_id and get their post counts
+      // Group by user and calculate totals
       const userMap = new Map();
       
       for (const post of postsData || []) {
@@ -31,17 +31,29 @@ export default function AdminUsers() {
             username: post.username,
             profile_image: post.profile_image,
             is_verified: post.is_verified,
+            expertise: post.expertise ? [post.expertise] : [],
             post_count: 1,
+            total_trust: post.trust_count || 0,
+            total_views: post.watch_count || 0,
+            total_votes: post.vote_count || 0,
+            total_zooz: post.zooz_count || 0,
             is_demo: post.user_id?.startsWith('user-') || post.user_id === 'demo-user'
           });
         } else {
           const user = userMap.get(post.user_id);
           user.post_count++;
+          user.total_trust += post.trust_count || 0;
+          user.total_views += post.watch_count || 0;
+          user.total_votes += post.vote_count || 0;
+          user.total_zooz += post.zooz_count || 0;
+          if (post.expertise && !user.expertise.includes(post.expertise)) {
+            user.expertise.push(post.expertise);
+          }
         }
       }
       
       const uniqueUsers = Array.from(userMap.values());
-      console.log('👥 Loaded', uniqueUsers.length, 'users');
+      console.log('👥 Loaded', uniqueUsers.length, 'users with stats');
       setUsers(uniqueUsers);
     } catch (error) {
       console.error('Failed to load users:', error);
