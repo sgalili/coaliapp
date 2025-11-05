@@ -1347,7 +1347,7 @@ export default function Index() {
               console.log('📋 Menu toggled:', newState !== null);
               setOpenMenuPostId(newState);
             }}
-            className="w-8 h-8 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/40"
+            className="w-8 h-8 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/30 transition-colors"
           >
             <MoreVertical className="w-4 h-4 text-white" />
           </button>
