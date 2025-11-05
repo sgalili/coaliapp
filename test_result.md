@@ -200,6 +200,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "Implemented automatic label switching on homepage action buttons. Added state management (showTextLabels, isTransitioning), useEffect with 10-second cycle timer, conditional label rendering (Hebrew text vs numbers), and horizontal swish animation (swish-in/swish-out). Added subtle drop shadows to button circles. Code compiles without errors. Verified via TypeScript check and HMR logs."
+      - working: true
+        agent: "main"
+        comment: "Fixed transition smoothness issue. Removed circular backgrounds from all action buttons, now showing icons with dark drop-shadow filters. Changed animation from horizontal swish to smooth opacity fade to prevent layout jumping. Added min-width constraints and fixed-height label areas. Repositioned FAB (left-[6px], top-[46px]) and notification bell (left-[10px], top-4) as requested. All transitions now smooth with no shifting."
 
 backend:
   - task: "Backend setup"
