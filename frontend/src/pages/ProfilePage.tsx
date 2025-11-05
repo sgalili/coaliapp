@@ -97,7 +97,7 @@ export default function ProfilePage() {
             className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
           />
 
-          <h2 className="text-2xl font-bold mb-1">משתמש דמו</h2>
+          <h2 className="text-2xl font-bold mb-1">משתמש דמו מאומת</h2>
           <p className="text-sm text-muted-foreground mb-4" dir="ltr">demouser@</p>
 
           <div className="flex items-center justify-center gap-8 mb-6">
