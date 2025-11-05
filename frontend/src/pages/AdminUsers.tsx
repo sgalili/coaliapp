@@ -53,7 +53,7 @@ export default function AdminUsers() {
             username: post.username,
             profile_image: post.profile_image,
             is_verified: post.is_verified,
-            expertise: post.expertise ? [post.expertise] : [],
+            expertise: getRelevantExpertise(post.username || '', post.expertise || ''),
             post_count: 1,
             total_trust: post.trust_count || 0,
             total_views: post.watch_count || 0,
