@@ -274,8 +274,8 @@ export default function AdminContent() {
                   <div className="flex-1 text-right">
                     <div className="flex items-center gap-2 mb-2">
                       <p className="font-medium line-clamp-2">{post.caption}</p>
-                      {post.user_id === 'demo-user' && (
-                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">DEMO</span>
+                      {isDemoUser(post.user_id) && (
+                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">דמו</span>
                       )}
                     </div>
                     
