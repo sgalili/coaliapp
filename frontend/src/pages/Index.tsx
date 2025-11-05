@@ -1606,15 +1606,15 @@ export default function Index() {
                   e.stopPropagation();
                   handleShare(post);
                 }}
-                className="flex flex-col items-center gap-1"
+                className="flex flex-col items-center gap-1 min-w-[48px]"
               >
-                <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-                  <Share2 className="w-5 h-5 text-white" />
+                <div className="relative flex items-center justify-center">
+                  <Share2 className="w-6 h-6 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
                 </div>
-                <span className={cn(
-                  "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap",
-                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
-                )}>
+                <span 
+                  className="text-white text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]"
+                  style={{ opacity: isTransitioning ? 0 : 1 }}
+                >
                   {showTextLabels ? 'שתף' : ''}
                 </span>
               </button>
