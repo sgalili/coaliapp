@@ -1252,12 +1252,12 @@ export default function Index() {
         </div>
       )}
 
-      {/* FAB - Top left corner, always visible */}
+      {/* FAB - Top left corner, circle, 25% smaller */}
       <button
         onClick={handleFABClick}
-        className="fixed top-4 left-4 z-50 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed top-4 left-4 z-50 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform p-[15px]"
       >
-        <Plus className="w-5 h-5 text-white" />
+        <Plus className="w-4 h-4 text-white" />
       </button>
 
       {/* Top Center - Category and Decisions in same row */}
