@@ -1335,14 +1335,14 @@ export default function Index() {
       )}
 
       {/* Left Side Vertical Controls */}
-      {/* Notifications Bell - Vertically above FAB on left side */}
+      {/* Notifications Bell - Vertically above FAB on left side, enlarged by 20% */}
       <button
         onClick={() => navigate('/notifications')}
         className="fixed top-[26px] left-[10px] z-50 relative flex items-center"
       >
-        <Bell className="w-5 h-5 text-white drop-shadow-lg" />
+        <Bell className="w-6 h-6 text-white drop-shadow-lg" />
         {unreadNotifications > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+          <span className="absolute -top-1 right-0 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
             {unreadNotifications > 9 ? '9+' : unreadNotifications}
           </span>
         )}
