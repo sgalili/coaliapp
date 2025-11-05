@@ -9,6 +9,10 @@ export default function AdminUsers() {
   const navigate = useNavigate();
   const [users, setUsers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterVerified, setFilterVerified] = useState<string>('all');
+  const [filterDemo, setFilterDemo] = useState<string>('all');
+  const [filterExpertise, setFilterExpertise] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('recent');
 
   useEffect(() => {
     loadUsers();
