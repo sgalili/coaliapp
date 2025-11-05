@@ -1577,7 +1577,8 @@ export default function Index() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  navigate(`/profile`); // Navigate to profile page
+                  const userId = post.user_id || 'demo-user';
+                  navigate(`/profile/${userId}`);
                 }}
                 className="flex items-center gap-3 mb-3"
               >
