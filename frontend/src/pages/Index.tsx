@@ -641,6 +641,7 @@ export default function Index() {
         trustCount: post.trust_count || 0,
         watchCount: post.watch_count || 0,
         commentCount: post.comment_count || 0,
+        shareCount: post.share_count || 0,
         hasUserTrusted: false,
         hasUserWatched: false,
       }));
