@@ -559,40 +559,37 @@ export default function Index() {
     }
   }, [selectedChannel.id]);
 
-  // Dynamic action button labels - switch every 10 seconds
+  // Dynamic action button labels - cycle: 10s numbers → 3s text → repeat
   useEffect(() => {
-    const labelCycleInterval = setInterval(() => {
+    const runCycle = () => {
+      // Show text labels
       setIsTransitioning(true);
-      
-      // Wait for swish-out animation (300ms)
       setTimeout(() => {
-        setShowTextLabels(prev => !prev);
+        setShowTextLabels(true);
         setIsTransitioning(false);
       }, 300);
       
-    }, 10000); // Switch every 10 seconds
+      // After 3 seconds, switch back to numbers
+      setTimeout(() => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+          setShowTextLabels(false);
+          setIsTransitioning(false);
+        }, 300);
+      }, 3000);
+    };
 
-    // Text labels stay for 3 seconds, then switch back
-    let textLabelTimeout: NodeJS.Timeout;
+    // Run first cycle after 10 seconds
+    const initialTimeout = setTimeout(runCycle, 10000);
     
-    const checkTextLabel = setInterval(() => {
-      if (showTextLabels && !isTransitioning) {
-        textLabelTimeout = setTimeout(() => {
-          setIsTransitioning(true);
-          setTimeout(() => {
-            setShowTextLabels(false);
-            setIsTransitioning(false);
-          }, 300);
-        }, 3000); // Stay for 3 seconds
-      }
-    }, 100);
+    // Then repeat every 13 seconds (10s numbers + 3s text)
+    const cycleInterval = setInterval(runCycle, 13000);
 
     return () => {
-      clearInterval(labelCycleInterval);
-      clearInterval(checkTextLabel);
-      if (textLabelTimeout) clearTimeout(textLabelTimeout);
+      clearTimeout(initialTimeout);
+      clearInterval(cycleInterval);
     };
-  }, [showTextLabels, isTransitioning]);
+  }, []); // Empty dependency array - only run once on mount
 
   const loadPostsFromDB = async () => {
     setIsLoadingPosts(true);
