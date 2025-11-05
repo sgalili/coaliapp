@@ -1615,7 +1615,7 @@ export default function Index() {
                   className="text-white text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]"
                   style={{ opacity: isTransitioning ? 0 : 1 }}
                 >
-                  {showTextLabels ? 'שתף' : ''}
+                  {showTextLabels ? 'שיתוף' : formatCount(post.shareCount || 0)}
                 </span>
               </button>
             </div>
