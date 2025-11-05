@@ -1986,17 +1986,17 @@ export default function Index() {
                 {/* Also Post to Coali Checkbox */}
                 {selectedChannel.id !== null && (
                   <div className="p-4 bg-muted/30 rounded-lg">
-                    <label className="flex items-center justify-end gap-3 cursor-pointer">
-                      <div className="text-right">
-                        <p className="text-sm font-medium">פרסם גם בערוץ Coali הראשי</p>
-                        <p className="text-xs text-muted-foreground">התוכן יופיע גם בערוץ הראשי</p>
-                      </div>
+                    <label className="flex items-center gap-3 cursor-pointer" dir="rtl">
                       <input
                         type="checkbox"
                         checked={alsoPostToCoali}
                         onChange={(e) => setAlsoPostToCoali(e.target.checked)}
-                        className="w-5 h-5 rounded"
+                        className="w-5 h-5 rounded flex-shrink-0"
                       />
+                      <div className="text-right">
+                        <p className="text-sm font-medium">פרסם גם בערוץ Coali הראשי</p>
+                        <p className="text-xs text-muted-foreground">התוכן יופיע גם בערוץ הראשי</p>
+                      </div>
                     </label>
                   </div>
                 )}
