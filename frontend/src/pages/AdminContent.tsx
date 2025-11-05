@@ -256,7 +256,9 @@ export default function AdminContent() {
         {/* Posts List */}
         {tab === 'posts' && (
           <div className="space-y-3">
-            {filteredPosts.map(post => (
+            {filteredPosts
+              .filter(post => post.caption && post.username && post.video_url) // Only valid posts
+              .map(post => (
               <div key={post.id} className="p-4 bg-card border rounded-xl">
                 <div className="flex items-start gap-4">
                   {post.video_url && (
