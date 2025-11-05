@@ -1336,7 +1336,7 @@ export default function Index() {
         )}
       </button>
 
-      {/* Three-Dot Menu - Top left, same row */}
+      {/* Three-Dot Menu - Same style as speaker, same row */}
       {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
         <div className="fixed top-16 left-4 z-30">
           <button
@@ -1344,12 +1344,11 @@ export default function Index() {
               e.preventDefault();
               e.stopPropagation();
               const newState = openMenuPostId === uniquePosts[currentPostIndex]?.id ? null : uniquePosts[currentPostIndex]?.id;
-              console.log('📋 Menu toggled:', newState !== null);
               setOpenMenuPostId(newState);
             }}
-            className="w-8 h-8 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/30 transition-colors"
+            className="p-0"
           >
-            <MoreVertical className="w-4 h-4 text-white" />
+            <MoreVertical className="w-4 h-4 text-white drop-shadow-lg" />
           </button>
           
           {openMenuPostId === uniquePosts[currentPostIndex]?.id && (
