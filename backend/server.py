@@ -59,6 +59,10 @@ async def get_status_checks():
 from routes.news import router as news_router
 app.include_router(news_router, prefix="/api/news", tags=["News"])
 
+# Include whatsapp routes
+from routes.whatsapp import router as whatsapp_router
+app.include_router(whatsapp_router, prefix="/api/whatsapp", tags=["WhatsApp"])
+
 # Include the main router in the app
 app.include_router(api_router)
 
