@@ -83,9 +83,31 @@ export default function AdminUsers() {
     }
   };
 
-  const filteredUsers = users.filter(u => 
-    u.username?.includes(searchQuery)
-  );
+  const filteredUsers = users.filter(u => {
+    // Search filter
+    if (searchQuery && !u.username?.includes(searchQuery)) return false;
+    
+    // Verification filter
+    if (filterVerified === 'verified' && !u.is_verified) return false;
+    if (filterVerified === 'unverified' && u.is_verified) return false;
+    
+    // Demo filter
+    if (filterDemo === 'demo' && !u.is_demo) return false;
+    if (filterDemo === 'real' && u.is_demo) return false;
+    
+    // Expertise filter
+    if (filterExpertise !== 'all' && !u.expertise?.includes(filterExpertise)) return false;
+    
+    return true;
+  }).sort((a, b) => {
+    // Sorting
+    if (sortBy === 'trust') return b.total_trust - a.total_trust;
+    if (sortBy === 'votes') return b.total_votes - a.total_votes;
+    if (sortBy === 'views') return b.total_views - a.total_views;
+    if (sortBy === 'zooz') return b.total_zooz - a.total_zooz;
+    if (sortBy === 'posts') return b.post_count - a.post_count;
+    return 0; // recent (default DB order)
+  });
 
   return (
     <div className="min-h-screen bg-background pb-20">
