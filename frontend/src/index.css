@@ -394,35 +394,51 @@ All colors MUST be HSL.
     animation: slide-up 0.3s ease-out forwards;
   }
 
-  /* Smooth fade transition for action button labels */
-  @keyframes label-fade-in {
+  /* Dissolve transition for action button labels */
+  @keyframes label-dissolve-in {
     0% {
       opacity: 0;
+      filter: blur(4px);
+      transform: scale(0.95);
+    }
+    50% {
+      opacity: 0.5;
+      filter: blur(2px);
     }
     100% {
       opacity: 1;
+      filter: blur(0px);
+      transform: scale(1);
     }
   }
 
-  @keyframes label-fade-out {
+  @keyframes label-dissolve-out {
     0% {
       opacity: 1;
+      filter: blur(0px);
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      filter: blur(2px);
     }
     100% {
       opacity: 0;
+      filter: blur(4px);
+      transform: scale(0.95);
     }
   }
 
   .label-transition {
-    transition: opacity 0.3s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .label-entering {
-    animation: label-fade-in 0.3s ease-in-out forwards;
+    animation: label-dissolve-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .label-exiting {
-    animation: label-fade-out 0.3s ease-in-out forwards;
+    animation: label-dissolve-out 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 }
 
