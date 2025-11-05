@@ -1321,10 +1321,10 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
 
-      {/* Notifications Bell - Above FAB, 30px spacing, aligned with channel logo (middle) */}
+      {/* Notifications Bell - Aligned with channel logo horizontally, 30px above FAB */}
       <button
         onClick={() => navigate('/notifications')}
-        className="fixed top-[20px] left-[10px] z-50 relative flex items-center"
+        className="fixed top-4 left-[10px] z-50 relative flex items-center"
       >
         <Bell className="w-5 h-5 text-white drop-shadow-lg" />
         {unreadNotifications > 0 && (
