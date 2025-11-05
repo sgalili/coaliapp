@@ -18,7 +18,25 @@ export default function AdminUsers() {
     loadUsers();
   }, []);
 
-  const loadUsers = async () => {
+  const expertiseFields = [
+    'כלכלה', 'פוליטיקה', 'טכנולוגיה', 'ספורט', 'בריאות',
+    'חינוך', 'תרבות', 'מדע', 'אומנות', 'משפטים',
+    'ביטחון', 'סביבה', 'תקשורת', 'עסקים', 'תיירות',
+    'מוזיקה', 'ספרות', 'קולנוע', 'אדריכלות', 'אופנה'
+  ];
+
+  const getRelevantExpertise = (username: string, expertise: string) => {
+    // Smart assignment based on user
+    if (username.includes('נתניהו') || username.includes('פוליטי')) return ['פוליטיקה', 'ביטחון', 'משפטים'];
+    if (username.includes('זלקה') || username.includes('כלכל')) return ['כלכלה', 'עסקים', 'פיננסים'];
+    if (username.includes('ערוץ 10')) return ['תקשורת', 'עיתונאות', 'כלכלה'];
+    if (username.includes('מכבי') || username.includes('ספורט')) return ['ספורט', 'כדורסל', 'אימון'];
+    if (username.includes('אחווה') || username.includes('מכללה')) return ['חינוך', 'אקדמיה', 'מחקר'];
+    if (username.includes('רופא') || username.includes('בריאות')) return ['בריאות', 'רפואה', 'תזונה'];
+    
+    // Default random
+    return expertiseFields.slice(0, 3);
+  };
     try {
       // Get all posts with user info and aggregate stats
       const { data: postsData } = await supabase
