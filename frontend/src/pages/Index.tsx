@@ -1642,10 +1642,10 @@ export default function Index() {
               </button>
             </div>
 
-            {/* Bottom Left - Caption and Info - Responsive to nav */}
+            {/* Bottom Left - Caption and Info - Responsive to nav, moved 30px up */}
             <div className={cn(
               "absolute right-4 left-20 z-10 transition-all duration-300",
-              showNav ? "bottom-20" : "bottom-[30px]"
+              showNav ? "bottom-[110px]" : "bottom-[60px]"
             )}>
               {/* Profile and Name - Clickable */}
               <button
