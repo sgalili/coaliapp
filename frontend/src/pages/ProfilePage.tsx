@@ -42,7 +42,7 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto">
         <div className="relative p-6 text-center">
           <button className="absolute top-4 left-4 p-2 hover:bg-muted rounded-full">
-            <Settings className="w-5 h-5 text-muted-foreground" />
+            <Menu className="w-5 h-5 text-muted-foreground" />
           </button>
 
           <img
