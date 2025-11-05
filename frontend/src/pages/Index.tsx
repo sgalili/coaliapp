@@ -1300,8 +1300,8 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
 
-      {/* Top Center - Category and Decisions */}
-      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
+      {/* Top Center - Category and Decisions - Closer gap */}
+      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
         {/* Category Dropdown */}
         <CategoryDropdown
           categories={selectedChannel.categories}
