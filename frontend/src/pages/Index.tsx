@@ -1587,18 +1587,57 @@ export default function Index() {
             </div>
             
             <div className="p-6 space-y-4">
-              <div className="relative rounded-xl overflow-hidden bg-black" style={{ maxHeight: '300px' }}>
-                {editingPost.videoUrl ? (
-                  <video 
-                    src={editingPost.videoUrl} 
-                    controls 
-                    playsInline
-                    className="w-full h-full object-cover" 
-                  />
-                ) : (
-                  <img src={editingPost.imageUrl} className="w-full h-full object-cover" />
-                )}
+              {/* Video Preview - 9:16 portrait, 25% smaller */}
+              <div className="flex justify-center">
+                <div className="relative rounded-xl overflow-hidden bg-black w-[150px]" style={{ aspectRatio: '9/16' }}>
+                  {editingPost.videoUrl ? (
+                    <video 
+                      src={editingPost.videoUrl} 
+                      controls 
+                      playsInline
+                      className="w-full h-full object-cover" 
+                    />
+                  ) : (
+                    <img src={editingPost.imageUrl} className="w-full h-full object-cover" />
+                  )}
+                </div>
               </div>
+              
+              {/* Channel Info - Read-only */}
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <div className="flex items-center justify-end gap-3">
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground mb-0.5">מתפרסם בערוץ</p>
+                    <p className="font-bold text-sm">{selectedChannel.name}</p>
+                  </div>
+                  <img 
+                    src={selectedChannel.logo_url} 
+                    className="w-10 h-10 rounded-lg object-contain"
+                  />
+                </div>
+              </div>
+              
+              {/* Also Post to Coali - Only if not in Coali */}
+              {selectedChannel.id !== null && (
+                <div className="p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                  <label className="flex items-start justify-end gap-3 cursor-pointer">
+                    <div className="text-right flex-1">
+                      <p className="text-sm font-bold text-orange-900 mb-1">
+                        פרסם גם בערוץ Coali הראשי
+                      </p>
+                      <p className="text-xs text-orange-700">
+                        הפוסט יופיע גם בערוץ הראשי
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={alsoPostToCoali}
+                      onChange={(e) => setAlsoPostToCoali(e.target.checked)}
+                      className="w-6 h-6 rounded accent-primary mt-1"
+                    />
+                  </label>
+                </div>
+              )}
               
               <div>
                 <label className="block text-sm font-medium mb-2">כיתוב</label>
