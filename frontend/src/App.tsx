@@ -44,6 +44,7 @@ const App = () => (
             <Route path="/user/:userId/post/:postId" element={<PostDetailPage />} />
             <Route path="/toptrusted" element={<TopTrustedPage />} />
             <Route path="/decisions" element={<DecisionsPage />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             
             {/* Temporarily public for development - will add auth in Phase 2 */}
             <Route path="/messages" element={<MessagesPage />} />
