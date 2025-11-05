@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { ArrowLeft, Settings, Send, Download, CreditCard, Building2, TrendingUp, X, Search, CheckCircle } from "lucide-react";
+import { ArrowLeft, Settings, Send, Download, CreditCard, Building2, TrendingUp, X, Search, CheckCircle, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
