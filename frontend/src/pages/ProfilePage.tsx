@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { Settings, Heart, Eye, ShieldCheck, Handshake, Crown, Vote, Gavel, Menu } from "lucide-react";
+import { Settings, Heart, Eye, ShieldCheck, Handshake, Crown, Vote, Gavel, Menu, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function ProfilePage() {
