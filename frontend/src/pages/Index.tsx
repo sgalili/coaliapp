@@ -1369,10 +1369,10 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
 
-      {/* Mute Button - Below FAB, 25% larger, 30px down */}
+      {/* Mute Button - Vertically centered with FAB, 25px below */}
       <button
         onClick={toggleMute}
-        className="fixed top-[76px] left-4 p-0 z-10"
+        className="fixed top-[41px] left-4 p-0 z-10"
       >
         {globalMute ? (
           <VolumeX className="w-5 h-5 text-white drop-shadow-lg" />
@@ -1381,9 +1381,9 @@ export default function Index() {
         )}
       </button>
 
-      {/* Three-Dot Menu - Below speaker, aligned */}
+      {/* Three-Dot Menu - 25px below speaker */}
       {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
-        <div className="fixed top-[106px] left-4 z-30">
+        <div className="fixed top-[76px] left-4 z-30">
           <button
             onClick={(e) => {
               e.preventDefault();
