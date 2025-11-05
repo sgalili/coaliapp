@@ -1651,7 +1651,13 @@ export default function Index() {
               {/* Also Post to Coali - Only if not in Coali */}
               {selectedChannel.id !== null && (
                 <div className="p-4 bg-yellow-50 rounded-xl border border-yellow-200">
-                  <label className="flex items-start justify-end gap-3 cursor-pointer">
+                  <label className="flex items-start gap-3 cursor-pointer" dir="rtl">
+                    <input
+                      type="checkbox"
+                      checked={alsoPostToCoali}
+                      onChange={(e) => setAlsoPostToCoali(e.target.checked)}
+                      className="w-6 h-6 rounded accent-primary mt-1 flex-shrink-0"
+                    />
                     <div className="text-right flex-1">
                       <p className="text-sm font-bold text-orange-900 mb-1">
                         פרסם גם בערוץ Coali הראשי
@@ -1660,12 +1666,6 @@ export default function Index() {
                         הפוסט יופיע גם בערוץ הראשי
                       </p>
                     </div>
-                    <input
-                      type="checkbox"
-                      checked={alsoPostToCoali}
-                      onChange={(e) => setAlsoPostToCoali(e.target.checked)}
-                      className="w-6 h-6 rounded accent-primary mt-1"
-                    />
                   </label>
                 </div>
               )}
