@@ -51,6 +51,7 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/content" element={<AdminContent />} />
             <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/notifications" element={<AdminNotifications />} />
             
             {/* Temporarily public for development - will add auth in Phase 2 */}
             <Route path="/messages" element={<MessagesPage />} />
