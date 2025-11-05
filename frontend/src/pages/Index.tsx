@@ -1360,6 +1360,19 @@ export default function Index() {
           <span>{decisionsCount > 0 ? `${decisionsCount} ` : ''}</span>
           <span>החלטות</span>
         </button>
+
+        {/* Notification Bell - Same as Impact page */}
+        <button
+          onClick={() => navigate('/notifications')}
+          className="p-2 hover:bg-white/10 rounded-full transition-colors relative"
+        >
+          <Bell className="w-5 h-5 text-white drop-shadow-lg" />
+          {unreadNotifications > 0 && (
+            <span className="absolute -top-[1px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+              {unreadNotifications > 9 ? '9+' : unreadNotifications}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Top Right Corner - Channel Selector */}
