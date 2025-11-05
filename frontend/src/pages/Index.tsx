@@ -580,23 +580,23 @@ export default function Index() {
     }
   }, [selectedChannel.id]);
 
-  // Dynamic action button labels - cycle: 10s numbers → 3s text → repeat
+  // Dynamic action button labels - cycle: 10s numbers → 3s text → repeat with dissolve effect
   useEffect(() => {
     const runCycle = () => {
-      // Show text labels
+      // Show text labels with dissolve-in
       setIsTransitioning(true);
       setTimeout(() => {
         setShowTextLabels(true);
         setIsTransitioning(false);
-      }, 300);
+      }, 400); // Match dissolve animation duration
       
-      // After 3 seconds, switch back to numbers
+      // After 3 seconds, switch back to numbers with dissolve-out
       setTimeout(() => {
         setIsTransitioning(true);
         setTimeout(() => {
           setShowTextLabels(false);
           setIsTransitioning(false);
-        }, 300);
+        }, 400); // Match dissolve animation duration
       }, 3000);
     };
 
