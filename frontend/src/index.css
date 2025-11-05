@@ -393,6 +393,37 @@ All colors MUST be HSL.
   .animate-slide-up {
     animation: slide-up 0.3s ease-out forwards;
   }
+
+  /* Horizontal swish animation for action button labels */
+  @keyframes swish-in {
+    0% {
+      transform: translateX(30px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes swish-out {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-30px);
+      opacity: 0;
+    }
+  }
+
+  .animate-swish-in {
+    animation: swish-in 0.3s ease-out forwards;
+  }
+
+  .animate-swish-out {
+    animation: swish-out 0.3s ease-out forwards;
+  }
 }
 
 /* Dark category dropdown for Impact page */
