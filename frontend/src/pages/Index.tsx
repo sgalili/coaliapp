@@ -1531,19 +1531,19 @@ export default function Index() {
                     }
                   }
                 }}
-                className="flex flex-col items-center gap-1"
+                className="flex flex-col items-center gap-1 min-w-[48px]"
               >
-                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all relative shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-                  <Gift className="w-6 h-6 text-zooz" />
+                <div className="relative flex items-center justify-center">
+                  <Gift className="w-7 h-7 text-zooz drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
                   {/* Gold Z coin at top-right */}
                   <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-zooz rounded-full flex items-center justify-center border border-yellow-600">
                     <span className="text-[8px] font-bold text-yellow-900">Z</span>
                   </div>
                 </div>
-                <span className={cn(
-                  "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap",
-                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
-                )}>
+                <span 
+                  className="text-white text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]"
+                  style={{ opacity: isTransitioning ? 0 : 1 }}
+                >
                   {showTextLabels ? 'שלח ZOOZ' : formatCount(post.zoozCount || 0)}
                 </span>
               </button>
