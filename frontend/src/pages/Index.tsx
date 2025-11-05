@@ -1536,15 +1536,18 @@ export default function Index() {
                 }}
                 className="flex flex-col items-center gap-1"
               >
-                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all relative">
+                <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:bg-black/70 transition-all relative shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
                   <Gift className="w-6 h-6 text-zooz" />
                   {/* Gold Z coin at top-right */}
                   <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-zooz rounded-full flex items-center justify-center border border-yellow-600">
                     <span className="text-[8px] font-bold text-yellow-900">Z</span>
                   </div>
                 </div>
-                <span className="text-white text-xs font-bold drop-shadow-lg">
-                  {formatCount(post.zoozCount || 0)}
+                <span className={cn(
+                  "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap",
+                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
+                )}>
+                  {showTextLabels ? 'שלח ZOOZ' : formatCount(post.zoozCount || 0)}
                 </span>
               </button>
 
