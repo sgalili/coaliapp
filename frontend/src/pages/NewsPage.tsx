@@ -107,6 +107,7 @@ export default function NewsPage() {
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
   const [selectedExpert, setSelectedExpert] = useState<{ newsId: string; expertIndex: number } | null>(null);
+  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
