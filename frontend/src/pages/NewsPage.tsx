@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { ChannelSelector } from "@/components/ChannelSelector";
 import { CategoryDropdown } from "@/components/CategoryDropdown";
-import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share2, Handshake, Crown, X, CheckCircle, Search } from "lucide-react";
+import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share2, Handshake, Crown, X, CheckCircle, Search, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 import { useNavigate } from "react-router-dom";
