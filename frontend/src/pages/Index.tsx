@@ -1607,15 +1607,15 @@ export default function Index() {
               
               {/* Channel Info - Read-only */}
               <div className="p-4 bg-muted/30 rounded-xl">
-                <div className="flex items-center justify-start gap-3">
+                <div className="flex items-center justify-end gap-3">
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground mb-0.5">מתפרסם בערוץ</p>
+                    <p className="font-bold text-sm">{selectedChannel.name}</p>
+                  </div>
                   <img 
                     src={selectedChannel.logo_url} 
                     className="w-10 h-10 rounded-lg object-contain"
                   />
-                  <div className="text-left">
-                    <p className="text-xs text-muted-foreground mb-0.5">מתפרסם בערוץ</p>
-                    <p className="font-bold text-sm">{selectedChannel.name}</p>
-                  </div>
                 </div>
               </div>
               
