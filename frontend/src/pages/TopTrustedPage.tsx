@@ -78,13 +78,26 @@ export default function TopTrustedPage() {
             <h1 className="text-xl font-bold text-foreground">מובילים בקואלי</h1>
           </div>
           
-          {/* Left - Search Icon */}
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="p-2 hover:bg-muted rounded-full transition-colors"
-          >
-            <Search className="w-5 h-5 text-muted-foreground" />
-          </button>
+          {/* Left - Search & Bell Icons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-2 hover:bg-muted rounded-full transition-colors"
+            >
+              <Search className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <button
+              onClick={() => navigate('/notifications')}
+              className="p-2 hover:bg-muted rounded-full transition-colors relative"
+            >
+              <Bell className="w-5 h-5 text-muted-foreground" />
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-[1px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Time Filter Tabs */}
