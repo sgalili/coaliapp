@@ -1111,9 +1111,20 @@ export default function Index() {
     
     const newCount = (post.zoozCount || 0) + amount;
     
-    // Show confetti
+    // Show flying coins (max 25 for animation)
+    const coinCount = Math.min(amount, 25);
     setShowZoozConfetti(true);
-    setTimeout(() => setShowZoozConfetti(false), 2000);
+    
+    // Create individual coins with stagger
+    for (let i = 0; i < coinCount; i++) {
+      setTimeout(() => {
+        // Trigger animation via DOM event
+        const event = new CustomEvent('zoozCoin', { detail: { index: i } });
+        window.dispatchEvent(event);
+      }, i * 100); // Stagger each coin by 100ms
+    }
+    
+    setTimeout(() => setShowZoozConfetti(false), 3000);
     
     // Update balance
     setUserZoozBalance(prev => prev - amount);
