@@ -1590,7 +1590,7 @@ export default function Index() {
                   "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
                   post.hasUserWatched 
                     ? "bg-yellow-500 shadow-lg shadow-yellow-500/50" 
-                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50"
+                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50 shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
                 )}>
                   <Bookmark className={cn(
                     "w-5 h-5 text-white",
@@ -1598,10 +1598,11 @@ export default function Index() {
                   )} />
                 </div>
                 <span className={cn(
-                  "text-xs font-bold drop-shadow-lg",
-                  post.hasUserWatched ? "text-yellow-400" : "text-white"
+                  "text-xs font-bold drop-shadow-lg whitespace-nowrap",
+                  post.hasUserWatched ? "text-yellow-400" : "text-white",
+                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
                 )}>
-                  {formatCount(post.watchCount)}
+                  {showTextLabels ? 'הוסף למועדפים' : formatCount(post.watchCount)}
                 </span>
               </button>
 
