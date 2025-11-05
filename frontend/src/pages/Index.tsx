@@ -50,6 +50,7 @@ const originalCoaliPosts = [
     trustCount: 156800,
     watchCount: 890000,
     commentCount: 18900,
+    shareCount: 12400,
     hasUserTrusted: false,
     hasUserWatched: false,
   },
