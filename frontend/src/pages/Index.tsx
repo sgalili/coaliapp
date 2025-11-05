@@ -1335,12 +1335,24 @@ export default function Index() {
       )}
 
       {/* Left Side Vertical Controls */}
-      {/* FAB - Moved 45px up from 40px position */}
+      {/* FAB - Horizontally aligned with channel logo */}
       <button
         onClick={handleFABClick}
-        className="fixed -top-[5px] left-[10px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed top-4 left-[10px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
+      </button>
+
+      {/* Mute Button - Moved 10px up */}
+      <button
+        onClick={toggleMute}
+        className="fixed top-[60px] left-4 p-0 z-10"
+      >
+        {globalMute ? (
+          <VolumeX className="w-5 h-5 text-white drop-shadow-lg" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-white drop-shadow-lg" />
+        )}
       </button>
 
       {/* Top Center - Category and Decisions - Closer gap */}
