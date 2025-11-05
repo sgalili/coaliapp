@@ -1563,17 +1563,18 @@ export default function Index() {
                   "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative",
                   post.hasUserTrusted 
                     ? "bg-green-500 shadow-lg shadow-green-500/50" 
-                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50"
+                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50 shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
                 )}>
                   <Handshake className="w-6 h-6 text-white" />
                   {/* Crown inside circle at top-right */}
                   <Crown className="w-3 h-3 absolute top-1 right-1 text-yellow-400" />
                 </div>
                 <span className={cn(
-                  "text-xs font-bold drop-shadow-lg",
-                  post.hasUserTrusted ? "text-green-400" : "text-white"
+                  "text-xs font-bold drop-shadow-lg whitespace-nowrap",
+                  post.hasUserTrusted ? "text-green-400" : "text-white",
+                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
                 )}>
-                  {formatCount(post.trustCount)}
+                  {showTextLabels ? 'תן אמון' : formatCount(post.trustCount)}
                 </span>
               </button>
 
