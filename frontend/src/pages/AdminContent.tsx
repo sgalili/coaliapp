@@ -265,6 +265,27 @@ export default function AdminContent() {
         )}
       </div>
 
+      {/* Video Preview Modal */}
+      {previewVideo && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setPreviewVideo(null)}>
+          <div className="relative w-full max-w-md" style={{ aspectRatio: '9/16' }}>
+            <video
+              src={previewVideo}
+              controls
+              autoPlay
+              className="w-full h-full object-cover rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              onClick={() => setPreviewVideo(null)}
+              className="absolute top-4 right-4 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       <Navigation zoozBalance={999} />
     </div>
   );
