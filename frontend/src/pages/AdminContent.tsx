@@ -76,9 +76,21 @@ export default function AdminContent() {
     }
   };
 
-  const filteredPosts = posts.filter(p => 
-    p.caption?.includes(searchQuery) || p.username?.includes(searchQuery)
-  );
+  const filteredPosts = posts.filter(p => {
+    if (searchQuery && !p.caption?.includes(searchQuery) && !p.username?.includes(searchQuery)) {
+      return false;
+    }
+    if (filterChannel !== 'all' && p.channel_id !== filterChannel) {
+      return false;
+    }
+    if (filterCategory !== 'all' && p.category !== filterCategory) {
+      return false;
+    }
+    if (filterUser !== 'all' && p.user_id !== filterUser) {
+      return false;
+    }
+    return true;
+  });
 
   const filteredDecisions = decisions.filter(d => 
     d.title?.includes(searchQuery)
