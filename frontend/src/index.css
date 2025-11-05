@@ -429,7 +429,7 @@ All colors MUST be HSL.
   position: relative;
   display: flex;
   align-items: center;
-  justify-center;
+  justify-content: center;
   border: 2px solid #DAA520;
 }
 
