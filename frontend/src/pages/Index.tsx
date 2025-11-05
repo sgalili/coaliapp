@@ -1506,10 +1506,10 @@ export default function Index() {
         </div>
       )}
 
-            {/* Action Buttons - Responsive to nav visibility */}
+            {/* Action Buttons - Responsive to nav visibility, moved 30px up */}
             <div className={cn(
               "absolute left-4 flex flex-col gap-6 transition-all duration-300",
-              showNav ? "bottom-[84px]" : "bottom-[30px]"
+              showNav ? "bottom-[114px]" : "bottom-[60px]"
             )}>
               {/* Zooz Button - Hold for 3 seconds */}
               <button
