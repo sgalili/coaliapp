@@ -194,10 +194,17 @@ export default function AdminNotifications() {
 
               <button
                 onClick={sendNotification}
-                className="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 flex items-center justify-center gap-2"
+                disabled={isSending}
+                className="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                <Send className="w-4 h-4" />
-                שלח התראה
+                {isSending ? (
+                  <>טוען...</>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    {sendMethod === 'whatsapp' ? 'שלח WhatsApp' : 'שלח התראה'}
+                  </>
+                )}
               </button>
             </div>
           </div>
