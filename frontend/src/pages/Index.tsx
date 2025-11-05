@@ -487,6 +487,8 @@ export default function Index() {
   const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState('00:00');
+  const [showTextLabels, setShowTextLabels] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
   const videoRef = useRef<HTMLVideoElement>(null);
