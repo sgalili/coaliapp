@@ -1634,14 +1634,14 @@ export default function Index() {
                 </div>
               </div>
               
-              {/* Channel Info - RTL layout */}
+              {/* Channel Info */}
               <div className="p-4 bg-muted/30 rounded-xl">
-                <div className="flex items-center gap-3" dir="ltr">
+                <div className="flex items-center gap-3" dir="rtl">
                   <img 
                     src={selectedChannel.logo_url} 
                     className="w-10 h-10 rounded-lg object-contain"
                   />
-                  <div className="text-left">
+                  <div className="text-right">
                     <p className="text-xs text-muted-foreground mb-0.5">מתפרסם בערוץ</p>
                     <p className="font-bold text-sm">{selectedChannel.name}</p>
                   </div>
