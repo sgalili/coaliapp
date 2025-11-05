@@ -1099,15 +1099,24 @@ export default function Index() {
     }
   };
 
-  const sendZooz = async (postId: string) => {
+  const sendZooz = async (postId: string, amount: number = 1) => {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
     
-    const newCount = (post.zoozCount || 0) + 1;
+    // Check balance
+    if (userZoozBalance < amount) {
+      toast.error('אין מספיק ZOOZ');
+      return;
+    }
     
-    // Show confetti animation
+    const newCount = (post.zoozCount || 0) + amount;
+    
+    // Show confetti
     setShowZoozConfetti(true);
     setTimeout(() => setShowZoozConfetti(false), 2000);
+    
+    // Update balance
+    setUserZoozBalance(prev => prev - amount);
     
     // Optimistic update
     setPosts(posts.map(p => 
@@ -1116,12 +1125,13 @@ export default function Index() {
     
     try {
       await updatePostEngagement(postId, 'zooz_count', newCount);
-      toast.success('שלחת 1 Zooz! 💰');
+      toast.success(`שלחת ${amount} ZOOZ! 💰`);
     } catch (error) {
-      console.error('Failed to send Zooz:', error);
+      console.error('Failed to send ZOOZ:', error);
       setPosts(posts.map(p => 
         p.id === postId ? { ...p, zoozCount: post.zoozCount } : p
       ));
+      setUserZoozBalance(prev => prev + amount);
     }
   };
 
