@@ -1581,24 +1581,21 @@ export default function Index() {
                   e.stopPropagation();
                   toggleWatch(post.id);
                 }}
-                className="flex flex-col items-center gap-1"
+                className="flex flex-col items-center gap-1 min-w-[48px]"
               >
-                <div className={cn(
-                  "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200",
-                  post.hasUserWatched 
-                    ? "bg-yellow-500 shadow-lg shadow-yellow-500/50" 
-                    : "bg-black/30 backdrop-blur-sm hover:bg-black/50 shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                )}>
+                <div className="relative flex items-center justify-center">
                   <Bookmark className={cn(
-                    "w-5 h-5 text-white",
-                    post.hasUserWatched && "fill-white"
-                  )} />
+                    "w-6 h-6 transition-all duration-200",
+                    post.hasUserWatched ? "text-yellow-400 fill-yellow-400" : "text-white"
+                  )} style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
                 </div>
-                <span className={cn(
-                  "text-xs font-bold drop-shadow-lg whitespace-nowrap",
-                  post.hasUserWatched ? "text-yellow-400" : "text-white",
-                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
-                )}>
+                <span 
+                  className={cn(
+                    "text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]",
+                    post.hasUserWatched ? "text-yellow-400" : "text-white"
+                  )}
+                  style={{ opacity: isTransitioning ? 0 : 1 }}
+                >
                   {showTextLabels ? 'הוסף למועדפים' : formatCount(post.watchCount)}
                 </span>
               </button>
