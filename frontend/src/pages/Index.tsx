@@ -1278,10 +1278,24 @@ export default function Index() {
         </div>
       )}
 
-      {/* FAB - Subtle, thin plus */}
+      {/* Left Side Vertical Controls - Perfectly Aligned */}
+      {/* Notifications Bell - Top */}
+      <button
+        onClick={() => navigate('/notifications')}
+        className="fixed top-4 left-4 z-50 relative"
+      >
+        <Bell className="w-5 h-5 text-white drop-shadow-lg" />
+        {unreadNotifications > 0 && (
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+            {unreadNotifications > 9 ? '9+' : unreadNotifications}
+          </span>
+        )}
+      </button>
+
+      {/* FAB - 30px below bell */}
       <button
         onClick={handleFABClick}
-        className="fixed top-4 left-4 z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed top-[46px] left-4 z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
