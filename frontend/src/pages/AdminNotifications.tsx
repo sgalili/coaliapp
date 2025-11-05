@@ -11,6 +11,9 @@ export default function AdminNotifications() {
   const [targetType, setTargetType] = useState<'all' | 'channel' | 'user'>('all');
   const [targetChannel, setTargetChannel] = useState('');
   const [targetUser, setTargetUser] = useState('');
+  const [sendMethod, setSendMethod] = useState<'push' | 'whatsapp'>('push');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
   const templates = [
     { id: 1, title: 'פוסט חדש', body: 'יש לך פוסט חדש מ-{username}' },
