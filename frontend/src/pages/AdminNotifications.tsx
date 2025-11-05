@@ -28,24 +28,51 @@ export default function AdminNotifications() {
       return;
     }
 
-    try {
-      // In production: Send via push notification service
-      // For demo: Just show success
-      console.log('📤 Sending notification:', {
-        title: notifTitle,
-        body: notifBody,
-        target: targetType,
-        channel: targetChannel,
-        user: targetUser
-      });
+    if (sendMethod === 'whatsapp' && !phoneNumber) {
+      toast.error('נא להזין מספר טלפון');
+      return;
+    }
 
-      toast.success('ההתראה נשלחה!');
+    setIsSending(true);
+
+    try {
+      if (sendMethod === 'whatsapp') {
+        // Send WhatsApp message
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+        
+        const response = await fetch(`${BACKEND_URL}/api/whatsapp/send-message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone_number: phoneNumber,
+            message: `*${notifTitle}*\n\n${notifBody}`
+          })
+        });
+        
+        if (!response.ok) throw new Error('WhatsApp send failed');
+        
+        const result = await response.json();
+        console.log('WhatsApp sent:', result);
+        toast.success('הודעת WhatsApp נשלחה!');
+      } else {
+        // Send push notification (demo)
+        console.log('📤 Sending push notification:', {
+          title: notifTitle,
+          body: notifBody,
+          target: targetType
+        });
+        toast.success('ההתראה נשלחה!');
+      }
       
       // Clear form
       setNotifTitle('');
       setNotifBody('');
+      setPhoneNumber('');
     } catch (error) {
+      console.error('Send failed:', error);
       toast.error('שליחה נכשלה');
+    } finally {
+      setIsSending(false);
     }
   };
 
