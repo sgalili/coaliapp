@@ -278,8 +278,19 @@ export default function NewsPage() {
             />
           </div>
           
-          {/* Left - Search & Refresh Icons */}
+          {/* Left - Bell, Search & Refresh Icons */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/notifications')}
+              className="p-2 hover:bg-muted rounded-full transition-colors relative"
+            >
+              <Bell className="w-5 h-5 text-muted-foreground" />
+              {unreadNotifications > 0 && (
+                <span className="absolute top-1 right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                </span>
+              )}
+            </button>
             <button
               onClick={refreshNews}
               disabled={isRefreshing}
