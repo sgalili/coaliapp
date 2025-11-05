@@ -98,7 +98,7 @@ export default function ProfilePage() {
             <div className="text-center">
               <div className="flex items-center gap-1 justify-center mb-1">
                 <Gavel className="w-5 h-5 text-purple-600" />
-                <p className="text-2xl font-bold">0</p>
+                <p className="text-2xl font-bold">{stats.decisions}</p>
               </div>
               <p className="text-xs text-muted-foreground">החלטות</p>
             </div>
