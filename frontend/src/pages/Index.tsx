@@ -601,11 +601,9 @@ export default function Index() {
       
       console.log('✅ Valid:', validPosts.length);
       
-      // Combine with sample posts
-      const allPosts = [...validPosts, ...samplePosts];
-      
-      // Remove duplicates
-      const uniqueByID = allPosts.filter((post, index, self) => 
+      // DON'T combine with samplePosts - only use database
+      // Remove duplicates just in case
+      const uniqueByID = validPosts.filter((post, index, self) => 
         index === self.findIndex(p => p.id === post.id)
       );
       
