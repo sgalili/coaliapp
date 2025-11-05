@@ -559,6 +559,41 @@ export default function Index() {
     }
   }, [selectedChannel.id]);
 
+  // Dynamic action button labels - switch every 10 seconds
+  useEffect(() => {
+    const labelCycleInterval = setInterval(() => {
+      setIsTransitioning(true);
+      
+      // Wait for swish-out animation (300ms)
+      setTimeout(() => {
+        setShowTextLabels(prev => !prev);
+        setIsTransitioning(false);
+      }, 300);
+      
+    }, 10000); // Switch every 10 seconds
+
+    // Text labels stay for 3 seconds, then switch back
+    let textLabelTimeout: NodeJS.Timeout;
+    
+    const checkTextLabel = setInterval(() => {
+      if (showTextLabels && !isTransitioning) {
+        textLabelTimeout = setTimeout(() => {
+          setIsTransitioning(true);
+          setTimeout(() => {
+            setShowTextLabels(false);
+            setIsTransitioning(false);
+          }, 300);
+        }, 3000); // Stay for 3 seconds
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(labelCycleInterval);
+      clearInterval(checkTextLabel);
+      if (textLabelTimeout) clearTimeout(textLabelTimeout);
+    };
+  }, [showTextLabels, isTransitioning]);
+
   const loadPostsFromDB = async () => {
     setIsLoadingPosts(true);
     try {
