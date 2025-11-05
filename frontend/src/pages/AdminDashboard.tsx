@@ -14,6 +14,40 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ posts: 0, users: 0, decisions: 0, channels: 4 });
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      // Get total posts
+      const { count: postsCount } = await supabase
+        .from('demo_posts')
+        .select('*', { count: 'exact', head: true });
+      
+      // Get unique users
+      const { data: postsData } = await supabase
+        .from('demo_posts')
+        .select('user_id');
+      const uniqueUsers = new Set(postsData?.map(p => p.user_id));
+      
+      // Get total decisions
+      const { count: decisionsCount } = await supabase
+        .from('demo_decisions')
+        .select('*', { count: 'exact', head: true });
+      
+      setStats({
+        posts: postsCount || 0,
+        users: uniqueUsers.size || 0,
+        decisions: decisionsCount || 0,
+        channels: 4
+      });
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+    }
+  };
 
   const adminSections = [
     { id: 'overview', icon: LayoutDashboard, label: 'סקירה כללית', path: '/admin' },
