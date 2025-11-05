@@ -17,6 +17,7 @@ import DecisionsPage from "./pages/DecisionsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminContent from "./pages/AdminContent";
 import AdminUsers from "./pages/AdminUsers";
+import AdminNotifications from "./pages/AdminNotifications";
 import DataManagementPage from "./pages/DataManagementPage";
 import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import InviteFriendsPage from "./pages/InviteFriendsPage";
