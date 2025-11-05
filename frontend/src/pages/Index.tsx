@@ -1300,7 +1300,7 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
 
-      {/* Top Center - Category, Decisions, and Notifications */}
+      {/* Top Center - Category and Decisions */}
       <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
         {/* Category Dropdown */}
         <CategoryDropdown
@@ -1318,19 +1318,6 @@ export default function Index() {
           {decisionsCount > 0 && (
             <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1.5 rounded-full text-[10px] font-bold bg-red-500 text-white">
               {decisionsCount > 9 ? '9+' : decisionsCount}
-            </span>
-          )}
-        </button>
-        
-        {/* Notifications Bell */}
-        <button
-          onClick={() => navigate('/notifications')}
-          className="relative p-2 hover:opacity-80 transition-opacity"
-        >
-          <Bell className="w-5 h-5 text-white" />
-          {unreadNotifications > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
-              {unreadNotifications > 9 ? '9+' : unreadNotifications}
             </span>
           )}
         </button>
