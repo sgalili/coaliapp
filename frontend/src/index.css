@@ -400,18 +400,48 @@ All colors MUST be HSL.
   color: hsl(var(--foreground)) !important;
 }
 
-/* Zooz confetti animation - falls down naturally */
-@keyframes zooz-fall {
+/* Zooz flying coins animation - from button to top center */
+@keyframes zooz-fly {
   0% {
     opacity: 1;
-    transform: translateY(-20px) rotate(0deg);
+    transform: translate(0, 0) scale(1) rotate(0deg);
   }
   100% {
     opacity: 0;
-    transform: translateY(100vh) rotate(360deg);
+    transform: translate(var(--tx), -100vh) scale(0.5) rotate(720deg);
   }
 }
 
-.animate-zooz-fall {
-  animation: zooz-fall 2.5s ease-in forwards;
+.animate-zooz-fly {
+  animation: zooz-fly 2s ease-out forwards;
+}
+
+/* 3D Gold Coin with engraved Z */
+.zooz-coin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(255, 165, 0, 0.6);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-center;
+  border: 2px solid #DAA520;
+}
+
+.zooz-coin::before {
+  content: 'Z';
+  font-size: 24px;
+  font-weight: bold;
+  color: #8B6914;
+  text-shadow: 
+    0 1px 0 #FFD700,
+    0 -1px 0 #8B6914,
+    1px 0 0 #8B6914,
+    -1px 0 0 #8B6914;
+  font-family: 'Varela Round', sans-serif;
 }
