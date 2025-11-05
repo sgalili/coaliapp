@@ -554,14 +554,16 @@ export default function Index() {
   const loadPostsFromDB = async () => {
     setIsLoadingPosts(true);
     try {
-      console.log('📥 Loading posts from database...');
-      const dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
-      console.log('✅ Loaded', dbPosts.length, 'posts from database');
+      console.log('📥 Loading posts - Channel:', selectedChannel.id, 'Category:', selectedCategory);
       
-      // Map database fields to component format
+      // Fetch from database with current filters
+      const dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
+      console.log('✅ DB returned', dbPosts.length, 'posts');
+      
+      // Map database fields
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
-        user_id: post.user_id, // Keep for owner check
+        user_id: post.user_id,
         username: post.username,
         expertise: post.expertise,
         profileImage: post.profile_image,
@@ -582,37 +584,38 @@ export default function Index() {
         hasUserWatched: false,
       }));
       
-      // Filter out invalid posts
+      console.log('✅ Mapped', mappedPosts.length, 'posts');
+      
+      // Filter valid posts
       const validPosts = mappedPosts.filter(post => {
         const hasMedia = post.videoUrl || post.imageUrl;
-        const hasRequiredFields = post.id && post.username && post.category;
+        const hasRequired = post.id && post.username && post.category;
         const hasValidUrl = post.videoUrl?.trim() || post.imageUrl?.trim();
-        
-        return hasMedia && hasRequiredFields && hasValidUrl;
+        return hasMedia && hasRequired && hasValidUrl;
       });
       
-      console.log(`📊 Filtered ${mappedPosts.length} → ${validPosts.length} valid posts`);
+      console.log('✅ Valid:', validPosts.length);
       
       // Combine with sample posts
       const allPosts = [...validPosts, ...samplePosts];
       
-      // Remove duplicates by ID
+      // Remove duplicates
       const uniqueByID = allPosts.filter((post, index, self) => 
         index === self.findIndex(p => p.id === post.id)
       );
       
+      console.log('✅ Final posts:', uniqueByID.length);
       setPosts(uniqueByID);
       
-      // Always scroll to top when posts load
+      // Scroll to top
       setTimeout(() => {
         if (containerRef.current) {
           containerRef.current.scrollTop = 0;
           setCurrentPostIndex(0);
-          console.log('✅ Scrolled to first post');
         }
       }, 100);
     } catch (error) {
-      console.error('Failed to load posts:', error);
+      console.error('Load failed:', error);
       setPosts(samplePosts);
     } finally {
       setIsLoadingPosts(false);
