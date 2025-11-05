@@ -97,6 +97,49 @@ export default function AdminNotifications() {
             
             <div className="space-y-4">
               <div>
+                <label className="block text-sm font-medium mb-2">אמצעי שליחה</label>
+                <div className="flex gap-3 mb-4">
+                  <button
+                    onClick={() => setSendMethod('push')}
+                    className={`flex-1 py-2 px-4 rounded-lg font-medium ${
+                      sendMethod === 'push' 
+                        ? 'bg-primary text-white' 
+                        : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    📱 Push
+                  </button>
+                  <button
+                    onClick={() => setSendMethod('whatsapp')}
+                    className={`flex-1 py-2 px-4 rounded-lg font-medium ${
+                      sendMethod === 'whatsapp' 
+                        ? 'bg-green-600 text-white' 
+                        : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    💬 WhatsApp
+                  </button>
+                </div>
+              </div>
+
+              {sendMethod === 'whatsapp' && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">מספר טלפון</label>
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg"
+                    placeholder="972501234567"
+                    dir="ltr"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    פורמט: 972 + מספר ללא מקף
+                  </p>
+                </div>
+              )}
+
+              <div>
                 <label className="block text-sm font-medium mb-2">כותרת</label>
                 <input
                   type="text"
