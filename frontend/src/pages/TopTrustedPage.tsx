@@ -36,6 +36,7 @@ export default function TopTrustedPage() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
