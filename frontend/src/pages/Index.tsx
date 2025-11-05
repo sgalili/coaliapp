@@ -1563,8 +1563,10 @@ export default function Index() {
                   </div>
                 </div>
                 <span 
-                  className="text-white text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]"
-                  style={{ opacity: isTransitioning ? 0 : 1 }}
+                  className={cn(
+                    "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
+                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
+                  )}
                 >
                   {showTextLabels ? 'ZOOZ' : formatCount(post.zoozCount || 0)}
                 </span>
