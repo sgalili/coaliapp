@@ -15,6 +15,7 @@ export default function ProfilePage() {
 
   const loadUserPosts = async () => {
     try {
+      // Fetch demo user's posts
       const { data, error } = await supabase
         .from('demo_posts')
         .select('*')
@@ -23,17 +24,34 @@ export default function ProfilePage() {
       
       if (error) throw error;
       
-      console.log('📊 Loaded', data?.length, 'user posts');
+      console.log('📊 User posts loaded:', data?.length);
       setUserPosts(data || []);
       
+      // Calculate stats from posts
       if (data && data.length > 0) {
         const totalTrust = data.reduce((sum, p) => sum + (p.trust_count || 0), 0);
         const totalVotes = data.reduce((sum, p) => sum + (p.vote_count || 0), 0);
         const totalWatch = data.reduce((sum, p) => sum + (p.watch_count || 0), 0);
+        
         setStats({ trust: totalTrust, votes: totalVotes, watch: totalWatch });
       }
+      
+      // Fetch decisions participated in
+      const { data: decisionsData } = await supabase
+        .from('demo_decisions')
+        .select('*')
+        .eq('has_voted', true); // Get decisions where user has voted
+      
+      // For demo, count all decisions as participated
+      const { count } = await supabase
+        .from('demo_decisions')
+        .select('*', { count: 'exact', head: true });
+      
+      console.log('🗳️ Total decisions:', count);
+      setStats(prev => ({ ...prev, decisions: count || 0 }));
+      
     } catch (error) {
-      console.error('Failed to load posts:', error);
+      console.error('Failed to load user data:', error);
     }
   };
 
