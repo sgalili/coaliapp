@@ -23,16 +23,47 @@ export default function AdminContent() {
   const loadContent = async () => {
     try {
       if (tab === 'posts') {
-        const { data } = await supabase
+        let query = supabase
           .from('demo_posts')
           .select('*')
           .order('created_at', { ascending: false });
+        
+        // Apply filters to query
+        if (filterChannel !== 'all') {
+          if (filterChannel === 'null') {
+            query = query.is('channel_id', null);
+          } else {
+            query = query.eq('channel_id', filterChannel);
+          }
+        }
+        
+        if (filterCategory !== 'all') {
+          query = query.eq('category', filterCategory);
+        }
+        
+        if (filterUser !== 'all') {
+          query = query.eq('user_id', filterUser);
+        }
+        
+        const { data } = await query;
+        console.log('📊 Loaded', data?.length, 'posts with filters');
         setPosts(data || []);
       } else if (tab === 'decisions') {
-        const { data } = await supabase
+        let query = supabase
           .from('demo_decisions')
           .select('*')
           .order('created_at', { ascending: false });
+        
+        if (filterChannel !== 'all') {
+          if (filterChannel === 'null') {
+            query = query.is('channel_id', null);
+          } else {
+            query = query.eq('channel_id', filterChannel);
+          }
+        }
+        
+        const { data } = await query;
+        console.log('📊 Loaded', data?.length, 'decisions with filters');
         setDecisions(data || []);
       }
     } catch (error) {
