@@ -1312,11 +1312,19 @@ export default function Index() {
         </div>
       )}
 
-      {/* Left Side Vertical Controls - Perfectly Aligned */}
-      {/* Notifications Bell - Top */}
+      {/* Left Side Vertical Controls */}
+      {/* FAB - Moved 10px up and 10px left from original position */}
+      <button
+        onClick={handleFABClick}
+        className="fixed top-[36px] left-[6px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+      >
+        <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
+      </button>
+
+      {/* Notifications Bell - Above FAB, 30px spacing, aligned with channel logo (middle) */}
       <button
         onClick={() => navigate('/notifications')}
-        className="fixed top-4 left-4 z-50 relative"
+        className="fixed top-[20px] left-[10px] z-50 relative flex items-center"
       >
         <Bell className="w-5 h-5 text-white drop-shadow-lg" />
         {unreadNotifications > 0 && (
@@ -1324,14 +1332,6 @@ export default function Index() {
             {unreadNotifications > 9 ? '9+' : unreadNotifications}
           </span>
         )}
-      </button>
-
-      {/* FAB - 30px below bell */}
-      <button
-        onClick={handleFABClick}
-        className="fixed top-[46px] left-4 z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
-      >
-        <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
 
       {/* Top Center - Category and Decisions - Closer gap */}
