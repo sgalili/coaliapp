@@ -1252,15 +1252,15 @@ export default function Index() {
         </div>
       )}
 
-      {/* FAB - Floating Action Button - 15px above bottom nav */}
+      {/* FAB - Top left corner, matching channel selector size */}
       <button
         onClick={handleFABClick}
         className={cn(
-          "fixed bottom-[79px] left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300",
+          "fixed top-4 left-4 z-50 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300",
           !showNav && "translate-y-24 opacity-0"
         )}
       >
-        <Plus className="w-6 h-6 text-white" />
+        <Plus className="w-5 h-5 text-white" />
       </button>
 
       {/* Top Center - Category and Decisions in same row */}
