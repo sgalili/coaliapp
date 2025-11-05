@@ -11,6 +11,10 @@ export default function AdminContent() {
   const [posts, setPosts] = useState<any[]>([]);
   const [decisions, setDecisions] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterChannel, setFilterChannel] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterUser, setFilterUser] = useState<string>('all');
+  const [previewVideo, setPreviewVideo] = useState<string | null>(null);
 
   useEffect(() => {
     loadContent();
