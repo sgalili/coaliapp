@@ -11,6 +11,35 @@ export default function ProfilePage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     loadUserPosts();
+    
+    // Real-time subscription for posts
+    const postsSubscription = supabase
+      .channel('profile-posts')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'demo_posts', filter: `user_id=eq.demo-user` },
+        () => {
+          console.log('🔄 Posts changed, reloading...');
+          loadUserPosts();
+        }
+      )
+      .subscribe();
+    
+    // Real-time subscription for decisions
+    const decisionsSubscription = supabase
+      .channel('profile-decisions')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'demo_decisions' },
+        () => {
+          console.log('🔄 Decisions changed, reloading...');
+          loadUserPosts();
+        }
+      )
+      .subscribe();
+    
+    return () => {
+      postsSubscription.unsubscribe();
+      decisionsSubscription.unsubscribe();
+    };
   }, []);
 
   const loadUserPosts = async () => {
