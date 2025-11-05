@@ -36,6 +36,8 @@ export default function AdminUsers() {
     
     // Default random
     return expertiseFields.slice(0, 3);
+  };
+
   const loadUsers = async () => {
     try {
       // Get all posts with user info and aggregate stats
