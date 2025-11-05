@@ -1435,11 +1435,47 @@ export default function Index() {
               "absolute left-4 flex flex-col gap-6 transition-all duration-300",
               showNav ? "bottom-[84px]" : "bottom-[30px]"
             )}>
-              {/* Zooz Button - Gift with Z coin overlay */}
+              {/* Zooz Button - Hold for 3 seconds */}
               <button
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.stopPropagation();
-                  sendZooz(post.id);
+                  const timer = setTimeout(() => {
+                    console.log('⏱️ 3 seconds - opening selector');
+                    setCurrentZoozPost(post.id);
+                    setShowZoozSelector(true);
+                  }, 3000);
+                  setZoozPressTimer(timer);
+                }}
+                onMouseUp={(e) => {
+                  e.stopPropagation();
+                  if (zoozPressTimer) {
+                    clearTimeout(zoozPressTimer);
+                    setZoozPressTimer(null);
+                    
+                    // If selector not open, send 1 ZOOZ
+                    if (!showZoozSelector) {
+                      sendZooz(post.id, 1);
+                    }
+                  }
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  const timer = setTimeout(() => {
+                    setCurrentZoozPost(post.id);
+                    setShowZoozSelector(true);
+                  }, 3000);
+                  setZoozPressTimer(timer);
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  if (zoozPressTimer) {
+                    clearTimeout(zoozPressTimer);
+                    setZoozPressTimer(null);
+                    
+                    if (!showZoozSelector) {
+                      sendZooz(post.id, 1);
+                    }
+                  }
                 }}
                 className="flex flex-col items-center gap-1"
               >
