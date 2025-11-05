@@ -170,9 +170,9 @@ export default function AdminUsers() {
             className="px-3 py-2 border rounded-lg"
           >
             <option value="all">כל התחומים</option>
-            <option value="כלכלה">כלכלה</option>
-            <option value="פוליטיקה">פוליטיקה</option>
-            <option value="טכנולוגיה">טכנולוגיה</option>
+            {expertiseFields.map(field => (
+              <option key={field} value={field}>{field}</option>
+            ))}
           </select>
           
           <select
