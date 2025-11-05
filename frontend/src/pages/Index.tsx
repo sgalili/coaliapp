@@ -1614,9 +1614,15 @@ export default function Index() {
                 }}
                 className="flex flex-col items-center gap-1"
               >
-                <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200">
+                <div className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
                   <Share2 className="w-5 h-5 text-white" />
                 </div>
+                <span className={cn(
+                  "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap",
+                  isTransitioning && (showTextLabels ? "animate-swish-out" : "animate-swish-in")
+                )}>
+                  {showTextLabels ? 'שתף' : ''}
+                </span>
               </button>
             </div>
 
