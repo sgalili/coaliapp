@@ -124,6 +124,66 @@ export default function AdminUsers() {
           <div className="w-10" />
         </div>
 
+        {/* Filters */}
+        <div className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-3">
+          <select
+            value={filterVerified}
+            onChange={(e) => setFilterVerified(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="all">כל המשתמשים</option>
+            <option value="verified">מאומתים 🏅</option>
+            <option value="unverified">לא מאומתים</option>
+          </select>
+          
+          <select
+            value={filterDemo}
+            onChange={(e) => setFilterDemo(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="all">הכל</option>
+            <option value="demo">דמו בלבד</option>
+            <option value="real">אמיתיים בלבד</option>
+          </select>
+          
+          <select
+            value={filterExpertise}
+            onChange={(e) => setFilterExpertise(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="all">כל התחומים</option>
+            <option value="כלכלה">כלכלה</option>
+            <option value="פוליטיקה">פוליטיקה</option>
+            <option value="טכנולוגיה">טכנולוגיה</option>
+          </select>
+          
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="recent">לפי תאריך</option>
+            <option value="trust">לפי אמון</option>
+            <option value="votes">לפי הצבעות</option>
+            <option value="views">לפי צפיות</option>
+            <option value="zooz">לפי ZOOZ</option>
+            <option value="posts">לפי פוסטים</option>
+          </select>
+          
+          <button
+            onClick={() => {
+              setFilterVerified('all');
+              setFilterDemo('all');
+              setFilterExpertise('all');
+              setSortBy('recent');
+              setSearchQuery('');
+            }}
+            className="px-3 py-2 bg-muted hover:bg-muted/80 rounded-lg"
+          >
+            נקה
+          </button>
+        </div>
+
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
