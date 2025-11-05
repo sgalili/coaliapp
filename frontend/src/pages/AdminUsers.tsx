@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { ArrowLeft, Search, Trash2, Edit2, Shield, Ban } from "lucide-react";
+import { ArrowLeft, Search, Trash2, Edit2, Shield, Ban, Medal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
