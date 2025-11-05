@@ -1309,17 +1309,13 @@ export default function Index() {
           onCategoryChange={setSelectedCategory}
         />
         
-        {/* החלטות Button */}
+        {/* החלטות Button - Text style */}
         <button
           onClick={() => navigate('/decisions')}
-          className="flex items-center gap-1.5 px-2 py-2 text-white font-semibold text-base transition-opacity hover:opacity-80"
+          className="flex items-center gap-1 px-2 py-2 text-white font-semibold text-base transition-opacity hover:opacity-80"
         >
+          <span>{decisionsCount > 0 ? `${decisionsCount} ` : ''}</span>
           <span>החלטות</span>
-          {decisionsCount > 0 && (
-            <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1.5 rounded-full text-[10px] font-bold bg-red-500 text-white">
-              {decisionsCount > 9 ? '9+' : decisionsCount}
-            </span>
-          )}
         </button>
       </div>
 
