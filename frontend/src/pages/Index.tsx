@@ -1590,10 +1590,10 @@ export default function Index() {
                 </div>
                 <span 
                   className={cn(
-                    "text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]",
-                    post.hasUserTrusted ? "text-green-400" : "text-white"
+                    "text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
+                    post.hasUserTrusted ? "text-green-400" : "text-white",
+                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
                   )}
-                  style={{ opacity: isTransitioning ? 0 : 1 }}
                 >
                   {showTextLabels ? 'תן אמון' : formatCount(post.trustCount)}
                 </span>
