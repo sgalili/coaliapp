@@ -135,6 +135,53 @@ export default function AdminContent() {
           </button>
         </div>
 
+        {/* Filters */}
+        <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <select
+            value={filterChannel}
+            onChange={(e) => setFilterChannel(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="all">כל הערוצים</option>
+            <option value={null as any}>Coali</option>
+            <option value="channel-10-economy">ערוץ 10</option>
+            <option value="channel-achva">אחווה</option>
+            <option value="channel-maccabi">מכבי</option>
+          </select>
+          
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="all">כל הקטגוריות</option>
+            <option value="משחקים">משחקים</option>
+            <option value="לימודים">לימודים</option>
+            <option value="הרצאות">הרצאות</option>
+          </select>
+          
+          <select
+            value={filterUser}
+            onChange={(e) => setFilterUser(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          >
+            <option value="all">כל המשתמשים</option>
+            <option value="demo-user">Demo User</option>
+          </select>
+          
+          <button
+            onClick={() => {
+              setFilterChannel('all');
+              setFilterCategory('all');
+              setFilterUser('all');
+              setSearchQuery('');
+            }}
+            className="px-3 py-2 bg-muted hover:bg-muted/80 rounded-lg"
+          >
+            נקה סינון
+          </button>
+        </div>
+
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
