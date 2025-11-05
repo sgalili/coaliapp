@@ -302,6 +302,7 @@ export default function AdminUsers() {
           ))}
         </div>
       </div>
+    </div>
 
       <Navigation zoozBalance={999} />
     </div>
