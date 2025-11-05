@@ -18,7 +18,7 @@ export default function AdminContent() {
 
   useEffect(() => {
     loadContent();
-  }, [tab]);
+  }, [tab, filterChannel, filterCategory, filterUser]); // Reload when filters change
 
   const loadContent = async () => {
     try {
