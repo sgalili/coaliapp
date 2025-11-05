@@ -1636,8 +1636,10 @@ export default function Index() {
                   <Share2 className="w-6 h-6 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
                 </div>
                 <span 
-                  className="text-white text-xs font-bold drop-shadow-lg whitespace-nowrap label-transition min-h-[16px]"
-                  style={{ opacity: isTransitioning ? 0 : 1 }}
+                  className={cn(
+                    "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
+                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
+                  )}
                 >
                   {showTextLabels ? 'שיתוף' : formatCount(post.shareCount || 0)}
                 </span>
