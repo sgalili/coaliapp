@@ -1252,13 +1252,10 @@ export default function Index() {
         </div>
       )}
 
-      {/* FAB - Top left corner, matching channel selector size */}
+      {/* FAB - Top left corner, always visible */}
       <button
         onClick={handleFABClick}
-        className={cn(
-          "fixed top-4 left-4 z-50 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300",
-          !showNav && "translate-y-24 opacity-0"
-        )}
+        className="fixed top-4 left-4 z-50 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus className="w-5 h-5 text-white" />
       </button>
