@@ -1252,12 +1252,12 @@ export default function Index() {
         </div>
       )}
 
-      {/* FAB - Larger plus icon */}
+      {/* FAB - Subtle, thin plus */}
       <button
         onClick={handleFABClick}
-        className="fixed top-4 left-4 z-50 w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed top-4 left-4 z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
-        <Plus className="w-6 h-6 text-white" />
+        <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
 
       {/* Top Center - Category and Decisions in same row */}
