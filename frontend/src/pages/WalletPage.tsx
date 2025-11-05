@@ -67,6 +67,7 @@ export default function WalletPage() {
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [requestAmount, setRequestAmount] = useState('');
   const [requestNote, setRequestNote] = useState('');
+  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
   
   // Buy/Withdraw modals
   const [showBuyModal, setShowBuyModal] = useState(false);
