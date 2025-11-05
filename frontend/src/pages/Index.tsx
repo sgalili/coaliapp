@@ -1451,10 +1451,10 @@ export default function Index() {
                 onMouseDown={(e) => {
                   e.stopPropagation();
                   const timer = setTimeout(() => {
-                    console.log('⏱️ 3 seconds - opening selector');
+                    console.log('⏱️ 2 seconds - opening selector');
                     setCurrentZoozPost(post.id);
                     setShowZoozSelector(true);
-                  }, 3000);
+                  }, 2000); // 2 seconds
                   setZoozPressTimer(timer);
                 }}
                 onMouseUp={(e) => {
@@ -1474,7 +1474,7 @@ export default function Index() {
                   const timer = setTimeout(() => {
                     setCurrentZoozPost(post.id);
                     setShowZoozSelector(true);
-                  }, 3000);
+                  }, 2000); // 2 seconds
                   setZoozPressTimer(timer);
                 }}
                 onTouchEnd={(e) => {
