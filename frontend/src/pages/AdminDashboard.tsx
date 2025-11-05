@@ -86,19 +86,19 @@ export default function AdminDashboard() {
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-card border rounded-xl">
             <p className="text-sm text-muted-foreground mb-1">סך פוסטים</p>
-            <p className="text-2xl font-bold">21</p>
+            <p className="text-2xl font-bold">{stats.posts}</p>
           </div>
           <div className="p-4 bg-card border rounded-xl">
             <p className="text-sm text-muted-foreground mb-1">משתמשים</p>
-            <p className="text-2xl font-bold">1</p>
+            <p className="text-2xl font-bold">{stats.users}</p>
           </div>
           <div className="p-4 bg-card border rounded-xl">
             <p className="text-sm text-muted-foreground mb-1">החלטות</p>
-            <p className="text-2xl font-bold">14</p>
+            <p className="text-2xl font-bold">{stats.decisions}</p>
           </div>
           <div className="p-4 bg-card border rounded-xl">
             <p className="text-sm text-muted-foreground mb-1">ערוצים</p>
-            <p className="text-2xl font-bold">4</p>
+            <p className="text-2xl font-bold">{stats.channels}</p>
           </div>
         </div>
       </div>
