@@ -1448,17 +1448,7 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
 
-      {/* Mute Button - 30px below FAB */}
-      <button
-        onClick={toggleMute}
-        className="fixed top-[70px] left-4 p-0 z-10"
-      >
-        {globalMute ? (
-          <VolumeX className="w-5 h-5 text-white drop-shadow-lg" />
-        ) : (
-          <Volume2 className="w-5 h-5 text-white drop-shadow-lg" />
-        )}
-      </button>
+      {/* Mute Button moved to top with FAB */}
 
       {/* Three-Dot Menu - 30px below speaker */}
       {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
