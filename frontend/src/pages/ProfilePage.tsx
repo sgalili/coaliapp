@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 export default function ProfilePage() {
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [stats, setStats] = useState({ trust: 0, votes: 0, watch: 0, decisions: 0 });
+  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
