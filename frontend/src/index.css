@@ -394,35 +394,35 @@ All colors MUST be HSL.
     animation: slide-up 0.3s ease-out forwards;
   }
 
-  /* Horizontal swish animation for action button labels */
-  @keyframes swish-in {
+  /* Smooth fade transition for action button labels */
+  @keyframes label-fade-in {
     0% {
-      transform: translateX(30px);
       opacity: 0;
     }
     100% {
-      transform: translateX(0);
       opacity: 1;
     }
   }
 
-  @keyframes swish-out {
+  @keyframes label-fade-out {
     0% {
-      transform: translateX(0);
       opacity: 1;
     }
     100% {
-      transform: translateX(-30px);
       opacity: 0;
     }
   }
 
-  .animate-swish-in {
-    animation: swish-in 0.3s ease-out forwards;
+  .label-transition {
+    transition: opacity 0.3s ease-in-out;
   }
 
-  .animate-swish-out {
-    animation: swish-out 0.3s ease-out forwards;
+  .label-entering {
+    animation: label-fade-in 0.3s ease-in-out forwards;
+  }
+
+  .label-exiting {
+    animation: label-fade-out 0.3s ease-in-out forwards;
   }
 }
 
