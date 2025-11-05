@@ -92,8 +92,18 @@ export default function ProfilePage() {
                   {post.video_url && (
                     <video src={post.video_url} className="w-full h-full object-cover" />
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 p-2">
-                    <p className="text-white text-xs">🛡️ {post.trust_count || 0}</p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
+                    <div className="flex items-center justify-between text-white text-xs">
+                      <div className="flex items-center gap-1">
+                        <Eye className="w-3 h-3" />
+                        <span>{post.watch_count || 0}</span>
+                      </div>
+                      <div className="flex items-center gap-1 relative">
+                        <Handshake className="w-3 h-3" />
+                        <Crown className="w-2 h-2 absolute -top-0.5 -right-0.5 text-yellow-400" />
+                        <span className="ml-1">{post.trust_count || 0}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
