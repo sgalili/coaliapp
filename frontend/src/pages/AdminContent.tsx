@@ -201,38 +201,63 @@ export default function AdminContent() {
         {tab === 'posts' && (
           <div className="space-y-3">
             {filteredPosts.map(post => (
-              <div key={post.id} className="p-4 bg-card border rounded-xl flex items-center gap-4">
-                {post.video_url && (
-                  <button
-                    onClick={() => setPreviewVideo(post.video_url)}
-                    className="relative w-24 h-32 rounded overflow-hidden flex-shrink-0 hover:opacity-90"
-                  >
-                    <video src={post.video_url} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <Eye className="w-6 h-6 text-white" />
+              <div key={post.id} className="p-4 bg-card border rounded-xl">
+                <div className="flex items-start gap-4">
+                  {post.video_url && (
+                    <button
+                      onClick={() => setPreviewVideo(post.video_url)}
+                      className="relative w-24 h-32 rounded overflow-hidden flex-shrink-0 hover:opacity-90"
+                    >
+                      <video src={post.video_url} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                        <Eye className="w-6 h-6 text-white" />
+                      </div>
+                    </button>
+                  )}
+                  
+                  <div className="flex-1 text-right">
+                    <div className="flex items-center gap-2 mb-2">
+                      <p className="font-medium line-clamp-2">{post.caption}</p>
+                      {post.user_id === 'demo-user' && (
+                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">DEMO</span>
+                      )}
                     </div>
-                  </button>
-                )}
-                <div className="flex-1 text-right">
-                  <p className="font-medium line-clamp-2">{post.caption}</p>
-                  <p className="text-sm text-muted-foreground">{post.username}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {post.channel_id || 'Coali'} • {post.category}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => toast.info('Edit coming soon')}
-                    className="p-2 hover:bg-muted rounded"
-                  >
-                    <Edit2 className="w-4 h-4 text-primary" />
-                  </button>
-                  <button
-                    onClick={() => deletePost(post.id)}
-                    className="p-2 hover:bg-red-50 rounded"
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </button>
+                    
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <p>👤 {post.username}</p>
+                      <p>📺 {post.channel_id || 'Coali'}</p>
+                      <p>📂 {post.category}</p>
+                      <p>📅 {new Date(post.created_at).toLocaleString('he-IL')}</p>
+                      <div className="flex gap-4 mt-2">
+                        <span>👁️ {post.watch_count || 0}</span>
+                        <span>🤝 {post.trust_count || 0}</span>
+                        <span>🗳️ {post.vote_count || 0}</span>
+                        <span>💬 {post.comment_count || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => navigate(`/profile`)}
+                      className="p-2 hover:bg-muted rounded"
+                      title="פרופיל משתמש"
+                    >
+                      👤
+                    </button>
+                    <button
+                      onClick={() => toast.info('עריכה בפיתוח')}
+                      className="p-2 hover:bg-muted rounded"
+                    >
+                      <Edit2 className="w-4 h-4 text-primary" />
+                    </button>
+                    <button
+                      onClick={() => deletePost(post.id)}
+                      className="p-2 hover:bg-red-50 rounded"
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
