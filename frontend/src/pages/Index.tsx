@@ -1523,7 +1523,12 @@ export default function Index() {
                 </div>
               </button>
 
-              {/* Caption */}
+              {/* Caption - With edit timestamp if edited */}
+              {post.updated_at && post.updated_at !== post.created_at && (
+                <p className="text-white/60 text-xs drop-shadow-lg mb-1">
+                  נערך {formatTimeAgo(post.updated_at)}
+                </p>
+              )}
               <p className="text-white text-sm leading-relaxed mb-2 drop-shadow-lg">
                 {post.caption}
               </p>
