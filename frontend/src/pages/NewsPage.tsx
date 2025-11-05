@@ -310,7 +310,7 @@ export default function NewsPage() {
             >
               <Bell className="w-5 h-5 text-muted-foreground" />
               {unreadNotifications > 0 && (
-                <span className="absolute -top-[6px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                <span className="absolute -top-[1px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
                   {unreadNotifications > 9 ? '9+' : unreadNotifications}
                 </span>
               )}
