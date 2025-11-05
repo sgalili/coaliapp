@@ -453,6 +453,7 @@ export default function Index() {
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [decisionsCount, setDecisionsCount] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
