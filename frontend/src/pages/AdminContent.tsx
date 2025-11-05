@@ -203,7 +203,15 @@ export default function AdminContent() {
             {filteredPosts.map(post => (
               <div key={post.id} className="p-4 bg-card border rounded-xl flex items-center gap-4">
                 {post.video_url && (
-                  <video src={post.video_url} className="w-24 h-32 object-cover rounded" />
+                  <button
+                    onClick={() => setPreviewVideo(post.video_url)}
+                    className="relative w-24 h-32 rounded overflow-hidden flex-shrink-0 hover:opacity-90"
+                  >
+                    <video src={post.video_url} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                      <Eye className="w-6 h-6 text-white" />
+                    </div>
+                  </button>
                 )}
                 <div className="flex-1 text-right">
                   <p className="font-medium line-clamp-2">{post.caption}</p>
