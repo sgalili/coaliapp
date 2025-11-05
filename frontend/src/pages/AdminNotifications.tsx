@@ -37,10 +37,10 @@ export default function AdminNotifications() {
 
     try {
       if (sendMethod === 'whatsapp') {
-        // Send WhatsApp message
-        const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL || 'https://trust-network-ui.preview.emergentagent.com';
+        // Send WhatsApp message - use production backend URL
+        const BACKEND_URL = 'https://trust-network-ui.preview.emergentagent.com';
         
-        console.log('📤 Sending WhatsApp to:', BACKEND_URL);
+        console.log('📤 Sending WhatsApp via:', BACKEND_URL);
         
         const response = await fetch(`${BACKEND_URL}/api/whatsapp/send-message`, {
           method: 'POST',
