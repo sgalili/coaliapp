@@ -1335,10 +1335,10 @@ export default function Index() {
       )}
 
       {/* Left Side Vertical Controls */}
-      {/* FAB - Moved 20px down from previous position (36px + 20px = 56px) */}
+      {/* FAB - 40px from top of screen */}
       <button
         onClick={handleFABClick}
-        className="fixed top-[56px] left-[10px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed top-[40px] left-[10px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
@@ -1436,10 +1436,10 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40 pointer-events-none" />
 
 
-      {/* Mute Button - 30px below FAB (56px + 30px = 86px, then +20px = 106px) */}
+      {/* Mute Button - 30px below FAB */}
       <button
         onClick={toggleMute}
-        className="fixed top-[108px] left-4 p-0 z-10"
+        className="fixed top-[70px] left-4 p-0 z-10"
       >
         {globalMute ? (
           <VolumeX className="w-5 h-5 text-white drop-shadow-lg" />
@@ -1448,9 +1448,9 @@ export default function Index() {
         )}
       </button>
 
-      {/* Three-Dot Menu - 30px below speaker (108px + 30px = 138px, then +20px = 150px) */}
+      {/* Three-Dot Menu - 30px below speaker */}
       {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
-        <div className="fixed top-[150px] left-4 z-30">
+        <div className="fixed top-[100px] left-4 z-30">
           <button
             onClick={(e) => {
               e.preventDefault();
