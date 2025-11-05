@@ -1825,6 +1825,75 @@ export default function Index() {
         </div>
       )}
 
+      {/* ZOOZ Amount Selector */}
+      {showZoozSelector && currentZoozPost && (
+        <div className="fixed inset-0 bg-black/70 z-[80] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6">
+            <h3 className="text-xl font-bold text-center mb-4">שלח ZOOZ</h3>
+            
+            <div className="mb-6">
+              <p className="text-sm text-muted-foreground text-center mb-2">
+                היתרה שלך: {userZoozBalance}Z
+              </p>
+              
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <button
+                  onClick={() => setSelectedZoozAmount(Math.max(1, selectedZoozAmount - 1))}
+                  className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-2xl"
+                >
+                  -
+                </button>
+                
+                <div className="text-center">
+                  <p className="text-5xl font-bold text-zooz">{selectedZoozAmount}</p>
+                  <p className="text-sm text-muted-foreground">ZOOZ</p>
+                </div>
+                
+                <button
+                  onClick={() => setSelectedZoozAmount(Math.min(userZoozBalance, selectedZoozAmount + 1))}
+                  className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-2xl"
+                >
+                  +
+                </button>
+              </div>
+              
+              <input
+                type="range"
+                min="1"
+                max={userZoozBalance}
+                value={selectedZoozAmount}
+                onChange={(e) => setSelectedZoozAmount(parseInt(e.target.value))}
+                className="w-full"
+              />
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowZoozSelector(false);
+                  setSelectedZoozAmount(1);
+                  setCurrentZoozPost(null);
+                }}
+                className="flex-1 py-3 bg-gray-100 rounded-lg font-medium"
+              >
+                ביטול
+              </button>
+              <button
+                onClick={() => {
+                  sendZooz(currentZoozPost, selectedZoozAmount);
+                  setShowZoozSelector(false);
+                  setSelectedZoozAmount(1);
+                  setCurrentZoozPost(null);
+                }}
+                className="flex-1 py-3 bg-primary text-white rounded-lg font-medium"
+              >
+                שלח {selectedZoozAmount}Z
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Options Menu */}
       {showOptionsMenu && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center md:justify-center">
