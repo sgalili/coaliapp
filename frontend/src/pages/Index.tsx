@@ -1596,7 +1596,7 @@ export default function Index() {
                   )}
                   style={{ opacity: isTransitioning ? 0 : 1 }}
                 >
-                  {showTextLabels ? 'הוסף למועדפים' : formatCount(post.watchCount)}
+                  {showTextLabels ? 'הוספה' : formatCount(post.watchCount)}
                 </span>
               </button>
 
