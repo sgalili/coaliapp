@@ -1313,10 +1313,10 @@ export default function Index() {
       )}
 
       {/* Left Side Vertical Controls */}
-      {/* FAB - Moved 10px up and 10px left from original position */}
+      {/* FAB - 30px below notification bell, moved 10px left from original */}
       <button
         onClick={handleFABClick}
-        className="fixed top-[36px] left-[6px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed top-[46px] left-[6px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
