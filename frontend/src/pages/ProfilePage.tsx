@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
             <div className="text-center">
               <div className="flex items-center gap-1 justify-center mb-1">
-                <Vote className="w-5 h-5 text-primary" />
+                <img src="/vote.png" alt="Vote" className="w-6 h-6 brightness-0 invert" />
                 <p className="text-2xl font-bold">{stats.votes}</p>
               </div>
               <p className="text-xs text-muted-foreground">הצבעות</p>
