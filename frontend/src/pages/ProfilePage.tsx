@@ -64,8 +64,8 @@ export default function ProfilePage() {
             </div>
 
             <div className="text-center">
-              <div className="flex items-center gap-1 justify-center mb-1">
-                <div className="w-11 h-11 rounded-full backdrop-blur-sm flex items-center justify-center bg-white/20">
+              <div className="flex flex-col items-center gap-0.5">
+                <div className="w-11 h-11 rounded-full backdrop-blur-sm flex items-center justify-center bg-white/20 mb-1">
                   <img src="/vote.png" alt="Vote" className="w-6 h-6 brightness-0 invert" />
                 </div>
                 <p className="text-2xl font-bold">{stats.votes}</p>
