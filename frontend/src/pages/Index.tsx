@@ -1885,21 +1885,38 @@ export default function Index() {
               </div>
 
               <div className="space-y-4">
-                {/* Video/Image Preview */}
-                <div className="relative bg-muted rounded-lg overflow-hidden">
-                  {selectedVideo.type.startsWith('video/') ? (
-                    <video
-                      src={URL.createObjectURL(selectedVideo)}
-                      controls
-                      className="w-full max-h-[400px] object-contain"
+                {/* Video/Image Preview - 9:16 portrait, smaller */}
+                <div className="flex justify-center">
+                  <div className="relative bg-muted rounded-lg overflow-hidden w-[150px]" style={{ aspectRatio: '9/16' }}>
+                    {selectedVideo.type.startsWith('video/') ? (
+                      <video
+                        src={URL.createObjectURL(selectedVideo)}
+                        controls
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={URL.createObjectURL(selectedVideo)}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Channel Info - Read-only */}
+                <div className="p-4 bg-primary/5 rounded-xl border border-primary/20">
+                  <div className="flex items-center justify-end gap-3">
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground mb-0.5">מתפרסם לערוץ</p>
+                      <p className="font-bold text-sm text-primary">{selectedChannel.name}</p>
+                    </div>
+                    <img 
+                      src={selectedChannel.logo_url} 
+                      className="w-10 h-10 rounded-lg object-contain"
                     />
-                  ) : (
-                    <img
-                      src={URL.createObjectURL(selectedVideo)}
-                      alt="Preview"
-                      className="w-full max-h-[400px] object-contain"
-                    />
-                  )}
+                  </div>
                 </div>
 
                 {/* Caption */}
