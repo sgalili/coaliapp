@@ -1343,10 +1343,10 @@ export default function Index() {
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
 
-      {/* Mute Button - Moved 10px up */}
+      {/* Mute Button - Moved 25px down */}
       <button
         onClick={toggleMute}
-        className="fixed top-[60px] left-4 p-0 z-10"
+        className="fixed top-[85px] left-4 p-0 z-10"
       >
         {globalMute ? (
           <VolumeX className="w-5 h-5 text-white drop-shadow-lg" />
