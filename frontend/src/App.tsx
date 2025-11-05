@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/decisions" element={<DecisionsPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/content" element={<AdminContent />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
             
             {/* Temporarily public for development - will add auth in Phase 2 */}
             <Route path="/messages" element={<MessagesPage />} />
