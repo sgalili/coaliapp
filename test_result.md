@@ -189,6 +189,18 @@ frontend:
         agent: "main"
         comment: "Supabase client configured with URL and anon key. Auth persistence enabled with localStorage"
 
+  - task: "Dynamic action button labels with animation"
+    implemented: true
+    working: true
+    file: "src/pages/Index.tsx, src/index.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implemented automatic label switching on homepage action buttons. Added state management (showTextLabels, isTransitioning), useEffect with 10-second cycle timer, conditional label rendering (Hebrew text vs numbers), and horizontal swish animation (swish-in/swish-out). Added subtle drop shadows to button circles. Code compiles without errors. Verified via TypeScript check and HMR logs."
+
 backend:
   - task: "Backend setup"
     implemented: true
