@@ -1335,10 +1335,10 @@ export default function Index() {
       )}
 
       {/* Left Side Vertical Controls */}
-      {/* FAB - 40px from top of screen */}
+      {/* FAB - Moved 45px up from 40px position */}
       <button
         onClick={handleFABClick}
-        className="fixed top-[40px] left-[10px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed -top-[5px] left-[10px] z-50 w-8 h-8 bg-gradient-to-br from-primary/50 to-primary/40 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus className="w-6 h-6 text-white opacity-85" strokeWidth={1.5} />
       </button>
