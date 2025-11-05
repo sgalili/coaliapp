@@ -51,20 +51,21 @@ export default function ProfilePage() {
           />
 
           <h2 className="text-2xl font-bold mb-1">משתמש דמו</h2>
-          <p className="text-sm text-muted-foreground mb-4">@demouser</p>
+          <p className="text-sm text-muted-foreground mb-4" dir="ltr">demouser@</p>
 
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
-              <div className="flex items-center gap-1 justify-center mb-1">
-                <ShieldCheck className="w-5 h-5 text-trust" />
-                <p className="text-2xl font-bold">{stats.trust}</p>
+              <div className="flex items-center gap-1 justify-center mb-1 relative">
+                <Handshake className="w-5 h-5 text-trust" />
+                <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
+                <p className="text-2xl font-bold ml-2">{stats.trust}</p>
               </div>
               <p className="text-xs text-muted-foreground">אמון</p>
             </div>
 
             <div className="text-center">
               <div className="flex items-center gap-1 justify-center mb-1">
-                <Heart className="w-5 h-5 text-primary" />
+                <Vote className="w-5 h-5 text-primary" />
                 <p className="text-2xl font-bold">{stats.votes}</p>
               </div>
               <p className="text-xs text-muted-foreground">הצבעות</p>
@@ -72,10 +73,10 @@ export default function ProfilePage() {
 
             <div className="text-center">
               <div className="flex items-center gap-1 justify-center mb-1">
-                <Eye className="w-5 h-5 text-watch" />
-                <p className="text-2xl font-bold">{stats.watch}</p>
+                <Gavel className="w-5 h-5 text-purple-600" />
+                <p className="text-2xl font-bold">0</p>
               </div>
-              <p className="text-xs text-muted-foreground">צפיות</p>
+              <p className="text-xs text-muted-foreground">החלטות</p>
             </div>
           </div>
         </div>
