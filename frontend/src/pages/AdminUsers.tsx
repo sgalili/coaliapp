@@ -149,10 +149,27 @@ export default function AdminUsers() {
                       <Shield className="w-4 h-4 text-trust" />
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {user.post_count} פוסטים
-                  </p>
-                  <p className="text-xs text-muted-foreground">
+                  
+                  {/* Expertise Tags */}
+                  {user.expertise && user.expertise.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2 justify-end">
+                      {user.expertise.slice(0, 5).map((exp: string, i: number) => (
+                        <span key={i} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
+                          {exp}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-4 text-sm text-muted-foreground">
+                    <span>📝 {user.post_count}</span>
+                    <span>🤝 {user.total_trust}</span>
+                    <span>👁️ {user.total_views}</span>
+                    <span>🗳️ {user.total_votes}</span>
+                    <span>💰 {user.total_zooz}Z</span>
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground mt-1">
                     {user.user_id}
                   </p>
                 </div>
