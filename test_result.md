@@ -221,3 +221,5 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Phase 1 (Foundation) Complete: Successfully set up Coali rebuild with exact design matching https://trust.coali.app/. All mandatory configuration steps completed (vite.config, package.json, emergent.yml). Design system with exact HSL colors configured. RTL Hebrew support enabled. Bottom navigation with 5 tabs working. All routes configured. Supabase integrated. Ready for Phase 2."
+  - agent: "main"
+    message: "Dynamic Action Button Labels Feature Implemented: Added automatic label switching on homepage action buttons. Numbers switch to Hebrew text labels ('שלח ZOOZ', 'תן אמון', 'הוסף למועדפים', 'שתף') every 10 seconds, stay for 3 seconds, then transition back with horizontal swish animation. Also added subtle black drop shadows (shadow-[0_2px_8px_rgba(0,0,0,0.4)]) to all vertical action button circles. Code compiles successfully with no TypeScript errors. HMR working correctly. Preview infrastructure has nginx misconfiguration (not related to code changes)."
