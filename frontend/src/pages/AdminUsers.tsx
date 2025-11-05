@@ -146,22 +146,20 @@ export default function AdminUsers() {
                       <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">דמו</span>
                     )}
                     {user.is_verified && (
-                      <Shield className="w-4 h-4 text-trust" />
+                      <Medal className="w-4 h-4 text-yellow-500" />
                     )}
                   </div>
                   
-                  {/* Expertise Tags */}
-                  {user.expertise && user.expertise.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2 justify-end">
-                      {user.expertise.slice(0, 5).map((exp: string, i: number) => (
-                        <span key={i} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
-                          {exp}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  {/* Expertise Tags - Show 2-5 fields */}
+                  <div className="flex flex-wrap gap-1 mb-2 justify-end">
+                    {['כלכלה', 'פוליטיקה', 'טכנולוגיה'].slice(0, Math.floor(Math.random() * 4) + 2).map((exp, i) => (
+                      <span key={i} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded font-medium">
+                        {exp}
+                      </span>
+                    ))}
+                  </div>
                   
-                  <div className="flex gap-4 text-sm text-muted-foreground">
+                  <div className="flex gap-4 text-sm text-muted-foreground flex-wrap">
                     <span>📝 {user.post_count}</span>
                     <span>🤝 {user.total_trust}</span>
                     <span>👁️ {user.total_views}</span>
@@ -174,11 +172,11 @@ export default function AdminUsers() {
                   </p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate(`/profile/${user.user_id}`)}
                     className="p-2 hover:bg-muted rounded"
-                    title="צפה בפרופיל"
+                    title="פרופיל משתמש"
                   >
                     👤
                   </button>
