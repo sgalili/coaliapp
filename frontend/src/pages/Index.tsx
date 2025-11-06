@@ -1617,7 +1617,7 @@ export default function Index() {
                   className={cn(
                     "text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
                     post.hasUserWatched ? "text-yellow-400" : "text-white",
-                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
+                    isTransitioning ? "label-dissolve-out" : "label-dissolve-in"
                   )}
                 >
                   {showTextLabels ? 'הוספה' : formatCount(post.watchCount)}
@@ -1638,7 +1638,7 @@ export default function Index() {
                 <span 
                   className={cn(
                     "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
-                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
+                    isTransitioning ? "label-dissolve-out" : "label-dissolve-in"
                   )}
                 >
                   {showTextLabels ? 'שיתוף' : formatCount(post.shareCount || 0)}
