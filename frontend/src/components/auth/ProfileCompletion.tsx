@@ -147,11 +147,18 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
   };
 
   const handleFieldToggle = (fieldId: string) => {
-    setSelectedFields(prev => 
-      prev.includes(fieldId) 
-        ? prev.filter(f => f !== fieldId)
-        : [...prev, fieldId]
-    );
+    setSelectedFields(prev => {
+      if (prev.includes(fieldId)) {
+        // Remove if already selected
+        return prev.filter(f => f !== fieldId);
+      } else {
+        // Add only if less than 3 selected
+        if (prev.length < 3) {
+          return [...prev, fieldId];
+        }
+        return prev; // Don't add if already 3 selected
+      }
+    });
   };
 
   const getInitials = () => {
