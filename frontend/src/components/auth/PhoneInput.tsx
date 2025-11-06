@@ -44,12 +44,12 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
     e.preventDefault();
     
     if (!phoneNumber.trim()) {
-      setError(t('auth.phoneRequired'));
+      setError('נא להזין מספר טלפון');
       return;
     }
     
     if (!validatePhone(phoneNumber)) {
-      setError(t('auth.invalidPhone'));
+      setError('מספר טלפון לא תקין');
       return;
     }
     
@@ -58,23 +58,50 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
 
     try {
       setBusy(true);
-      // 🔐 Envoi OTP via Supabase Edge Function
+      
+      // 1. Check if user already exists
+      const { data: existingUser, error: userCheckError } = await supabase
+        .from('profiles')
+        .select('user_id, phone, first_name, is_verified')
+        .eq('phone', fullPhone)
+        .maybeSingle();
+      
+      if (existingUser && existingUser.is_verified) {
+        // User exists and is verified - direct login
+        console.log('✅ Existing user found, logging in...');
+        
+        // Send OTP for login
+        const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
+          body: { phone: fullPhone, is_login: true },
+        });
+
+        if (fnError) {
+          setError('שגיאה בשליחת קוד אימות');
+          return;
+        }
+
+        console.log('OTP sent for login');
+        onSubmit(fullPhone);
+        return;
+      }
+      
+      // 2. New user - send OTP for signup
       const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
-        body: { phone: fullPhone },
+        body: { phone: fullPhone, is_signup: true },
       });
 
       if (fnError) {
-        setError(fnError.message || 'Send failed');
+        setError('שגיאה בשליחת קוד אימות');
+        console.error('OTP send error:', fnError);
         return;
       }
 
-      // Debug (optionnel)
-      console.log('OTP sent payload:', data);
-
-      // ✅ Succès → passer à l'étape suivante
+      console.log('OTP sent for signup:', data);
       onSubmit(fullPhone);
+      
     } catch (err: any) {
-      setError(err?.message || 'Unexpected error');
+      console.error('Phone submit error:', err);
+      setError(err?.message || 'שגיאה לא צפויה');
     } finally {
       setBusy(false);
     }
