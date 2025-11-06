@@ -56,6 +56,26 @@ export default function ProfilePage() {
     }
   };
 
+  const handleUntrust = async (userId: string) => {
+    if (!confirm('האם אתה בטוח שברצונך לבטל את האמון?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('trust_relationships')
+        .delete()
+        .eq('truster_user_id', 'demo-user')
+        .eq('trusted_user_id', userId);
+
+      if (error) throw error;
+
+      console.log('✅ Trust removed');
+      // Reload trust data
+      await loadTrustCount();
+    } catch (error) {
+      console.error('Failed to remove trust:', error);
+    }
+  };
+
   const handleUnsubscribe = async (creatorId: string) => {
     try {
       const { error } = await supabase
