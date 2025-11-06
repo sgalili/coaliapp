@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Users, Share2, Copy, CheckCircle } from "lucide-react";
+import { ArrowRight, Users, Share2, Copy, CheckCircle, Gift, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { QRCodeDisplay } from "@/components/QRCodeDisplay";
-import { ContactPicker } from "@/components/ContactPicker";
 import { useInvitation } from "@/hooks/useInvitation";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 // Mock contacts data - in real app this would come from device contacts
 const mockContacts = [
