@@ -935,8 +935,7 @@ export default function ProfilePage() {
                             <div className="flex flex-col gap-2">
                               <button
                                 onClick={() => {
-                                  // TODO: Implement edit functionality
-                                  console.log('Edit draft:', draft.id);
+                                  handleEditPost(draft.id, true);
                                 }}
                                 className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                                 title="עריכה"
