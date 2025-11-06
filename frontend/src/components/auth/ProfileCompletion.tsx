@@ -319,36 +319,53 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
           </div>
         </div>
 
-        {/* Expertise Fields Selection */}
+        {/* Expertise Fields Selection - Max 3 */}
         <Card>
           <CardContent className="p-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-medium">בחר תחומי עניין (אופציונלי)</h3>
-                <span className="text-sm text-muted-foreground">{selectedFields.length}/20</span>
+                <h3 className="font-medium">באיזה תחומים אתה מתמחה? (לא חובה)</h3>
+                <span className={cn(
+                  "text-sm font-medium",
+                  selectedFields.length >= 3 ? "text-primary" : "text-muted-foreground"
+                )}>
+                  {selectedFields.length}/3
+                </span>
               </div>
               
               <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto p-1">
-                {ALL_EXPERTISE_FIELDS.map(field => (
-                  <button
-                    key={field.id}
-                    type="button"
-                    onClick={() => handleFieldToggle(field.id)}
-                    className={cn(
-                      "flex items-center gap-2 p-3 rounded-lg border-2 transition-all text-right",
-                      selectedFields.includes(field.id)
-                        ? "border-primary bg-primary/10 shadow-md scale-105"
-                        : "border-border hover:border-primary/50 hover:bg-muted"
-                    )}
-                  >
-                    <span className="text-xl">{field.icon}</span>
-                    <span className="text-sm font-medium flex-1">{field.label}</span>
-                    {selectedFields.includes(field.id) && (
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
-                    )}
-                  </button>
-                ))}
+                {ALL_EXPERTISE_FIELDS.map(field => {
+                  const isSelected = selectedFields.includes(field.id);
+                  const isDisabled = !isSelected && selectedFields.length >= 3;
+                  
+                  return (
+                    <button
+                      key={field.id}
+                      type="button"
+                      onClick={() => handleFieldToggle(field.id)}
+                      disabled={isDisabled}
+                      className={cn(
+                        "flex items-center gap-2 p-3 rounded-lg border-2 transition-all text-right",
+                        isSelected && "border-primary bg-primary/10 shadow-md scale-105",
+                        !isSelected && !isDisabled && "border-border hover:border-primary/50 hover:bg-muted",
+                        isDisabled && "border-border opacity-40 cursor-not-allowed"
+                      )}
+                    >
+                      <span className="text-xl">{field.icon}</span>
+                      <span className="text-sm font-medium flex-1">{field.label}</span>
+                      {isSelected && (
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+              
+              {selectedFields.length >= 3 && (
+                <p className="text-xs text-muted-foreground text-center">
+                  הגעת למקסימום 3 תחומי התמחות
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
