@@ -869,15 +869,13 @@ export default function ProfilePage() {
                           {/* Post stats */}
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
                             <div className="flex items-center justify-between text-white text-xs">
-                              <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                  <Eye className="w-3 h-3" />
-                                  <span>{post.watch_count || 0}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Bookmark className="w-3 h-3" />
-                                  <span>{post.bookmark_count || 0}</span>
-                                </div>
+                              <div className="flex items-center gap-1">
+                                <Eye className="w-3 h-3" />
+                                <span>{post.watch_count || 0}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Bookmark className="w-3 h-3" />
+                                <span>{post.bookmark_count || 0}</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <Handshake className="w-3 h-3" />
