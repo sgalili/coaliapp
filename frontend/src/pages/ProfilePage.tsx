@@ -369,26 +369,39 @@ export default function ProfilePage() {
 
   const loadUserDecisions = async () => {
     try {
-      // Fetch REAL decisions where user has voted
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('user_votes')
-        .select(`
-          *,
-          decision:demo_decisions(*)
-        `)
+        .select('*')
         .eq('user_id', 'demo-user')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.warn('User votes table error:', error);
-        setDecisionsCount(0);
+      if (!data || data.length === 0) {
         setUserDecisions([]);
+        setDecisionsCount(0);
+        console.log('🗳️ No votes found');
         return;
       }
 
-      setUserDecisions(data || []);
-      setDecisionsCount(data?.length || 0);
-      console.log('🗳️ REAL user decisions loaded:', data?.length);
+      // Load decision data for each vote
+      let votesWithDecisions = [];
+      for (const vote of data) {
+        const { data: decision } = await supabase
+          .from('demo_decisions')
+          .select('*')
+          .eq('id', vote.decision_id)
+          .single();
+        
+        if (decision) {
+          votesWithDecisions.push({
+            ...vote,
+            decision: decision
+          });
+        }
+      }
+
+      setUserDecisions(votesWithDecisions);
+      setDecisionsCount(votesWithDecisions.length);
+      console.log('🗳️ User decisions loaded:', votesWithDecisions.length);
     } catch (error) {
       console.error('Failed to load user decisions:', error);
       setDecisionsCount(0);
