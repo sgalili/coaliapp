@@ -431,20 +431,20 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Trust Tab */}
+      {/* Trust Tab - Now shows bookmarks */}
       {activeTab === 'trust' && (
         <div>
-          <h3 className="text-lg font-bold mb-4">רשת האמון שלי</h3>
+          <h3 className="text-lg font-bold mb-4">סימניות ואמון</h3>
           
-          {/* Trust Stats */}
+          {/* Bookmark Stats */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-muted/50 rounded-lg p-4 text-center">
-              <p className="text-3xl font-bold text-trust">{stats.trust}</p>
-              <p className="text-sm text-muted-foreground mt-1">נותני אמון</p>
+              <p className="text-3xl font-bold text-yellow-600">{bookmarkStats.received}</p>
+              <p className="text-sm text-muted-foreground mt-1">סימניות שקיבלתי</p>
             </div>
             <div className="bg-muted/50 rounded-lg p-4 text-center">
-              <p className="text-3xl font-bold text-primary">45</p>
-              <p className="text-sm text-muted-foreground mt-1">נותן אמון ל</p>
+              <p className="text-3xl font-bold text-primary">{bookmarkStats.saved}</p>
+              <p className="text-sm text-muted-foreground mt-1">הסימניות שלי</p>
             </div>
           </div>
 
