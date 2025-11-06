@@ -348,8 +348,10 @@ export default function ProfilePage() {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              <Grid3x3 className="w-4 h-4" />
-              <span className="text-[10px]">{userPosts.length}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[12px] font-semibold">{userPosts.length}</span>
+                <Grid3x3 className="w-4 h-4" />
+              </div>
               <span>פוסטים</span>
             </button>
             <button
