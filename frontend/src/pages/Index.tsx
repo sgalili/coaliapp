@@ -12,6 +12,38 @@ import { uploadMediaFile } from "@/services/uploadService";
 import { saveDemoPost, fetchDemoPosts, fetchDemoDecisions, updatePostEngagement } from "@/services/database";
 import { toast } from "sonner";
 
+// Empty Category State Component
+const EmptyCategoryState = () => {
+  const [showIcon, setShowIcon] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIcon(true);
+    }, 3000); // Show icon after 3 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="h-screen flex items-center justify-center">
+      <div className={cn(
+        "transition-opacity duration-1000",
+        showIcon ? "opacity-100" : "opacity-0"
+      )}>
+        <svg 
+          className="w-32 h-32 text-gray-600/30" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+          strokeWidth="0.5"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
 // Sample VIDEO posts ONLY - verified users
 const originalCoaliPosts = [
   {
