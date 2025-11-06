@@ -67,6 +67,10 @@ app.include_router(whatsapp_router, prefix="/api/whatsapp", tags=["WhatsApp"])
 from routes.trust_delegation import router as trust_delegation_router
 app.include_router(trust_delegation_router, prefix="/api/trust-delegation", tags=["Trust Delegation"])
 
+# Include ZOOZ routes
+from routes.zooz import router as zooz_router
+app.include_router(zooz_router, prefix="/api/zooz", tags=["ZOOZ"])
+
 # Include the main router in the app
 app.include_router(api_router)
 
