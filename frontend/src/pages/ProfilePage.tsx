@@ -375,8 +375,10 @@ export default function ProfilePage() {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              <Handshake className="w-4 h-4" />
-              <span className="text-[10px]">{trustCount}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[12px] font-semibold">{trustCount}</span>
+                <Handshake className="w-4 h-4" />
+              </div>
               <span>אמון</span>
             </button>
             <button
