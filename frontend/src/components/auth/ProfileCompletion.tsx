@@ -89,10 +89,14 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      // Don't reset form - errors will be displayed but data is preserved
       return;
     }
     
     setErrors({});
+    
+    // Clear saved form state on successful submission
+    localStorage.removeItem('signup_form_state');
     
     // Check if we should trigger onboarding flow
     if (onStartOnboarding) {
