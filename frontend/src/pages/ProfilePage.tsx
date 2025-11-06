@@ -10,7 +10,7 @@ export default function ProfilePage() {
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [trustCount, setTrustCount] = useState(0);
   const [decisionsCount, setDecisionsCount] = useState(0);
-  const [bookmarkStats, setBookmarkStats] = useState({ received: 0, saved: 0 });
+  const [userDecisions, setUserDecisions] = useState<any[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'info' | 'trust' | 'bookmarks'>('posts');
