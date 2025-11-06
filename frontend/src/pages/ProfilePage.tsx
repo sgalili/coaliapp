@@ -658,11 +658,6 @@ export default function ProfilePage() {
                 <span>תנאי שימוש</span>
               </button>
 
-              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
-                <MessageSquare className="w-5 h-5 text-muted-foreground" />
-                <span>צור קשר</span>
-              </button>
-
               <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4">
                 <LogOut className="w-5 h-5" />
                 <span>התנתק</span>
