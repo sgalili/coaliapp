@@ -2277,19 +2277,20 @@ export default function Index() {
 
                 {/* Submit Buttons */}
                 <div className="flex gap-3">
-                  onClick={handleUploadSubmit}
-                  disabled={!uploadCategory || caption.trim().length === 0 || isUploading}
-                  className="w-full py-4 bg-primary text-primary-foreground rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isUploading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>מעלה...</span>
-                    </div>
-                  ) : (
-                    'פרסם'
-                  )}
-                </button>
+                  <button
+                    onClick={handleUploadSubmit}
+                    disabled={!uploadCategory || caption.trim().length === 0 || isUploading}
+                    className="flex-1 py-4 bg-primary text-primary-foreground rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isUploading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>מעלה...</span>
+                      </div>
+                    ) : (
+                      'פרסם'
+                    )}
+                  </button>
                 
                 {/* Save as Draft Button */}
                 <button
