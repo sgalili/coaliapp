@@ -1450,9 +1450,9 @@ export default function Index() {
 
       {/* Mute Button moved to top with FAB */}
 
-      {/* Three-Dot Menu - Moved 25px down */}
+      {/* Three-Dot Menu - Opposite side, aligned horizontally with speaker */}
       {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
-        <div className="fixed top-[125px] left-4 z-30">
+        <div className="fixed top-[85px] right-4 z-30">
           <button
             onClick={(e) => {
               e.preventDefault();
