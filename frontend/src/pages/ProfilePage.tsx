@@ -412,82 +412,51 @@ export default function ProfilePage() {
 
   const loadTrustCount = async () => {
     try {
-      // Get REAL users who trust this user (trusted me) from profiles table
-      const { data: trustedMeData, error: trustedMeError } = await supabase
+      // Load trust relationships from database
+      const { data: trustedMeData } = await supabase
         .from('trust_relationships')
         .select('*')
         .eq('trusted_user_id', 'demo-user');
 
-      let trustedMeList = [];
-      
-      if (trustedMeData && trustedMeData.length > 0) {
-        // Load actual profile data for each truster
-        for (const trust of trustedMeData) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('user_id, first_name, last_name, avatar_url, expertise_fields')
-            .eq('user_id', trust.truster_user_id)
-            .single();
-          
-          if (profile) {
-            trustedMeList.push({
-              id: trust.id,
-              truster_user_id: trust.truster_user_id,
-              truster: {
-                user_id: profile.user_id,
-                full_name: `${profile.first_name} ${profile.last_name}`,
-                avatar_url: profile.avatar_url,
-                field: profile.expertise_fields?.[0] || 'כללי'
-              }
-            });
-          }
-        }
-        setTrustedMe(trustedMeList);
-        console.log('🤝 Real people who trust me:', trustedMeList.length);
-      } else {
-        console.log('🤝 No trust relationships found');
-        setTrustedMe([]);
-      }
-
-      // Get REAL users this user trusts (I trust)
-      const { data: trustedByMeData, error: trustedByMeError } = await supabase
+      const { data: trustedByMeData } = await supabase
         .from('trust_relationships')
         .select('*')
         .eq('truster_user_id', 'demo-user');
 
-      let trustedByMeList = [];
-      
-      if (trustedByMeData && trustedByMeData.length > 0) {
-        // Load actual profile data for each trusted user
-        for (const trust of trustedByMeData) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('user_id, first_name, last_name, avatar_url, expertise_fields')
-            .eq('user_id', trust.trusted_user_id)
-            .single();
-          
-          if (profile) {
-            trustedByMeList.push({
-              id: trust.id,
-              trusted_user_id: trust.trusted_user_id,
-              trusted: {
-                user_id: profile.user_id,
-                full_name: `${profile.first_name} ${profile.last_name}`,
-                avatar_url: profile.avatar_url,
-                field: profile.expertise_fields?.[0] || 'כללי'
-              }
-            });
+      // Map to demo users from demoUsers.ts
+      let trustedMeList = (trustedMeData || []).map(trust => {
+        const user = demoUsers.find(u => u.id === trust.truster_user_id);
+        return user ? {
+          id: trust.id || Math.random().toString(),
+          truster_user_id: trust.truster_user_id,
+          truster: {
+            user_id: user.id,
+            full_name: `${user.first_name} ${user.last_name}`,
+            avatar_url: user.avatar_url,
+            field: user.field
           }
-        }
-        setTrustedByMe(trustedByMeList);
-        console.log('🤝 Real people I trust:', trustedByMeList.length);
-      } else {
-        console.log('🤝 No trust given yet');
-        setTrustedByMe([]);
-      }
+        } : null;
+      }).filter(Boolean);
 
-      // Set trust count to ONLY "נותנים לי אמון"
+      let trustedByMeList = (trustedByMeData || []).map(trust => {
+        const user = demoUsers.find(u => u.id === trust.trusted_user_id);
+        return user ? {
+          id: trust.id || Math.random().toString(),
+          trusted_user_id: trust.trusted_user_id,
+          trusted: {
+            user_id: user.id,
+            full_name: `${user.first_name} ${user.last_name}`,
+            avatar_url: user.avatar_url,
+            field: user.field
+          }
+        } : null;
+      }).filter(Boolean);
+
+      setTrustedMe(trustedMeList);
+      setTrustedByMe(trustedByMeList);
       setTrustCount(trustedMeList.length);
+      
+      console.log('🤝 Loaded trust data:', { trustedMe: trustedMeList.length, trustedByMe: trustedByMeList.length });
       
     } catch (error) {
       console.error('Failed to load trust relationships:', error);
