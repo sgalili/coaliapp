@@ -509,34 +509,13 @@ export default function ProfilePage() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('Bookmarks table may not exist, using demo data:', error);
-        // Use demo bookmark data
-        setSavedBookmarks([
-          {
-            id: 'bookmark-1',
-            post: {
-              id: 'post-1',
-              video_url: '/videos/demo1.mp4',
-              image_url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c',
-              caption: 'פוסט שמור ראשון'
-            }
-          },
-          {
-            id: 'bookmark-2',
-            post: {
-              id: 'post-2',
-              video_url: '/videos/demo2.mp4',
-              image_url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0',
-              caption: 'פוסט שמור שני'
-            }
-          }
-        ]);
-        console.log('🔖 Using demo bookmarks: 2');
+        console.warn('Bookmarks table error:', error);
+        setSavedBookmarks([]);
         return;
       }
       
       setSavedBookmarks(data || []);
-      console.log('🔖 Saved bookmarks loaded:', data?.length);
+      console.log('🔖 REAL saved bookmarks loaded:', data?.length);
     } catch (error) {
       console.error('Failed to load saved bookmarks:', error);
       setSavedBookmarks([]);
