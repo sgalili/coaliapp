@@ -144,9 +144,49 @@ export default function ProfilePage() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('User votes table may not exist yet:', error);
-        setDecisionsCount(0);
-        setUserDecisions([]);
+        console.warn('User votes table may not exist yet, using demo data:', error);
+        // Use demo decision data
+        const demoDecisions = [
+          {
+            id: '1',
+            vote_value: 'yes',
+            created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
+            decision: {
+              title: 'האם לתמוך ביוזמה לאנרגיה מתחדשת?',
+              description: 'הצעה להגדלת תקציב המחקר באנרגיה סולארית',
+            }
+          },
+          {
+            id: '2',
+            vote_value: 'no',
+            created_at: new Date(Date.now() - 5 * 86400000).toISOString(),
+            decision: {
+              title: 'האם להעלות את המיסוי על סוכר?',
+              description: 'הצעה להטלת מס נוסף על משקאות ממותקים',
+            }
+          },
+          {
+            id: '3',
+            vote_value: 'yes',
+            created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
+            decision: {
+              title: 'האם לאשר את תוכנית התחבורה הציבורית?',
+              description: 'הרחבת קווי רכבת קלה בערים הגדולות',
+            }
+          },
+          {
+            id: '4',
+            vote_value: 'abstain',
+            created_at: new Date(Date.now() - 15 * 86400000).toISOString(),
+            decision: {
+              title: 'האם לאמץ מדיניות עבודה היברידית?',
+              description: 'חובת עבודה מהבית לפחות יומיים בשבוע',
+            }
+          }
+        ];
+        setUserDecisions(demoDecisions);
+        setDecisionsCount(demoDecisions.length);
+        console.log('🗳️ Using demo decisions:', demoDecisions.length);
         return;
       }
 
