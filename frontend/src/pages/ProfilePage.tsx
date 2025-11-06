@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState<any[]>([]);
-  const [stats, setStats] = useState({ trust: 0, votes: 0, watch: 0, decisions: 0 });
+  const [trustCount, setTrustCount] = useState(0);
+  const [decisionsCount, setDecisionsCount] = useState(0);
   const [bookmarkStats, setBookmarkStats] = useState({ received: 0, saved: 0 });
   const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
