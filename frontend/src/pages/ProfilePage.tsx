@@ -792,69 +792,171 @@ export default function ProfilePage() {
           {/* Posts Tab */}
           {activeTab === 'posts' && (
             <div>
-              <h3 className="text-lg font-bold mb-4">הפוסטים שלי ({userPosts.length})</h3>
-              {userPosts.length > 0 ? (
-                <div className="grid grid-cols-3 gap-2">
-                  {userPosts.map((post) => (
-                    <div 
-                      key={post.id} 
-                      className="aspect-square bg-muted rounded-lg overflow-hidden relative group cursor-pointer"
-                      onClick={() => navigate(`/?post=${post.id}`)}
-                    >
-                      {post.video_url && (
-                        <video src={post.video_url} className="w-full h-full object-cover" />
-                      )}
-                      
-                      {/* Edit/Delete buttons */}
-                      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // TODO: Implement edit functionality
-                            console.log('Edit post:', post.id);
-                          }}
-                          className="p-1.5 bg-blue-500 text-white rounded-full hover:bg-blue-600"
+              {/* Toggle between Posts and Drafts */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setShowDrafts(false)}
+                  className={cn(
+                    "flex-1 py-2 px-4 rounded-lg font-medium transition-colors",
+                    !showDrafts 
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  פוסטים ({userPosts.length})
+                </button>
+                <button
+                  onClick={() => setShowDrafts(true)}
+                  className={cn(
+                    "flex-1 py-2 px-4 rounded-lg font-medium transition-colors",
+                    showDrafts 
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  )}
+                >
+                  טיוטות ({draftPosts.length})
+                </button>
+              </div>
+
+              {/* Published Posts */}
+              {!showDrafts && (
+                <>
+                  {userPosts.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2">
+                      {userPosts.map((post) => (
+                        <div 
+                          key={post.id} 
+                          className="aspect-square bg-muted rounded-lg overflow-hidden relative group cursor-pointer"
+                          onClick={() => navigate(`/?post=${post.id}`)}
                         >
-                          <Edit2 className="w-3 h-3" />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeletePost(post.id);
-                          }}
-                          className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                      
-                      {/* Post stats */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
-                        <div className="flex items-center justify-between text-white text-xs">
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              <Eye className="w-3 h-3" />
-                              <span>{post.watch_count || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Bookmark className="w-3 h-3" />
-                              <span>{post.bookmark_count || 0}</span>
-                            </div>
+                          {post.video_url && (
+                            <video src={post.video_url} className="w-full h-full object-cover" />
+                          )}
+                          
+                          {/* Edit/Delete buttons */}
+                          <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // TODO: Implement edit functionality
+                                console.log('Edit post:', post.id);
+                              }}
+                              className="p-1.5 bg-blue-500 text-white rounded-full hover:bg-blue-600"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeletePost(post.id);
+                              }}
+                              className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Handshake className="w-3 h-3" />
-                            <span>{post.trust_count || 0}</span>
+                          
+                          {/* Post stats */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
+                            <div className="flex items-center justify-between text-white text-xs">
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{post.watch_count || 0}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Bookmark className="w-3 h-3" />
+                                  <span>{post.bookmark_count || 0}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Handshake className="w-3 h-3" />
+                                <span>{post.trust_count || 0}</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  ) : (
+                    <p className="text-center py-12 text-muted-foreground">עדיין לא העלית פוסטים</p>
+                  )}
+                </>
+              )}
+
+              {/* Drafts */}
+              {showDrafts && (
+                <>
+                  {draftPosts.length > 0 ? (
+                    <div className="space-y-4">
+                      {draftPosts.map((draft) => (
+                        <div key={draft.id} className="bg-muted/50 rounded-lg p-4 hover:bg-muted transition-colors">
+                          <div className="flex items-start gap-3">
+                            {/* Draft Thumbnail */}
+                            <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                              {draft.video_url && (
+                                <video src={draft.video_url} className="w-full h-full object-cover" />
+                              )}
+                              {draft.image_url && (
+                                <img src={draft.image_url} className="w-full h-full object-cover" alt="" />
+                              )}
+                              {!draft.video_url && !draft.image_url && (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <FileEdit className="w-8 h-8 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Draft Info */}
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium mb-1 line-clamp-2">{draft.caption || 'ללא כותרת'}</p>
+                              <p className="text-xs text-muted-foreground">
+                                נוצר ב-{new Date(draft.created_at).toLocaleDateString('he-IL')}
+                              </p>
+                            </div>
+                            
+                            {/* Action Buttons */}
+                            <div className="flex flex-col gap-2">
+                              <button
+                                onClick={() => {
+                                  // TODO: Implement edit functionality
+                                  console.log('Edit draft:', draft.id);
+                                }}
+                                className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                title="עריכה"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handlePublishDraft(draft.id)}
+                                className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                                title="פרסום"
+                              >
+                                <Send className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeletePost(draft.id)}
+                                className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                title="מחיקה"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <FileEdit className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                      <p className="text-muted-foreground">אין לך טיוטות</p>
+                      <p className="text-sm text-muted-foreground mt-2">התחל ליצור תוכן ושמור אותו כטיוטה</p>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-          ) : (
-            <p className="text-center py-12 text-muted-foreground">עדיין לא העלית פוסטים</p>
           )}
-        </div>
-      )}
 
       {/* Info Tab */}
       {activeTab === 'info' && (
