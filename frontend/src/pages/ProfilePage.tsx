@@ -781,6 +781,21 @@ export default function ProfilePage() {
               <span>החלטות</span>
             </button>
             <button
+              onClick={() => handleTabChange('drafts')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
+                activeTab === 'drafts' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <FileEdit className="w-4 h-4" />
+                <span className="text-[15px] font-semibold">{draftPosts.length}</span>
+              </div>
+              <span>טיוטות</span>
+            </button>
+            <button
               onClick={() => handleTabChange('info')}
               className={cn(
                 "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
