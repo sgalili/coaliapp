@@ -4,11 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { QRCodeDisplay } from "@/components/QRCodeDisplay";
+import { ContactPicker } from "@/components/ContactPicker";
 import { useInvitation } from "@/hooks/useInvitation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-// Mock contacts data - in real app this would come from device contacts
+// Mock contacts data
 const mockContacts = [
   { id: "1", name: "דני כהן", username: "@danny", phone: "+972-50-123-4567", avatar: "/src/assets/david-profile.jpg", isFrequent: true },
   { id: "2", name: "שרה לוי", username: "@sarah", phone: "+972-52-987-6543", avatar: "/src/assets/sarah-profile.jpg", isFrequent: true },
@@ -17,7 +20,12 @@ const mockContacts = [
 
 const InviteFriendsPage = () => {
   const navigate = useNavigate();
-  const [totalEarned] = useState(127); // Mock data - should come from backend
+  const [showContactPicker, setShowContactPicker] = useState(false);
+  const [showPermissionDialog, setShowPermissionDialog] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<any>(null);
+  const [totalEarned] = useState(127);
+  
+  const { referralCode, fetchReferralCode, generateInvitationLink, createTrustIntent } = useInvitation();
   const [copied, setCopied] = useState(false);
   
   const { referralCode, fetchReferralCode, generateInvitationLink } = useInvitation();
