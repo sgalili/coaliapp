@@ -67,7 +67,7 @@ export default function ProfilePage() {
   }, []);
 
   // Handle tab change with auto-scroll
-  const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks') => {
+  const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions') => {
     setActiveTab(tab);
     // Scroll to tabs position
     if (tabsRef.current) {
