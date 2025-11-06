@@ -84,6 +84,24 @@ export const AuthPage = () => {
 
       console.log('User session established:', data.user);
       toast.success('Vérification réussie !');
+      
+      // Send welcome WhatsApp message
+      try {
+        const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+        await fetch(`${backendUrl}/api/whatsapp/send-message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone_number: authData.phone,
+            message: `🎉 תודה שהצטרפת ל-Coali!\n\nאנחנו שמחים שאת/ה כאן. בוא/י לגלות את רשת האמון שלנו, לקחת חלק בהחלטות חשובות ולבנות ביחד קהילה מבוססת אמון.\n\n🔗 התחל לפעול עכשיו: ${window.location.origin}\n\nבהצלחה! 💪`
+          })
+        });
+        console.log('✅ Welcome WhatsApp message sent');
+      } catch (whatsappError) {
+        console.error('Failed to send welcome WhatsApp:', whatsappError);
+        // Don't fail the auth flow if WhatsApp fails
+      }
+      
       setAuthData(prev => ({ ...prev, otp }));
       setCurrentStep('profile');
     } catch (error: any) {
