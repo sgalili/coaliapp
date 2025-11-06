@@ -4,6 +4,7 @@ import { Settings, Heart, Eye, ShieldCheck, Handshake, Crown, Vote, Gavel, Menu,
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { EditProfileModal } from "@/components/EditProfileModal";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
