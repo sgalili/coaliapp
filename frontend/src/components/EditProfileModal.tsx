@@ -37,6 +37,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   onSave
 }) => {
   const [formData, setFormData] = useState({
+    title: '',
     first_name: '',
     last_name: '',
     city: '',
