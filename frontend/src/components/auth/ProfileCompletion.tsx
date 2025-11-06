@@ -264,16 +264,14 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
         {/* Additional Required Fields */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <Input
-              type="text"
-              placeholder="עיר מגורים *"
+            <CityAutocomplete
               value={city}
-              onChange={(e) => setCity(e.target.value)}
+              onChange={setCity}
+              placeholder="עיר מגורים *"
               className={cn(
                 "text-lg py-6 text-right",
                 errors.city && "border-red-500"
               )}
-              disabled={isLoading}
             />
             {errors.city && (
               <p className="text-sm text-red-500 text-right">{errors.city}</p>
