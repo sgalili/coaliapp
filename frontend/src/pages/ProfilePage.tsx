@@ -157,7 +157,7 @@ export default function ProfilePage() {
   };
 
   const loadDraftPosts = async () => {
-    try:
+    try {
       const { data, error } = await supabase
         .from('demo_posts')
         .select('*')
