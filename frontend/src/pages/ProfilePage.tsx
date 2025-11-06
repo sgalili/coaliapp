@@ -728,29 +728,17 @@ export default function ProfilePage() {
             ))}
           </div>
 
-          {/* Bio Section */}
+          {/* Bio Section - Clickable to expand/collapse */}
           <div className="px-6 mb-4 text-center">
-            {!showFullBio ? (
-              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                {userBio.substring(0, 200)}...{' '}
-                <button 
-                  onClick={() => setShowFullBio(true)}
-                  className="text-primary font-medium hover:underline inline"
-                >
-                  המשך
-                </button>
-              </p>
-            ) : (
-              <>
-                <p className="text-sm text-muted-foreground leading-relaxed">{userBio}</p>
-                <button 
-                  onClick={() => setShowFullBio(false)}
-                  className="text-primary text-sm font-medium hover:underline inline"
-                >
-                  {' '}הצג פחות
-                </button>
-              </>
-            )}
+            <p 
+              onClick={() => setShowFullBio(!showFullBio)}
+              className={cn(
+                "text-sm text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors",
+                !showFullBio && "line-clamp-3"
+              )}
+            >
+              {userBio}
+            </p>
           </div>
         </div>
 
