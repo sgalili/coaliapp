@@ -152,7 +152,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
             <CheckCircle2 className="w-4 h-4 text-green-500" />
             <span>טלפון אומת</span>
           </div>
-          <span className="text-muted-foreground">→</span>
+          <span className="text-muted-foreground">←</span>
           <div className="flex items-center gap-1">
             <div className="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center">
               <div className="w-2 h-2 rounded-full bg-primary"></div>
