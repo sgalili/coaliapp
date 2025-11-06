@@ -28,7 +28,7 @@ export default function ProfilePage() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
-  const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות.";
+  const userBio = "בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים. תומך בחדשנות ישראלית ומאמין בכוח הקהילה לשנות את העולם. אוהב לטייל, לקרוא ספרים על היסטוריה ולצלם נופים.";
 
   const handleTrustBack = async (userId: string) => {
     try {
