@@ -958,45 +958,6 @@ export default function ProfilePage() {
             </div>
           )}
 
-      {/* Info Tab */}
-      {activeTab === 'info' && (
-        <div>
-          <h3 className="text-lg font-bold mb-4">פרטי משתמש</h3>
-          <div className="space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground mb-1">שם מלא</p>
-              <p className="font-medium">משתמש דמו מאומת</p>
-            </div>
-            
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground mb-1">ביוגרפיה</p>
-              <p className="text-sm leading-relaxed">{userBio}</p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground mb-1">תחומי מומחיות</p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {expertiseFields.map((field, i) => (
-                  <span key={i} className="px-3 py-1 bg-primary/20 text-primary text-sm rounded-full">
-                    {field}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground mb-1">מיקום</p>
-              <p className="font-medium">תל אביב, ישראל</p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground mb-1">הצטרף ב</p>
-              <p className="font-medium">ינואר 2024</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Trust Tab */}
       {activeTab === 'trust' && (
         <div>
