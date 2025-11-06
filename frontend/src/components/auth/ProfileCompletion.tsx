@@ -195,37 +195,34 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Profile Picture - MANDATORY */}
+        {/* Profile Picture Upload - MANDATORY */}
         <Card className={cn(
           "border-2 transition-colors",
           errors.profilePicture ? "border-red-500" : profilePicture ? "border-green-500" : "border-dashed"
         )}>
           <CardContent className="p-6">
-            <div className="flex flex-col items-center gap-3">
-              <label className="text-sm font-medium">תמונת פרופיל *</label>
-              <div className="relative">
-                <Avatar 
-                  className="w-24 h-24 cursor-pointer ring-4 ring-primary/20 hover:ring-primary/40 transition-all" 
-                  onClick={handleProfilePictureClick}
-                >
-                  <AvatarImage src={profilePicture} />
-                  <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-primary/10">
-                    {getInitials() || <Camera className="w-10 h-10 text-muted-foreground" />}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform">
-                  <Camera className="w-5 h-5 text-primary-foreground" />
-                </div>
-              </div>
-              {!profilePicture && (
-                <p className="text-xs text-muted-foreground">לחץ להוספת תמונה</p>
-              )}
-              {errors.profilePicture && (
-                <p className="text-sm text-red-500">{errors.profilePicture}</p>
-              )}
-            </div>
+            <ProfilePictureUpload
+              currentImageUrl={profilePicture}
+              onImageChange={setProfilePicture}
+              userInitials={`${firstName.charAt(0)}${lastName.charAt(0)}`}
+            />
+            {errors.profilePicture && (
+              <p className="text-sm text-red-500 text-center mt-2">{errors.profilePicture}</p>
+            )}
           </CardContent>
         </Card>
+
+        {/* Title Field */}
+        <div>
+          <Input
+            type="text"
+            placeholder='תואר (אופציונלי) - לדוגמה: פרופ׳, ד"ר, עו"ד, מאמן'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="text-lg py-6 text-right"
+            disabled={isLoading}
+          />
+        </div>
 
         {/* Name Inputs - Same Row */}
         <div className="grid grid-cols-2 gap-3">
