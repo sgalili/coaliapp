@@ -28,26 +28,14 @@ import MyDelegatedVotesPage from "./pages/MyDelegatedVotesPage";
 import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { UserProvider } from "./contexts/UserContext";
-
-// Import seeding script
-import { seedCompleteDemoData } from "./scripts/seedCompleteDemoData";
-
-// Seed demo data on first load
-if (typeof window !== 'undefined') {
-  const hasSeeded = localStorage.getItem('demo_data_seeded');
-  if (!hasSeeded) {
-    seedCompleteDemoData().then(() => {
-      localStorage.setItem('demo_data_seeded', 'true');
-      console.log('✅ Demo data seeded successfully');
-    });
-  }
-}
+import { DemoDataInitializer } from "./components/DemoDataInitializer";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <UserProvider>
+      <DemoDataInitializer />
       <ChannelProvider>
         <TooltipProvider>
           <Toaster />
