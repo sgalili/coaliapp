@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'posts' | 'trust' | 'bookmarks' | 'decisions'>('posts');
   const [showDrafts, setShowDrafts] = useState(false);
   const [trustSubTab, setTrustSubTab] = useState<'i-trust' | 'trust-me'>('i-trust');
+  const [bookmarksSubTab, setBookmarksSubTab] = useState<'posts' | 'subscriptions'>('posts');
   const [expertiseFields, setExpertiseFields] = useState(['טכנולוגיה', 'עסקים', 'חדשות']);
   const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
