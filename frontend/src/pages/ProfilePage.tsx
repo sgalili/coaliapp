@@ -762,7 +762,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <Grid3x3 className="w-4 h-4" />
-                <span className="text-[15px] font-semibold">{userPosts.length}</span>
+                <span className="text-[18px] font-semibold">{userPosts.length}</span>
               </div>
               <span>פוסטים</span>
             </button>
@@ -777,24 +777,24 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <Handshake className="w-4 h-4" />
-                <span className="text-[15px] font-semibold">{trustCount}</span>
+                <span className="text-[18px] font-semibold">{trustCount}</span>
               </div>
               <span>אמון</span>
             </button>
             <button
-              onClick={() => handleTabChange('bookmarks')}
+              onClick={() => handleTabChange('favorites')}
               className={cn(
                 "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
-                activeTab === 'bookmarks' 
+                activeTab === 'favorites' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
               <div className="flex items-center gap-1">
                 <Bookmark className="w-4 h-4" />
-                <span className="text-[15px] font-semibold">{savedBookmarks.length}</span>
+                <span className="text-[18px] font-semibold">{savedBookmarks.length}</span>
               </div>
-              <span>שמורים</span>
+              <span>מועדפים</span>
             </button>
             <button
               onClick={() => handleTabChange('decisions')}
@@ -807,7 +807,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <CheckSquare className="w-4 h-4" />
-                <span className="text-[15px] font-semibold">{decisionsCount}</span>
+                <span className="text-[18px] font-semibold">{decisionsCount}</span>
               </div>
               <span>החלטות</span>
             </button>
