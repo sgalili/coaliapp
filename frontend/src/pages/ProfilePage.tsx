@@ -87,6 +87,10 @@ export default function ProfilePage() {
       
       console.log('🗳️ Total decisions:', count);
       setStats(prev => ({ ...prev, decisions: count || 0 }));
+
+      // Load bookmark statistics
+      await loadBookmarkStats();
+      await loadSavedBookmarks();
       
     } catch (error) {
       console.error('Failed to load user data:', error);
