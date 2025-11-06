@@ -696,18 +696,21 @@ export default function ProfilePage() {
 
           {/* Bio Section */}
           <div className="px-6 mb-4 text-center">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="line-clamp-3 inline">
-                {userBio}
-              </span>
-              {' '}
-              <button 
-                onClick={() => handleTabChange('info')}
-                className="text-primary text-sm font-medium hover:underline inline"
-              >
-                עוד
-              </button>
+            <p 
+              ref={bioRef}
+              className={cn(
+                "text-sm text-muted-foreground leading-relaxed",
+                !showFullBio && "line-clamp-3"
+              )}
+            >
+              {userBio}
             </p>
+            <button 
+              onClick={() => setShowFullBio(!showFullBio)}
+              className="text-primary text-sm font-medium mt-1 hover:underline"
+            >
+              {showFullBio ? 'הצג פחות' : 'עוד...'}
+            </button>
           </div>
         </div>
 
