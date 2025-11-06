@@ -66,6 +66,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       
       if (data) {
         setFormData({
+          title: data.title || '',
           first_name: data.first_name || '',
           last_name: data.last_name || '',
           city: data.city || '',
