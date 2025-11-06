@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { EditProfileModal } from "@/components/EditProfileModal";
+import { demoUsers } from "@/data/demoUsers";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
