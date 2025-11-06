@@ -454,23 +454,37 @@ export default function ProfilePage() {
 
   const loadSavedBookmarks = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('bookmarks')
-        .select(`
-          *,
-          post:demo_posts(*)
-        `)
+        .select('*')
         .eq('bookmark_user_id', 'demo-user')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.warn('Bookmarks table error:', error);
+      if (!data || data.length === 0) {
         setSavedBookmarks([]);
+        console.log('🔖 No bookmarks found');
         return;
       }
+
+      // Load post data for each bookmark
+      let bookmarksWithPosts = [];
+      for (const bookmark of data) {
+        const { data: post } = await supabase
+          .from('demo_posts')
+          .select('*')
+          .eq('id', bookmark.post_id)
+          .single();
+        
+        if (post) {
+          bookmarksWithPosts.push({
+            id: bookmark.id,
+            post: post
+          });
+        }
+      }
       
-      setSavedBookmarks(data || []);
-      console.log('🔖 REAL saved bookmarks loaded:', data?.length);
+      setSavedBookmarks(bookmarksWithPosts);
+      console.log('🔖 Bookmarks loaded:', bookmarksWithPosts.length);
     } catch (error) {
       console.error('Failed to load saved bookmarks:', error);
       setSavedBookmarks([]);
