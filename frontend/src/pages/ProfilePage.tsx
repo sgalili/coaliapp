@@ -303,39 +303,12 @@ export default function ProfilePage() {
           <p className="text-sm text-muted-foreground mb-2" dir="ltr">@demouser</p>
 
           {/* Expertise Fields */}
-          <div className="flex items-center justify-center gap-2 mb-4 flex-wrap">
+          <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
             {expertiseFields.map((field, i) => (
               <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
                 {field}
               </span>
             ))}
-          </div>
-
-          {/* Stats Row */}
-          <div className="flex items-center justify-center gap-8 mb-6">
-            <div className="text-center">
-              <div className="flex items-center gap-1 justify-center mb-1 relative">
-                <Handshake className="w-5 h-5 text-trust" />
-                <p className="text-2xl font-bold ml-2">{stats.trust}</p>
-              </div>
-              <p className="text-xs text-muted-foreground">אמון</p>
-            </div>
-
-            <div className="text-center">
-              <div className="flex items-center gap-1 justify-center mb-1">
-                <Vote className="w-5 h-5 text-primary" />
-                <p className="text-2xl font-bold">{stats.votes}</p>
-              </div>
-              <p className="text-xs text-muted-foreground">הצבעות</p>
-            </div>
-
-            <div className="text-center">
-              <div className="flex items-center gap-1 justify-center mb-1">
-                <Gavel className="w-5 h-5 text-purple-600" />
-                <p className="text-2xl font-bold">{stats.decisions}</p>
-              </div>
-              <p className="text-xs text-muted-foreground">החלטות</p>
-            </div>
           </div>
         </div>
 
