@@ -53,9 +53,19 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   const [firstName, setFirstName] = useState(savedState?.firstName || '');
   const [lastName, setLastName] = useState(savedState?.lastName || '');
+  const [city, setCity] = useState(savedState?.city || '');
+  const [dateOfBirth, setDateOfBirth] = useState(savedState?.dateOfBirth || '');
+  const [idNumber, setIdNumber] = useState(savedState?.idNumber || '');
   const [profilePicture, setProfilePicture] = useState<string>(savedState?.profilePicture || '');
   const [selectedFields, setSelectedFields] = useState<string[]>(savedState?.selectedFields || []);
-  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; profilePicture?: string }>({});
+  const [errors, setErrors] = useState<{ 
+    firstName?: string; 
+    lastName?: string; 
+    profilePicture?: string;
+    city?: string;
+    dateOfBirth?: string;
+    idNumber?: string;
+  }>({});
   const { t } = useTranslation();
 
   // Save state to localStorage whenever it changes
@@ -63,11 +73,14 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     const stateToSave = {
       firstName,
       lastName,
+      city,
+      dateOfBirth,
+      idNumber,
       profilePicture,
       selectedFields
     };
     localStorage.setItem('signup_form_state', JSON.stringify(stateToSave));
-  }, [firstName, lastName, profilePicture, selectedFields]);
+  }, [firstName, lastName, city, dateOfBirth, idNumber, profilePicture, selectedFields]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
