@@ -297,7 +297,7 @@ export default function ProfilePage() {
           <div className="flex items-center justify-center gap-2 mb-1">
             <h2 className="text-2xl font-bold">משתמש דמו מאומת</h2>
             <button className="p-1.5 hover:bg-muted rounded-full transition-colors">
-              <Settings className="w-4 h-4 text-muted-foreground" />
+              <Edit2 className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
           <p className="text-sm text-muted-foreground mb-2" dir="ltr">@demouser</p>
