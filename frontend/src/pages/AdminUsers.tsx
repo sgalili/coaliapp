@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { ArrowLeft, Search, Trash2, Edit2, Shield, Ban, Medal } from "lucide-react";
+import { ArrowLeft, Search, Trash2, Edit2, Shield, Ban, Medal, Plus, Phone, MessageCircle, LogIn, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { AdminUserModal } from "@/components/admin/AdminUserModal";
+import { Button } from "@/components/ui/button";
 
 export default function AdminUsers() {
   const navigate = useNavigate();
