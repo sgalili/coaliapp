@@ -515,18 +515,18 @@ export default function ProfilePage() {
 
           {/* Bio Section */}
           <div className="px-6 mb-4 text-center">
-            <p 
-              ref={bioRef}
-              className="text-sm text-muted-foreground leading-relaxed line-clamp-3"
-            >
-              {userBio}
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              <span className="line-clamp-3 inline">
+                {userBio}
+              </span>
+              {' '}
+              <button 
+                onClick={() => handleTabChange('info')}
+                className="text-primary text-sm font-medium hover:underline inline"
+              >
+                עוד
+              </button>
             </p>
-            <button 
-              onClick={() => handleTabChange('info')}
-              className="text-primary text-sm font-medium mt-2 hover:underline"
-            >
-              עוד
-            </button>
           </div>
         </div>
 
