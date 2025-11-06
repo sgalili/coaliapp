@@ -157,7 +157,7 @@ export default function ProfilePage() {
   };
 
   const loadDraftPosts = async () => {
-    try {
+    try:
       const { data, error } = await supabase
         .from('demo_posts')
         .select('*')
@@ -167,12 +167,12 @@ export default function ProfilePage() {
 
       if (error) {
         console.warn('Draft posts may not exist, using demo data:', error);
-        // Use demo draft data
+        // Use demo draft data with placeholder
         setDraftPosts([
           {
             id: 'draft-1',
             caption: 'טיוטה ראשונה - רעיונות על חדשנות בישראל',
-            video_url: '/videos/demo1.mp4',
+            image_url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400',
             created_at: new Date().toISOString(),
             status: 'draft'
           }
@@ -188,14 +188,21 @@ export default function ProfilePage() {
     }
   };
 
+  const handleEditPost = (postId: string, isDraft: boolean = false) => {
+    // TODO: Open edit modal/page
+    console.log('Edit post/draft:', postId);
+    alert(`עריכת ${isDraft ? 'טיוטה' : 'פוסט'} - תכונה תבוא בקרוב`);
+  };
+
   const handleDeletePost = async (postId: string) => {
-    if (!confirm('האם אתה בטוח שברצונך למחוק פוסט זה?')) return;
+    if (!confirm('האם אתה בטוח שברצונך למחוק?')) return;
 
     try {
       const { error } = await supabase
         .from('demo_posts')
         .delete()
-        .eq('id', postId);
+        .eq('id', postId)
+        .eq('user_id', 'demo-user'); // Only allow deleting own posts
 
       if (error) throw error;
 
@@ -205,6 +212,7 @@ export default function ProfilePage() {
       await loadDraftPosts();
     } catch (error) {
       console.error('Failed to delete post:', error);
+      alert('שגיאה במחיקת הפוסט');
     }
   };
 
