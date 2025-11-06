@@ -492,10 +492,9 @@ export default function ProfilePage() {
         console.log('🤝 People I trust:', trustedByMeData?.length);
       }
 
-      // Set total trust count
+      // Set trust count to only "נותנים לי אמון"
       const trustedMeCount = trustedMeData?.length || 3; // demo count
-      const trustedByMeCount = trustedByMeData?.length || 2; // demo count
-      setTrustCount(trustedMeCount + trustedByMeCount);
+      setTrustCount(trustedMeCount);
     } catch (error) {
       console.error('Failed to load trust relationships:', error);
       // Set demo data on error using real demo users
