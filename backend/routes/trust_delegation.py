@@ -22,6 +22,9 @@ else:
     supabase = None
     logger.warning("Supabase not configured")
 
+# Import notification service
+from services.auto_notification_service import auto_notification_service
+
 class TrustDelegationCreate(BaseModel):
     truster_id: str
     trusted_id: str
