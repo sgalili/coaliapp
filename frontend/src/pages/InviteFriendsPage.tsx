@@ -24,11 +24,9 @@ const InviteFriendsPage = () => {
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
   const [selectedContact, setSelectedContact] = useState<any>(null);
   const [totalEarned] = useState(127);
-  
-  const { referralCode, fetchReferralCode, generateInvitationLink, createTrustIntent } = useInvitation();
   const [copied, setCopied] = useState(false);
   
-  const { referralCode, fetchReferralCode, generateInvitationLink } = useInvitation();
+  const { referralCode, fetchReferralCode, generateInvitationLink, createTrustIntent } = useInvitation();
   
   useEffect(() => {
     fetchReferralCode();
