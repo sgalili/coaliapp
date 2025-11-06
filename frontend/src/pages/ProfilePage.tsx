@@ -339,7 +339,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-border">
+        <div ref={tabsRef} className="border-b border-border">
           <div className="flex items-center justify-around">
             <button
               onClick={() => setActiveTab('posts')}
