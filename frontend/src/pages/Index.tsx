@@ -1574,7 +1574,7 @@ export default function Index() {
                 </span>
               </button>
 
-              {/* Trust Button - Handshake with Crown inside */}
+              {/* Trust Button - Handshake without crown */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1587,14 +1587,12 @@ export default function Index() {
                     "w-7 h-7 transition-all duration-200",
                     post.hasUserTrusted ? "text-green-400" : "text-white"
                   )} style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
-                  {/* Crown at top-right */}
-                  <Crown className="w-3 h-3 absolute top-0 right-0 text-yellow-400" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))' }} />
                 </div>
                 <span 
                   className={cn(
                     "text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
                     post.hasUserTrusted ? "text-green-400" : "text-white",
-                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
+                    isTransitioning ? "label-dissolve-out" : "label-dissolve-in"
                   )}
                 >
                   {showTextLabels ? 'תן אמון' : formatCount(post.trustCount)}
