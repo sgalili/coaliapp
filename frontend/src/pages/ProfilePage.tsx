@@ -819,20 +819,54 @@ export default function ProfilePage() {
               {userPosts.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2">
                   {userPosts.map((post) => (
-                    <div key={post.id} className="aspect-square bg-muted rounded-lg overflow-hidden relative">
+                    <div 
+                      key={post.id} 
+                      className="aspect-square bg-muted rounded-lg overflow-hidden relative group cursor-pointer"
+                      onClick={() => navigate(`/?post=${post.id}`)}
+                    >
                       {post.video_url && (
                         <video src={post.video_url} className="w-full h-full object-cover" />
                       )}
+                      
+                      {/* Edit/Delete buttons */}
+                      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // TODO: Implement edit functionality
+                            console.log('Edit post:', post.id);
+                          }}
+                          className="p-1.5 bg-blue-500 text-white rounded-full hover:bg-blue-600"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePost(post.id);
+                          }}
+                          className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                      
+                      {/* Post stats */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
                         <div className="flex items-center justify-between text-white text-xs">
-                          <div className="flex items-center gap-1">
-                            <Eye className="w-3 h-3" />
-                            <span>{post.watch_count || 0}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <Eye className="w-3 h-3" />
+                              <span>{post.watch_count || 0}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Bookmark className="w-3 h-3" />
+                              <span>{post.bookmark_count || 0}</span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1 relative">
+                          <div className="flex items-center gap-1">
                             <Handshake className="w-3 h-3" />
-                            <Crown className="w-2 h-2 absolute -top-0.5 -right-0.5 text-yellow-400" />
-                            <span className="ml-1">{post.trust_count || 0}</span>
+                            <span>{post.trust_count || 0}</span>
                           </div>
                         </div>
                       </div>
