@@ -135,14 +135,18 @@ export const AuthPage = () => {
       
       if (!session?.user) {
         // If no session, try to create profile directly with phone
+        const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+        
         const { data: profile, error: createError } = await supabase
           .from('profiles')
           .insert({
+            user_id: userId,
             phone: authData.phone,
             first_name: firstName,
             last_name: lastName,
             avatar_url: profilePicture,
             is_verified: true,
+            zooz_balance: 10, // Welcome bonus
             created_at: new Date().toISOString()
           })
           .select()
@@ -150,6 +154,7 @@ export const AuthPage = () => {
 
         if (createError) {
           console.error('Error creating profile:', createError);
+          console.error('Error details:', JSON.stringify(createError, null, 2));
           toast.error('שגיאה ביצירת הפרופיל');
           return;
         }
