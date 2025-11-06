@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Camera, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Sparkles, CheckCircle2 } from 'lucide-react';
+import { ProfilePictureUpload } from '@/components/ProfilePictureUpload';
+import { CityAutocomplete } from '@/components/CityAutocomplete';
 import { cn } from '@/lib/utils';
 
 interface ProfileCompletionProps {
