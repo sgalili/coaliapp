@@ -1662,7 +1662,7 @@ export default function Index() {
                     isTransitioning ? "label-dissolve-out" : "label-dissolve-in"
                   )}
                 >
-                  {showTextLabels ? 'הוספה' : formatCount(post.watchCount)}
+                  {showTextLabels ? 'שמירה' : formatCount(post.watchCount)}
                 </span>
               </button>
 
