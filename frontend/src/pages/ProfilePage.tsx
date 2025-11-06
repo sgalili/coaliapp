@@ -267,8 +267,13 @@ export default function ProfilePage() {
             className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
           />
 
-          {/* Name & Handle */}
-          <h2 className="text-2xl font-bold mb-1">משתמש דמו מאומת</h2>
+          {/* Name & Handle with Edit Icon */}
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <h2 className="text-2xl font-bold">משתמש דמו מאומת</h2>
+            <button className="p-1.5 hover:bg-muted rounded-full transition-colors">
+              <Settings className="w-4 h-4 text-muted-foreground" />
+            </button>
+          </div>
           <p className="text-sm text-muted-foreground mb-2" dir="ltr">@demouser</p>
 
           {/* Expertise Fields */}
