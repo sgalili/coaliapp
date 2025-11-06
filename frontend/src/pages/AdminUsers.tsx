@@ -108,6 +108,42 @@ export default function AdminUsers() {
     }
   };
 
+  const handleEditUser = (user: any) => {
+    setSelectedUser(user);
+    setIsNewUser(false);
+    setShowUserModal(true);
+  };
+
+  const handleAddUser = () => {
+    setSelectedUser(null);
+    setIsNewUser(true);
+    setShowUserModal(true);
+  };
+
+  const handleWhatsApp = (phone: string) => {
+    const cleanPhone = phone.replace(/\+/g, '');
+    window.open(`https://wa.me/${cleanPhone}`, '_blank');
+  };
+
+  const handleCall = (phone: string) => {
+    window.open(`tel:${phone}`, '_self');
+  };
+
+  const handleLoginAsUser = async (userId: string, userName: string) => {
+    if (!confirm(`האם להתחבר כ-${userName}? תקבל גישה מלאה לחשבון.`)) return;
+
+    try {
+      localStorage.setItem('admin_impersonating', userId);
+      toast.success(`מתחבר כ-${userName}...`);
+      setTimeout(() => {
+        window.location.href = `/profile?impersonate=${userId}`;
+      }, 1000);
+    } catch (error) {
+      console.error('Error logging in as user:', error);
+      toast.error('שגיאה בהתחברות');
+    }
+  };
+
   const filteredUsers = users.filter(u => {
     // Search filter
     if (searchQuery && !u.username?.includes(searchQuery)) return false;
