@@ -646,21 +646,30 @@ export default function ProfilePage() {
           <h3 className="text-lg font-bold mb-4">ההחלטות שלי ({decisionsCount})</h3>
           {userDecisions.length > 0 ? (
             <div className="space-y-4">
-              {userDecisions.map((decision) => (
-                <div key={decision.id} className="bg-muted/50 rounded-lg p-4">
-                  <h4 className="font-medium mb-2">{decision.title}</h4>
-                  <p className="text-sm text-muted-foreground mb-3">{decision.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(decision.created_at).toLocaleDateString('he-IL')}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Vote className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">הצבעתי</span>
+              {userDecisions.map((vote) => {
+                const decision = vote.decision;
+                return (
+                  <div key={vote.id} className="bg-muted/50 rounded-lg p-4 hover:bg-muted transition-colors">
+                    <h4 className="font-medium mb-2">{decision?.title || 'החלטה'}</h4>
+                    <p className="text-sm text-muted-foreground mb-3">{decision?.description || ''}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(vote.created_at).toLocaleDateString('he-IL', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Vote className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-medium">
+                          {vote.vote_value === 'yes' ? 'בעד' : vote.vote_value === 'no' ? 'נגד' : 'נמנע'}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12">
