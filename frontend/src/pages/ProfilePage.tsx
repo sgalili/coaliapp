@@ -511,7 +511,7 @@ export default function ProfilePage() {
             
             <div className="bg-muted/50 rounded-lg p-4">
               <p className="text-sm text-muted-foreground mb-1">ביוגרפיה</p>
-              <p className="text-sm">מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה.</p>
+              <p className="text-sm leading-relaxed">{userBio}</p>
             </div>
 
             <div className="bg-muted/50 rounded-lg p-4">
