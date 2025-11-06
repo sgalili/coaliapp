@@ -128,31 +128,94 @@ export const AuthPage = () => {
 
   const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string, expertiseFields?: string[]) => {
     try {
-      setAuthError(''); // Clear any previous errors
+      setAuthError('');
       
-      // User is already authenticated via OTP, just update profile
-      const { error: updateError } = await updateProfile(firstName, lastName, profilePicture);
+      // Get current session
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (updateError) {
-        console.error('Error updating profile:', updateError);
-        toast.error('שגיאה בעדכון הפרופיל');
-        setAuthError('שגיאה בעדכון הפרופיל');
-        return;
+      if (!session?.user) {
+        // If no session, try to create profile directly with phone
+        const { data: profile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            phone: authData.phone,
+            first_name: firstName,
+            last_name: lastName,
+            avatar_url: profilePicture,
+            is_verified: true,
+            created_at: new Date().toISOString()
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          toast.error('שגיאה ביצירת הפרופיל');
+          return;
+        }
+
+        console.log('✅ Profile created:', profile);
+      } else {
+        // Update existing profile via hook
+        const { error: updateError } = await updateProfile(firstName, lastName, profilePicture);
+        
+        if (updateError) {
+          console.error('Error updating profile:', updateError);
+          toast.error('שגיאה בעדכון הפרופיל');
+          return;
+        }
       }
 
       // Save expertise fields if provided
       if (expertiseFields && expertiseFields.length > 0) {
-        // TODO: Save to user_expertise table
-        console.log('Expertise fields selected:', expertiseFields);
+        const { data: { user } } = await supabase.auth.getUser();
+        const userId = user?.id || `user_${authData.phone}`;
+        
+        for (const field of expertiseFields) {
+          await supabase.from('user_expertise').upsert({
+            user_id: userId,
+            expertise_field: field,
+            verified: false
+          }, { onConflict: 'user_id,expertise_field' });
+        }
+        console.log('✅ Expertise fields saved');
       }
 
-      setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
-      
-      // Handle invitation code or trust intent if present
-      if (authData.invitationCode) {
-        console.log('Consuming invitation code:', authData.invitationCode);
+      // Send welcome WhatsApp
+      try {
+        const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+        await fetch(`${backendUrl}/api/whatsapp/send-message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone_number: authData.phone,
+            message: `🎉 ברוך הבא ל-Coali, ${firstName}!
+
+ההרשמה הושלמה בהצלחה! 
+
+🪙 קיבלת 10z מתנה לחשבון שלך
+
+מה עכשיו?
+• גלה את רשת האמון שלנו
+• תן אמון למומחים בתחומים שמעניינים אותך
+• השתתף בהחלטות חשובות
+• צבור ZOOZ והשפעה
+
+🔗 התחל עכשיו: ${window.location.origin}
+
+בהצלחה! 💪
+צוות Coali`
+          })
+        });
+        console.log('✅ Welcome WhatsApp sent');
+      } catch (whatsappError) {
+        console.error('Failed to send welcome WhatsApp:', whatsappError);
       }
       
+      // Clear form state
+      localStorage.removeItem('signup_form_state');
+      
+      setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
       toast.success('🎉 הפרופיל נוצר בהצלחה! קיבלת 10z מתנה!');
       navigate('/');
     } catch (error) {
