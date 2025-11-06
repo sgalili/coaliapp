@@ -80,11 +80,6 @@ export const Navigation = ({ zoozBalance = 0, show = true }: NavigationProps) =>
                     )} 
                   />
                 )}
-                {tab.id === 'wallet' && zoozBalance > 0 && (
-                  <div className="absolute -top-2 -right-2 bg-zooz text-zooz-foreground text-xs px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
-                    {zoozBalance > 999 ? '999+' : zoozBalance}
-                  </div>
-                )}
               </div>
               <span className={cn(
                 "text-xs transition-colors",
