@@ -13,10 +13,11 @@ export default function ProfilePage() {
   const [userDecisions, setUserDecisions] = useState<any[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
-  const [activeTab, setActiveTab] = useState<'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions' | 'drafts'>('posts');
   const [expertiseFields, setExpertiseFields] = useState(['טכנולוגיה', 'עסקים', 'חדשות']);
   const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [draftPosts, setDraftPosts] = useState<any[]>([]);
   const [isTabsSticky, setIsTabsSticky] = useState(false);
   const [stats, setStats] = useState({ trust: 0, votes: 0, watch: 0, decisions: 0 });
   const [bookmarkStats, setBookmarkStats] = useState({ received: 0, saved: 0 });
