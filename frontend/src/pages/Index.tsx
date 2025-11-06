@@ -2228,7 +2228,10 @@ export default function Index() {
 
                 {/* Caption */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">כיתוב</label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium">כיתוב</label>
+                    <span className="text-xs text-muted-foreground">{caption.length}/400</span>
+                  </div>
                   <textarea
                     value={caption}
                     onChange={(e) => setCaption(e.target.value)}
@@ -2237,9 +2240,6 @@ export default function Index() {
                     maxLength={400}
                     dir="rtl"
                   />
-                  <p className="text-xs text-muted-foreground text-right mt-1">
-                    {caption.length}/400
-                  </p>
                 </div>
 
                 {/* Category Selection */}
