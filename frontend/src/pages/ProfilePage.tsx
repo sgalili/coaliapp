@@ -72,13 +72,31 @@ export default function ProfilePage() {
       setIsBioLong(lines > 3);
     }
   }, []);
-  // Scroll listener for sticky tabs
+  // Scroll listener for sticky tabs - stick at top, unstick when scrolling down
   useEffect(() => {
+    let lastScrollY = 0;
+    
     const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
       if (tabsRef.current) {
         const rect = tabsRef.current.getBoundingClientRect();
-        setIsTabsSticky(rect.top <= 0);
+        
+        // If we're at or near the top, make tabs sticky
+        if (currentScrollY <= 10) {
+          setIsTabsSticky(true);
+        } 
+        // If scrolling down from top position, unstick
+        else if (currentScrollY > lastScrollY && rect.top <= 0) {
+          setIsTabsSticky(false);
+        }
+        // If scrolling up and tabs would be at top, make sticky
+        else if (currentScrollY < lastScrollY && rect.top >= 0) {
+          setIsTabsSticky(true);
+        }
       }
+      
+      lastScrollY = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll);
