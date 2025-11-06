@@ -116,28 +116,47 @@ export default function ProfilePage() {
     }
   };
 
-  const loadBookmarkStats = async () => {
+  const loadUserDecisions = async () => {
     try {
-      // Count bookmarks received on my posts
-      const { count: receivedCount } = await supabase
-        .from('bookmarks')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', 'demo-user');
+      // Fetch decisions where user has voted
+      const { data, error } = await supabase
+        .from('user_votes')
+        .select(`
+          *,
+          decision:demo_decisions(*)
+        `)
+        .eq('user_id', 'demo-user')
+        .order('created_at', { ascending: false });
 
-      // Count my saved bookmarks
-      const { count: savedCount } = await supabase
-        .from('bookmarks')
-        .select('*', { count: 'exact', head: true })
-        .eq('bookmark_user_id', 'demo-user');
+      if (error) {
+        console.warn('User votes table may not exist yet:', error);
+        setDecisionsCount(0);
+        setUserDecisions([]);
+        return;
+      }
 
-      setBookmarkStats({
-        received: receivedCount || 0,
-        saved: savedCount || 0
-      });
-
-      console.log('🔖 Bookmark stats:', { received: receivedCount, saved: savedCount });
+      setUserDecisions(data || []);
+      setDecisionsCount(data?.length || 0);
+      console.log('🗳️ User decisions loaded:', data?.length);
     } catch (error) {
-      console.error('Failed to load bookmark stats:', error);
+      console.error('Failed to load user decisions:', error);
+      setDecisionsCount(0);
+    }
+  };
+
+  const loadTrustCount = async () => {
+    try {
+      // Count users who trust this user
+      const { count } = await supabase
+        .from('trust_relationships')
+        .select('*', { count: 'exact', head: true })
+        .eq('trusted_user_id', 'demo-user');
+
+      setTrustCount(count || 0);
+      console.log('🤝 Trust count:', count);
+    } catch (error) {
+      console.error('Failed to load trust count:', error);
+      setTrustCount(0);
     }
   };
 
