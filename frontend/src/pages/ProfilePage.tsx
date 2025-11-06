@@ -13,7 +13,8 @@ export default function ProfilePage() {
   const [userDecisions, setUserDecisions] = useState<any[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
-  const [activeTab, setActiveTab] = useState<'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions' | 'drafts'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'trust' | 'bookmarks' | 'decisions'>('posts');
+  const [showDrafts, setShowDrafts] = useState(false);
   const [expertiseFields, setExpertiseFields] = useState(['טכנולוגיה', 'עסקים', 'חדשות']);
   const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
