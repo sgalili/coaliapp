@@ -1760,19 +1760,7 @@ export default function Index() {
           </div>
         ))
         ) : (
-          <div className="h-screen flex items-center justify-center">
-            <div className="text-center text-white px-6">
-              <div className="text-6xl mb-4">📭</div>
-              <h3 className="text-xl font-bold mb-2">אין תוכן בקטגוריה זו</h3>
-              <p className="text-white/60 mb-6">נסה קטגוריה אחרת או צור תוכן חדש</p>
-              <button
-                onClick={() => setSelectedCategory('הכל')}
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
-              >
-                חזור להכל
-              </button>
-            </div>
-          </div>
+          <EmptyCategoryState />
         )}
       </div>
 
