@@ -35,7 +35,7 @@ const ALL_EXPERTISE_FIELDS = [
   { id: 'general', label: 'כללי', icon: '📋' },
 ];
 
-export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete, isLoading, onStartOnboarding }) => {
+export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete, isLoading }) => {
   // Load saved state from localStorage
   const loadSavedState = () => {
     try {
