@@ -342,7 +342,7 @@ export default function ProfilePage() {
         <div ref={tabsRef} className="border-b border-border">
           <div className="flex items-center justify-around">
             <button
-              onClick={() => setActiveTab('posts')}
+              onClick={() => handleTabChange('posts')}
               className={cn(
                 "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
                 activeTab === 'posts' 
