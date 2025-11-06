@@ -594,7 +594,7 @@ export default function ProfilePage() {
       // Refresh bookmarks
       await loadSavedBookmarks();
       
-      console.log('הסימניה הוסרה');
+      console.log('המועדף הוסר');
     } catch (error) {
       console.error('Failed to remove bookmark:', error);
     }
