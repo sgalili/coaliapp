@@ -93,10 +93,86 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
+      {/* Burger Menu Overlay */}
+      {showBurgerMenu && (
+        <div className="fixed inset-0 z-[100] bg-black/50" onClick={() => setShowBurgerMenu(false)}>
+          <div 
+            className="absolute top-0 right-0 w-[280px] h-full bg-background shadow-2xl animate-slide-in-right"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Menu Header */}
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-bold">תפריט</h2>
+              <button onClick={() => setShowBurgerMenu(false)} className="p-2 hover:bg-muted rounded-full">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Menu Items */}
+            <div className="p-2">
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <User className="w-5 h-5 text-muted-foreground" />
+                <span>עריכת פרופיל</span>
+              </button>
+              
+              <button 
+                onClick={() => {
+                  navigate('/wallet');
+                  setShowBurgerMenu(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right"
+              >
+                <Gift className="w-5 h-5 text-muted-foreground" />
+                <span>ארנק ZOOZ</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <Bookmark className="w-5 h-5 text-muted-foreground" />
+                <span>שמורים</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <Settings className="w-5 h-5 text-muted-foreground" />
+                <span>הגדרות</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <Lock className="w-5 h-5 text-muted-foreground" />
+                <span>פרטיות ואבטחה</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <HelpCircle className="w-5 h-5 text-muted-foreground" />
+                <span>עזרה ותמיכה</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <FileText className="w-5 h-5 text-muted-foreground" />
+                <span>תנאי שימוש</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
+                <MessageSquare className="w-5 h-5 text-muted-foreground" />
+                <span>צור קשר</span>
+              </button>
+
+              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4">
+                <LogOut className="w-5 h-5" />
+                <span>התנתק</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-2xl mx-auto">
+        {/* Header with Menu on Right */}
         <div className="relative p-6 text-center">
-          <div className="absolute top-4 left-4 flex items-center gap-2">
-            <button className="p-2 hover:bg-muted rounded-full">
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <button 
+              onClick={() => setShowBurgerMenu(true)}
+              className="p-2 hover:bg-muted rounded-full"
+            >
               <Menu className="w-5 h-5 text-muted-foreground" />
             </button>
             <button
@@ -112,19 +188,30 @@ export default function ProfilePage() {
             </button>
           </div>
 
+          {/* Profile Image */}
           <img
             src="https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"
             className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
           />
 
+          {/* Name & Handle */}
           <h2 className="text-2xl font-bold mb-1">משתמש דמו מאומת</h2>
-          <p className="text-sm text-muted-foreground mb-4" dir="ltr">demouser@</p>
+          <p className="text-sm text-muted-foreground mb-2" dir="ltr">@demouser</p>
 
+          {/* Expertise Fields */}
+          <div className="flex items-center justify-center gap-2 mb-4 flex-wrap">
+            {expertiseFields.map((field, i) => (
+              <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
+                {field}
+              </span>
+            ))}
+          </div>
+
+          {/* Stats Row */}
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="text-center">
               <div className="flex items-center gap-1 justify-center mb-1 relative">
                 <Handshake className="w-5 h-5 text-trust" />
-                <Crown className="w-3 h-3 absolute -top-1 -right-1 text-yellow-500" />
                 <p className="text-2xl font-bold ml-2">{stats.trust}</p>
               </div>
               <p className="text-xs text-muted-foreground">אמון</p>
@@ -152,16 +239,64 @@ export default function ProfilePage() {
               <p className="text-xs text-muted-foreground">החלטות</p>
             </div>
           </div>
+
+          {/* Edit Profile Button */}
+          <button className="px-6 py-2 bg-muted text-sm font-medium rounded-lg hover:bg-muted/80 transition-colors">
+            עריכת פרופיל
+          </button>
         </div>
 
-        <div className="px-4">
-          <h3 className="text-lg font-bold mb-4">הפוסטים שלי ({userPosts.length})</h3>
-          {userPosts.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3">
-              {userPosts.map((post) => (
-                <div key={post.id} className="aspect-[3/4] bg-muted rounded-lg overflow-hidden relative">
-                  {post.video_url && (
-                    <video src={post.video_url} className="w-full h-full object-cover" />
+        {/* Tabs */}
+        <div className="border-b border-border">
+          <div className="flex items-center justify-around">
+            <button
+              onClick={() => setActiveTab('posts')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                activeTab === 'posts' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              פוסטים
+            </button>
+            <button
+              onClick={() => setActiveTab('info')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                activeTab === 'info' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              מידע
+            </button>
+            <button
+              onClick={() => setActiveTab('trust')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                activeTab === 'trust' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              אמון
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="px-4 py-6">
+          {/* Posts Tab */}
+          {activeTab === 'posts' && (
+            <div>
+              <h3 className="text-lg font-bold mb-4">הפוסטים שלי ({userPosts.length})</h3>
+              {userPosts.length > 0 ? (
+                <div className="grid grid-cols-3 gap-2">
+                  {userPosts.map((post) => (
+                    <div key={post.id} className="aspect-square bg-muted rounded-lg overflow-hidden relative">
+                      {post.video_url && (
+                        <video src={post.video_url} className="w-full h-full object-cover" />
                   )}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
                     <div className="flex items-center justify-between text-white text-xs">
