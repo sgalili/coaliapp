@@ -326,46 +326,62 @@ export default function ProfilePage() {
             <button
               onClick={() => handleTabChange('posts')}
               className={cn(
-                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex items-center justify-center gap-1",
                 activeTab === 'posts' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              פוסטים
+              <Grid3x3 className="w-4 h-4" />
+              <span>{userPosts.length} פוסטים</span>
             </button>
             <button
               onClick={() => handleTabChange('info')}
               className={cn(
-                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex items-center justify-center gap-1",
                 activeTab === 'info' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              מידע
+              <Info className="w-4 h-4" />
+              <span>מידע</span>
             </button>
             <button
               onClick={() => handleTabChange('trust')}
               className={cn(
-                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex items-center justify-center gap-1",
                 activeTab === 'trust' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              אמון
+              <Handshake className="w-4 h-4" />
+              <span>{trustCount} אמון</span>
             </button>
             <button
               onClick={() => handleTabChange('bookmarks')}
               className={cn(
-                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex items-center justify-center gap-1",
                 activeTab === 'bookmarks' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              שמורים
+              <Bookmark className="w-4 h-4" />
+              <span>{savedBookmarks.length} שמורים</span>
+            </button>
+            <button
+              onClick={() => handleTabChange('decisions')}
+              className={cn(
+                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex items-center justify-center gap-1",
+                activeTab === 'decisions' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <CheckSquare className="w-4 h-4" />
+              <span>{decisionsCount} החלטות</span>
             </button>
           </div>
         </div>
