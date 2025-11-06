@@ -85,7 +85,14 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newErrors: { firstName?: string; lastName?: string; profilePicture?: string } = {};
+    const newErrors: { 
+      firstName?: string; 
+      lastName?: string; 
+      profilePicture?: string;
+      city?: string;
+      dateOfBirth?: string;
+      idNumber?: string;
+    } = {};
     
     if (!firstName.trim()) {
       newErrors.firstName = 'שם פרטי נדרש';
@@ -93,6 +100,20 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     
     if (!lastName.trim()) {
       newErrors.lastName = 'שם משפחה נדרש';
+    }
+    
+    if (!city.trim()) {
+      newErrors.city = 'עיר מגורים נדרשת';
+    }
+    
+    if (!dateOfBirth) {
+      newErrors.dateOfBirth = 'תאריך לידה נדרש';
+    }
+    
+    if (!idNumber.trim()) {
+      newErrors.idNumber = 'מספר תעודת זהות נדרש';
+    } else if (!/^\d{9}$/.test(idNumber)) {
+      newErrors.idNumber = 'מספר תעודת זהות חייב להיות 9 ספרות';
     }
     
     if (!profilePicture) {
