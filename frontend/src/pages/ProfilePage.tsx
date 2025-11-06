@@ -52,6 +52,29 @@ export default function ProfilePage() {
       decisionsSubscription.unsubscribe();
     };
   }, []);
+  // Scroll listener for sticky tabs
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tabsRef.current) {
+        const rect = tabsRef.current.getBoundingClientRect();
+        setIsTabsSticky(rect.top <= 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Handle tab change with auto-scroll
+  const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks') => {
+    setActiveTab(tab);
+    // Scroll to tabs position
+    if (tabsRef.current) {
+      const yOffset = -60; // Offset for sticky positioning
+      const y = tabsRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   const loadUserPosts = async () => {
     try {
