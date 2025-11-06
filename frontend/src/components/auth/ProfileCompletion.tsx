@@ -37,12 +37,38 @@ const ALL_EXPERTISE_FIELDS = [
 ];
 
 export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete, isLoading, onStartOnboarding }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [profilePicture, setProfilePicture] = useState<string>('');
-  const [selectedFields, setSelectedFields] = useState<string[]>([]);
+  // Load saved state from localStorage
+  const loadSavedState = () => {
+    try {
+      const saved = localStorage.getItem('signup_form_state');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error('Error loading saved state:', error);
+    }
+    return null;
+  };
+
+  const savedState = loadSavedState();
+
+  const [firstName, setFirstName] = useState(savedState?.firstName || '');
+  const [lastName, setLastName] = useState(savedState?.lastName || '');
+  const [profilePicture, setProfilePicture] = useState<string>(savedState?.profilePicture || '');
+  const [selectedFields, setSelectedFields] = useState<string[]>(savedState?.selectedFields || []);
   const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; profilePicture?: string }>({});
   const { t } = useTranslation();
+
+  // Save state to localStorage whenever it changes
+  React.useEffect(() => {
+    const stateToSave = {
+      firstName,
+      lastName,
+      profilePicture,
+      selectedFields
+    };
+    localStorage.setItem('signup_form_state', JSON.stringify(stateToSave));
+  }, [firstName, lastName, profilePicture, selectedFields]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
