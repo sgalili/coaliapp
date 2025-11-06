@@ -2295,7 +2295,7 @@ export default function Index() {
                 {/* Save as Draft Button */}
                 <button
                   onClick={async () => {
-                    if (!newCaption.trim()) {
+                    if (!caption.trim()) {
                       toast.error('נא להזין תיאור');
                       return;
                     }
@@ -2305,16 +2305,16 @@ export default function Index() {
                       
                       // Save as draft (status = 'draft')
                       await saveDemoPost({
-                        caption: newCaption,
-                        category: newCategory,
+                        caption: caption,
+                        category: uploadCategory,
                         videoUrl: uploadedVideoUrl,
                         status: 'draft'
                       });
                       
                       toast.success('נשמר כטיוטה! 📝');
                       setShowVideoModal(false);
-                      setNewCaption('');
-                      setNewCategory('כללי');
+                      setCaption('');
+                      setUploadCategory('כללי');
                       setUploadedVideoUrl('');
                       setRecordedVideoUrl('');
                     } catch (error) {
@@ -2324,7 +2324,7 @@ export default function Index() {
                       setIsUploading(false);
                     }
                   }}
-                  disabled={isUploading || !newCaption.trim()}
+                  disabled={isUploading || !caption.trim()}
                   className="flex-1 py-3 bg-muted hover:bg-muted/80 text-foreground rounded-lg font-semibold transition-colors disabled:opacity-50"
                 >
                   שמור כטיוטה
