@@ -1269,6 +1269,17 @@ export default function ProfilePage() {
   </div>
 
       <Navigation zoozBalance={9957} />
+      
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        userId="demo-user"
+        isOpen={showEditProfile}
+        onClose={() => setShowEditProfile(false)}
+        onSave={() => {
+          setShowEditProfile(false);
+          loadUserPosts(); // Reload to show updated data
+        }}
+      />
     </div>
   );
 }
