@@ -1467,7 +1467,7 @@ export default function Index() {
           </button>
           
           {openMenuPostId === uniquePosts[currentPostIndex]?.id && (
-            <div className="absolute top-10 left-0 bg-white rounded-xl shadow-2xl w-[180px]">
+            <div className="absolute top-10 right-0 bg-white rounded-xl shadow-2xl w-[180px]">
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -1480,7 +1480,7 @@ export default function Index() {
                   setEditCategory(currentPost.category);
                   setOpenMenuPostId(null);
                 }}
-                className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-gray-50 active:bg-gray-100"
+                className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-gray-50 active:bg-gray-100 rounded-t-xl"
               >
                 <span className="text-sm font-medium">ערוך</span>
                 <Edit2 className="w-4 h-4 text-blue-600" />
@@ -1499,7 +1499,7 @@ export default function Index() {
                   setShowDeleteConfirm(true);
                   setOpenMenuPostId(null);
                 }}
-                className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 active:bg-red-100 border-t"
+                className="w-full px-4 py-3 text-right flex items-center justify-end gap-3 hover:bg-red-50 active:bg-red-100 border-t rounded-b-xl"
               >
                 <span className="text-sm font-medium text-red-600">מחק</span>
                 <Trash2 className="w-4 h-4 text-red-600" />
