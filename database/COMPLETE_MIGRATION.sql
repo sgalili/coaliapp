@@ -292,7 +292,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER IF NOT EXISTS set_withdrawal_deadline
+DROP TRIGGER IF EXISTS set_withdrawal_deadline ON demo_decisions;
+CREATE TRIGGER set_withdrawal_deadline
 BEFORE INSERT OR UPDATE OF end_date ON demo_decisions
 FOR EACH ROW
 EXECUTE FUNCTION calculate_withdrawal_deadline();
