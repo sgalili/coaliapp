@@ -311,11 +311,6 @@ export default function ProfilePage() {
               <p className="text-xs text-muted-foreground">החלטות</p>
             </div>
           </div>
-
-          {/* Edit Profile Button */}
-          <button className="px-6 py-2 bg-muted text-sm font-medium rounded-lg hover:bg-muted/80 transition-colors">
-            עריכת פרופיל
-          </button>
         </div>
 
         {/* Tabs */}
