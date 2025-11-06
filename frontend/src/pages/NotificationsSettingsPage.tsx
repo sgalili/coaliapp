@@ -79,8 +79,8 @@ const NotificationsSettingsPage = () => {
     {
       key: 'watchedUserPublished' as const,
       icon: Eye,
-      label: 'כשמישהו שאני עוקב אחריו מפרסם',
-      description: 'התראה כשאנשים שאתה עוקב אחריהם מפרסמים תוכן'
+      label: 'כשמישהו שאני מנוי אליו מפרסם',
+      description: 'התראה כשאנשים שאתה מנוי אליהם מפרסמים תוכן'
     }
   ];
 
