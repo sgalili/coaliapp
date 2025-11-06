@@ -182,11 +182,6 @@ export const AuthPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Language selector */}
-      <div className="absolute top-4 right-4 z-10">
-        <LanguageSelector />
-      </div>
-
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
