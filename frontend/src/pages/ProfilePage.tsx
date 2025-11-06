@@ -338,43 +338,29 @@ export default function ProfilePage() {
 
   const loadSubscriptions = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('subscriptions')
         .select('*')
         .eq('subscriber_id', 'demo-user')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.warn('Subscriptions table error:', error);
-        setSubscriptions([]);
-        return;
-      }
-
-      // Load profile data for each subscription
-      let subsWithProfiles = [];
-      for (const sub of (data || [])) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('user_id, first_name, last_name, avatar_url, expertise_fields')
-          .eq('user_id', sub.creator_id)
-          .single();
-        
-        if (profile) {
-          subsWithProfiles.push({
-            id: sub.id,
-            creator_id: sub.creator_id,
-            creator: {
-              user_id: profile.user_id,
-              full_name: `${profile.first_name} ${profile.last_name}`,
-              avatar_url: profile.avatar_url,
-              field: profile.expertise_fields?.[0] || 'כללי'
-            }
-          });
-        }
-      }
+      // Map to demo users from demoUsers.ts
+      let subsWithProfiles = (data || []).map(sub => {
+        const user = demoUsers.find(u => u.id === sub.creator_id);
+        return user ? {
+          id: sub.id || Math.random().toString(),
+          creator_id: sub.creator_id,
+          creator: {
+            user_id: user.id,
+            full_name: `${user.first_name} ${user.last_name}`,
+            avatar_url: user.avatar_url,
+            field: user.field
+          }
+        } : null;
+      }).filter(Boolean);
       
       setSubscriptions(subsWithProfiles);
-      console.log('📱 REAL subscriptions loaded:', subsWithProfiles.length);
+      console.log('📱 Subscriptions loaded:', subsWithProfiles.length);
     } catch (error) {
       console.error('Failed to load subscriptions:', error);
       setSubscriptions([]);
