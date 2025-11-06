@@ -353,7 +353,7 @@ export default function ProfilePage() {
               פוסטים
             </button>
             <button
-              onClick={() => setActiveTab('info')}
+              onClick={() => handleTabChange('info')}
               className={cn(
                 "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
                 activeTab === 'info' 
