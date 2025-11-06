@@ -6,6 +6,7 @@ import { OTPInput } from '@/components/auth/OTPInput';
 import { ProfileCompletion } from '@/components/auth/ProfileCompletion';
 import { LanguageSelector } from '@/components/auth/LanguageSelector';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
+import { Navigation } from '@/components/Navigation';
 import { useAffiliateLinks } from '@/hooks/useAffiliateLinks';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
