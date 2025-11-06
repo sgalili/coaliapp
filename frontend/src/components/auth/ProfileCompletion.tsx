@@ -52,6 +52,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   const savedState = loadSavedState();
 
+  const [title, setTitle] = useState(savedState?.title || '');
   const [firstName, setFirstName] = useState(savedState?.firstName || '');
   const [lastName, setLastName] = useState(savedState?.lastName || '');
   const [city, setCity] = useState(savedState?.city || '');
@@ -72,6 +73,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
   // Save state to localStorage whenever it changes
   React.useEffect(() => {
     const stateToSave = {
+      title,
       firstName,
       lastName,
       city,
@@ -81,7 +83,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
       selectedFields
     };
     localStorage.setItem('signup_form_state', JSON.stringify(stateToSave));
-  }, [firstName, lastName, city, dateOfBirth, idNumber, profilePicture, selectedFields]);
+  }, [title, firstName, lastName, city, dateOfBirth, idNumber, profilePicture, selectedFields]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
