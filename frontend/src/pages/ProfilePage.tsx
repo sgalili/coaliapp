@@ -315,30 +315,36 @@ export default function ProfilePage() {
 
       if (trustedMeError) {
         console.warn('Trust relationships may not exist, using demo data:', trustedMeError);
-        // Use demo data if table doesn't exist
+        // Use real demo users
         setTrustedMe([
           {
             id: '1',
+            truster_user_id: 'user-1',
             truster: {
-              full_name: 'דוד כהן',
-              avatar_url: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+              user_id: 'user-1',
+              full_name: 'ירון זלקה',
+              avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
               field: 'כלכלה'
             }
           },
           {
             id: '2',
+            truster_user_id: 'user-3',
             truster: {
-              full_name: 'שרה לוי',
-              avatar_url: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-              field: 'טכנולוגיה'
+              user_id: 'user-3',
+              full_name: 'דוד לוי',
+              avatar_url: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+              field: 'חברה'
             }
           },
           {
             id: '3',
+            truster_user_id: 'user-4',
             truster: {
-              full_name: 'יעקב מזרחי',
-              avatar_url: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
-              field: 'פוליטיקה'
+              user_id: 'user-4',
+              full_name: 'ד"ר רחל כהן',
+              avatar_url: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
+              field: 'בריאות'
             }
           }
         ]);
@@ -355,11 +361,13 @@ export default function ProfilePage() {
 
       if (trustedByMeError) {
         console.warn('Trust relationships may not exist, using demo data:', trustedByMeError);
-        // Use demo data if table doesn't exist
+        // Use real demo users
         setTrustedByMe([
           {
             id: '4',
+            trusted_user_id: 'user-2',
             trusted: {
+              user_id: 'user-2',
               full_name: 'נועה רותם',
               avatar_url: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
               field: 'טכנולוגיה'
@@ -367,10 +375,12 @@ export default function ProfilePage() {
           },
           {
             id: '5',
+            trusted_user_id: 'user-5',
             trusted: {
-              full_name: 'ירון זלקה',
-              avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-              field: 'כלכלה'
+              user_id: 'user-5',
+              full_name: 'עו"ד אמית ברק',
+              avatar_url: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg',
+              field: 'חברה'
             }
           }
         ]);
@@ -385,29 +395,35 @@ export default function ProfilePage() {
       setTrustCount(trustedMeCount + trustedByMeCount);
     } catch (error) {
       console.error('Failed to load trust relationships:', error);
-      // Set demo data on error
+      // Set demo data on error using real demo users
       setTrustedMe([
         {
           id: '1',
+          truster_user_id: 'user-1',
           truster: {
-            full_name: 'דוד כהן',
-            avatar_url: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+            user_id: 'user-1',
+            full_name: 'ירון זלקה',
+            avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
             field: 'כלכלה'
           }
         },
         {
           id: '2',
+          truster_user_id: 'user-3',
           truster: {
-            full_name: 'שרה לוי',
-            avatar_url: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-            field: 'טכנולוגיה'
+            user_id: 'user-3',
+            full_name: 'דוד לוי',
+            avatar_url: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+            field: 'חברה'
           }
         }
       ]);
       setTrustedByMe([
         {
           id: '3',
+          trusted_user_id: 'user-2',
           trusted: {
+            user_id: 'user-2',
             full_name: 'נועה רותם',
             avatar_url: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
             field: 'טכנולוגיה'
