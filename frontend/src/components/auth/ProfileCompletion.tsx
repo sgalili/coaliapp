@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils';
 interface ProfileCompletionProps {
   onComplete: (firstName: string, lastName: string, profilePicture?: string, expertiseFields?: string[]) => void;
   isLoading: boolean;
-  onStartOnboarding?: () => void;
 }
 
 const ALL_EXPERTISE_FIELDS = [
