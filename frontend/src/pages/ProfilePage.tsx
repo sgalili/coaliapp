@@ -364,7 +364,7 @@ export default function ProfilePage() {
               מידע
             </button>
             <button
-              onClick={() => setActiveTab('trust')}
+              onClick={() => handleTabChange('trust')}
               className={cn(
                 "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
                 activeTab === 'trust' 
