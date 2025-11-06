@@ -24,6 +24,7 @@ import InviteFriendsPage from "./pages/InviteFriendsPage";
 import MyStatsPage from "./pages/MyStatsPage";
 import LanguageSettingsPage from "./pages/LanguageSettingsPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import MyDelegatedVotesPage from "./pages/MyDelegatedVotesPage";
 import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 
