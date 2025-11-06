@@ -36,6 +36,28 @@ const InviteFriendsPage = () => {
 
   const referralLink = generateInvitationLink(referralCode || 'user123');
 
+  const handleContactsPermission = () => {
+    const hasPermission = Math.random() > 0.5;
+    if (hasPermission) {
+      setShowContactPicker(true);
+    } else {
+      setShowPermissionDialog(true);
+    }
+  };
+
+  const handleContactSelect = async (contact: any) => {
+    setSelectedContact(contact);
+    setShowContactPicker(false);
+    
+    const success = await createTrustIntent(contact.phone);
+    
+    if (success) {
+      toast.success(`אמון נוצר עבור ${contact.name}`);
+    } else {
+      toast.error('שגיאה ביצירת אמון');
+    }
+  };
+
   const socialPlatforms = [
     { 
       name: "WhatsApp", 
