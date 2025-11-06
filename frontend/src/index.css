@@ -451,6 +451,21 @@ All colors MUST be HSL.
   animation: zooz-fly 2s ease-out forwards;
 }
 
+/* New animation: Shoot coins from ZOOZ button to top-right corner */
+@keyframes zooz-fly-to-corner {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(100vw - 60px + var(--random-offset)), calc(-100vh + 60px)) scale(0.6) rotate(1080deg);
+  }
+}
+
 /* 3D Gold Coin with engraved Z */
 .zooz-coin {
   width: 40px;
