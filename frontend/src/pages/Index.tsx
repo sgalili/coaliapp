@@ -2292,6 +2292,44 @@ export default function Index() {
                     'פרסם'
                   )}
                 </button>
+                
+                {/* Save as Draft Button */}
+                <button
+                  onClick={async () => {
+                    if (!newCaption.trim()) {
+                      toast.error('נא להזין תיאור');
+                      return;
+                    }
+                    
+                    try {
+                      setIsUploading(true);
+                      
+                      // Save as draft (status = 'draft')
+                      await saveDemoPost({
+                        caption: newCaption,
+                        category: newCategory,
+                        videoUrl: uploadedVideoUrl,
+                        status: 'draft'
+                      });
+                      
+                      toast.success('נשמר כטיוטה! 📝');
+                      setShowVideoModal(false);
+                      setNewCaption('');
+                      setNewCategory('כללי');
+                      setUploadedVideoUrl('');
+                      setRecordedVideoUrl('');
+                    } catch (error) {
+                      console.error('Error saving draft:', error);
+                      toast.error('שגיאה בשמירת הטיוטה');
+                    } finally {
+                      setIsUploading(false);
+                    }
+                  }}
+                  disabled={isUploading || !newCaption.trim()}
+                  className="flex-1 py-3 bg-muted hover:bg-muted/80 text-foreground rounded-lg font-semibold transition-colors disabled:opacity-50"
+                >
+                  שמור כטיוטה
+                </button>
               </div>
             </div>
           </div>
