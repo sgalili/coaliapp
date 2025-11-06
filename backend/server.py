@@ -63,6 +63,10 @@ app.include_router(news_router, prefix="/api/news", tags=["News"])
 from routes.whatsapp import router as whatsapp_router
 app.include_router(whatsapp_router, prefix="/api/whatsapp", tags=["WhatsApp"])
 
+# Include trust delegation routes
+from routes.trust_delegation import router as trust_delegation_router
+app.include_router(trust_delegation_router, prefix="/api/trust-delegation", tags=["Trust Delegation"])
+
 # Include the main router in the app
 app.include_router(api_router)
 
