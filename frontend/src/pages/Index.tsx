@@ -1187,11 +1187,11 @@ export default function Index() {
         setPosts(posts.map(p => 
           p.id === postId ? { ...p, watchCount: post.watchCount, hasUserWatched: post.hasUserWatched } : p
         ));
-        toast.error('שגיאה בשמירת הסימניה');
+        toast.error('שגיאה בשמירה למועדפים');
       }
     } else {
       // Just toggle the UI, actual removal happens in profile bookmarks page
-      toast.success('הוסר מהסימניות');
+      toast.success('הוסר מהמועדפים');
       try {
         await updatePostEngagement(postId, 'watch_count', newCount);
       } catch (error) {
