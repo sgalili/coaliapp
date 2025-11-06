@@ -33,7 +33,10 @@ export const AdminUserModal: React.FC<AdminUserModalProps> = ({
     last_name: '',
     phone: '',
     city: '',
+    date_of_birth: '',
     id_number: '',
+    bio: '',
+    avatar_url: '',
     zooz_balance: 0,
     is_verified: false,
     is_demo: false,
@@ -47,23 +50,69 @@ export const AdminUserModal: React.FC<AdminUserModalProps> = ({
   const [addZoozAmount, setAddZoozAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const ALL_EXPERTISE_FIELDS = [
+    'פוליטיקה', 'כלכלה', 'בריאות', 'טכנולוגיה', 'חינוך', 'סביבה',
+    'ביטחון', 'חברה', 'משפט', 'תקשורת', 'אמנות ותרבות', 'ספורט',
+    'מדע ומחקר', 'עסקים ויזמות', 'נדל"ן', 'תחבורה', 'חקלאות',
+    'תיירות', 'קולינריה ומזון', 'כללי'
+  ];
+
   useEffect(() => {
     if (user && !isNewUser) {
-      setFormData({
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
-        phone: user.phone || '',
-        city: user.city || '',
-        id_number: user.id_number || '',
-        zooz_balance: user.zooz_balance || 0,
-        is_verified: user.is_verified || false,
-        is_demo: user.is_demo || false,
-        expertise_fields: user.expertise_fields || []
-      });
-      loadUserNotes();
-      loadTransactionHistory();
+      loadUserData();
     }
   }, [user, isNewUser]);
+
+  const loadUserData = async () => {
+    if (!user?.user_id) return;
+    
+    try {
+      // Load complete user profile from database
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.user_id)
+        .maybeSingle();
+      
+      if (profile) {
+        setFormData({
+          first_name: profile.first_name || user.first_name || '',
+          last_name: profile.last_name || user.last_name || '',
+          phone: profile.phone || user.phone || '',
+          city: profile.city || '',
+          date_of_birth: profile.date_of_birth || '',
+          id_number: profile.id_number || '',
+          bio: profile.bio || '',
+          avatar_url: profile.avatar_url || user.profile_image || '',
+          zooz_balance: profile.zooz_balance || user.total_zooz || 0,
+          is_verified: profile.is_verified || user.is_verified || false,
+          is_demo: profile.is_demo || user.is_demo || false,
+          expertise_fields: profile.expertise_fields || []
+        });
+      } else {
+        // Use user data from props if no profile found
+        setFormData({
+          first_name: user.first_name || user.username || '',
+          last_name: user.last_name || '',
+          phone: user.phone || '',
+          city: user.city || '',
+          date_of_birth: user.date_of_birth || '',
+          id_number: user.id_number || '',
+          bio: user.bio || '',
+          avatar_url: user.profile_image || user.avatar_url || '',
+          zooz_balance: user.total_zooz || 0,
+          is_verified: user.is_verified || false,
+          is_demo: user.is_demo || false,
+          expertise_fields: user.expertise || []
+        });
+      }
+      
+      loadUserNotes();
+      loadTransactionHistory();
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
 
   const loadUserNotes = async () => {
     if (!user?.user_id) return;
