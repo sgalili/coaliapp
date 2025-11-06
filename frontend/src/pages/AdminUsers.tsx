@@ -182,7 +182,13 @@ export default function AdminUsers() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-2xl font-bold">ניהול משתמשים</h1>
-          <div className="w-10" />
+          <button
+            onClick={handleAddUser}
+            className="p-2 hover:bg-primary/10 rounded-full"
+            title="הוסף משתמש"
+          >
+            <Plus className="w-5 h-5 text-primary" />
+          </button>
         </div>
 
         {/* Filters */}
