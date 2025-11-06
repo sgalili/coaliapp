@@ -97,13 +97,8 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     // Clear saved form state on successful submission
     localStorage.removeItem('signup_form_state');
     
-    // Check if we should trigger onboarding flow
-    if (onStartOnboarding) {
-      onComplete(firstName.trim(), lastName.trim(), profilePicture, selectedFields);
-      onStartOnboarding();
-    } else {
-      onComplete(firstName.trim(), lastName.trim(), profilePicture, selectedFields);
-    }
+    // Complete signup - no onboarding step
+    onComplete(firstName.trim(), lastName.trim(), profilePicture, selectedFields);
   };
 
   const handleProfilePictureClick = () => {
