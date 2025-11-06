@@ -29,6 +29,7 @@ export default function ProfilePage() {
   const [trustedByMe, setTrustedByMe] = useState<any[]>([]);
   const [trustedMe, setTrustedMe] = useState<any[]>([]);
   const [showFullBio, setShowFullBio] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
