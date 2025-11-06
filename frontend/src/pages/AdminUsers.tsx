@@ -321,21 +321,37 @@ export default function AdminUsers() {
 
                 <div className="flex flex-col gap-2">
                   <button
-                    onClick={() => navigate(`/profile/${user.user_id}`)}
-                    className="p-2 hover:bg-muted rounded"
-                    title="פרופיל משתמש"
+                    onClick={() => handleLoginAsUser(user.user_id, user.username)}
+                    className="p-2 hover:bg-blue-50 rounded"
+                    title="התחבר כמשתמש"
                   >
-                    👤
+                    <LogIn className="w-4 h-4 text-blue-600" />
                   </button>
                   <button
-                    onClick={() => toast.info('עריכה בפיתוח')}
+                    onClick={() => handleEditUser(user)}
                     className="p-2 hover:bg-muted rounded"
+                    title="ערוך משתמש"
                   >
                     <Edit2 className="w-4 h-4 text-primary" />
                   </button>
                   <button
+                    onClick={() => handleWhatsApp(user.phone || '+972501234567')}
+                    className="p-2 hover:bg-green-50 rounded"
+                    title="שלח WhatsApp"
+                  >
+                    <MessageCircle className="w-4 h-4 text-green-600" />
+                  </button>
+                  <button
+                    onClick={() => handleCall(user.phone || '+972501234567')}
+                    className="p-2 hover:bg-blue-50 rounded"
+                    title="התקשר"
+                  >
+                    <Phone className="w-4 h-4 text-blue-600" />
+                  </button>
+                  <button
                     onClick={() => deleteUser(user.user_id)}
                     className="p-2 hover:bg-red-50 rounded"
+                    title="מחק משתמש"
                   >
                     <Trash2 className="w-4 h-4 text-destructive" />
                   </button>
