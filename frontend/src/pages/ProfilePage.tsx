@@ -543,23 +543,60 @@ export default function ProfilePage() {
         <div>
           <h3 className="text-lg font-bold mb-4">רשת האמון שלי</h3>
 
-          {/* Trust List */}
-          <h4 className="font-bold mb-3">נותני אמון אחרונים</h4>
-          <div className="space-y-3">
-            {[
-              { name: 'דוד כהן', image: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg', expertise: 'כלכלה' },
-              { name: 'שרה לוי', image: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg', expertise: 'טכנולוגיה' },
-              { name: 'יעקב מזרחי', image: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg', expertise: 'פוליטיקה' },
-            ].map((user, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                <img src={user.image} className="w-12 h-12 rounded-full" />
-                <div className="flex-1">
-                  <p className="font-medium">{user.name}</p>
-                  <p className="text-sm text-muted-foreground">{user.expertise}</p>
-                </div>
-                <Handshake className="w-5 h-5 text-trust" />
+          {/* People I Trust */}
+          <div className="mb-6">
+            <h4 className="font-bold mb-3 text-primary">אני נותן אמון ל:</h4>
+            {trustedByMe.length > 0 ? (
+              <div className="space-y-3">
+                {trustedByMe.map((trust, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                    <img 
+                      src={trust.trusted?.avatar_url || 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg'} 
+                      className="w-12 h-12 rounded-full" 
+                      alt=""
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium">{trust.trusted?.full_name || 'משתמש'}</p>
+                      <p className="text-sm text-muted-foreground">{trust.trusted?.field || 'כללי'}</p>
+                    </div>
+                    <Handshake className="w-5 h-5 text-trust" />
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-lg">
+                <Handshake className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">עדיין לא נתת אמון למשתמשים</p>
+              </div>
+            )}
+          </div>
+
+          {/* People Who Trust Me */}
+          <div>
+            <h4 className="font-bold mb-3 text-primary">נותנים לי אמון:</h4>
+            {trustedMe.length > 0 ? (
+              <div className="space-y-3">
+                {trustedMe.map((trust, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                    <img 
+                      src={trust.truster?.avatar_url || 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg'} 
+                      className="w-12 h-12 rounded-full" 
+                      alt=""
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium">{trust.truster?.full_name || 'משתמש'}</p>
+                      <p className="text-sm text-muted-foreground">{trust.truster?.field || 'כללי'}</p>
+                    </div>
+                    <Handshake className="w-5 h-5 text-trust" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-lg">
+                <Handshake className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">עדיין אין מי שנותן לך אמון</p>
+              </div>
+            )}
           </div>
         </div>
       )}
