@@ -17,6 +17,8 @@ export default function ProfilePage() {
   const [expertiseFields, setExpertiseFields] = useState(['טכנולוגיה', 'עسקים', 'חדשות']);
   const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
   const [isTabsSticky, setIsTabsSticky] = useState(false);
+  const [stats, setStats] = useState({ trust: 0, votes: 0, watch: 0, decisions: 0 });
+  const [bookmarkStats, setBookmarkStats] = useState({ received: 0, saved: 0 });
   const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
