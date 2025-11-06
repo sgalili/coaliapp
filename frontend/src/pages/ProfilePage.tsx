@@ -71,11 +71,17 @@ export default function ProfilePage() {
   // Handle tab change with auto-scroll
   const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions') => {
     setActiveTab(tab);
-    // Scroll to tabs position
-    if (tabsRef.current) {
-      const yOffset = -60; // Offset for sticky positioning
-      const y = tabsRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+    
+    if (tab === 'info') {
+      // Scroll all the way to the top for Info tab
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Scroll to tabs position for other tabs
+      if (tabsRef.current) {
+        const yOffset = -60; // Offset for sticky positioning
+        const y = tabsRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     }
   };
 
