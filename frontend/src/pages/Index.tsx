@@ -1303,18 +1303,18 @@ export default function Index() {
 
   return (
     <div className="h-screen bg-black overflow-hidden">
-      {/* Zooz Flying Coins Animation - Working version */}
-      {showZoozConfetti && (
+      {/* Zooz Flying Coins Animation - Shoots to top-right corner */}
+      {showZoozConfetti && zoozCoinCount > 0 && (
         <div className="fixed inset-0 z-[70] pointer-events-none">
-          {[...Array(Math.min(5, 25))].map((_, i) => (
+          {[...Array(zoozCoinCount)].map((_, i) => (
             <div
               key={i}
               className="absolute"
               style={{
-                left: '20px',
-                bottom: '150px',
-                animation: `zooz-fly 2s ease-out ${i * 0.1}s forwards`,
-                ['--tx' as any]: `${Math.random() * 200 - 100}px`,
+                left: '24px',
+                bottom: showNav ? '200px' : '146px',
+                animation: `zooz-fly-to-corner 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.08}s forwards`,
+                ['--random-offset' as any]: `${(Math.random() - 0.5) * 40}px`,
               }}
             >
               <div className="zooz-coin" />
