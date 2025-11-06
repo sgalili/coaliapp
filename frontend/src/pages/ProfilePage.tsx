@@ -161,16 +161,36 @@ export default function ProfilePage() {
 
   const loadTrustCount = async () => {
     try {
-      // Count users who trust this user
-      const { count } = await supabase
+      // Count users who trust this user (trusted me)
+      const { data: trustedMeData, error: trustedMeError } = await supabase
         .from('trust_relationships')
-        .select('*', { count: 'exact', head: true })
+        .select('*, truster:profiles!trust_relationships_truster_user_id_fkey(*)')
         .eq('trusted_user_id', 'demo-user');
 
-      setTrustCount(count || 0);
-      console.log('🤝 Trust count:', count);
+      if (trustedMeError) {
+        console.warn('Trust relationships may not exist:', trustedMeError);
+      } else {
+        setTrustedMe(trustedMeData || []);
+        console.log('🤝 People who trust me:', trustedMeData?.length);
+      }
+
+      // Count users this user trusts (I trust)
+      const { data: trustedByMeData, error: trustedByMeError } = await supabase
+        .from('trust_relationships')
+        .select('*, trusted:profiles!trust_relationships_trusted_user_id_fkey(*)')
+        .eq('truster_user_id', 'demo-user');
+
+      if (trustedByMeError) {
+        console.warn('Trust relationships may not exist:', trustedByMeError);
+      } else {
+        setTrustedByMe(trustedByMeData || []);
+        console.log('🤝 People I trust:', trustedByMeData?.length);
+      }
+
+      // Set total trust count
+      setTrustCount((trustedMeData?.length || 0) + (trustedByMeData?.length || 0));
     } catch (error) {
-      console.error('Failed to load trust count:', error);
+      console.error('Failed to load trust relationships:', error);
       setTrustCount(0);
     }
   };
