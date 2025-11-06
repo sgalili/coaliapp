@@ -1866,11 +1866,8 @@ export default function Index() {
                       className="w-6 h-6 rounded accent-primary mt-1 flex-shrink-0"
                     />
                     <div className="text-right flex-1">
-                      <p className="text-sm font-bold text-orange-900 mb-1">
+                      <p className="text-sm font-bold text-orange-900">
                         פרסם גם בערוץ Coali הראשי
-                      </p>
-                      <p className="text-xs text-orange-700">
-                        הפוסט יופיע גם בערוץ הראשי
                       </p>
                     </div>
                   </label>
