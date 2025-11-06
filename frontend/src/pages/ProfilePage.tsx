@@ -375,7 +375,7 @@ export default function ProfilePage() {
               אמון
             </button>
             <button
-              onClick={() => setActiveTab('bookmarks')}
+              onClick={() => handleTabChange('bookmarks')}
               className={cn(
                 "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
                 activeTab === 'bookmarks' 
