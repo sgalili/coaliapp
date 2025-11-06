@@ -1146,6 +1146,79 @@ export default function ProfilePage() {
           )}
         </div>
       )}
+
+      {/* Drafts Tab */}
+      {activeTab === 'drafts' && (
+        <div>
+          <h3 className="text-lg font-bold mb-4">הטיוטות שלי ({draftPosts.length})</h3>
+          {draftPosts.length > 0 ? (
+            <div className="space-y-4">
+              {draftPosts.map((draft) => (
+                <div key={draft.id} className="bg-muted/50 rounded-lg p-4 hover:bg-muted transition-colors">
+                  <div className="flex items-start gap-3">
+                    {/* Draft Thumbnail */}
+                    <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                      {draft.video_url && (
+                        <video src={draft.video_url} className="w-full h-full object-cover" />
+                      )}
+                      {draft.image_url && (
+                        <img src={draft.image_url} className="w-full h-full object-cover" alt="" />
+                      )}
+                      {!draft.video_url && !draft.image_url && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <FileEdit className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Draft Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium mb-1 line-clamp-2">{draft.caption || 'ללא כותרת'}</p>
+                      <p className="text-xs text-muted-foreground">
+                        נוצר ב-{new Date(draft.created_at).toLocaleDateString('he-IL')}
+                      </p>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => {
+                          // TODO: Implement edit functionality
+                          console.log('Edit draft:', draft.id);
+                        }}
+                        className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        title="עריכה"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handlePublishDraft(draft.id)}
+                        className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                        title="פרסום"
+                      >
+                        <Send className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeletePost(draft.id)}
+                        className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        title="מחיקה"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <FileEdit className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground">אין לך טיוטות</p>
+              <p className="text-sm text-muted-foreground mt-2">התחל ליצור תוכן ושמור אותו כטיוטה</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   </div>
 
