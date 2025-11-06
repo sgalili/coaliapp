@@ -1666,7 +1666,7 @@ export default function Index() {
                 </span>
               </button>
 
-              {/* Share Button */}
+              {/* Share Button - TikTok Style */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -1675,7 +1675,19 @@ export default function Index() {
                 className="flex flex-col items-center gap-1 min-w-[48px]"
               >
                 <div className="relative flex items-center justify-center">
-                  <Share2 className="w-6 h-6 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
+                  {/* TikTok-style share icon (curved arrow) */}
+                  <svg 
+                    viewBox="0 0 24 24" 
+                    className="w-6 h-6 text-white" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                    style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }}
+                  >
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <polyline points="16 6 12 2 8 6" />
+                    <line x1="12" y1="2" x2="12" y2="15" />
+                  </svg>
                 </div>
                 <span 
                   className={cn(
