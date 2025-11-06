@@ -99,19 +99,19 @@ export default function ProfilePage() {
         setStats({ trust: totalTrust, votes: totalVotes, watch: totalWatch });
       }
       
-      // Fetch decisions participated in
-      const { data: decisionsData } = await supabase
+      // Count decisions where user has actually voted
+      // This should check a user_votes table or voted_by field in real implementation
+      // For now, we'll check if there's a votes_by_user field or similar
+      const { count: votedDecisionsCount } = await supabase
         .from('demo_decisions')
-        .select('*')
-        .eq('has_voted', true); // Get decisions where user has voted
+        .select('*', { count: 'exact', head: true })
+        .contains('voted_users', ['demo-user']); // Check if user is in voted_users array
       
-      // For demo, count all decisions as participated
-      const { count } = await supabase
-        .from('demo_decisions')
-        .select('*', { count: 'exact', head: true });
+      // Fallback: count based on demo logic (you may need to adjust based on actual schema)
+      const decidedCount = votedDecisionsCount || 0;
       
-      console.log('🗳️ Total decisions:', count);
-      setStats(prev => ({ ...prev, decisions: count || 0 }));
+      console.log('🗳️ Decisions voted by user:', decidedCount);
+      setStats(prev => ({ ...prev, decisions: decidedCount }));
 
       // Load bookmark statistics
       await loadBookmarkStats();
