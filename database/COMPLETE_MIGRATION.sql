@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_profiles_user_id ON profiles(user_id);
-CREATE INDEX idx_profiles_phone ON profiles(phone);
-CREATE INDEX idx_profiles_is_demo ON profiles(is_demo);
+CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_profiles_phone ON profiles(phone);
+CREATE INDEX IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
 
 -- =====================================================
 -- 2. TRUST RELATIONSHIPS
