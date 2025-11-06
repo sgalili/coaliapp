@@ -20,6 +20,13 @@ export default function ProfilePage() {
   const [stats, setStats] = useState({ trust: 0, votes: 0, watch: 0, decisions: 0 });
   const [bookmarkStats, setBookmarkStats] = useState({ received: 0, saved: 0 });
   const tabsRef = useRef<HTMLDivElement>(null);
+  const [trustedByMe, setTrustedByMe] = useState<any[]>([]);
+  const [trustedMe, setTrustedMe] = useState<any[]>([]);
+  const [showFullBio, setShowFullBio] = useState(false);
+  const bioRef = useRef<HTMLParagraphElement>(null);
+  const [isBioLong, setIsBioLong] = useState(false);
+  
+  const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה. אני מאמין בכוח של שיתוף פעולה וידע פתוח כדי לקדם את החברה והטכנולוגיה בישראל.";
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
