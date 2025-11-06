@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import { Settings, Heart, Eye, ShieldCheck, Handshake, Crown, Vote, Gavel, Menu, Bell } from "lucide-react";
+import { Settings, Heart, Eye, ShieldCheck, Handshake, Crown, Vote, Gavel, Menu, Bell, X, LogOut, User, Lock, HelpCircle, FileText, MessageSquare, Share2, Bookmark, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
