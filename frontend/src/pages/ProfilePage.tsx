@@ -390,8 +390,10 @@ export default function ProfilePage() {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              <Bookmark className="w-4 h-4" />
-              <span className="text-[10px]">{savedBookmarks.length}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[12px] font-semibold">{savedBookmarks.length}</span>
+                <Bookmark className="w-4 h-4" />
+              </div>
               <span>שמורים</span>
             </button>
             <button
