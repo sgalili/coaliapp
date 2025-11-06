@@ -224,8 +224,8 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
           </CardContent>
         </Card>
 
-        {/* Name Inputs */}
-        <div className="space-y-4">
+        {/* Name Inputs - Same Row */}
+        <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Input
               type="text"
@@ -257,6 +257,64 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
             />
             {errors.lastName && (
               <p className="text-sm text-red-500 text-right">{errors.lastName}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Additional Required Fields */}
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="עיר מגורים *"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className={cn(
+                "text-lg py-6 text-right",
+                errors.city && "border-red-500"
+              )}
+              disabled={isLoading}
+            />
+            {errors.city && (
+              <p className="text-sm text-red-500 text-right">{errors.city}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Input
+              type="date"
+              placeholder="תאריך לידה *"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              className={cn(
+                "text-lg py-6 text-right",
+                errors.dateOfBirth && "border-red-500"
+              )}
+              disabled={isLoading}
+            />
+            {errors.dateOfBirth && (
+              <p className="text-sm text-red-500 text-right">{errors.dateOfBirth}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="מספר תעודת זהות (9 ספרות) *"
+              value={idNumber}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 9);
+                setIdNumber(value);
+              }}
+              maxLength={9}
+              className={cn(
+                "text-lg py-6 text-right",
+                errors.idNumber && "border-red-500"
+              )}
+              disabled={isLoading}
+            />
+            {errors.idNumber && (
+              <p className="text-sm text-red-500 text-right">{errors.idNumber}</p>
             )}
           </div>
         </div>
