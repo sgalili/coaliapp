@@ -62,6 +62,16 @@ export default function ProfilePage() {
       decisionsSubscription.unsubscribe();
     };
   }, []);
+
+  // Check bio length on mount
+  useEffect(() => {
+    if (bioRef.current) {
+      const lineHeight = parseFloat(getComputedStyle(bioRef.current).lineHeight);
+      const height = bioRef.current.scrollHeight;
+      const lines = Math.round(height / lineHeight);
+      setIsBioLong(lines > 3);
+    }
+  }, []);
   // Scroll listener for sticky tabs
   useEffect(() => {
     const handleScroll = () => {
