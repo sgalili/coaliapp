@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'trust' | 'bookmarks' | 'decisions'>('posts');
   const [showDrafts, setShowDrafts] = useState(false);
+  const [trustSubTab, setTrustSubTab] = useState<'i-trust' | 'trust-me'>('i-trust');
   const [expertiseFields, setExpertiseFields] = useState(['טכנולוגיה', 'עסקים', 'חדשות']);
   const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
