@@ -334,22 +334,67 @@ export default function ProfilePage() {
             <button
               onClick={() => handleTabChange('posts')}
               className={cn(
-                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
                 activeTab === 'posts' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
               <div className="flex items-center gap-1">
-                <span className="text-[12px] font-semibold">{userPosts.length}</span>
                 <Grid3x3 className="w-4 h-4" />
+                <span className="text-[12px] font-semibold">{userPosts.length}</span>
               </div>
               <span>פוסטים</span>
             </button>
             <button
+              onClick={() => handleTabChange('trust')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
+                activeTab === 'trust' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <Handshake className="w-4 h-4" />
+                <span className="text-[12px] font-semibold">{trustCount}</span>
+              </div>
+              <span>אמון</span>
+            </button>
+            <button
+              onClick={() => handleTabChange('bookmarks')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
+                activeTab === 'bookmarks' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <Bookmark className="w-4 h-4" />
+                <span className="text-[12px] font-semibold">{savedBookmarks.length}</span>
+              </div>
+              <span>שמורים</span>
+            </button>
+            <button
+              onClick={() => handleTabChange('decisions')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
+                activeTab === 'decisions' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <CheckSquare className="w-4 h-4" />
+                <span className="text-[12px] font-semibold">{decisionsCount}</span>
+              </div>
+              <span>החלטות</span>
+            </button>
+            <button
               onClick={() => handleTabChange('info')}
               className={cn(
-                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
                 activeTab === 'info' 
                   ? "border-primary text-primary" 
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -357,51 +402,6 @@ export default function ProfilePage() {
             >
               <Info className="w-4 h-4" />
               <span>מידע</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('trust')}
-              className={cn(
-                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
-                activeTab === 'trust' 
-                  ? "border-primary text-primary" 
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <div className="flex items-center gap-1">
-                <span className="text-[12px] font-semibold">{trustCount}</span>
-                <Handshake className="w-4 h-4" />
-              </div>
-              <span>אמון</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('bookmarks')}
-              className={cn(
-                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
-                activeTab === 'bookmarks' 
-                  ? "border-primary text-primary" 
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <div className="flex items-center gap-1">
-                <span className="text-[12px] font-semibold">{savedBookmarks.length}</span>
-                <Bookmark className="w-4 h-4" />
-              </div>
-              <span>שמורים</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('decisions')}
-              className={cn(
-                "flex-1 py-3 text-xs font-medium border-b-2 transition-colors flex flex-col items-center justify-center gap-1",
-                activeTab === 'decisions' 
-                  ? "border-primary text-primary" 
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <div className="flex items-center gap-1">
-                <span className="text-[12px] font-semibold">{decisionsCount}</span>
-                <CheckSquare className="w-4 h-4" />
-              </div>
-              <span>החלטות</span>
             </button>
           </div>
         </div>
