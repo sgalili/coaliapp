@@ -115,21 +115,60 @@ export default function ProfilePage() {
       )
       .subscribe();
     
-    // Real-time subscription for decisions
-    const decisionsSubscription = supabase
-      .channel('profile-decisions')
+    // Real-time subscription for decisions/votes
+    const votesSubscription = supabase
+      .channel('profile-votes')
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'demo_decisions' },
+        { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.demo-user` },
         () => {
-          console.log('🔄 Decisions changed, reloading...');
-          loadUserPosts();
+          console.log('🔄 Votes changed, reloading...');
+          loadUserDecisions();
+        }
+      )
+      .subscribe();
+    
+    // Real-time subscription for bookmarks
+    const bookmarksSubscription = supabase
+      .channel('profile-bookmarks')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.demo-user` },
+        () => {
+          console.log('🔄 Bookmarks changed, reloading...');
+          loadSavedBookmarks();
+        }
+      )
+      .subscribe();
+    
+    // Real-time subscription for trust relationships
+    const trustSubscription = supabase
+      .channel('profile-trust')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'trust_relationships' },
+        (payload) => {
+          console.log('🔄 Trust relationships changed, reloading...');
+          loadTrustCount();
+        }
+      )
+      .subscribe();
+    
+    // Real-time subscription for subscriptions
+    const subsSubscription = supabase
+      .channel('profile-subscriptions')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'subscriptions', filter: `subscriber_id=eq.demo-user` },
+        () => {
+          console.log('🔄 Subscriptions changed, reloading...');
+          loadSubscriptions();
         }
       )
       .subscribe();
     
     return () => {
       postsSubscription.unsubscribe();
-      decisionsSubscription.unsubscribe();
+      votesSubscription.unsubscribe();
+      bookmarksSubscription.unsubscribe();
+      trustSubscription.unsubscribe();
+      subsSubscription.unsubscribe();
     };
   }, []);
 
