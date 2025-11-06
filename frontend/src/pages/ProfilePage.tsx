@@ -28,6 +28,29 @@ export default function ProfilePage() {
   
   const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה. אני מאמין בכוח של שיתוף פעולה וידע פתוח כדי לקדם את החברה והטכנולוגיה בישראל. בעל ניסיון של למעלה מ-15 שנה בתעשיית ההיי-טק והחדשנות.";
 
+  const handleTrustBack = async (userId: string) => {
+    try {
+      // Add trust relationship
+      const { error } = await supabase
+        .from('trust_relationships')
+        .insert({
+          truster_user_id: 'demo-user',
+          trusted_user_id: userId,
+          created_at: new Date().toISOString(),
+        });
+
+      if (error) {
+        console.error('Error trusting user:', error);
+      } else {
+        console.log('✅ Trust relationship created');
+        // Reload trust data
+        await loadTrustCount();
+      }
+    } catch (error) {
+      console.error('Failed to trust user:', error);
+    }
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
