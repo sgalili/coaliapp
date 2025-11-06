@@ -297,13 +297,7 @@ export default function ProfilePage() {
 
             <div className="text-center">
               <div className="flex items-center gap-1 justify-center mb-1">
-                <div className="w-6 h-6 rounded-sm bg-zooz flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="10" y="20" width="80" height="70" rx="4" fill="white"/>
-                    <rect x="15" y="25" width="70" height="40" fill="currentColor" opacity="0.3"/>
-                    <path d="M30 45 L45 60 L70 35" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+                <Vote className="w-5 h-5 text-primary" />
                 <p className="text-2xl font-bold">{stats.votes}</p>
               </div>
               <p className="text-xs text-muted-foreground">הצבעות</p>
