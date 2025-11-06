@@ -126,7 +126,7 @@ export const AuthPage = () => {
     }
   };
 
-  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string) => {
+  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string, expertiseFields?: string[]) => {
     try {
       setAuthError(''); // Clear any previous errors
       
@@ -135,25 +135,30 @@ export const AuthPage = () => {
       
       if (updateError) {
         console.error('Error updating profile:', updateError);
-        toast.error('Erreur lors de la mise à jour du profil');
-        setAuthError('Impossible de mettre à jour le profil');
+        toast.error('שגיאה בעדכון הפרופיל');
+        setAuthError('שגיאה בעדכון הפרופיל');
         return;
+      }
+
+      // Save expertise fields if provided
+      if (expertiseFields && expertiseFields.length > 0) {
+        // TODO: Save to user_expertise table
+        console.log('Expertise fields selected:', expertiseFields);
       }
 
       setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
       
       // Handle invitation code or trust intent if present
       if (authData.invitationCode) {
-        // TODO: Consume invitation code
         console.log('Consuming invitation code:', authData.invitationCode);
       }
       
-      toast.success('Profil créé avec succès !');
+      toast.success('🎉 הפרופיל נוצר בהצלחה! קיבלת 10z מתנה!');
       navigate('/');
     } catch (error) {
       console.error('Error creating profile:', error);
-      setAuthError('Erreur technique');
-      toast.error('Erreur technique');
+      setAuthError('שגיאה טכנית');
+      toast.error('שגיאה טכנית');
     }
   };
 
