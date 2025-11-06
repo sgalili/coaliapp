@@ -89,14 +89,18 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         .update(formData)
         .eq('user_id', userId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Profile update error:', error);
+        console.error('Form data:', formData);
+        throw error;
+      }
       
       toast.success('הפרופיל עודכן בהצלחה! ✨');
       onSave();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving profile:', error);
-      toast.error('שגיאה בשמירת הפרופיל');
+      toast.error(`שגיאה בשמירה: ${error.message || 'שגיאה לא ידועה'}`);
     } finally {
       setLoading(false);
     }
