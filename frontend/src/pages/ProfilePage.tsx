@@ -701,7 +701,10 @@ export default function ProfilePage() {
           {/* Name & Handle with Edit Icon */}
           <div className="flex items-center justify-center gap-2 mb-1">
             <h2 className="text-2xl font-bold">משתמש דמו מאומת</h2>
-            <button className="p-1.5 hover:bg-muted rounded-full transition-colors">
+            <button 
+              onClick={() => setShowEditProfile(true)}
+              className="p-1.5 hover:bg-muted rounded-full transition-colors"
+            >
               <Edit2 className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
