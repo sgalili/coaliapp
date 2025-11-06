@@ -1145,17 +1145,58 @@ export default function Index() {
     ));
     
     if (newWatched) {
-      toast.success('נשמר! 🔖');
-    }
-    
-    try {
-      await updatePostEngagement(postId, 'watch_count', newCount);
-    } catch (error) {
-      console.error('Failed to update watch:', error);
-      // Revert on error
-      setPosts(posts.map(p => 
-        p.id === postId ? { ...p, watchCount: post.watchCount, hasUserWatched: post.hasUserWatched } : p
-      ));
+      // Add bookmark and subscription
+      try {
+        // Save to bookmarks table
+        const { data: bookmarkData, error: bookmarkError } = await supabase
+          .from('bookmarks')
+          .insert({
+            post_id: postId,
+            user_id: post.user_id || 'demo-user',
+            bookmark_user_id: 'demo-user'
+          })
+          .select()
+          .single();
+
+        if (bookmarkError) throw bookmarkError;
+
+        // Create subscription to post owner (if not self)
+        if (post.user_id && post.user_id !== 'demo-user') {
+          const { error: subError } = await supabase
+            .from('subscriptions')
+            .upsert({
+              subscriber_id: 'demo-user',
+              creator_id: post.user_id
+            }, {
+              onConflict: 'subscriber_id,creator_id',
+              ignoreDuplicates: true
+            });
+
+          if (subError) console.warn('Subscription already exists or error:', subError);
+          
+          toast.success(`נשמר לסימניות! 🔖 + עכשיו עוקב אחרי ${post.username || 'המשתמש'}`);
+        } else {
+          toast.success('נשמר לסימניות! 🔖');
+        }
+
+        // Update watch count in database
+        await updatePostEngagement(postId, 'watch_count', newCount);
+      } catch (error) {
+        console.error('Failed to add bookmark:', error);
+        // Revert on error
+        setPosts(posts.map(p => 
+          p.id === postId ? { ...p, watchCount: post.watchCount, hasUserWatched: post.hasUserWatched } : p
+        ));
+        toast.error('שגיאה בשמירת הסימניה');
+      }
+    } else {
+      // Just toggle the UI, actual removal happens in profile bookmarks page
+      toast.success('הוסר מהסימניות');
+      try {
+        await updatePostEngagement(postId, 'watch_count', newCount);
+      } catch (error) {
+        console.error('Failed to update watch count:', error);
+      }
     }
   };
 
