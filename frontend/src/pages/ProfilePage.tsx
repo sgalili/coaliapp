@@ -1115,8 +1115,8 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Bookmarks Tab */}
-      {activeTab === 'bookmarks' && (
+      {/* Favorites Tab (formerly Bookmarks) */}
+      {activeTab === 'favorites' && (
         <div>
           {/* Toggle between Posts and Subscriptions */}
           <div className="flex gap-2 mb-4">
