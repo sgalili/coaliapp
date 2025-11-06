@@ -300,42 +300,41 @@ export default function ProfilePage() {
     try {
       const { data, error } = await supabase
         .from('subscriptions')
-        .select(`
-          *,
-          creator:profiles!subscriptions_creator_id_fkey(*)
-        `)
+        .select('*')
         .eq('subscriber_id', 'demo-user')
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('Subscriptions table may not exist, using demo data:', error);
-        // Use demo subscription data
-        setSubscriptions([
-          {
-            id: 'sub-1',
-            creator: {
-              full_name: 'ירון זלקה',
-              avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-              field: 'כלכלה',
-              user_id: 'user-1'
-            }
-          },
-          {
-            id: 'sub-2',
-            creator: {
-              full_name: 'נועה רותם',
-              avatar_url: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
-              field: 'טכנולוגיה',
-              user_id: 'user-2'
-            }
-          }
-        ]);
-        console.log('📱 Using demo subscriptions: 2');
+        console.warn('Subscriptions table error:', error);
+        setSubscriptions([]);
         return;
       }
+
+      // Load profile data for each subscription
+      let subsWithProfiles = [];
+      for (const sub of (data || [])) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_id, first_name, last_name, avatar_url, expertise_fields')
+          .eq('user_id', sub.creator_id)
+          .single();
+        
+        if (profile) {
+          subsWithProfiles.push({
+            id: sub.id,
+            creator_id: sub.creator_id,
+            creator: {
+              user_id: profile.user_id,
+              full_name: `${profile.first_name} ${profile.last_name}`,
+              avatar_url: profile.avatar_url,
+              field: profile.expertise_fields?.[0] || 'כללי'
+            }
+          });
+        }
+      }
       
-      setSubscriptions(data || []);
-      console.log('📱 Subscriptions loaded:', data?.length);
+      setSubscriptions(subsWithProfiles);
+      console.log('📱 REAL subscriptions loaded:', subsWithProfiles.length);
     } catch (error) {
       console.error('Failed to load subscriptions:', error);
       setSubscriptions([]);
