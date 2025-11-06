@@ -405,8 +405,10 @@ export default function ProfilePage() {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               )}
             >
-              <CheckSquare className="w-4 h-4" />
-              <span className="text-[10px]">{decisionsCount}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[12px] font-semibold">{decisionsCount}</span>
+                <CheckSquare className="w-4 h-4" />
+              </div>
               <span>החלטות</span>
             </button>
           </div>
