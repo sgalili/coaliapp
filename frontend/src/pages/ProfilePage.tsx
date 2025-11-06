@@ -632,6 +632,17 @@ export default function ProfilePage() {
                 <span>התראות</span>
               </button>
 
+              <button 
+                onClick={() => {
+                  navigate('/invite-friends');
+                  setShowBurgerMenu(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right"
+              >
+                <Gift className="w-5 h-5 text-primary" />
+                <span>Get Free ZOOZ</span>
+              </button>
+
               <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
                 <Lock className="w-5 h-5 text-muted-foreground" />
                 <span>פרטיות ואבטחה</span>
