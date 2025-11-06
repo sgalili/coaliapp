@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions'>('posts');
   const [expertiseFields, setExpertiseFields] = useState(['טכנולוגיה', 'עסקים', 'חדשות']);
   const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [isTabsSticky, setIsTabsSticky] = useState(false);
   const [stats, setStats] = useState({ trust: 0, votes: 0, watch: 0, decisions: 0 });
   const [bookmarkStats, setBookmarkStats] = useState({ received: 0, saved: 0 });
@@ -26,7 +27,7 @@ export default function ProfilePage() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
-  const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה. אני מאמין בכוח של שיתוף פעולה וידע פתוח כדי לקדם את החברה והטכנולוגיה בישראל. בעל ניסיון של למעלה מ-15 שנה בתעשיית ההיי-טק והחדשנות.";
+  const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות.";
 
   const handleTrustBack = async (userId: string) => {
     try {
