@@ -246,9 +246,12 @@ export const AuthPage = () => {
       {/* Footer */}
       <div className="p-4 text-center">
         <p className="text-xs text-muted-foreground">
-          Coalichain LTD
+          © 2024 Coali Trust Network
         </p>
       </div>
+      
+      {/* Bottom Navigation - Always Visible */}
+      <Navigation zoozBalance={9957} />
     </div>
   );
 };
