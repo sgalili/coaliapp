@@ -150,7 +150,7 @@ export default function ProfilePage() {
   }, []);
 
   // Handle tab change without auto-scroll
-  const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions' | 'drafts') => {
+  const handleTabChange = (tab: 'posts' | 'trust' | 'bookmarks' | 'decisions') => {
     setActiveTab(tab);
     // Don't auto-scroll - user has full manual control
   };
