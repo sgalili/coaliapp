@@ -580,31 +580,35 @@ export default function Index() {
     }
   }, [selectedChannel.id]);
 
-  // Dynamic action button labels - cycle: 10s numbers → 3s text → repeat with dissolve effect
+  // Dynamic action button labels - cycle: 10s numbers → 6s text → repeat with smooth dissolve
   useEffect(() => {
     const runCycle = () => {
-      // Show text labels with dissolve-in
+      // Start dissolve-out for numbers
       setIsTransitioning(true);
+      
+      // After dissolve-out animation (600ms), switch to text labels
       setTimeout(() => {
         setShowTextLabels(true);
         setIsTransitioning(false);
-      }, 400); // Match dissolve animation duration
+      }, 600);
       
-      // After 3 seconds, switch back to numbers with dissolve-out
+      // After 6 seconds, start dissolve-out for text labels
       setTimeout(() => {
         setIsTransitioning(true);
+        
+        // After dissolve-out animation (600ms), switch back to numbers
         setTimeout(() => {
           setShowTextLabels(false);
           setIsTransitioning(false);
-        }, 400); // Match dissolve animation duration
-      }, 3000);
+        }, 600);
+      }, 6000);
     };
 
     // Run first cycle after 10 seconds
     const initialTimeout = setTimeout(runCycle, 10000);
     
-    // Then repeat every 13 seconds (10s numbers + 3s text)
-    const cycleInterval = setInterval(runCycle, 13000);
+    // Then repeat every 16 seconds (10s numbers + 6s text)
+    const cycleInterval = setInterval(runCycle, 16000);
 
     return () => {
       clearTimeout(initialTimeout);
