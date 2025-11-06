@@ -351,14 +351,86 @@ export const AdminUserModal: React.FC<AdminUserModalProps> = ({
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">תאריך לידה</label>
+              <Input
+                type="date"
+                value={formData.date_of_birth}
+                onChange={(e) => setFormData(prev => ({ ...prev, date_of_birth: e.target.value }))}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">מספר תעודת זהות</label>
+              <Input
+                value={formData.id_number}
+                onChange={(e) => setFormData(prev => ({ ...prev, id_number: e.target.value.replace(/\D/g, '').slice(0, 9) }))}
+                placeholder="123456789"
+                maxLength={9}
+              />
+            </div>
+          </div>
+
+          {/* Profile Picture URL */}
           <div>
-            <label className="text-sm font-medium">מספר תעודת זהות</label>
+            <label className="text-sm font-medium">כתובת תמונת פרופיל</label>
             <Input
-              value={formData.id_number}
-              onChange={(e) => setFormData(prev => ({ ...prev, id_number: e.target.value.replace(/\D/g, '').slice(0, 9) }))}
-              placeholder="123456789"
-              maxLength={9}
+              value={formData.avatar_url}
+              onChange={(e) => setFormData(prev => ({ ...prev, avatar_url: e.target.value }))}
+              placeholder="https://..."
+              dir="ltr"
             />
+            {formData.avatar_url && (
+              <div className="mt-2">
+                <img src={formData.avatar_url} className="w-16 h-16 rounded-full object-cover" alt="Preview" />
+              </div>
+            )}
+          </div>
+
+          {/* Bio */}
+          <div>
+            <label className="text-sm font-medium">ביוגרפיה</label>
+            <Textarea
+              value={formData.bio}
+              onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+              placeholder="תיאור קצר על המשתמש..."
+              className="min-h-[80px]"
+            />
+          </div>
+
+          {/* Expertise Fields */}
+          <div>
+            <label className="text-sm font-medium mb-2 block">תחומי מומחיות</label>
+            <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto p-2 border rounded-lg">
+              {ALL_EXPERTISE_FIELDS.map(field => {
+                const isSelected = formData.expertise_fields.includes(field);
+                return (
+                  <button
+                    key={field}
+                    type="button"
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        expertise_fields: isSelected
+                          ? prev.expertise_fields.filter(f => f !== field)
+                          : [...prev.expertise_fields, field]
+                      }));
+                    }}
+                    className={cn(
+                      "p-2 rounded text-xs transition-all",
+                      isSelected
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted hover:bg-muted/80"
+                    )}
+                  >
+                    {field}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {formData.expertise_fields.length} תחומים נבחרו
+            </p>
           </div>
 
           {/* User Type */}
