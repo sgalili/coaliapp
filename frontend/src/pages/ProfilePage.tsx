@@ -619,30 +619,15 @@ export default function ProfilePage() {
 
             {/* Menu Items */}
             <div className="p-2">
-              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
-                <User className="w-5 h-5 text-muted-foreground" />
-                <span>עריכת פרופיל</span>
-              </button>
-              
               <button 
                 onClick={() => {
-                  navigate('/wallet');
+                  navigate('/notifications-settings');
                   setShowBurgerMenu(false);
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right"
               >
-                <Gift className="w-5 h-5 text-muted-foreground" />
-                <span>ארנק ZOOZ</span>
-              </button>
-
-              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
-                <Bookmark className="w-5 h-5 text-muted-foreground" />
-                <span>שמורים</span>
-              </button>
-
-              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
-                <Settings className="w-5 h-5 text-muted-foreground" />
-                <span>הגדרות</span>
+                <Bell className="w-5 h-5 text-muted-foreground" />
+                <span>התראות</span>
               </button>
 
               <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-lg text-right">
