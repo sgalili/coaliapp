@@ -122,66 +122,57 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
         <DialogHeader>
-          <DialogTitle>ערוך פרופיל</DialogTitle>
+          <DialogTitle className="text-right">ערוך פרופיל</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Profile Picture */}
-          <div className="flex flex-col items-center gap-3">
-            <label className="text-sm font-medium">תמונת פרופיל</label>
-            <div className="relative">
-              <Avatar 
-                className="w-24 h-24 cursor-pointer ring-4 ring-primary/20 hover:ring-primary/40 transition-all" 
-                onClick={handleAvatarClick}
-              >
-                <AvatarImage src={formData.avatar_url} />
-                <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-primary/10">
-                  {formData.first_name.charAt(0)}{formData.last_name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div 
-                className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform"
-                onClick={handleAvatarClick}
-              >
-                <Camera className="w-5 h-5 text-primary-foreground" />
-              </div>
-            </div>
+          {/* Profile Picture Upload */}
+          <ProfilePictureUpload
+            currentImageUrl={formData.avatar_url}
+            onImageChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
+            userInitials={`${formData.first_name.charAt(0)}${formData.last_name.charAt(0)}`}
+          />
+
+          {/* Title Field */}
+          <div>
+            <label className="text-sm font-medium text-right block mb-1">תואר (אופציונלי)</label>
             <Input
-              value={formData.avatar_url}
-              onChange={(e) => setFormData(prev => ({ ...prev, avatar_url: e.target.value }))}
-              placeholder="או הדבק URL לתמונה"
-              className="text-sm"
-              dir="ltr"
+              value={formData.title}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              placeholder='לדוגמה: פרופ׳, ד"ר, עו"ד, מאמן'
+              className="text-right"
             />
           </div>
 
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium">שם פרטי</label>
+              <label className="text-sm font-medium text-right block mb-1">שם פרטי</label>
               <Input
                 value={formData.first_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
                 placeholder="שם פרטי"
+                className="text-right"
               />
             </div>
             <div>
-              <label className="text-sm font-medium">שם משפחה</label>
+              <label className="text-sm font-medium text-right block mb-1">שם משפחה</label>
               <Input
                 value={formData.last_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
                 placeholder="שם משפחה"
+                className="text-right"
               />
             </div>
           </div>
 
-          {/* City */}
+          {/* City with Autocomplete */}
           <div>
-            <label className="text-sm font-medium">עיר מגורים</label>
-            <Input
+            <label className="text-sm font-medium text-right block mb-1">עיר מגורים</label>
+            <CityAutocomplete
               value={formData.city}
-              onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-              placeholder="תל אביב"
+              onChange={(city) => setFormData(prev => ({ ...prev, city }))}
+              className="text-right"
             />
           </div>
 
