@@ -4,19 +4,44 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Camera } from 'lucide-react';
+import { User, Camera, Sparkles, CheckCircle2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ProfileCompletionProps {
-  onComplete: (firstName: string, lastName: string, profilePicture?: string) => void;
+  onComplete: (firstName: string, lastName: string, profilePicture?: string, expertiseFields?: string[]) => void;
   isLoading: boolean;
-  onStartOnboarding?: () => void; // New prop for triggering onboarding
+  onStartOnboarding?: () => void;
 }
+
+const ALL_EXPERTISE_FIELDS = [
+  { id: 'politics', label: 'פוליטיקה', icon: '🏛️' },
+  { id: 'economy', label: 'כלכלה', icon: '💰' },
+  { id: 'healthcare', label: 'בריאות', icon: '🏥' },
+  { id: 'technology', label: 'טכנולוגיה', icon: '💻' },
+  { id: 'education', label: 'חינוך', icon: '📚' },
+  { id: 'environment', label: 'סביבה', icon: '🌍' },
+  { id: 'security', label: 'ביטחון', icon: '🛡️' },
+  { id: 'society', label: 'חברה', icon: '👥' },
+  { id: 'law', label: 'משפט', icon: '⚖️' },
+  { id: 'media', label: 'תקשורת', icon: '📺' },
+  { id: 'arts', label: 'אמנות ותרבות', icon: '🎨' },
+  { id: 'sports', label: 'ספורט', icon: '⚽' },
+  { id: 'science', label: 'מדע ומחקר', icon: '🔬' },
+  { id: 'business', label: 'עסקים ויזמות', icon: '📊' },
+  { id: 'real-estate', label: 'נדל"ן', icon: '🏢' },
+  { id: 'transportation', label: 'תחבורה', icon: '🚗' },
+  { id: 'agriculture', label: 'חקלאות', icon: '🌾' },
+  { id: 'tourism', label: 'תיירות', icon: '✈️' },
+  { id: 'food', label: 'קולינריה ומזון', icon: '🍽️' },
+  { id: 'general', label: 'כללי', icon: '📋' },
+];
 
 export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete, isLoading, onStartOnboarding }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [profilePicture, setProfilePicture] = useState<string>('');
-  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string }>({});
+  const [selectedFields, setSelectedFields] = useState<string[]>([]);
+  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string; profilePicture?: string }>({});
   const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
