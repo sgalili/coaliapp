@@ -407,9 +407,7 @@ export default function ProfilePage() {
 
       // Refresh bookmarks
       await loadSavedBookmarks();
-      await loadBookmarkStats();
       
-      // Show toast (you'll need to import toast from sonner)
       console.log('הסימניה הוסרה');
     } catch (error) {
       console.error('Failed to remove bookmark:', error);
