@@ -169,16 +169,9 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Gamified Header */}
+      {/* Gamified Header - No Icon */}
       <div className="text-center space-y-3">
-        <div className="relative w-20 h-20 mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-br from-zooz via-yellow-400 to-orange-500 rounded-full animate-pulse"></div>
-          <div className="relative w-20 h-20 bg-background rounded-full flex items-center justify-center border-4 border-zooz">
-            <Sparkles className="w-10 h-10 text-zooz" />
-          </div>
-        </div>
-        
-        <h1 className="text-2xl font-bold text-foreground">
+        <h1 className="text-2xl font-bold bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent">
           השלם את ההרשמה וקבל 10z מתנה
         </h1>
         
