@@ -236,15 +236,18 @@ export default function ProfilePage() {
       )}
 
       <div className="max-w-2xl mx-auto">
-        {/* Header with Menu on Right */}
+        {/* Header with Menu on Right and Bell on Left */}
         <div className="relative p-6 text-center">
-          <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="absolute top-4 right-4">
             <button 
               onClick={() => setShowBurgerMenu(true)}
               className="p-2 hover:bg-muted rounded-full"
             >
               <Menu className="w-5 h-5 text-muted-foreground" />
             </button>
+          </div>
+          
+          <div className="absolute top-4 left-4">
             <button
               onClick={() => navigate('/notifications')}
               className="p-2 hover:bg-muted rounded-full transition-colors relative"
