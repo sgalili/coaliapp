@@ -27,17 +27,19 @@ import NotificationsPage from "./pages/NotificationsPage";
 import MyDelegatedVotesPage from "./pages/MyDelegatedVotesPage";
 import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
+import { UserProvider } from "./contexts/UserContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ChannelProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
+    <UserProvider>
+      <ChannelProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
             {/* Public routes */}
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
