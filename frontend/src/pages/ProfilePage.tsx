@@ -400,7 +400,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <Grid3x3 className="w-4 h-4" />
-                <span className="text-[12px] font-semibold">{userPosts.length}</span>
+                <span className="text-[15px] font-semibold">{userPosts.length}</span>
               </div>
               <span>פוסטים</span>
             </button>
@@ -415,7 +415,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <Handshake className="w-4 h-4" />
-                <span className="text-[12px] font-semibold">{trustCount}</span>
+                <span className="text-[15px] font-semibold">{trustCount}</span>
               </div>
               <span>אמון</span>
             </button>
@@ -430,7 +430,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <Bookmark className="w-4 h-4" />
-                <span className="text-[12px] font-semibold">{savedBookmarks.length}</span>
+                <span className="text-[15px] font-semibold">{savedBookmarks.length}</span>
               </div>
               <span>שמורים</span>
             </button>
@@ -445,7 +445,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center gap-1">
                 <CheckSquare className="w-4 h-4" />
-                <span className="text-[12px] font-semibold">{decisionsCount}</span>
+                <span className="text-[15px] font-semibold">{decisionsCount}</span>
               </div>
               <span>החלטות</span>
             </button>
