@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
-CREATE INDEX IF NOT EXISTS idx_profiles_phone ON profiles(phone);
-CREATE INDEX IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
+CREATE INDEX IF NOT EXISTS IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
+CREATE INDEX IF NOT EXISTS IF NOT EXISTS idx_profiles_phone ON profiles(phone);
+CREATE INDEX IF NOT EXISTS IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
 
 -- =====================================================
 -- 2. TRUST RELATIONSHIPS
@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS trust_relationships (
   UNIQUE(truster_user_id, trusted_user_id)
 );
 
-CREATE INDEX idx_trust_truster ON trust_relationships(truster_user_id);
-CREATE INDEX idx_trust_trusted ON trust_relationships(trusted_user_id);
+CREATE INDEX IF NOT EXISTS idx_trust_truster ON trust_relationships(truster_user_id);
+CREATE INDEX IF NOT EXISTS idx_trust_trusted ON trust_relationships(trusted_user_id);
 
 -- =====================================================
 -- 3. BOOKMARKS TABLE
@@ -56,8 +56,8 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   UNIQUE(bookmark_user_id, post_id)
 );
 
-CREATE INDEX idx_bookmarks_user ON bookmarks(bookmark_user_id);
-CREATE INDEX idx_bookmarks_post ON bookmarks(post_id);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_user ON bookmarks(bookmark_user_id);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_post ON bookmarks(post_id);
 
 -- =====================================================
 -- 4. SUBSCRIPTIONS TABLE
@@ -70,8 +70,8 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   UNIQUE(subscriber_id, creator_id)
 );
 
-CREATE INDEX idx_subscriptions_subscriber ON subscriptions(subscriber_id);
-CREATE INDEX idx_subscriptions_creator ON subscriptions(creator_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_subscriber ON subscriptions(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_subscriptions_creator ON subscriptions(creator_id);
 
 -- =====================================================
 -- 5. USER VOTES TABLE
@@ -89,9 +89,9 @@ CREATE TABLE IF NOT EXISTS user_votes (
   UNIQUE(user_id, decision_id)
 );
 
-CREATE INDEX idx_user_votes_user ON user_votes(user_id);
-CREATE INDEX idx_user_votes_decision ON user_votes(decision_id);
-CREATE INDEX idx_user_votes_delegated ON user_votes(is_delegated);
+CREATE INDEX IF NOT EXISTS idx_user_votes_user ON user_votes(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_votes_decision ON user_votes(decision_id);
+CREATE INDEX IF NOT EXISTS idx_user_votes_delegated ON user_votes(is_delegated);
 
 -- =====================================================
 -- 6. USER EXPERTISE TABLE
@@ -105,8 +105,8 @@ CREATE TABLE IF NOT EXISTS user_expertise (
   UNIQUE(user_id, expertise_field)
 );
 
-CREATE INDEX idx_user_expertise_user ON user_expertise(user_id);
-CREATE INDEX idx_user_expertise_field ON user_expertise(expertise_field);
+CREATE INDEX IF NOT EXISTS idx_user_expertise_user ON user_expertise(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_expertise_field ON user_expertise(expertise_field);
 
 -- =====================================================
 -- 7. TRUST DELEGATIONS TABLE
@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS trust_delegations (
   UNIQUE(truster_id, trusted_id, expertise_field)
 );
 
-CREATE INDEX idx_trust_delegations_truster ON trust_delegations(truster_id);
-CREATE INDEX idx_trust_delegations_trusted ON trust_delegations(trusted_id);
+CREATE INDEX IF NOT EXISTS idx_trust_delegations_truster ON trust_delegations(truster_id);
+CREATE INDEX IF NOT EXISTS idx_trust_delegations_trusted ON trust_delegations(trusted_id);
 
 -- =====================================================
 -- 8. VOTE DELEGATIONS LOG
@@ -138,8 +138,8 @@ CREATE TABLE IF NOT EXISTS vote_delegations_log (
   votes_triggered JSONB
 );
 
-CREATE INDEX idx_vote_log_decision ON vote_delegations_log(decision_id);
-CREATE INDEX idx_vote_log_expert ON vote_delegations_log(expert_id);
+CREATE INDEX IF NOT EXISTS idx_vote_log_decision ON vote_delegations_log(decision_id);
+CREATE INDEX IF NOT EXISTS idx_vote_log_expert ON vote_delegations_log(expert_id);
 
 -- =====================================================
 -- 9. VOTE WITHDRAWALS TABLE
@@ -155,8 +155,8 @@ CREATE TABLE IF NOT EXISTS vote_withdrawals (
   withdrawn_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_withdrawals_user ON vote_withdrawals(user_id);
-CREATE INDEX idx_withdrawals_decision ON vote_withdrawals(decision_id);
+CREATE INDEX IF NOT EXISTS idx_withdrawals_user ON vote_withdrawals(user_id);
+CREATE INDEX IF NOT EXISTS idx_withdrawals_decision ON vote_withdrawals(decision_id);
 
 -- =====================================================
 -- 10. DELEGATION NOTIFICATIONS TABLE
@@ -173,8 +173,8 @@ CREATE TABLE IF NOT EXISTS delegation_notifications (
   is_read BOOLEAN DEFAULT false
 );
 
-CREATE INDEX idx_notifications_user ON delegation_notifications(user_id);
-CREATE INDEX idx_notifications_decision ON delegation_notifications(decision_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON delegation_notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_decision ON delegation_notifications(decision_id);
 
 -- =====================================================
 -- 11. ADMIN USER NOTES
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS admin_user_notes (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_admin_notes_user ON admin_user_notes(user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_notes_user ON admin_user_notes(user_id);
 
 -- =====================================================
 -- 12. ZOOZ TRANSACTIONS
@@ -203,8 +203,8 @@ CREATE TABLE IF NOT EXISTS zooz_transactions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_zooz_tx_from ON zooz_transactions(from_user_id);
-CREATE INDEX idx_zooz_tx_to ON zooz_transactions(to_user_id);
+CREATE INDEX IF NOT EXISTS idx_zooz_tx_from ON zooz_transactions(from_user_id);
+CREATE INDEX IF NOT EXISTS idx_zooz_tx_to ON zooz_transactions(to_user_id);
 
 -- =====================================================
 -- 13. ADMIN ACTIVITY LOG
@@ -218,8 +218,8 @@ CREATE TABLE IF NOT EXISTS admin_activity_log (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_admin_log_admin ON admin_activity_log(admin_user_id);
-CREATE INDEX idx_admin_log_target ON admin_activity_log(target_user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_log_admin ON admin_activity_log(admin_user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_log_target ON admin_activity_log(target_user_id);
 
 -- =====================================================
 -- 14. EXPERTISE CATEGORIES
