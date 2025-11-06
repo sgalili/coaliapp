@@ -2271,14 +2271,13 @@ export default function Index() {
                       />
                       <div className="text-right">
                         <p className="text-sm font-medium">פרסם גם בערוץ Coali הראשי</p>
-                        <p className="text-xs text-muted-foreground">התוכן יופיע גם בערוץ הראשי</p>
                       </div>
                     </label>
                   </div>
                 )}
 
-                {/* Submit Button */}
-                <button
+                {/* Submit Buttons */}
+                <div className="flex gap-3">
                   onClick={handleUploadSubmit}
                   disabled={!uploadCategory || caption.trim().length === 0 || isUploading}
                   className="w-full py-4 bg-primary text-primary-foreground rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
