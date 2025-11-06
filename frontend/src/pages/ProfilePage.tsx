@@ -357,6 +357,27 @@ export default function ProfilePage() {
               </span>
             ))}
           </div>
+
+          {/* Bio Section */}
+          <div className="px-6 mb-4">
+            <p 
+              ref={bioRef}
+              className={cn(
+                "text-sm text-muted-foreground text-center leading-relaxed",
+                !showFullBio && isBioLong && "line-clamp-3"
+              )}
+            >
+              {userBio}
+            </p>
+            {isBioLong && !showFullBio && (
+              <button 
+                onClick={() => handleTabChange('info')}
+                className="text-primary text-sm font-medium mt-2 hover:underline"
+              >
+                עוד
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Tabs - Sticky when scrolling */}
