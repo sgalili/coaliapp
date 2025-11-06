@@ -1567,7 +1567,7 @@ export default function Index() {
                 <span 
                   className={cn(
                     "text-white text-xs font-bold drop-shadow-lg whitespace-nowrap min-h-[16px]",
-                    isTransitioning && (showTextLabels ? "label-exiting" : "label-entering")
+                    isTransitioning ? "label-dissolve-out" : "label-dissolve-in"
                   )}
                 >
                   {showTextLabels ? 'ZOOZ' : formatCount(post.zoozCount || 0)}
