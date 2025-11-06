@@ -24,3 +24,6 @@ python-multipart>=0.0.9
 jq>=1.6.0
 typer>=0.9.0
 openai
+supabase==2.23.2
+supabase-auth==2.23.2
+supabase-functions==2.23.2
