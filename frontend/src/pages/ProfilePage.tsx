@@ -878,39 +878,95 @@ export default function ProfilePage() {
       {/* Bookmarks Tab */}
       {activeTab === 'bookmarks' && (
         <div>
-          <h3 className="text-lg font-bold mb-4">הפוסטים השמורים שלי ({savedBookmarks.length})</h3>
-          {savedBookmarks.length > 0 ? (
-            <div className="grid grid-cols-3 gap-2">
-              {savedBookmarks.map((bookmark) => (
-                <div key={bookmark.id} className="aspect-square bg-muted rounded-lg overflow-hidden relative group">
-                  {bookmark.post?.video_url && (
-                    <video src={bookmark.post.video_url} className="w-full h-full object-cover" />
-                  )}
-                  {bookmark.post?.image_url && (
-                    <img src={bookmark.post.image_url} className="w-full h-full object-cover" alt="" />
-                  )}
-                  
-                  {/* Remove Bookmark Button */}
-                  <button
-                    onClick={() => removeBookmark(bookmark.id)}
-                    className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          {/* Saved Posts Section */}
+          <div className="mb-8">
+            <h3 className="text-lg font-bold mb-4">פוסטים שמורים ({savedBookmarks.length})</h3>
+            {savedBookmarks.length > 0 ? (
+              <div className="grid grid-cols-3 gap-2">
+                {savedBookmarks.map((bookmark) => (
+                  <div 
+                    key={bookmark.id} 
+                    className="aspect-square bg-muted rounded-lg overflow-hidden relative group cursor-pointer"
+                    onClick={() => {
+                      // Navigate to the original post
+                      if (bookmark.post?.id) {
+                        navigate(`/?post=${bookmark.post.id}`);
+                      }
+                    }}
                   >
-                    <X className="w-4 h-4" />
-                  </button>
-                  
-                  {/* Post Info */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-                    <p className="text-white text-xs line-clamp-2">{bookmark.post?.caption}</p>
+                    {bookmark.post?.video_url && (
+                      <video src={bookmark.post.video_url} className="w-full h-full object-cover" />
+                    )}
+                    {bookmark.post?.image_url && (
+                      <img src={bookmark.post.image_url} className="w-full h-full object-cover" alt="" />
+                    )}
+                    
+                    {/* Remove Bookmark Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeBookmark(bookmark.id);
+                      }}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    
+                    {/* Post Info */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                      <p className="text-white text-xs line-clamp-2">{bookmark.post?.caption}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Bookmark className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground">עדיין לא שמרת פוסטים</p>
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-lg">
+                <Bookmark className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">עדיין לא שמרת פוסטים</p>
+              </div>
+            )}
+          </div>
+
+          {/* Following/Subscriptions Section */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">עוקב אחרי ({subscriptions.length})</h3>
+            {subscriptions.length > 0 ? (
+              <div className="space-y-3">
+                {subscriptions.map((subscription) => (
+                  <div key={subscription.id} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                    <div 
+                      className="flex items-center gap-3 flex-1 cursor-pointer"
+                      onClick={() => navigate(`/user/${subscription.creator?.user_id || subscription.creator_id}`)}
+                    >
+                      <img 
+                        src={subscription.creator?.avatar_url || 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg'} 
+                        className="w-12 h-12 rounded-full" 
+                        alt=""
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium">{subscription.creator?.full_name || 'משתמש'}</p>
+                        <p className="text-sm text-muted-foreground">{subscription.creator?.field || 'כללי'}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUnsubscribe(subscription.creator?.user_id || subscription.creator_id);
+                      }}
+                      className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-sm rounded-full transition-colors"
+                    >
+                      ביטול מעקב
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 bg-muted/30 rounded-lg">
+                <Share2 className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">עדיין לא עוקב אחרי אף אחד</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
