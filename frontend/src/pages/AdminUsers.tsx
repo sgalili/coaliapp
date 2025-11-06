@@ -368,6 +368,19 @@ export default function AdminUsers() {
         </div>
       </div>
 
+      {showUserModal && (
+        <AdminUserModal
+          user={selectedUser}
+          isOpen={showUserModal}
+          onClose={() => setShowUserModal(false)}
+          onSave={() => {
+            setShowUserModal(false);
+            loadUsers();
+          }}
+          isNewUser={isNewUser}
+        />
+      )}
+
       <Navigation zoozBalance={999} />
     </div>
   );
