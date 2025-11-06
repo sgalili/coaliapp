@@ -984,19 +984,8 @@ export default function ProfilePage() {
       {/* Trust Tab */}
       {activeTab === 'trust' && (
         <div>
-          {/* Toggle between I Trust and Trust Me */}
+          {/* Toggle between Trust Me and I Trust */}
           <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => setTrustSubTab('i-trust')}
-              className={cn(
-                "flex-1 py-2 px-4 rounded-lg font-medium transition-colors",
-                trustSubTab === 'i-trust' 
-                  ? "bg-primary text-primary-foreground" 
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              )}
-            >
-              אני נותן אמון ({trustedByMe.length})
-            </button>
             <button
               onClick={() => setTrustSubTab('trust-me')}
               className={cn(
@@ -1008,10 +997,21 @@ export default function ProfilePage() {
             >
               נותנים לי אמון ({trustedMe.length})
             </button>
+            <button
+              onClick={() => setTrustSubTab('i-trust')}
+              className={cn(
+                "flex-1 py-2 px-4 rounded-lg font-medium transition-colors",
+                trustSubTab === 'i-trust' 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              אני נותן אמון ({trustedByMe.length})
+            </button>
           </div>
 
-          {/* People I Trust */}
-          {trustSubTab === 'i-trust' && (
+          {/* People Who Trust Me - First Tab */}
+          {trustSubTab === 'trust-me' && (
             <div>
               {trustedByMe.length > 0 ? (
                 <div className="space-y-3">
