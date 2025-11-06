@@ -256,6 +256,7 @@ export default function ProfilePage() {
       // Load bookmark statistics
       await loadSavedBookmarks();
       await loadSubscriptions();
+      await loadDraftPosts();
       
     } catch (error) {
       console.error('Failed to load user data:', error);
