@@ -164,9 +164,56 @@ export default function ProfilePage() {
 
       // Load bookmark statistics
       await loadSavedBookmarks();
+      await loadSubscriptions();
       
     } catch (error) {
       console.error('Failed to load user data:', error);
+    }
+  };
+
+  const loadSubscriptions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          creator:profiles!subscriptions_creator_id_fkey(*)
+        `)
+        .eq('subscriber_id', 'demo-user')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Subscriptions table may not exist, using demo data:', error);
+        // Use demo subscription data
+        setSubscriptions([
+          {
+            id: 'sub-1',
+            creator: {
+              full_name: 'ירון זלקה',
+              avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
+              field: 'כלכלה',
+              user_id: 'user-1'
+            }
+          },
+          {
+            id: 'sub-2',
+            creator: {
+              full_name: 'נועה רותם',
+              avatar_url: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
+              field: 'טכנולוגיה',
+              user_id: 'user-2'
+            }
+          }
+        ]);
+        console.log('📱 Using demo subscriptions: 2');
+        return;
+      }
+      
+      setSubscriptions(data || []);
+      console.log('📱 Subscriptions loaded:', data?.length);
+    } catch (error) {
+      console.error('Failed to load subscriptions:', error);
+      setSubscriptions([]);
     }
   };
 
