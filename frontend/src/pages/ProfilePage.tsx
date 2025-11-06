@@ -311,6 +311,8 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -318,7 +320,86 @@ export default function ProfilePage() {
             <p className="text-center py-12 text-muted-foreground">עדיין לא העלית פוסטים</p>
           )}
         </div>
-      </div>
+      )}
+
+      {/* Info Tab */}
+      {activeTab === 'info' && (
+        <div>
+          <h3 className="text-lg font-bold mb-4">פרטי משתמש</h3>
+          <div className="space-y-4">
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">שם מלא</p>
+              <p className="font-medium">משתמש דמו מאומת</p>
+            </div>
+            
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">ביוגרפיה</p>
+              <p className="text-sm">מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה.</p>
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">תחומי מומחיות</p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {expertiseFields.map((field, i) => (
+                  <span key={i} className="px-3 py-1 bg-primary/20 text-primary text-sm rounded-full">
+                    {field}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">מיקום</p>
+              <p className="font-medium">תל אביב, ישראל</p>
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">הצטרף ב</p>
+              <p className="font-medium">ינואר 2024</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Trust Tab */}
+      {activeTab === 'trust' && (
+        <div>
+          <h3 className="text-lg font-bold mb-4">רשת האמון שלי</h3>
+          
+          {/* Trust Stats */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-muted/50 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-trust">{stats.trust}</p>
+              <p className="text-sm text-muted-foreground mt-1">נותני אמון</p>
+            </div>
+            <div className="bg-muted/50 rounded-lg p-4 text-center">
+              <p className="text-3xl font-bold text-primary">45</p>
+              <p className="text-sm text-muted-foreground mt-1">נותן אמון ל</p>
+            </div>
+          </div>
+
+          {/* Trust List */}
+          <h4 className="font-bold mb-3">נותני אמון אחרונים</h4>
+          <div className="space-y-3">
+            {[
+              { name: 'דוד כהן', image: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg', expertise: 'כלכלה' },
+              { name: 'שרה לוי', image: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg', expertise: 'טכנולוגיה' },
+              { name: 'יעקב מזרחי', image: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg', expertise: 'פוליטיקה' },
+            ].map((user, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                <img src={user.image} className="w-12 h-12 rounded-full" />
+                <div className="flex-1">
+                  <p className="font-medium">{user.name}</p>
+                  <p className="text-sm text-muted-foreground">{user.expertise}</p>
+                </div>
+                <Handshake className="w-5 h-5 text-trust" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
 
       <Navigation zoozBalance={9957} />
     </div>
