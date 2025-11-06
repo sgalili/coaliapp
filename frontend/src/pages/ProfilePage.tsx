@@ -352,6 +352,17 @@ export default function ProfilePage() {
             >
               אמון
             </button>
+            <button
+              onClick={() => setActiveTab('bookmarks')}
+              className={cn(
+                "flex-1 py-3 text-sm font-medium border-b-2 transition-colors",
+                activeTab === 'bookmarks' 
+                  ? "border-primary text-primary" 
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              שמורים
+            </button>
           </div>
         </div>
 
