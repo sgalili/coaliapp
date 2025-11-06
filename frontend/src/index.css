@@ -394,16 +394,12 @@ All colors MUST be HSL.
     animation: slide-up 0.3s ease-out forwards;
   }
 
-  /* Dissolve transition for action button labels */
+  /* Smooth dissolve transition for action button labels */
   @keyframes label-dissolve-in {
     0% {
       opacity: 0;
-      filter: blur(4px);
-      transform: scale(0.95);
-    }
-    50% {
-      opacity: 0.5;
-      filter: blur(2px);
+      filter: blur(6px);
+      transform: scale(0.92);
     }
     100% {
       opacity: 1;
@@ -418,27 +414,19 @@ All colors MUST be HSL.
       filter: blur(0px);
       transform: scale(1);
     }
-    50% {
-      opacity: 0.5;
-      filter: blur(2px);
-    }
     100% {
       opacity: 0;
-      filter: blur(4px);
-      transform: scale(0.95);
+      filter: blur(6px);
+      transform: scale(0.92);
     }
   }
 
-  .label-transition {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  .label-dissolve-in {
+    animation: label-dissolve-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
 
-  .label-entering {
-    animation: label-dissolve-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  .label-exiting {
-    animation: label-dissolve-out 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  .label-dissolve-out {
+    animation: label-dissolve-out 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
 }
 
