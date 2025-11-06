@@ -61,7 +61,7 @@ const NotificationsSettingsPage = () => {
     {
       key: 'watchReceived' as const,
       icon: Eye,
-      label: 'כשמישהו עוקב אחרי (Watch)',
+      label: 'כשמישהו נרשם למנוי (Watch)',
       description: 'התראה כשמישהו מתחיל לעקוב אחריך'
     },
     {
