@@ -718,7 +718,6 @@ export default function ProfilePage() {
               <Edit2 className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
-          <p className="text-sm text-muted-foreground mb-2" dir="ltr">@demouser</p>
 
           {/* Expertise Fields */}
           <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
