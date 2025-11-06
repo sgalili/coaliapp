@@ -124,19 +124,6 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             </p>
           )}
         </div>
-
-        {/* Alternative method */}
-        <div className="text-center">
-          <Button
-            variant="outline"
-            onClick={onAlternativeMethod}
-            disabled={isLoading}
-            className="w-full"
-          >
-            <Smartphone className="w-4 h-4 mr-2" />
-            {t('auth.receiveSMS')}
-          </Button>
-        </div>
       </div>
     </div>
   );
