@@ -185,7 +185,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
                   {/* Phone Number Input */}
                   <Input
                     type="tel"
-                    placeholder="6 12 34 56 78"
+                    placeholder=""
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className="text-lg py-3 rounded-l-none flex-1"
