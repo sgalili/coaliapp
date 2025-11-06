@@ -1174,9 +1174,9 @@ export default function Index() {
 
           if (subError) console.warn('Subscription already exists or error:', subError);
           
-          toast.success(`נשמר לסימניות! 🔖 + עכשיו עוקב אחרי ${post.username || 'המשתמש'}`);
+          toast.success(`נשמר למועדפים! 🔖 + נרשמת למנוי של ${post.username || 'המשתמש'}`);
         } else {
-          toast.success('נשמר לסימניות! 🔖');
+          toast.success('נשמר למועדפים! 🔖');
         }
 
         // Update watch count in database
