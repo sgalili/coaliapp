@@ -317,7 +317,14 @@ export default function AdminUsers() {
                     <span>🤝 {user.total_trust}</span>
                     <span>👁️ {user.total_views}</span>
                     <span>🗳️ {user.total_votes}</span>
-                    <span>💰 {user.total_zooz}Z</span>
+                    <button
+                      onClick={() => handleEditUser(user)}
+                      className="flex items-center gap-1 hover:text-primary transition-colors"
+                      title="ניהול ZOOZ והיסטוריה"
+                    >
+                      <Coins className="w-4 h-4" />
+                      <span>{user.total_zooz || 0}z</span>
+                    </button>
                   </div>
                   
                   <p className="text-xs text-muted-foreground mt-1">
