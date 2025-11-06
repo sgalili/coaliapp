@@ -1558,10 +1558,10 @@ export default function Index() {
                 className="flex flex-col items-center gap-1 min-w-[48px]"
               >
                 <div className="relative flex items-center justify-center">
-                  <Gift className="w-7 h-7 text-zooz drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
-                  {/* Gold Z coin at top-right */}
-                  <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-zooz rounded-full flex items-center justify-center border border-yellow-600">
-                    <span className="text-[8px] font-bold text-yellow-900">Z</span>
+                  <Gift className="w-7 h-7 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }} />
+                  {/* Gold Z coin at top-right, moved 4px up and 4px right */}
+                  <div className="absolute -top-[4.5px] -right-[4.5px] w-4 h-4 bg-zooz rounded-full flex items-center justify-center border border-yellow-600">
+                    <span className="text-[10px] font-extrabold text-yellow-900">Z</span>
                   </div>
                 </div>
                 <span 
