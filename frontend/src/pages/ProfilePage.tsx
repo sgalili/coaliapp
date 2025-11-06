@@ -85,13 +85,10 @@ export default function ProfilePage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle tab change with auto-scroll
+  // Handle tab change without auto-scroll
   const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions') => {
     setActiveTab(tab);
-    // Always scroll to top when clicking any tab
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Force tabs to be sticky after scroll
-    setTimeout(() => setIsTabsSticky(true), 300);
+    // Don't auto-scroll - user has full manual control
   };
 
   const loadUserPosts = async () => {
