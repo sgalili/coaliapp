@@ -269,7 +269,6 @@ export const AuthPage = () => {
           {currentStep === 'profile' && (
             <ProfileCompletion
               onComplete={handleProfileComplete}
-              onStartOnboarding={handleStartOnboarding}
               isLoading={authLoading}
             />
           )}
@@ -278,13 +277,6 @@ export const AuthPage = () => {
             <div className="text-center">
               <p className="text-sm text-destructive">{authError}</p>
             </div>
-          )}
-          
-          {currentStep === 'onboarding' && (
-            <OnboardingFlow
-              initialStep="profile-completion"
-              onComplete={handleOnboardingComplete}
-            />
           )}
           
           {/* Demo Mode Button */}
