@@ -970,94 +970,120 @@ export default function ProfilePage() {
       {/* Trust Tab */}
       {activeTab === 'trust' && (
         <div>
-          <h3 className="text-lg font-bold mb-4">רשת האמון שלי</h3>
+          {/* Toggle between I Trust and Trust Me */}
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setTrustSubTab('i-trust')}
+              className={cn(
+                "flex-1 py-2 px-4 rounded-lg font-medium transition-colors",
+                trustSubTab === 'i-trust' 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              אני נותן אמון ({trustedByMe.length})
+            </button>
+            <button
+              onClick={() => setTrustSubTab('trust-me')}
+              className={cn(
+                "flex-1 py-2 px-4 rounded-lg font-medium transition-colors",
+                trustSubTab === 'trust-me' 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              )}
+            >
+              נותנים לי אמון ({trustedMe.length})
+            </button>
+          </div>
 
           {/* People I Trust */}
-          <div className="mb-6">
-            <h4 className="font-bold mb-3 text-primary">אני נותן אמון ל:</h4>
-            {trustedByMe.length > 0 ? (
-              <div className="space-y-3">
-                {trustedByMe.map((trust, i) => (
-                  <div 
-                    key={i} 
-                    className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer"
-                    onClick={() => navigate(`/user/${trust.trusted?.user_id || trust.id}`)}
-                  >
-                    <img 
-                      src={trust.trusted?.avatar_url || 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg'} 
-                      className="w-12 h-12 rounded-full" 
-                      alt=""
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium">{trust.trusted?.full_name || 'משתמש'}</p>
-                      <p className="text-sm text-muted-foreground">{trust.trusted?.field || 'כללי'}</p>
+          {trustSubTab === 'i-trust' && (
+            <div>
+              {trustedByMe.length > 0 ? (
+                <div className="space-y-3">
+                  {trustedByMe.map((trust, i) => (
+                    <div 
+                      key={i} 
+                      className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer"
+                      onClick={() => navigate(`/user/${trust.trusted?.user_id || trust.id}`)}
+                    >
+                      <img 
+                        src={trust.trusted?.avatar_url || 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg'} 
+                        className="w-12 h-12 rounded-full" 
+                        alt=""
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium">{trust.trusted?.full_name || 'משתמש'}</p>
+                        <p className="text-sm text-muted-foreground">{trust.trusted?.field || 'כללי'}</p>
+                      </div>
+                      <Handshake className="w-5 h-5 text-trust" />
                     </div>
-                    <Handshake className="w-5 h-5 text-trust" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-muted/30 rounded-lg">
-                <Handshake className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground text-sm">עדיין לא נתת אמון למשתמשים</p>
-              </div>
-            )}
-          </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-muted/30 rounded-lg">
+                  <Handshake className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground text-sm">עדיין לא נתת אמון למשתמשים</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* People Who Trust Me */}
-          <div>
-            <h4 className="font-bold mb-3 text-primary">נותנים לי אמון:</h4>
-            {trustedMe.length > 0 ? (
-              <div className="space-y-3">
-                {trustedMe.map((trust, i) => {
-                  const trusterId = trust.truster?.user_id || trust.id;
-                  const isTrustingBack = trustedByMe.some(t => (t.trusted?.user_id || t.id) === trusterId);
-                  
-                  return (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                      <div 
-                        className="flex items-center gap-3 flex-1 cursor-pointer"
-                        onClick={() => navigate(`/user/${trusterId}`)}
-                      >
-                        <img 
-                          src={trust.truster?.avatar_url || 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg'} 
-                          className="w-12 h-12 rounded-full" 
-                          alt=""
-                        />
-                        <div className="flex-1">
-                          <p className="font-medium">{trust.truster?.full_name || 'משתמש'}</p>
-                          <p className="text-sm text-muted-foreground">{trust.truster?.field || 'כללי'}</p>
-                        </div>
-                      </div>
-                      {!isTrustingBack && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleTrustBack(trusterId);
-                          }}
-                          className="px-3 py-1.5 bg-primary text-primary-foreground text-sm rounded-full hover:bg-primary/90 transition-colors flex items-center gap-1"
+          {trustSubTab === 'trust-me' && (
+            <div>
+              {trustedMe.length > 0 ? (
+                <div className="space-y-3">
+                  {trustedMe.map((trust, i) => {
+                    const trusterId = trust.truster?.user_id || trust.id;
+                    const isTrustingBack = trustedByMe.some(t => (t.trusted?.user_id || t.id) === trusterId);
+                    
+                    return (
+                      <div key={i} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
+                        <div 
+                          className="flex items-center gap-3 flex-1 cursor-pointer"
+                          onClick={() => navigate(`/user/${trusterId}`)}
                         >
-                          <Handshake className="w-4 h-4" />
-                          <span>אמון חזרה</span>
-                        </button>
-                      )}
-                      {isTrustingBack && (
-                        <div className="flex items-center gap-1 text-trust text-sm">
-                          <Handshake className="w-4 h-4" />
-                          <span>נותן אמון</span>
+                          <img 
+                            src={trust.truster?.avatar_url || 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg'} 
+                            className="w-12 h-12 rounded-full" 
+                            alt=""
+                          />
+                          <div className="flex-1">
+                            <p className="font-medium">{trust.truster?.full_name || 'משתמש'}</p>
+                            <p className="text-sm text-muted-foreground">{trust.truster?.field || 'כללי'}</p>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-muted/30 rounded-lg">
-                <Handshake className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground text-sm">עדיין אין מי שנותן לך אמון</p>
-              </div>
-            )}
-          </div>
+                        {!isTrustingBack && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTrustBack(trusterId);
+                            }}
+                            className="px-3 py-1.5 bg-primary text-primary-foreground text-sm rounded-full hover:bg-primary/90 transition-colors flex items-center gap-1"
+                          >
+                            <Handshake className="w-4 h-4" />
+                            <span>אמון חזרה</span>
+                          </button>
+                        )}
+                        {isTrustingBack && (
+                          <div className="flex items-center gap-1 text-trust text-sm">
+                            <Handshake className="w-4 h-4" />
+                            <span>נותן אמון</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-muted/30 rounded-lg">
+                  <Handshake className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground text-sm">עדיין אין מי שנותן לך אמון</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
