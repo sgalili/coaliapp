@@ -412,129 +412,88 @@ export default function ProfilePage() {
 
   const loadTrustCount = async () => {
     try {
-      // Count users who trust this user (trusted me)
+      // Get REAL users who trust this user (trusted me) from profiles table
       const { data: trustedMeData, error: trustedMeError } = await supabase
         .from('trust_relationships')
-        .select('*, truster:profiles!trust_relationships_truster_user_id_fkey(*)')
+        .select('*')
         .eq('trusted_user_id', 'demo-user');
 
-      if (trustedMeError) {
-        console.warn('Trust relationships may not exist, using demo data:', trustedMeError);
-        // Use real demo users
-        setTrustedMe([
-          {
-            id: '1',
-            truster_user_id: 'user-1',
-            truster: {
-              user_id: 'user-1',
-              full_name: 'ירון זלקה',
-              avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-              field: 'כלכלה'
-            }
-          },
-          {
-            id: '2',
-            truster_user_id: 'user-3',
-            truster: {
-              user_id: 'user-3',
-              full_name: 'דוד לוי',
-              avatar_url: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-              field: 'חברה'
-            }
-          },
-          {
-            id: '3',
-            truster_user_id: 'user-4',
-            truster: {
-              user_id: 'user-4',
-              full_name: 'ד"ר רחל כהן',
-              avatar_url: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg',
-              field: 'בריאות'
-            }
+      let trustedMeList = [];
+      
+      if (trustedMeData && trustedMeData.length > 0) {
+        // Load actual profile data for each truster
+        for (const trust of trustedMeData) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_id, first_name, last_name, avatar_url, expertise_fields')
+            .eq('user_id', trust.truster_user_id)
+            .single();
+          
+          if (profile) {
+            trustedMeList.push({
+              id: trust.id,
+              truster_user_id: trust.truster_user_id,
+              truster: {
+                user_id: profile.user_id,
+                full_name: `${profile.first_name} ${profile.last_name}`,
+                avatar_url: profile.avatar_url,
+                field: profile.expertise_fields?.[0] || 'כללי'
+              }
+            });
           }
-        ]);
+        }
+        setTrustedMe(trustedMeList);
+        console.log('🤝 Real people who trust me:', trustedMeList.length);
       } else {
-        setTrustedMe(trustedMeData || []);
-        console.log('🤝 People who trust me:', trustedMeData?.length);
+        console.log('🤝 No trust relationships found');
+        setTrustedMe([]);
       }
 
-      // Count users this user trusts (I trust)
+      // Get REAL users this user trusts (I trust)
       const { data: trustedByMeData, error: trustedByMeError } = await supabase
         .from('trust_relationships')
-        .select('*, trusted:profiles!trust_relationships_trusted_user_id_fkey(*)')
+        .select('*')
         .eq('truster_user_id', 'demo-user');
 
-      if (trustedByMeError) {
-        console.warn('Trust relationships may not exist, using demo data:', trustedByMeError);
-        // Use real demo users
-        setTrustedByMe([
-          {
-            id: '4',
-            trusted_user_id: 'user-2',
-            trusted: {
-              user_id: 'user-2',
-              full_name: 'נועה רותם',
-              avatar_url: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
-              field: 'טכנולוגיה'
-            }
-          },
-          {
-            id: '5',
-            trusted_user_id: 'user-5',
-            trusted: {
-              user_id: 'user-5',
-              full_name: 'עו"ד אמית ברק',
-              avatar_url: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg',
-              field: 'חברה'
-            }
+      let trustedByMeList = [];
+      
+      if (trustedByMeData && trustedByMeData.length > 0) {
+        // Load actual profile data for each trusted user
+        for (const trust of trustedByMeData) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_id, first_name, last_name, avatar_url, expertise_fields')
+            .eq('user_id', trust.trusted_user_id)
+            .single();
+          
+          if (profile) {
+            trustedByMeList.push({
+              id: trust.id,
+              trusted_user_id: trust.trusted_user_id,
+              trusted: {
+                user_id: profile.user_id,
+                full_name: `${profile.first_name} ${profile.last_name}`,
+                avatar_url: profile.avatar_url,
+                field: profile.expertise_fields?.[0] || 'כללי'
+              }
+            });
           }
-        ]);
+        }
+        setTrustedByMe(trustedByMeList);
+        console.log('🤝 Real people I trust:', trustedByMeList.length);
       } else {
-        setTrustedByMe(trustedByMeData || []);
-        console.log('🤝 People I trust:', trustedByMeData?.length);
+        console.log('🤝 No trust given yet');
+        setTrustedByMe([]);
       }
 
-      // Set trust count to only "נותנים לי אמון"
-      const trustedMeCount = trustedMeData?.length || 3; // demo count
-      setTrustCount(trustedMeCount);
+      // Set trust count to ONLY "נותנים לי אמון"
+      setTrustCount(trustedMeList.length);
+      
     } catch (error) {
       console.error('Failed to load trust relationships:', error);
-      // Set demo data on error using real demo users
-      setTrustedMe([
-        {
-          id: '1',
-          truster_user_id: 'user-1',
-          truster: {
-            user_id: 'user-1',
-            full_name: 'ירון זלקה',
-            avatar_url: 'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-            field: 'כלכלה'
-          }
-        },
-        {
-          id: '2',
-          truster_user_id: 'user-3',
-          truster: {
-            user_id: 'user-3',
-            full_name: 'דוד לוי',
-            avatar_url: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-            field: 'חברה'
-          }
-        }
-      ]);
-      setTrustedByMe([
-        {
-          id: '3',
-          trusted_user_id: 'user-2',
-          trusted: {
-            user_id: 'user-2',
-            full_name: 'נועה רותם',
-            avatar_url: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
-            field: 'טכנולוגיה'
-          }
-        }
-      ]);
-      setTrustCount(3);
+      setTrustCount(0);
+      setTrustedMe([]);
+      setTrustedByMe([]);
     }
   };
 
