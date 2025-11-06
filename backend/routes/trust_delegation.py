@@ -184,6 +184,36 @@ async def expert_vote_and_delegate(data: ExpertVote):
                 'expert_vote': data.vote_value,
                 'notification_type': 'vote_triggered'
             }).execute()
+            
+            # Send WhatsApp notification
+            try:
+                # Get user phone and expert name
+                user_profile = supabase.table('profiles').select('phone, first_name').eq('user_id', user_id).single().execute()
+                expert_profile = supabase.table('profiles').select('first_name, last_name').eq('user_id', data.expert_id).single().execute()
+                
+                if user_profile.data and user_profile.data.get('phone'):
+                    expert_full_name = f"{expert_profile.data.get('first_name', '')} {expert_profile.data.get('last_name', '')}".strip() if expert_profile.data else 'המומחה'
+                    decision_title = decision.data.get('title', 'החלטה')
+                    
+                    # Calculate time remaining
+                    from datetime import datetime, timezone
+                    deadline = datetime.fromisoformat(decision.data.get('withdrawal_deadline'))
+                    now = datetime.now(timezone.utc)
+                    hours_remaining = int((deadline - now).total_seconds() / 3600)
+                    
+                    decision_link = f"{os.getenv('FRONTEND_URL', 'https://trust.coali.app')}/decisions?id={data.decision_id}"
+                    
+                    auto_notification_service.send_delegation_vote_notification(
+                        user_phone=user_profile.data['phone'],
+                        expert_name=expert_full_name,
+                        decision_title=decision_title,
+                        expert_vote=data.vote_value,
+                        decision_link=decision_link,
+                        time_remaining=f"{hours_remaining} שעות"
+                    )
+            except Exception as notif_error:
+                logger.error(f"Failed to send WhatsApp for user {user_id}: {notif_error}")
+                # Don't fail the vote if notification fails
         
         # 5. Log delegation
         supabase.table('vote_delegations_log').insert({
