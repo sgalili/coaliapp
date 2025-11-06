@@ -26,7 +26,7 @@ export default function ProfilePage() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
-  const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה. אני מאמין בכוח של שיתוף פעולה וידע פתוח כדי לקדם את החברה והטכנולוגיה בישראל.";
+  const userBio = "מומחה בתחומי טכנולוגיה, עסקים וחדשות. משתף ידע ותובנות עם הקהילה. אני מאמין בכוח של שיתוף פעולה וידע פתוח כדי לקדם את החברה והטכנולוגיה בישראל. בעל ניסיון של למעלה מ-15 שנה בתעשיית ההיי-טק והחדשנות.";
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
