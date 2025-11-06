@@ -97,6 +97,70 @@ export default function ProfilePage() {
     }
   };
 
+  const loadBookmarkStats = async () => {
+    try {
+      // Count bookmarks received on my posts
+      const { count: receivedCount } = await supabase
+        .from('bookmarks')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', 'demo-user');
+
+      // Count my saved bookmarks
+      const { count: savedCount } = await supabase
+        .from('bookmarks')
+        .select('*', { count: 'exact', head: true })
+        .eq('bookmark_user_id', 'demo-user');
+
+      setBookmarkStats({
+        received: receivedCount || 0,
+        saved: savedCount || 0
+      });
+
+      console.log('🔖 Bookmark stats:', { received: receivedCount, saved: savedCount });
+    } catch (error) {
+      console.error('Failed to load bookmark stats:', error);
+    }
+  };
+
+  const loadSavedBookmarks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bookmarks')
+        .select(`
+          *,
+          post:demo_posts(*)
+        `)
+        .eq('bookmark_user_id', 'demo-user')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setSavedBookmarks(data || []);
+      console.log('🔖 Saved bookmarks loaded:', data?.length);
+    } catch (error) {
+      console.error('Failed to load saved bookmarks:', error);
+    }
+  };
+
+  const removeBookmark = async (bookmarkId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookmarks')
+        .delete()
+        .eq('id', bookmarkId);
+
+      if (error) throw error;
+
+      // Refresh bookmarks
+      await loadSavedBookmarks();
+      await loadBookmarkStats();
+      
+      // Show toast (you'll need to import toast from sonner)
+      console.log('הסימניה הוסרה');
+    } catch (error) {
+      console.error('Failed to remove bookmark:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Burger Menu Overlay */}
