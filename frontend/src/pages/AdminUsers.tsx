@@ -15,6 +15,9 @@ export default function AdminUsers() {
   const [filterDemo, setFilterDemo] = useState<string>('all');
   const [filterExpertise, setFilterExpertise] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('recent');
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
 
   useEffect(() => {
     loadUsers();
