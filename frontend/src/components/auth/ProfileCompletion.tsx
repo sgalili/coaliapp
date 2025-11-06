@@ -47,14 +47,18 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newErrors: { firstName?: string; lastName?: string } = {};
+    const newErrors: { firstName?: string; lastName?: string; profilePicture?: string } = {};
     
     if (!firstName.trim()) {
-      newErrors.firstName = t('auth.firstNameRequired');
+      newErrors.firstName = 'שם פרטי נדרש';
     }
     
     if (!lastName.trim()) {
-      newErrors.lastName = t('auth.lastNameRequired');
+      newErrors.lastName = 'שם משפחה נדרש';
+    }
+    
+    if (!profilePicture) {
+      newErrors.profilePicture = 'תמונת פרופיל נדרשת';
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -66,109 +70,196 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     
     // Check if we should trigger onboarding flow
     if (onStartOnboarding) {
-      // Save profile data first
-      onComplete(firstName.trim(), lastName.trim(), profilePicture);
-      // Then trigger onboarding
+      onComplete(firstName.trim(), lastName.trim(), profilePicture, selectedFields);
       onStartOnboarding();
     } else {
-      onComplete(firstName.trim(), lastName.trim(), profilePicture);
+      onComplete(firstName.trim(), lastName.trim(), profilePicture, selectedFields);
     }
   };
 
   const handleProfilePictureClick = () => {
-    // TODO: Implement profile picture upload
-    // For now, just use a placeholder
+    // TODO: Implement actual profile picture upload
     const placeholders = [
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=user1',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=user2',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=user3'
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Date.now(),
+      'https://api.dicebear.com/7.x/personas/svg?seed=' + Date.now(),
+      'https://api.dicebear.com/7.x/fun-emoji/svg?seed=' + Date.now()
     ];
     const randomPicture = placeholders[Math.floor(Math.random() * placeholders.length)];
     setProfilePicture(randomPicture);
+  };
+
+  const handleFieldToggle = (fieldId: string) => {
+    setSelectedFields(prev => 
+      prev.includes(fieldId) 
+        ? prev.filter(f => f !== fieldId)
+        : [...prev, fieldId]
+    );
   };
 
   const getInitials = () => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   };
 
+  const enabledCount = Object.values(selectedFields).filter(Boolean).length;
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-          <User className="w-8 h-8 text-primary" />
+    <div className="space-y-6 pb-20">
+      {/* Gamified Header */}
+      <div className="text-center space-y-3">
+        <div className="relative w-20 h-20 mx-auto">
+          <div className="absolute inset-0 bg-gradient-to-br from-zooz via-yellow-400 to-orange-500 rounded-full animate-pulse"></div>
+          <div className="relative w-20 h-20 bg-background rounded-full flex items-center justify-center border-4 border-zooz">
+            <Sparkles className="w-10 h-10 text-zooz" />
+          </div>
         </div>
+        
         <h1 className="text-2xl font-bold text-foreground">
-          {t('auth.completeProfile')}
+          השלם את ההרשמה וקבל 10z מתנה
         </h1>
-        <p className="text-muted-foreground">
-          {t('auth.finalizeRegistration')}
-        </p>
+        
+        <div className="flex items-center justify-center gap-2 text-sm">
+          <div className="flex items-center gap-1">
+            <CheckCircle2 className="w-4 h-4 text-green-500" />
+            <span>טלפון אומת</span>
+          </div>
+          <span className="text-muted-foreground">→</span>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-primary"></div>
+            </div>
+            <span className="text-primary font-medium">פרטים אישיים</span>
+          </div>
+        </div>
       </div>
 
       {/* Form */}
-      <Card>
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Profile Picture */}
-            <div className="flex justify-center">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Profile Picture - MANDATORY */}
+        <Card className={cn(
+          "border-2 transition-colors",
+          errors.profilePicture ? "border-red-500" : profilePicture ? "border-green-500" : "border-dashed"
+        )}>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center gap-3">
+              <label className="text-sm font-medium">תמונת פרופיל *</label>
               <div className="relative">
                 <Avatar 
-                  className="w-20 h-20 cursor-pointer" 
+                  className="w-24 h-24 cursor-pointer ring-4 ring-primary/20 hover:ring-primary/40 transition-all" 
                   onClick={handleProfilePictureClick}
                 >
                   <AvatarImage src={profilePicture} />
-                  <AvatarFallback className="text-lg">
-                    {getInitials() || <Camera className="w-8 h-8" />}
+                  <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-primary/10">
+                    {getInitials() || <Camera className="w-10 h-10 text-muted-foreground" />}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                  <Camera className="w-3 h-3 text-primary-foreground" />
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                  <Camera className="w-5 h-5 text-primary-foreground" />
                 </div>
               </div>
+              {!profilePicture && (
+                <p className="text-xs text-muted-foreground">לחץ להוספת תמונה</p>
+              )}
+              {errors.profilePicture && (
+                <p className="text-sm text-red-500">{errors.profilePicture}</p>
+              )}
             </div>
+          </CardContent>
+        </Card>
 
-            {/* Name inputs */}
+        {/* Name Inputs */}
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="שם פרטי *"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className={cn(
+                "text-lg py-6 text-right",
+                errors.firstName && "border-red-500"
+              )}
+              disabled={isLoading}
+            />
+            {errors.firstName && (
+              <p className="text-sm text-red-500 text-right">{errors.firstName}</p>
+            )}
+          </div>
+          
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="שם משפחה *"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={cn(
+                "text-lg py-6 text-right",
+                errors.lastName && "border-red-500"
+              )}
+              disabled={isLoading}
+            />
+            {errors.lastName && (
+              <p className="text-sm text-red-500 text-right">{errors.lastName}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Expertise Fields Selection */}
+        <Card>
+          <CardContent className="p-6">
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  type="text"
-                  placeholder={t('auth.firstName')}
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="text-lg py-3"
-                  disabled={isLoading}
-                />
-                {errors.firstName && (
-                  <p className="text-sm text-destructive">{errors.firstName}</p>
-                )}
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium">בחר תחומי עניין (אופציונלי)</h3>
+                <span className="text-sm text-muted-foreground">{selectedFields.length}/20</span>
               </div>
               
-              <div className="space-y-2">
-                <Input
-                  type="text"
-                  placeholder={t('auth.lastName')}
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="text-lg py-3"
-                  disabled={isLoading}
-                />
-                {errors.lastName && (
-                  <p className="text-sm text-destructive">{errors.lastName}</p>
-                )}
+              <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto p-1">
+                {ALL_EXPERTISE_FIELDS.map(field => (
+                  <button
+                    key={field.id}
+                    type="button"
+                    onClick={() => handleFieldToggle(field.id)}
+                    className={cn(
+                      "flex items-center gap-2 p-3 rounded-lg border-2 transition-all text-right",
+                      selectedFields.includes(field.id)
+                        ? "border-primary bg-primary/10 shadow-md scale-105"
+                        : "border-border hover:border-primary/50 hover:bg-muted"
+                    )}
+                  >
+                    <span className="text-xl">{field.icon}</span>
+                    <span className="text-sm font-medium flex-1">{field.label}</span>
+                    {selectedFields.includes(field.id) && (
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
-            
-            <Button 
-              type="submit" 
-              className="w-full py-3 text-lg" 
-              disabled={isLoading}
-            >
-              {isLoading ? t('auth.finalizing') : t('auth.start')}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        
+        {/* Gamified Submit Button */}
+        <Button 
+          type="submit" 
+          className="w-full py-6 text-lg font-bold bg-gradient-to-r from-primary via-primary/90 to-primary hover:scale-105 transition-transform shadow-lg relative overflow-hidden group" 
+          disabled={isLoading}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+          <span className="relative flex items-center justify-center gap-2">
+            {isLoading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>רק רגע...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5" />
+                <span>התחל וקבל 10z!</span>
+                <Sparkles className="w-5 h-5" />
+              </>
+            )}
+          </span>
+        </Button>
+      </form>
     </div>
   );
 };
