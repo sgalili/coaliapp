@@ -857,8 +857,7 @@ export default function ProfilePage() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                // TODO: Implement edit functionality
-                                console.log('Edit post:', post.id);
+                                handleEditPost(post.id);
                               }}
                               className="p-1.5 bg-blue-500 text-white rounded-full hover:bg-blue-600"
                             >
