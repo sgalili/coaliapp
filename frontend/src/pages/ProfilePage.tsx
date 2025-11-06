@@ -655,31 +655,36 @@ export default function ProfilePage() {
       )}
 
       <div className="max-w-2xl mx-auto">
-        {/* Header with Menu on Right and Bell on Left */}
-        <div className="relative p-6 text-center">
-          <div className="absolute top-4 right-4">
-            <button 
-              onClick={() => setShowBurgerMenu(true)}
-              className="p-2 hover:bg-muted rounded-full"
-            >
-              <Menu className="w-5 h-5 text-muted-foreground" />
-            </button>
+        {/* Fixed Header with Menu on Right and Bell on Left */}
+        <div className="sticky top-0 z-50 bg-background">
+          <div className="relative p-6 text-center pb-0">
+            <div className="absolute top-4 right-4">
+              <button 
+                onClick={() => setShowBurgerMenu(true)}
+                className="p-2 hover:bg-muted rounded-full bg-background"
+              >
+                <Menu className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+            
+            <div className="absolute top-4 left-4">
+              <button
+                onClick={() => navigate('/notifications')}
+                className="p-2 hover:bg-muted rounded-full transition-colors relative bg-background"
+              >
+                <Bell className="w-5 h-5 text-muted-foreground" />
+                {unreadNotifications > 0 && (
+                  <span className="absolute -top-[1px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                    {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
-          
-          <div className="absolute top-4 left-4">
-            <button
-              onClick={() => navigate('/notifications')}
-              className="p-2 hover:bg-muted rounded-full transition-colors relative"
-            >
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              {unreadNotifications > 0 && (
-                <span className="absolute -top-[1px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
-                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
-                </span>
-              )}
-            </button>
-          </div>
+        </div>
 
+        {/* Profile Content */}
+        <div className="relative p-6 pt-0 text-center">
           {/* Profile Image */}
           <img
             src="https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"
