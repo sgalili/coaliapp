@@ -706,31 +706,27 @@ export default function ProfilePage() {
 
           {/* Bio Section */}
           <div className="px-6 mb-4 text-center">
-            <div className="text-sm text-muted-foreground leading-relaxed">
-              {!showFullBio ? (
-                <>
-                  <span className="line-clamp-3">
-                    {userBio.substring(0, userBio.length - 50)}...
-                  </span>{' '}
-                  <button 
-                    onClick={() => setShowFullBio(true)}
-                    className="text-primary font-medium hover:underline"
-                  >
-                    המשך
-                  </button>
-                </>
-              ) : (
-                <>
-                  <p>{userBio}</p>
-                  <button 
-                    onClick={() => setShowFullBio(false)}
-                    className="text-primary text-sm font-medium mt-1 hover:underline"
-                  >
-                    הצג פחות
-                  </button>
-                </>
-              )}
-            </div>
+            {!showFullBio ? (
+              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                {userBio.substring(0, 200)}...{' '}
+                <button 
+                  onClick={() => setShowFullBio(true)}
+                  className="text-primary font-medium hover:underline inline"
+                >
+                  המשך
+                </button>
+              </p>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground leading-relaxed">{userBio}</p>
+                <button 
+                  onClick={() => setShowFullBio(false)}
+                  className="text-primary text-sm font-medium hover:underline inline"
+                >
+                  {' '}הצג פחות
+                </button>
+              </>
+            )}
           </div>
         </div>
 
