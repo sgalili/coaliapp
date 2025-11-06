@@ -338,8 +338,14 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div ref={tabsRef} className="border-b border-border">
+        {/* Tabs - Sticky when scrolling */}
+        <div 
+          ref={tabsRef} 
+          className={cn(
+            "border-b border-border bg-background transition-all z-40",
+            isTabsSticky && "sticky top-0 shadow-sm"
+          )}
+        >
           <div className="flex items-center justify-around">
             <button
               onClick={() => handleTabChange('posts')}
