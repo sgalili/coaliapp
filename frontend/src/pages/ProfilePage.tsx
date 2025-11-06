@@ -149,9 +149,79 @@ export default function ProfilePage() {
   }, []);
 
   // Handle tab change without auto-scroll
-  const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions') => {
+  const handleTabChange = (tab: 'posts' | 'info' | 'trust' | 'bookmarks' | 'decisions' | 'drafts') => {
     setActiveTab(tab);
     // Don't auto-scroll - user has full manual control
+  };
+
+  const loadDraftPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('demo_posts')
+        .select('*')
+        .eq('user_id', 'demo-user')
+        .eq('status', 'draft')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Draft posts may not exist, using demo data:', error);
+        // Use demo draft data
+        setDraftPosts([
+          {
+            id: 'draft-1',
+            caption: 'טיוטה ראשונה - רעיונות על חדשנות בישראל',
+            video_url: '/videos/demo1.mp4',
+            created_at: new Date().toISOString(),
+            status: 'draft'
+          }
+        ]);
+        return;
+      }
+
+      setDraftPosts(data || []);
+      console.log('📝 Draft posts loaded:', data?.length);
+    } catch (error) {
+      console.error('Failed to load draft posts:', error);
+      setDraftPosts([]);
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm('האם אתה בטוח שברצונך למחוק פוסט זה?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('demo_posts')
+        .delete()
+        .eq('id', postId);
+
+      if (error) throw error;
+
+      console.log('✅ Post deleted');
+      // Reload posts
+      await loadUserPosts();
+      await loadDraftPosts();
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
+
+  const handlePublishDraft = async (postId: string) => {
+    try {
+      const { error } = await supabase
+        .from('demo_posts')
+        .update({ status: 'published' })
+        .eq('id', postId);
+
+      if (error) throw error;
+
+      console.log('✅ Draft published');
+      // Reload posts and drafts
+      await loadUserPosts();
+      await loadDraftPosts();
+    } catch (error) {
+      console.error('Failed to publish draft:', error);
+    }
   };
 
   const loadUserPosts = async () => {
