@@ -52,6 +52,26 @@ export default function ProfilePage() {
     }
   };
 
+  const handleUnsubscribe = async (creatorId: string) => {
+    try {
+      const { error } = await supabase
+        .from('subscriptions')
+        .delete()
+        .eq('subscriber_id', 'demo-user')
+        .eq('creator_id', creatorId);
+
+      if (error) {
+        console.error('Error unsubscribing:', error);
+      } else {
+        console.log('✅ Unsubscribed from user');
+        // Reload subscriptions
+        await loadSubscriptions();
+      }
+    } catch (error) {
+      console.error('Failed to unsubscribe:', error);
+    }
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
