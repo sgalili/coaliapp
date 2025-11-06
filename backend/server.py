@@ -71,6 +71,10 @@ app.include_router(trust_delegation_router, prefix="/api/trust-delegation", tags
 from routes.zooz import router as zooz_router
 app.include_router(zooz_router, prefix="/api/zooz", tags=["ZOOZ"])
 
+# Include admin user management routes
+from routes.admin_users import router as admin_users_router
+app.include_router(admin_users_router, prefix="/api/admin", tags=["Admin Users"])
+
 # Include the main router in the app
 app.include_router(api_router)
 
