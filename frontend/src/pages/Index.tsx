@@ -493,6 +493,7 @@ export default function Index() {
   const [videoReady, setVideoReady] = useState<{ [key: string]: boolean }>({});
   const [globalMute, setGlobalMute] = useState(true);
   const [showZoozConfetti, setShowZoozConfetti] = useState(false);
+  const [zoozCoinCount, setZoozCoinCount] = useState(0);
   const [showZoozSelector, setShowZoozSelector] = useState(false);
   const [selectedZoozAmount, setSelectedZoozAmount] = useState(1);
   const [zoozPressTimer, setZoozPressTimer] = useState<NodeJS.Timeout | null>(null);
