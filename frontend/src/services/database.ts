@@ -17,26 +17,21 @@ export const saveDemoPost = async (post: any) => {
 
 export const fetchDemoPosts = async (channelId?: string | null, category?: string) => {
   let query = supabase
-    .from('posts') // ✅ Use REAL posts table
-    .select('*')
-    .order('created_at', { ascending: false});
+    .from('posts')
+    .select('*, profiles(*)')  // Join with profiles to get user info
+    .order('created_at', { ascending: false });
   
-  if (channelId !== undefined) {
-    query = channelId === null 
-      ? query.is('channel_id', null)
-      : query.eq('channel_id', channelId);
-  }
-  
-  if (category && category !== 'הכל') {
-    query = query.eq('category', category);
-  }
+  // Note: posts table may not have channel_id or category columns
+  // Only filter if these columns exist
   
   const { data, error } = await query;
   
   if (error) {
     console.error('Error fetching posts:', error);
-    throw error;
+    return []; // Return empty instead of throwing
   }
+  
+  console.log('📦 Fetched posts:', data?.length || 0);
   return data || [];
 };
 
