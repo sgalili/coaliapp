@@ -85,6 +85,7 @@ export default function ProfilePage() {
   
   // REAL user profile data
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   
   // Bio logic: Show real bio, or "edit" link, or "no bio yet"
   const getUserBio = () => {
@@ -96,31 +97,9 @@ export default function ProfilePage() {
   
   const userBio = getUserBio();
 
-  const handleTrustBack = async (userId: string) => {
-    try {
-      // Add trust relationship
-      const { error } = await supabase
-        .from('trust_relationships')
-        .insert({
-          truster_user_id: currentUserId,
-          trusted_user_id: userId,
-          created_at: new Date().toISOString(),
-        });
-
-      if (error) {
-        console.error('Error trusting user:', error);
-      } else {
-        console.log('✅ Trust relationship created');
-        // Reload trust data
-        await loadTrustCount();
-      }
-    } catch (error) {
-      console.error('Failed to trust user:', error);
-    }
-  };
-
   const loadUserProfile = async () => {
     try {
+      setProfileLoading(true);
       console.log('📋 Loading profile for user:', currentUserId);
       
       if (currentUserId === 'demo-user') {
@@ -132,6 +111,7 @@ export default function ProfilePage() {
           bio: 'בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים.',
           expertise_fields: ['טכנולוגיה', 'עסקים', 'חדשות']
         });
+        setProfileLoading(false);
         return;
       }
       
@@ -144,14 +124,17 @@ export default function ProfilePage() {
       
       if (error) {
         console.error('Error loading profile:', error);
+        setProfileLoading(false);
         return;
       }
       
       console.log('✅ REAL user profile loaded:', data);
       setUserProfile(data);
+      setProfileLoading(false);
       
     } catch (error) {
       console.error('Failed to load user profile:', error);
+      setProfileLoading(false);
     }
   };
 
