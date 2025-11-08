@@ -1343,23 +1343,31 @@ export default function Index() {
         
         if (existing) {
           // Already bookmarked - remove it (unbookmark)
+          console.log('🔖 Removing bookmark ID:', existing.id);
+          
           await supabase
             .from('bookmarks')
             .delete()
             .eq('id', existing.id);
           
-          console.log('✅ Bookmark removed');
+          console.log('✅ Bookmark removed from database');
           
           // Update local state immediately
           setPosts(posts.map(p => 
             p.id === postId ? { 
               ...p, 
-              hasUserWatched: false, // ✅ Mark as not bookmarked
-              watchCount: Math.max(0, (p.watchCount || 0) - 1) // ✅ Decrement count
+              hasUserWatched: false,
+              watchCount: Math.max(0, (p.watchCount || 0) - 1)
             } : p
           ));
           
           toast.success('הוסר מהמועדפים');
+          
+          // Force reload posts to refresh bookmark counts
+          setTimeout(() => {
+            loadPostsFromDB(currentUserId);
+          }, 500);
+          
           return;
         }
         
