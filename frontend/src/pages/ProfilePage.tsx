@@ -221,7 +221,7 @@ export default function ProfilePage() {
     const votesSubscription = supabase
       .channel('profile-votes')
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.demo-user` },
+        { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.${currentUserId}` },
         () => {
           console.log('🔄 Votes changed, reloading...');
           loadUserDecisions();
@@ -233,7 +233,7 @@ export default function ProfilePage() {
     const bookmarksSubscription = supabase
       .channel('profile-bookmarks')
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.demo-user` },
+        { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.${currentUserId}` },
         () => {
           console.log('🔄 Bookmarks changed, reloading...');
           loadSavedBookmarks();
