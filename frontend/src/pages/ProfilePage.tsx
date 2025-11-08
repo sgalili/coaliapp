@@ -575,15 +575,20 @@ export default function ProfilePage() {
       let bookmarksWithPosts = [];
       for (const bookmark of data) {
         const { data: post } = await supabase
-          .from('demo_posts')
-          .select('*')
+          .from('posts') // ✅ Use posts table
+          .select('*, profiles(*)') // Join with profiles
           .eq('id', bookmark.post_id)
           .single();
         
         if (post) {
           bookmarksWithPosts.push({
             id: bookmark.id,
-            post: post
+            post: {
+              ...post,
+              username: post.profiles ? `${post.profiles.first_name} ${post.profiles.last_name}` : 'משתמש',
+              profile_image: post.profiles?.avatar_url,
+              caption: post.content
+            }
           });
         }
       }
