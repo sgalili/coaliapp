@@ -71,7 +71,7 @@ export default function ProfilePage() {
   const [trustCount, setTrustCount] = useState(0);
   const [decisionsCount, setDecisionsCount] = useState(0);
   const [userDecisions, setUserDecisions] = useState<any[]>([]);
-  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
+  const [unreadNotifications, setUnreadNotifications] = useState(isDemoUser ? 3 : 0); // 0 for real users
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'trust' | 'favorites' | 'decisions'>('posts');
   const [showDrafts, setShowDrafts] = useState(false);
