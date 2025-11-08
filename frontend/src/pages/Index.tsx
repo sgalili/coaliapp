@@ -1093,14 +1093,16 @@ export default function Index() {
       
       const newPost = {
         user_id: currentUserId,
-        content: caption.trim(), // ✅ Use 'content' instead of 'caption'
+        content: caption.trim(),
         video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
         thumbnail_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
+        category: uploadCategory, // ✅ Save selected category
         is_live: false,
         created_at: new Date().toISOString()
       };
       
       console.log('📄 Post object for database:', newPost);
+      console.log('📂 Category being saved:', uploadCategory);
       
       // Save to database
       console.log('💾 Saving to posts table...');
