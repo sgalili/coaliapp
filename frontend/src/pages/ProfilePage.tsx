@@ -16,11 +16,11 @@ export default function ProfilePage() {
     if (authUserId) return authUserId;
     
     // Fallback to demo user
-    return 'demo-user';
+    return currentUserId;
   };
   
   const currentUserId = getAuthenticatedUserId();
-  const isDemoUser = currentUserId === 'demo-user';
+  const isDemoUser = currentUserId === currentUserId;
   
   console.log('👤 Current user:', currentUserId, isDemoUser ? '(DEMO)' : '(REAL)');
   
@@ -57,7 +57,7 @@ export default function ProfilePage() {
       const { error } = await supabase
         .from('trust_relationships')
         .insert({
-          truster_user_id: 'demo-user',
+          truster_user_id: currentUserId,
           trusted_user_id: userId,
           created_at: new Date().toISOString(),
         });
@@ -81,7 +81,7 @@ export default function ProfilePage() {
       const { error } = await supabase
         .from('trust_relationships')
         .delete()
-        .eq('truster_user_id', 'demo-user')
+        .eq('truster_user_id', currentUserId)
         .eq('trusted_user_id', userId);
 
       if (error) throw error;
@@ -99,7 +99,7 @@ export default function ProfilePage() {
       const { error } = await supabase
         .from('subscriptions')
         .delete()
-        .eq('subscriber_id', 'demo-user')
+        .eq('subscriber_id', currentUserId)
         .eq('creator_id', creatorId);
 
       if (error) {
@@ -239,7 +239,7 @@ export default function ProfilePage() {
       const { data, error } = await supabase
         .from('demo_posts')
         .select('*')
-        .eq('user_id', 'demo-user')
+        .eq('user_id', currentUserId)
         .eq('status', 'draft')
         .order('created_at', { ascending: false });
 
@@ -280,7 +280,7 @@ export default function ProfilePage() {
         .from('demo_posts')
         .delete()
         .eq('id', postId)
-        .eq('user_id', 'demo-user'); // Only allow deleting own posts
+        .eq('user_id', currentUserId); // Only allow deleting own posts
 
       if (error) throw error;
 
@@ -356,7 +356,7 @@ export default function ProfilePage() {
       const { data } = await supabase
         .from('subscriptions')
         .select('*')
-        .eq('subscriber_id', 'demo-user')
+        .eq('subscriber_id', currentUserId)
         .order('created_at', { ascending: false });
 
       // Map to demo users from demoUsers.ts
@@ -387,7 +387,7 @@ export default function ProfilePage() {
       const { data } = await supabase
         .from('user_votes')
         .select('*')
-        .eq('user_id', 'demo-user')
+        .eq('user_id', currentUserId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
@@ -430,12 +430,12 @@ export default function ProfilePage() {
       const { data: trustedMeData } = await supabase
         .from('trust_relationships')
         .select('*')
-        .eq('trusted_user_id', 'demo-user');
+        .eq('trusted_user_id', currentUserId);
 
       const { data: trustedByMeData } = await supabase
         .from('trust_relationships')
         .select('*')
-        .eq('truster_user_id', 'demo-user');
+        .eq('truster_user_id', currentUserId);
 
       // Map to demo users from demoUsers.ts
       let trustedMeList = (trustedMeData || []).map(trust => {
@@ -485,7 +485,7 @@ export default function ProfilePage() {
       const { data } = await supabase
         .from('bookmarks')
         .select('*')
-        .eq('bookmark_user_id', 'demo-user')
+        .eq('bookmark_user_id', currentUserId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
