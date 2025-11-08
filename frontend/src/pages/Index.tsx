@@ -531,18 +531,21 @@ export default function Index() {
   const [zoozPressTimer, setZoozPressTimer] = useState<NodeJS.Timeout | null>(null);
   const [currentZoozPost, setCurrentZoozPost] = useState<string | null>(null);
   const [userZoozBalance, setUserZoozBalance] = useState(1500); // Demo balance
-  // Get current authenticated user
-  const getCurrentUserId = () => {
-    const authUserId = localStorage.getItem('authenticated_user_id');
-    if (authUserId && authUserId !== 'demo-user') {
-      console.log('🏠 Homepage using REAL user:', authUserId);
-      return authUserId;
-    }
-    console.log('🏠 Homepage using demo-user');
-    return 'demo-user';
-  };
+  // Get current authenticated user - DYNAMIC (re-reads on mount)
+  const [currentUserId, setCurrentUserId] = useState('demo-user');
   
-  const [currentUserId] = useState(getCurrentUserId());
+  useEffect(() => {
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    console.log('🏠 Homepage checking auth:', authUserId);
+    
+    if (authUserId && authUserId !== 'demo-user' && authUserId !== 'null' && authUserId !== 'undefined') {
+      console.log('✅ Homepage using REAL user:', authUserId);
+      setCurrentUserId(authUserId);
+    } else {
+      console.log('⚠️ Homepage using demo-user');
+      setCurrentUserId('demo-user');
+    }
+  }, []);
   const [openMenuPostId, setOpenMenuPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<any | null>(null);
   const [editCaption, setEditCaption] = useState('');
