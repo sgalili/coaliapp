@@ -9,6 +9,9 @@ import { demoUsers } from "@/data/demoUsers";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const currentUserId = 'demo-user'; // In real app, get from auth context
+  const isDemoUser = currentUserId === 'demo-user';
+  
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [trustCount, setTrustCount] = useState(0);
   const [decisionsCount, setDecisionsCount] = useState(0);
