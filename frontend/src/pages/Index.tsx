@@ -700,11 +700,15 @@ export default function Index() {
     };
   }, []); // Empty dependency array - only run once on mount
 
-  const loadPostsFromDB = async () => {
+  const loadPostsFromDB = async (userId?: string) => {
     setIsLoadingPosts(true);
     try {
-      console.log('📥 Loading posts - Channel:', selectedChannel.id, 'Category:', selectedCategory);
-      console.log('👤 Current user:', currentUserId, 'Is real?:', isRealUser);
+      // Use passed userId or state userId
+      const activeUserId = userId || currentUserId;
+      
+      console.log('📥 Loading posts for user:', activeUserId);
+      console.log('📥 Channel:', selectedChannel.id, 'Category:', selectedCategory);
+      console.log('👤 Is real user?:', isRealUser);
       
       // Fetch posts - LABEL demo content (don't remove it)
       let dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
@@ -718,13 +722,13 @@ export default function Index() {
       
       // Load user's bookmarks to mark posts
       let userBookmarkIds: string[] = [];
-      if (currentUserId && currentUserId !== 'demo-user') {
-        console.log('🔍 Loading bookmarks for user:', currentUserId);
+      if (activeUserId && activeUserId !== 'demo-user') {
+        console.log('🔍 Loading bookmarks for user:', activeUserId);
         
         const { data: bookmarks, error: bookmarkError } = await supabase
           .from('bookmarks')
           .select('post_id')
-          .eq('bookmark_user_id', currentUserId);
+          .eq('bookmark_user_id', activeUserId);
         
         if (bookmarkError) {
           console.error('Error loading bookmarks:', bookmarkError);
@@ -734,7 +738,21 @@ export default function Index() {
           console.log('🔖 Total bookmarks:', userBookmarkIds.length);
         }
       } else {
-        console.log('⚠️ Skipping bookmark load for demo user');
+        console.log('⚠️ Skipping bookmark load for demo user or no userId');
+      }
+      
+      // Load user's trust relationships to mark posts
+      let userTrustIds: string[] = [];
+      if (activeUserId && activeUserId !== 'demo-user') {
+        console.log('🔍 Loading trust relationships for user:', activeUserId);
+        
+        const { data: trusts } = await supabase
+          .from('trust_relationships')
+          .select('trusted_user_id')
+          .eq('truster_user_id', activeUserId);
+        
+        userTrustIds = trusts?.map(t => t.trusted_user_id) || [];
+        console.log('🤝 User has trusted:', userTrustIds.length, 'users');
       }
       
       // Map database fields - Use profile join data
