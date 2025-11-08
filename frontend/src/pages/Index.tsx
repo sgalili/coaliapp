@@ -616,19 +616,18 @@ export default function Index() {
   useEffect(() => {
     const loadDecisionsCount = async () => {
       try {
-        console.log('🗳️ Loading decisions count for:', selectedChannel.name, selectedChannel.id);
+        // HIDE decisions for real users
+        if (isRealUser) {
+          console.log('✅ REAL USER - Setting decisions count to 0');
+          setDecisionsCount(0);
+          return;
+        }
+        
+        console.log('🗳️ Loading decisions count for demo user');
         const decisions = await fetchDemoDecisions(selectedChannel.id);
-        console.log('📊 Fetched decisions:', decisions);
-        console.log('📊 Total count:', decisions.length);
+        console.log('📊 Fetched decisions:', decisions.length);
         
         setDecisionsCount(decisions.length);
-        
-        // Force show badge for testing
-        if (decisions.length === 0) {
-          console.warn('⚠️ No decisions found for this channel');
-        } else {
-          console.log('✅ Badge should show:', decisions.length);
-        }
       } catch (error) {
         console.error('Failed to load decisions count:', error);
         setDecisionsCount(0);
@@ -636,7 +635,7 @@ export default function Index() {
     };
     
     loadDecisionsCount();
-  }, [selectedChannel.id]);
+  }, [selectedChannel.id, isRealUser]);
 
   // Monitor channel changes and verify category reset
   useEffect(() => {
