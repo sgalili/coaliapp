@@ -353,39 +353,50 @@ export default function ProfilePage() {
     if (!confirm('האם אתה בטוח שברצונך למחוק?')) return;
 
     try {
+      console.log('🗑️ Deleting post:', postId);
+      console.log('👤 Current user:', currentUserId);
+      
       const { error } = await supabase
-        .from('demo_posts')
+        .from('posts') // ✅ Use posts table
         .delete()
         .eq('id', postId)
-        .eq('user_id', currentUserId); // Only allow deleting own posts
+        .eq('user_id', currentUserId); // ✅ Only allow deleting own posts
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Delete error:', error);
+        throw error;
+      }
 
-      console.log('✅ Post deleted');
-      // Reload posts
+      console.log('✅ Post deleted from database');
+      toast.success('הפוסט נמחק! 🗑️');
+      
+      // Reload posts and drafts
       await loadUserPosts();
       await loadDraftPosts();
     } catch (error) {
       console.error('Failed to delete post:', error);
-      alert('שגיאה במחיקת הפוסט');
+      toast.error('שגיאה במחיקת הפוסט');
     }
   };
 
   const handlePublishDraft = async (postId: string) => {
     try {
       const { error } = await supabase
-        .from('demo_posts')
-        .update({ status: 'published' })
+        .from('posts') // ✅ Use posts table
+        .update({ is_draft: false }) // ✅ Use is_draft flag
         .eq('id', postId);
 
       if (error) throw error;
 
       console.log('✅ Draft published');
+      toast.success('הטיוטה פורסמה!');
+      
       // Reload posts and drafts
       await loadUserPosts();
       await loadDraftPosts();
     } catch (error) {
       console.error('Failed to publish draft:', error);
+      toast.error('שגיאה בפרסום');
     }
   };
 
