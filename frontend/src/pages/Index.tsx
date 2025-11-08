@@ -832,33 +832,34 @@ export default function Index() {
 
   const handleFABClick = () => {
     // Check if real user needs to complete profile first
-    if (isRealUser) {
+    if (isRealUser && userProfile) {
       console.log('🔍 Real user clicked FAB - checking profile completion');
       
-      // Check if user has completed categories + city
-      const hasCategories = userProfile?.expertise_fields?.length > 0;
-      const hasCity = userProfile?.city;
+      const completionStatus = checkProfileCompletion(userProfile);
       
-      console.log('Profile completion:', { hasCategories, hasCity });
+      console.log('Profile completion status:', completionStatus);
       
-      if (!hasCategories || !hasCity) {
-        toast.info('כדי לפרסם תוכן, עליך להשלים את הפרופיל שלך', { duration: 5000 });
-        // Show progressive completion modal
-        // TODO: Open PublishContentModal
-        navigate('/profile'); // For now, redirect to profile to edit
+      if (!completionStatus.canPost) {
+        const missingText = getMissingFieldsText(completionStatus.missingForPost);
+        toast.info(`כדי לפרסם תוכן, נצטרך עוד כמה פרטים: ${missingText}`, { duration: 5000 });
+        
+        // Redirect to edit profile with missing fields highlighted
+        const missingFields = completionStatus.missingForPost.join(',');
+        navigate(`/profile?edit=true&action=post&missing=${missingFields}`);
         return;
       }
     }
     
     // Check authentication for demo users
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
-    
-    if (!isAuthenticated && !isRealUser) {
-      navigate('/auth');
-      return;
+    if (!isRealUser) {
+      const isAuthenticated = localStorage.getItem('isAuthenticated');
+      if (!isAuthenticated) {
+        navigate('/auth');
+        return;
+      }
     }
     
-    // Show options menu
+    // Profile complete or demo user - show upload options
     setShowOptionsMenu(true);
   };
 
