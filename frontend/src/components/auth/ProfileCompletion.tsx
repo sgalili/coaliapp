@@ -1,13 +1,12 @@
 /**
- * Streamlined Profile Completion - Step 2 of Onboarding
- * Asks for: First Name + Last Name + Profile Picture (all mandatory)
+ * Streamlined Profile Completion - Step 2
+ * Profile Picture + First Name + Last Name (all mandatory)
  */
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ProfilePictureUpload } from '@/components/ProfilePictureUpload';
-import { User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProfileCompletionProps {
@@ -63,30 +62,22 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   return (
     <div className="space-y-6 pb-20">
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-          <User className="w-8 h-8 text-primary" />
-        </div>
-        
-        <h1 className="text-2xl font-bold">ספר לנו קצת עליך</h1>
-        <p className="text-muted-foreground text-sm">רק שלושה פרטים ואתה בפנים!</p>
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Profile Picture Upload - No Box, Just Component */}
+        {/* Profile Picture - No Box */}
         <div className="flex flex-col items-center">
           <ProfilePictureUpload
             currentImageUrl={profilePicture}
             onImageChange={setProfilePicture}
             userInitials={`${firstName.charAt(0)}${lastName.charAt(0)}`}
+            hideUploadButton={true}
           />
           {errors.profilePicture && (
             <p className="text-sm text-red-500 text-center mt-2">{errors.profilePicture}</p>
           )}
         </div>
 
-        {/* Name Fields */}
-        <div className="space-y-4">
+        {/* Name Fields - Same Row */}
+        <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Input
               type="text"
@@ -121,10 +112,6 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
             </div>
           ) : 'התחל'}
         </Button>
-        
-        <p className="text-xs text-center text-muted-foreground mt-4">
-          תוכל להשלים את הפרופיל שלך מאוחר יותר
-        </p>
       </form>
     </div>
   );
