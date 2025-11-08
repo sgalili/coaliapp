@@ -89,34 +89,56 @@ export const AuthPage = () => {
 
       const result = await response.json();
       console.log('✅ OTP verified successfully');
+      console.log('📞 Phone verified:', authData.phone);
       
       // Check if user profile exists
-      const { data: existingProfile } = await supabase
+      console.log('🔍 Checking if profile exists for phone:', authData.phone);
+      
+      const { data: existingProfile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('phone', authData.phone)
         .maybeSingle();
       
+      console.log('📊 Profile query result:', { 
+        found: !!existingProfile, 
+        error: profileError,
+        user_id: existingProfile?.user_id,
+        name: existingProfile ? `${existingProfile.first_name} ${existingProfile.last_name}` : 'N/A'
+      });
+      
       if (existingProfile) {
         // EXISTING USER - Log them in immediately
-        console.log('✅ EXISTING USER - Logging in as:', existingProfile.user_id);
+        console.log('✅ EXISTING USER FOUND');
+        console.log('User ID:', existingProfile.user_id);
         console.log('User name:', existingProfile.first_name, existingProfile.last_name);
+        console.log('Is demo?:', existingProfile.is_demo);
         
+        console.log('💾 Storing session in localStorage...');
         localStorage.setItem('authenticated_user_id', existingProfile.user_id);
         localStorage.setItem('authenticated_user_phone', authData.phone);
         localStorage.setItem('authenticated_user_name', `${existingProfile.first_name} ${existingProfile.last_name}`);
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.removeItem('demo_mode');
         
-        console.log('✅ Session stored - redirecting to homepage');
+        console.log('✅ Session stored:');
+        console.log('  - authenticated_user_id:', localStorage.getItem('authenticated_user_id'));
+        console.log('  - authenticated_user_phone:', localStorage.getItem('authenticated_user_phone'));
+        console.log('  - isAuthenticated:', localStorage.getItem('isAuthenticated'));
         
-        toast.success(`ברוך הבא ${existingProfile.first_name}!`);
+        toast.success(`ברוך הבא ${existingProfile.first_name}!`, { duration: 3000 });
         
-        // Force redirect
-        window.location.href = '/';
+        console.log('🔄 Redirecting to homepage in 1 second...');
+        
+        // Wait a bit to ensure localStorage is written
+        setTimeout(() => {
+          console.log('🚀 REDIRECTING NOW');
+          window.location.href = '/';
+        }, 1000);
       } else {
         // NEW USER - Go to profile completion
-        console.log('📝 NEW USER - needs profile completion');
+        console.log('📝 NEW USER - No profile found');
+        console.log('📝 Going to profile completion step');
         toast.success('קוד אומת בהצלחה!');
         setAuthData(prev => ({ ...prev, otp }));
         setCurrentStep('profile');
