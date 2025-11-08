@@ -753,6 +753,23 @@ export default function Index() {
         console.log('🤝 User has trusted:', userTrustIds.length, 'users');
       }
       
+      // Load bookmark counts for each post
+      console.log('📊 Loading bookmark counts for posts...');
+      const postIds = dbPosts.map(p => p.id);
+      
+      const { data: bookmarkCounts } = await supabase
+        .from('bookmarks')
+        .select('post_id')
+        .in('post_id', postIds);
+      
+      // Count bookmarks per post
+      const bookmarkCountMap: Record<string, number> = {};
+      bookmarkCounts?.forEach(b => {
+        bookmarkCountMap[b.post_id] = (bookmarkCountMap[b.post_id] || 0) + 1;
+      });
+      
+      console.log('📊 Bookmark counts loaded:', Object.keys(bookmarkCountMap).length, 'posts have bookmarks');
+      
       // Map database fields - Use profile join data
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
