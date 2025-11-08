@@ -708,29 +708,30 @@ export default function Index() {
       
       console.log('✅ Posts labeled:', dbPosts.length, 'total (demo + real mixed)');
       
-      // Map database fields
+      // Map database fields - Use profile join data
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
         user_id: post.user_id,
-        username: post.username,
-        expertise: post.expertise,
-        profileImage: post.profile_image,
+        username: post.profiles ? `${post.profiles.first_name} ${post.profiles.last_name}` : 'משתמש',
+        expertise: post.profiles?.expertise_fields?.[0] || 'משתמש',
+        profileImage: post.profiles?.avatar_url || '/default-avatar.jpg',
         videoUrl: post.video_url,
-        imageUrl: post.image_url,
-        caption: post.caption,
-        location: post.location,
-        isVerified: post.is_verified,
-        isLive: post.is_live,
-        category: post.category,
-        channel_id: post.channel_id,
-        voteCount: post.vote_count || 0,
-        zoozCount: post.zooz_count || 0,
-        trustCount: post.trust_count || 0,
-        watchCount: post.watch_count || 0,
-        commentCount: post.comment_count || 0,
-        shareCount: post.share_count || 0,
+        imageUrl: post.thumbnail_url,
+        caption: post.content || '',
+        location: post.profiles?.city || 'ישראל',
+        isVerified: post.profiles?.is_verified || false,
+        isLive: post.is_live || false,
+        category: 'כללי', // Default since posts table may not have category
+        channel_id: null,
+        voteCount: 0,
+        zoozCount: 0,
+        trustCount: 0,
+        watchCount: 0,
+        commentCount: 0,
+        shareCount: 0,
         hasUserTrusted: false,
         hasUserWatched: false,
+        _isDemo: post._isDemo, // Keep demo label
       }));
       
       console.log('✅ Mapped', mappedPosts.length, 'posts');
