@@ -13,6 +13,7 @@ import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 import { CoaliOnboarding } from '../CoaliOnboarding';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
