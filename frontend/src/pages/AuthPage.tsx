@@ -226,7 +226,11 @@ export const AuthPage = () => {
       
       setAuthData(prev => ({ ...prev, firstName, lastName }));
       toast.success('🎉 ברוך הבא ל-Coali!');
-      navigate('/');
+      
+      console.log('🔄 Redirecting to homepage as REAL user');
+      
+      // Force page reload to ensure new session is loaded
+      window.location.href = '/';
     } catch (error) {
       console.error('Error creating profile:', error);
       setAuthError('שגיאה טכנית');
