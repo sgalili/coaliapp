@@ -474,26 +474,10 @@ export default function ProfilePage() {
         return;
       }
 
-      // Load decision data for each vote
-      let votesWithDecisions = [];
-      for (const vote of data) {
-        const { data: decision } = await supabase
-          .from('demo_decisions')
-          .select('*')
-          .eq('id', vote.decision_id)
-          .single();
-        
-        if (decision) {
-          votesWithDecisions.push({
-            ...vote,
-            decision: decision
-          });
-        }
-      }
-
-      setUserDecisions(votesWithDecisions);
-      setDecisionsCount(votesWithDecisions.length);
-      console.log('🗳️ User decisions loaded:', votesWithDecisions.length);
+      // Note: No demo_decisions table, just store votes
+      setUserDecisions(data);
+      setDecisionsCount(data.length);
+      console.log('🗳️ User decisions loaded:', data.length);
     } catch (error) {
       console.error('Failed to load user decisions:', error);
       setDecisionsCount(0);
