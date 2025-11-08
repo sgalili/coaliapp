@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 // Posts Services
 export const saveDemoPost = async (post: any) => {
   const { data, error } = await supabase
-    .from('demo_posts')
+    .from('posts') // ✅ Use REAL posts table, not demo_posts
     .insert([post])
     .select()
     .single();
@@ -17,9 +17,9 @@ export const saveDemoPost = async (post: any) => {
 
 export const fetchDemoPosts = async (channelId?: string | null, category?: string) => {
   let query = supabase
-    .from('demo_posts')
+    .from('posts') // ✅ Use REAL posts table
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false});
   
   if (channelId !== undefined) {
     query = channelId === null 
