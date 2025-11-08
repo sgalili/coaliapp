@@ -126,19 +126,6 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
           </p>
         </div>
       </div>
-            {t('auth.subtitle')}
-          </p>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-sm text-muted-foreground hover:text-foreground"
-            onClick={() => setShowOnboarding(true)}
-          >
-            <HelpCircle className="w-4 h-4 mr-1" />
-            {t('auth.whatIsCoali')}
-          </Button>
-        </div>
-      </div>
 
       {/* Auth Form */}
       <div className="space-y-4">
