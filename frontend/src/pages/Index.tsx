@@ -1301,10 +1301,19 @@ export default function Index() {
             bookmark_user_id: currentUserId
           });
 
-        if (bookmarkError) throw bookmarkError;
+        if (bookmarkError) {
+          console.error('❌ Bookmark insert error:', bookmarkError);
+          console.error('Error code:', bookmarkError.code);
+          console.error('Error message:', bookmarkError.message);
+          throw bookmarkError;
+        }
+        
+        console.log('✅ Bookmark created');
 
         // Auto-subscribe to post owner (if not self)
         if (post.user_id && post.user_id !== currentUserId) {
+          console.log('📱 Auto-subscribing to creator:', post.user_id);
+          
           const { error: subError } = await supabase
             .from('subscriptions')
             .upsert({
@@ -1314,12 +1323,15 @@ export default function Index() {
               onConflict: 'subscriber_id,creator_id'
             });
 
-          if (subError) console.warn('Subscription error:', subError);
+          if (subError) {
+            console.warn('Subscription error:', subError);
+          } else {
+            console.log('✅ Auto-subscribed to creator');
+          }
           
           toast.success(`נשמר למועדפים! 🔖 + נרשמת למנוי של ${post.username || 'המשתמש'}`);
         } else {
           toast.success('נשמר למועדפים! 🔖');
-        }
         }
 
         // Update watch count in database
