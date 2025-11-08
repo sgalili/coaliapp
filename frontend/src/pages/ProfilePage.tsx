@@ -314,11 +314,11 @@ export default function ProfilePage() {
 
   const loadUserPosts = async () => {
     try {
-      // Fetch demo user's posts
+      // Fetch user's posts
       const { data, error } = await supabase
         .from('demo_posts')
         .select('*')
-        .eq('user_id', 'demo-user')
+        .eq('user_id', currentUserId)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
