@@ -1382,6 +1382,8 @@ export default function ProfilePage() {
           setShowEditProfile(false);
           loadUserPosts();
         }}
+        missingFields={missingFields}
+        action={action || ''}
       />
     </div>
   );
