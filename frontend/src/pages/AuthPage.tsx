@@ -182,6 +182,12 @@ export const AuthPage = () => {
 
       console.log('✅ Profile created successfully:', profile);
 
+      // Store the new user session
+      localStorage.setItem('authenticated_user_id', profile.user_id);
+      localStorage.setItem('authenticated_user_phone', authData.phone);
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.removeItem('demo_mode'); // Exit demo mode
+
       // Send welcome WhatsApp
       try {
         const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
