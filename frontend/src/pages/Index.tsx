@@ -1433,12 +1433,37 @@ export default function Index() {
         toast.error('שגיאה בשמירה למועדפים');
       }
     } else {
-      // Just toggle the UI, actual removal happens in profile bookmarks page
-      toast.success('הוסר מהמועדפים');
+      // Unbookmark - DELETE from database
       try {
-        await updatePostEngagement(postId, 'watch_count', newCount);
+        console.log('🔖 Unbookmarking post:', postId);
+        
+        const { data: existing } = await supabase
+          .from('bookmarks')
+          .select('id')
+          .eq('bookmark_user_id', currentUserId)
+          .eq('post_id', postId)
+          .maybeSingle();
+        
+        if (existing) {
+          console.log('🗑️ Deleting bookmark:', existing.id);
+          
+          await supabase
+            .from('bookmarks')
+            .delete()
+            .eq('id', existing.id);
+          
+          console.log('✅ Bookmark deleted from database');
+          toast.success('הוסר מהמועדפים');
+          
+          // Force reload to update profile
+          setTimeout(() => {
+            loadPostsFromDB(currentUserId);
+          }, 500);
+        } else {
+          console.log('⚠️ No bookmark found to delete');
+        }
       } catch (error) {
-        console.error('Failed to update watch count:', error);
+        console.error('Failed to unbookmark:', error);
       }
     }
   };
