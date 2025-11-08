@@ -531,19 +531,23 @@ export default function Index() {
   const [zoozPressTimer, setZoozPressTimer] = useState<NodeJS.Timeout | null>(null);
   const [currentZoozPost, setCurrentZoozPost] = useState<string | null>(null);
   const [userZoozBalance, setUserZoozBalance] = useState(1500); // Demo balance
-  // Get current authenticated user - DYNAMIC (re-reads on mount)
   const [currentUserId, setCurrentUserId] = useState('demo-user');
+  const [isRealUser, setIsRealUser] = useState(false);
   
   useEffect(() => {
     const authUserId = localStorage.getItem('authenticated_user_id');
-    console.log('🏠 Homepage checking auth:', authUserId);
+    const isReal = authUserId && authUserId !== 'demo-user';
     
-    if (authUserId && authUserId !== 'demo-user' && authUserId !== 'null' && authUserId !== 'undefined') {
-      console.log('✅ Homepage using REAL user:', authUserId);
+    console.log('🏠 Homepage auth check:', { authUserId, isReal });
+    
+    if (isReal) {
+      console.log('✅ REAL USER - Will hide all demo content');
       setCurrentUserId(authUserId);
+      setIsRealUser(true);
     } else {
-      console.log('⚠️ Homepage using demo-user');
+      console.log('⚠️ Demo user - Will show demo content');
       setCurrentUserId('demo-user');
+      setIsRealUser(false);
     }
   }, []);
   const [openMenuPostId, setOpenMenuPostId] = useState<string | null>(null);
