@@ -4,6 +4,7 @@ import { ChannelSelector } from "@/components/ChannelSelector";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
+import { isRealUser } from "@/utils/demoFilter";
 
 const allDecisions = [
   // Coali Main Decisions (3)
