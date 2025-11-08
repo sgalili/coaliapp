@@ -105,6 +105,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       toast.success('הפרופיל עודכן בהצלחה! ✨');
       onSave();
       onClose();
+      
+      // Auto-redirect to homepage after save
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
+      
     } catch (error: any) {
       console.error('Error saving profile:', error);
       toast.error(`שגיאה בשמירה: ${error.message || 'שגיאה לא ידועה'}`);
