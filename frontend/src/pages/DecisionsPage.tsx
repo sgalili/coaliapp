@@ -189,35 +189,30 @@ export default function DecisionsPage() {
   const navigate = useNavigate();
   const { selectedChannel } = useChannel();
   
-  // HIDE all decisions for real users
-  const shouldShowDecisions = !isRealUser();
-  
-  const [filteredDecisions, setFilteredDecisions] = useState(shouldShowDecisions ? allDecisions : []);
+  // Check if real user dynamically
+  const [isReal, setIsReal] = useState(false);
+  const [filteredDecisions, setFilteredDecisions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
-  }, []);
-
-  // Filter decisions by channel (only for demo users)
-  useEffect(() => {
-    if (!shouldShowDecisions) {
+    
+    // Check auth status
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    const realUser = authUserId && authUserId !== 'demo-user';
+    setIsReal(realUser);
+    
+    console.log('📊 Decisions page - Real user?:', realUser);
+    
+    if (realUser) {
+      console.log('✅ REAL USER - Hiding ALL decisions');
       setFilteredDecisions([]);
-      return;
+    } else {
+      console.log('⚠️ DEMO USER - Showing demo decisions');
+      setFilteredDecisions(allDecisions.filter(d => d.channel_id === selectedChannel.id || (selectedChannel.id === null && d.channel_id === null)));
     }
-    
-    const filtered = allDecisions.filter(decision => {
-      if (selectedChannel.id === null) {
-        return decision.channel_id === null;
-      } else {
-        return decision.channel_id === selectedChannel.id;
-      }
-    });
-    
-    setFilteredDecisions(filtered);
-    setCurrentIndex(0);
-  }, [selectedChannel.id, shouldShowDecisions]);
+  }, [selectedChannel.id]);
 
   const currentDecision = filteredDecisions[currentIndex];
 
