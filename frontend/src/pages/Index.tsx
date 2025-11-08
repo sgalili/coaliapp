@@ -549,11 +549,10 @@ export default function Index() {
       setIsRealUser(true);
       setUnreadNotifications(0);
       
-      // Load real user profile first
+      // Load real user profile first, then posts with userId
       loadUserProfile(authUserId).then(() => {
-        // Then reload posts with bookmark state
-        console.log('🔄 Reloading posts with bookmark state...');
-        loadPostsFromDB();
+        console.log('🔄 Reloading posts with userId:', authUserId);
+        loadPostsFromDB(authUserId); // ✅ Pass userId directly
       });
     } else {
       console.log('⚠️ Demo user - Will show demo content');
@@ -561,9 +560,8 @@ export default function Index() {
       setIsRealUser(false);
       setUnreadNotifications(3);
       
-      // Reload posts for demo user too
       setTimeout(() => {
-        loadPostsFromDB();
+        loadPostsFromDB('demo-user'); // ✅ Pass demo-user
       }, 500);
     }
   }, []);
