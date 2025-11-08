@@ -21,6 +21,8 @@ interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
+  missingFields?: string[];
+  action?: string;
 }
 
 const ALL_EXPERTISE_FIELDS = [
