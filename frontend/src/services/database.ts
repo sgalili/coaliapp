@@ -42,7 +42,7 @@ export const fetchDemoPosts = async (channelId?: string | null, category?: strin
 
 export const updatePostEngagement = async (postId: string, field: string, value: number) => {
   const { error } = await supabase
-    .from('demo_posts')
+    .from('posts') // ✅ Use REAL posts table
     .update({ [field]: value })
     .eq('id', postId);
   
