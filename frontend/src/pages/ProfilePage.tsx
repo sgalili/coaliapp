@@ -14,36 +14,40 @@ export default function ProfilePage() {
   React.useEffect(() => {
     const authUserId = localStorage.getItem('authenticated_user_id');
     const authPhone = localStorage.getItem('authenticated_user_phone');
+    const demoMode = localStorage.getItem('demo_mode');
     
     console.log('🚨 PROFILE PAGE MOUNTED');
-    console.log('🔍 localStorage check:');
-    console.log('  - authenticated_user_id:', authUserId);
-    console.log('  - authenticated_user_phone:', authPhone);
-    console.log('  - isAuthenticated:', localStorage.getItem('isAuthenticated'));
+    console.log('📋 Full localStorage dump:');
+    Object.keys(localStorage).forEach(key => {
+      console.log(`  ${key}:`, localStorage.getItem(key));
+    });
     
     if (authUserId && authUserId !== 'demo-user') {
-      console.log('✅ REAL USER DETECTED - Force reload if showing demo');
-      // If we detect a real user but components might show demo, force reload
-      const isDemoMode = localStorage.getItem('demo_mode');
-      if (isDemoMode) {
-        console.log('🔄 Demo mode flag found, removing and reloading');
+      console.log('✅ REAL USER DETECTED:', authUserId);
+      console.log('🧹 Ensuring no demo mode...');
+      
+      // Force remove any demo flags
+      if (demoMode) {
         localStorage.removeItem('demo_mode');
+        console.log('🔄 Removed demo_mode flag, reloading...');
         window.location.reload();
       }
+    } else if (!authUserId) {
+      console.log('⚠️ NO authenticated_user_id - Will use demo-user');
     }
   }, []);
   
   // Check if user is authenticated (real user) or demo
   const getAuthenticatedUserId = () => {
     const authUserId = localStorage.getItem('authenticated_user_id');
-    console.log('🔍 Checking auth - authenticated_user_id:', authUserId);
     
-    if (authUserId && authUserId !== 'demo-user') {
-      console.log('✅ Found REAL authenticated user:', authUserId);
+    // CRITICAL: If we have an authenticated user ID that's not demo-user, USE IT
+    if (authUserId && authUserId !== 'demo-user' && authUserId !== 'undefined' && authUserId !== 'null') {
+      console.log('✅ Using REAL authenticated user:', authUserId);
       return authUserId;
     }
     
-    console.log('⚠️ No authenticated user found, using demo-user');
+    console.log('⚠️ Defaulting to demo-user');
     return 'demo-user';
   };
   
@@ -52,6 +56,7 @@ export default function ProfilePage() {
   
   console.log('👤 FINAL Current user:', currentUserId);
   console.log('👤 Is demo?:', isDemoUser);
+  console.log('👤 Will load data for:', currentUserId);
   
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [trustCount, setTrustCount] = useState(0);
