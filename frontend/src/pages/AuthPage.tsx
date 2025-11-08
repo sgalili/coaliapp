@@ -130,31 +130,49 @@ export const AuthPage = () => {
     try {
       setAuthError('');
       
+      console.log('📝 Creating profile with:', { 
+        phone: authData.phone, 
+        firstName, 
+        lastName, 
+        hasPicture: !!profilePicture 
+      });
+      
       // Create simple profile with phone + name + picture
       const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       
+      const profileData = {
+        user_id: userId,
+        phone: authData.phone,
+        first_name: firstName,
+        last_name: lastName,
+        avatar_url: profilePicture,
+        is_verified: true,
+        zooz_balance: 10,
+        created_at: new Date().toISOString()
+      };
+      
+      console.log('📤 Inserting profile data:', profileData);
+      
       const { data: profile, error: createError } = await supabase
         .from('profiles')
-        .insert({
-          user_id: userId,
-          phone: authData.phone,
-          first_name: firstName,
-          last_name: lastName,
-          avatar_url: profilePicture,
-          is_verified: true,
-          zooz_balance: 10,
-          created_at: new Date().toISOString()
-        })
+        .insert(profileData)
         .select()
         .single();
 
       if (createError) {
-        console.error('Error creating profile:', createError);
-        toast.error('שגיאה ביצירת הפרופיל');
+        console.error('❌ Profile creation error:', createError);
+        console.error('Error code:', createError.code);
+        console.error('Error message:', createError.message);
+        console.error('Error details:', createError.details);
+        
+        // Show specific error to user
+        const errorMsg = createError.message || 'שגיאה לא ידועה';
+        toast.error(`שגיאה: ${errorMsg}`);
+        setAuthError(`שגיאה ביצירת הפרופיל: ${errorMsg}`);
         return;
       }
 
-      console.log('✅ Profile created:', profile);
+      console.log('✅ Profile created successfully:', profile);
 
       // Send welcome WhatsApp
       try {
