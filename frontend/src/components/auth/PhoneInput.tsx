@@ -67,36 +67,30 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         .maybeSingle();
       
       if (existingUser && existingUser.is_verified) {
-        // User exists and is verified - direct login
-        console.log('✅ Existing user found, logging in...');
-        
-        // Send OTP for login
-        const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
-          body: { phone: fullPhone, is_login: true },
-        });
-
-        if (fnError) {
-          setError('שגיאה בשליחת קוד אימות');
-          return;
-        }
-
-        console.log('OTP sent for login');
-        onSubmit(fullPhone);
-        return;
+        console.log('✅ Existing user found');
       }
       
-      // 2. New user - send OTP for signup
-      const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
-        body: { phone: fullPhone, is_signup: true },
+      // 2. Send OTP via backend
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/otp/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: fullPhone })
       });
 
-      if (fnError) {
-        setError('שגיאה בשליחת קוד אימות');
-        console.error('OTP send error:', fnError);
-        return;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to send OTP');
       }
 
-      console.log('OTP sent for signup:', data);
+      const result = await response.json();
+      console.log('✅ OTP sent:', result);
+      
+      // If in debug mode, show OTP
+      if (result.otp) {
+        console.log('🔑 DEBUG OTP:', result.otp);
+      }
+
       onSubmit(fullPhone);
       
     } catch (err: any) {
