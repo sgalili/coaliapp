@@ -71,7 +71,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       }
       
       // 2. Send OTP via backend
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
+      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
       
       console.log('📤 Sending OTP to backend:', backendUrl);
       console.log('📞 Phone number:', fullPhone);
