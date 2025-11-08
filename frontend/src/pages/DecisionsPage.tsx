@@ -322,19 +322,19 @@ export default function DecisionsPage() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 to-black" />
 
-      {/* Back Button - Left */}
+      {/* Channel Selector - Left */}
       <div className="fixed top-4 left-4 z-50">
+        <ChannelSelector />
+      </div>
+
+      {/* Back Button - Right */}
+      <div className="fixed top-4 right-4 z-50">
         <button
           onClick={() => navigate(-1)}
           className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
-      </div>
-
-      {/* Channel Selector - Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <ChannelSelector />
       </div>
 
       {/* Scrollable Decisions Feed */}
