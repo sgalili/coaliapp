@@ -1061,15 +1061,16 @@ export default function Index() {
       
       const newPost = {
         id: `post-${Date.now()}`,
-        user_id: 'demo-user',
-        username: 'אתה',
-        expertise: 'משתמש',
-        profile_image: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+        user_id: currentUserId, // ✅ REAL user ID
+        username: userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש', // ✅ REAL user name
+        expertise: userProfile?.expertise_fields?.[0] || 'משתמש', // ✅ REAL user expertise
+        profile_image: userProfile?.avatar_url || '/default-avatar.jpg', // ✅ REAL user photo
         video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
         image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
         caption: caption.trim(),
-        location: 'ישראל',
-        is_verified: true,
+        location: userProfile?.city || 'ישראל',
+        is_verified: userProfile?.is_verified || false,
+        is_demo: false, // ✅ Mark as REAL content
         is_live: false,
         category: uploadCategory,
         channel_id: selectedChannel.id,
