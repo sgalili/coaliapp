@@ -145,36 +145,29 @@ export const AuthPage = () => {
     try {
       setAuthError('');
       
-      console.log('📝 Creating profile with:', { 
-        phone: authData.phone, 
-        firstName, 
-        lastName, 
-        hasPicture: !!profilePicture 
-      });
+      // Get authenticated user from Supabase
+      const { data: { user } } = await supabase.auth.getUser();
       
-      // Generate a valid UUID for user_id
-      const generateUUID = () => {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          const r = Math.random() * 16 | 0;
-          const v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      };
+      if (!user) {
+        toast.error('אין משתמש מאומת');
+        return;
+      }
       
-      const userId = generateUUID();
+      console.log('📝 Creating profile for authenticated user:', user.id);
       
       const profileData = {
-        user_id: userId,
+        user_id: user.id, // Use REAL Supabase auth user ID
         phone: authData.phone,
         first_name: firstName,
         last_name: lastName,
         avatar_url: profilePicture,
         is_verified: true,
         zooz_balance: 10,
+        is_demo: false, // Mark as REAL user
         created_at: new Date().toISOString()
       };
       
-      console.log('📤 Inserting profile data with UUID:', userId);
+      console.log('📤 Inserting profile for REAL user');
       
       const { data: profile, error: createError } = await supabase
         .from('profiles')
@@ -184,24 +177,19 @@ export const AuthPage = () => {
 
       if (createError) {
         console.error('❌ Profile creation error:', createError);
-        console.error('Error code:', createError.code);
-        console.error('Error message:', createError.message);
-        console.error('Error details:', createError.details);
-        
-        // Show specific error to user
-        const errorMsg = createError.message || 'שגיאה לא ידועה';
-        toast.error(`שגיאה: ${errorMsg}`);
-        setAuthError(`שגיאה ביצירת הפרופיל: ${errorMsg}`);
+        toast.error(`שגיאה: ${createError.message}`);
         return;
       }
 
-      console.log('✅ Profile created successfully:', profile);
+      console.log('✅ REAL user profile created:', profile);
 
-      // Store the new user session
-      localStorage.setItem('authenticated_user_id', profile.user_id);
+      // Store REAL user session
+      localStorage.setItem('authenticated_user_id', user.id);
       localStorage.setItem('authenticated_user_phone', authData.phone);
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.removeItem('demo_mode'); // Exit demo mode
+      localStorage.removeItem('demo_mode');
+      
+      console.log('✅ Session stored for real user:', user.id);
 
       // Send welcome WhatsApp
       try {
