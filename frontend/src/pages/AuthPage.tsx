@@ -137,11 +137,8 @@ export const AuthPage = () => {
         hasPicture: !!profilePicture 
       });
       
-      // Create simple profile with phone + name + picture
-      const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-      
+      // Create profile - let Supabase generate UUID for user_id
       const profileData = {
-        user_id: userId,
         phone: authData.phone,
         first_name: firstName,
         last_name: lastName,
