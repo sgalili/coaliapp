@@ -2315,21 +2315,25 @@ export default function Index() {
                   />
                 </div>
 
-                {/* Category Selection */}
+                {/* Category Selection - NO "הכל" */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">קטגוריה</label>
+                  <label className="block text-sm font-medium mb-2">קטגוריה *</label>
                   <select
                     value={uploadCategory}
                     onChange={(e) => setUploadCategory(e.target.value)}
                     className="w-full px-4 py-3 border border-border rounded-lg bg-background"
                     dir="rtl"
                   >
-                    {selectedChannel.categories.map(category => (
+                    <option value="" disabled>בחר קטגוריה</option>
+                    {selectedChannel.categories.filter(cat => cat !== 'הכל').map(category => (
                       <option key={category} value={category}>
                         {category}
                       </option>
                     ))}
                   </select>
+                  {(!uploadCategory || uploadCategory === 'הכל') && (
+                    <p className="text-sm text-red-500 mt-1">חובה לבחור קטגוריה ספציפית</p>
+                  )}
                 </div>
 
                 {/* Also Post to Coali Checkbox */}
