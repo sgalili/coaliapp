@@ -71,51 +71,47 @@ export const AuthPage = () => {
     try {
       setAuthError('');
       
-      // Verify OTP and create auth session
-      const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify-and-login', {
-        body: { phone: authData.phone, otp }
+      // Verify OTP via backend
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/otp/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          phone: authData.phone, 
+          otp: otp 
+        })
       });
 
-      if (error) throw error;
-
-      // Set Supabase auth session
-      if (data.access_token && data.refresh_token) {
-        await supabase.auth.setSession({
-          access_token: data.access_token,
-          refresh_token: data.refresh_token,
-        });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Invalid OTP');
       }
 
-      // Get the authenticated user
-      const { data: { user } } = await supabase.auth.getUser();
+      const result = await response.json();
+      console.log('✅ OTP verified:', result);
       
-      if (user) {
-        console.log('✅ User authenticated:', user.id);
-        
-        // Check if profile exists
-        const { data: existingProfile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('phone', authData.phone)
-          .maybeSingle();
-        
-        if (existingProfile) {
-          // Existing user - log in
-          console.log('✅ Existing user, logging in');
-          localStorage.setItem('authenticated_user_id', existingProfile.user_id);
-          localStorage.setItem('authenticated_user_phone', authData.phone);
-          localStorage.setItem('isAuthenticated', 'true');
-          toast.success('ברוך הבא חזרה!');
-          navigate('/');
-        } else {
-          // New user - go to profile completion
-          console.log('📝 New user, needs profile');
-          toast.success('קוד אומת בהצלחה!');
-          setAuthData(prev => ({ ...prev, otp }));
-          setCurrentStep('profile');
-        }
+      // Check if profile exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('phone', authData.phone)
+        .maybeSingle();
+      
+      if (existingProfile) {
+        // Existing user - log in
+        console.log('✅ Existing user, logging in');
+        localStorage.setItem('authenticated_user_id', existingProfile.user_id);
+        localStorage.setItem('authenticated_user_phone', authData.phone);
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.removeItem('demo_mode');
+        toast.success(`ברוך הבא ${existingProfile.first_name}!`);
+        navigate('/');
       } else {
-        throw new Error('No user returned from auth');
+        // New user - go to profile completion
+        console.log('📝 New user, needs profile');
+        toast.success('קוד אומת בהצלחה!');
+        setAuthData(prev => ({ ...prev, otp }));
+        setCurrentStep('profile');
       }
       
     } catch (error: any) {
@@ -124,8 +120,10 @@ export const AuthPage = () => {
       let errorMessage = 'שגיאה באימות הקוד';
       if (error.message?.includes('expired')) {
         errorMessage = 'הקוד פג תוקף';
-      } else if (error.message?.includes('invalid')) {
+      } else if (error.message?.includes('invalid') || error.message?.includes('Invalid')) {
         errorMessage = 'קוד לא נכון';
+      } else if (error.message?.includes('Too many')) {
+        errorMessage = 'יותר מדי ניסיונות';
       }
       
       setAuthError(errorMessage);
