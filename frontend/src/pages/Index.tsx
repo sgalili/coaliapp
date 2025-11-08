@@ -1035,18 +1035,26 @@ export default function Index() {
   };
 
   const handleUploadSubmit = async () => {
-    if (!selectedVideo || !uploadCategory) {
-      console.error('❌ Missing required fields:', { 
-        hasFile: !!selectedVideo, 
-        category: uploadCategory 
-      });
+    // Validation
+    if (!selectedVideo) {
+      toast.error('נא לבחור קובץ');
+      return;
+    }
+    
+    if (!uploadCategory || uploadCategory === 'הכל' || uploadCategory === '') {
+      toast.error('חובה לבחור קטגוריה ספציפית');
+      return;
+    }
+    
+    if (!caption.trim()) {
+      toast.error('נא להוסיף כיתוב');
       return;
     }
     
     console.log('🚀 Starting upload process...');
-    console.log('📁 File:', selectedVideo.name, selectedVideo.type, selectedVideo.size);
+    console.log('👤 Uploading as:', currentUserId, userProfile?.first_name);
+    console.log('📁 File:', selectedVideo.name);
     console.log('📂 Category:', uploadCategory);
-    console.log('📺 Channel:', selectedChannel.id, selectedChannel.name);
     
     setIsUploading(true);
     
