@@ -788,7 +788,7 @@ export default function Index() {
         voteCount: 0,
         zoozCount: 0,
         trustCount: 0,
-        watchCount: 0,
+        watchCount: bookmarkCountMap[post.id] || 0, // ✅ Real bookmark count
         commentCount: 0,
         shareCount: 0,
         hasUserTrusted: userTrustIds.includes(post.user_id), // ✅ Mark if trusted
