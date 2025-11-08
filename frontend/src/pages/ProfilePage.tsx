@@ -770,17 +770,33 @@ export default function ProfilePage() {
             ))}
           </div>
 
-          {/* Bio Section - Clickable to expand/collapse */}
+          {/* Bio Section */}
           <div className="px-6 mb-4 text-center">
-            <p 
-              onClick={() => setShowFullBio(!showFullBio)}
-              className={cn(
-                "text-sm text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors",
-                !showFullBio && "line-clamp-3"
-              )}
-            >
-              {userBio}
-            </p>
+            {userBio ? (
+              <p 
+                onClick={() => setShowFullBio(!showFullBio)}
+                className={cn(
+                  "text-sm text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors",
+                  !showFullBio && "line-clamp-3"
+                )}
+              >
+                {userBio}
+              </p>
+            ) : (
+              // No bio - show appropriate message
+              isDemoUser ? (
+                <button
+                  onClick={() => setShowEditProfile(true)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  הוסף ביוגרפיה
+                </button>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">
+                  אין ביוגרפיה
+                </p>
+              )
+            )}
           </div>
         </div>
 
