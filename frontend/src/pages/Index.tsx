@@ -720,7 +720,7 @@ export default function Index() {
         location: post.profiles?.city || 'ישראל',
         isVerified: post.profiles?.is_verified || false,
         isLive: post.is_live || false,
-        category: 'כללי', // Default since posts table may not have category
+        category: post.category || 'כללי', // ✅ Use saved category
         channel_id: null,
         voteCount: 0,
         zoozCount: 0,
@@ -730,7 +730,9 @@ export default function Index() {
         shareCount: 0,
         hasUserTrusted: false,
         hasUserWatched: false,
-        _isDemo: post._isDemo, // Keep demo label
+        _isDemo: post._isDemo,
+        created_at: post.created_at,
+        updated_at: post.updated_at, // ✅ For edited timestamp
       }));
       
       console.log('✅ Mapped', mappedPosts.length, 'posts');
