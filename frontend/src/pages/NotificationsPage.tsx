@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { ArrowLeft, Heart, MessageSquare, Gift, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { isRealUser } from "@/utils/demoFilter";
 
 export default function NotificationsPage() {
   const navigate = useNavigate();
-  const [notifications] = useState([
+  
+  // HIDE notifications for real users (empty state)
+  const demoNotifications = [
     {
       id: 1,
       type: 'trust',
