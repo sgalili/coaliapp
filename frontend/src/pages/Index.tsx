@@ -1092,33 +1092,19 @@ export default function Index() {
       console.log('  profile_image:', realUserImage);
       
       const newPost = {
-        id: `post-${Date.now()}`,
         user_id: currentUserId,
-        username: realUserName,
-        expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
-        profile_image: realUserImage,
+        content: caption.trim(), // ✅ Use 'content' instead of 'caption'
         video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
-        image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
-        caption: caption.trim(),
-        location: userProfile?.city || 'ישראל',
-        is_verified: userProfile?.is_verified || false,
-        is_demo: false,
+        thumbnail_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
         is_live: false,
-        category: uploadCategory,
-        channel_id: selectedChannel.id,
-        vote_count: 0,
-        zooz_count: 0,
-        trust_count: 0,
-        watch_count: 0,
-        comment_count: 0,
+        created_at: new Date().toISOString()
       };
       
-      console.log('📄 Complete post object:', newPost);
-      console.log('👤 Post will show as:', newPost.username);
-      console.log('🖼️ Post will show image:', newPost.profile_image);
+      console.log('📄 Post object for database:', newPost);
       
       // Save to database
-      console.log('💾 Saving to database...');
+      console.log('💾 Saving to posts table...');
+      toast.info('שומר פוסט...');
       await saveDemoPost(newPost);
       console.log('✅ Post saved to database');
       
