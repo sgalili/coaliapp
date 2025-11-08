@@ -86,9 +86,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       const result = await response.json();
       console.log('✅ OTP sent:', result);
       
-      // If in debug mode, show OTP
+      // Show OTP in toast for testing (since WhatsApp might fail)
       if (result.otp) {
-        console.log('🔑 DEBUG OTP:', result.otp);
+        console.log('🔑 OTP CODE:', result.otp);
+        toast.success(`קוד נשלח! (לצורך בדיקה: ${result.otp})`, { duration: 10000 });
       }
 
       onSubmit(fullPhone);
