@@ -736,13 +736,15 @@ export default function ProfilePage() {
         <div className="relative p-6 pt-0 text-center">
           {/* Profile Image */}
           <img
-            src="https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"
+            src={userProfile?.avatar_url || "https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"}
             className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
           />
 
           {/* Name & Handle with Edit Icon */}
           <div className="flex items-center justify-center gap-2 mb-1">
-            <h2 className="text-2xl font-bold">משתמש דמו מאומת</h2>
+            <h2 className="text-2xl font-bold">
+              {userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש דמו מאומת'}
+            </h2>
             <button 
               onClick={() => setShowEditProfile(true)}
               className="p-1.5 hover:bg-muted rounded-full transition-colors"
