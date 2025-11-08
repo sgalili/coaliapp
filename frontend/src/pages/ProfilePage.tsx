@@ -13,14 +13,19 @@ export default function ProfilePage() {
   // Check if user is authenticated (real user) or demo
   const getAuthenticatedUserId = () => {
     const authUserId = localStorage.getItem('authenticated_user_id');
-    if (authUserId) return authUserId;
+    console.log('🔍 Checking auth - authenticated_user_id:', authUserId);
     
-    // Fallback to demo user
-    return currentUserId;
+    if (authUserId) {
+      console.log('✅ Found authenticated user:', authUserId);
+      return authUserId;
+    }
+    
+    console.log('⚠️ No authenticated user, using demo-user');
+    return 'demo-user';
   };
   
   const currentUserId = getAuthenticatedUserId();
-  const isDemoUser = currentUserId === currentUserId;
+  const isDemoUser = currentUserId === 'demo-user';
   
   console.log('👤 Current user:', currentUserId, isDemoUser ? '(DEMO)' : '(REAL)');
   
