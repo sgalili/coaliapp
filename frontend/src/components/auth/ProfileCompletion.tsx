@@ -62,9 +62,23 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Title */}
-      <div className="text-center">
-        <h1 className="text-2xl font-bold mb-6">ברוכים הבאים לקואלי</h1>
+      {/* Header with Coali Logo - Same as Step 1 */}
+      <div className="text-center space-y-4 pt-4">
+        <div className="flex justify-center">
+          <img 
+            src="/coali-logo.webp" 
+            alt="Coali" 
+            className="w-24 h-24 object-contain"
+          />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">
+            ברוכים הבאים ל-Coali
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            הרשת הראשונה של אמון דיגיטלי
+          </p>
+        </div>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
