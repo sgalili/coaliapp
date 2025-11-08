@@ -1051,34 +1051,56 @@ export default function Index() {
       return;
     }
     
-    console.log('🚀 Starting upload process...');
-    console.log('👤 Uploading as:', currentUserId, userProfile?.first_name);
-    console.log('📁 File:', selectedVideo.name);
-    console.log('📂 Category:', uploadCategory);
+    // CRITICAL: Check user data before upload
+    console.log('🔍 PRE-UPLOAD CHECK:');
+    console.log('  currentUserId:', currentUserId);
+    console.log('  isRealUser:', isRealUser);
+    console.log('  userProfile:', userProfile);
+    console.log('  userProfile.first_name:', userProfile?.first_name);
+    console.log('  userProfile.last_name:', userProfile?.last_name);
+    console.log('  userProfile.avatar_url:', userProfile?.avatar_url);
+    
+    if (!userProfile && isRealUser) {
+      console.error('❌ CRITICAL: Real user but no profile loaded!');
+      toast.error('טוען פרטי משתמש...');
+      // Try to load profile
+      await loadUserProfile(currentUserId);
+      return;
+    }
+    
+    console.log('🚀 Starting upload as REAL user');
     
     setIsUploading(true);
     
     try {
-      // Upload file to Supabase Storage
-      console.log('📤 Uploading file to Supabase...');
+      // Upload file
+      console.log('📤 Uploading file...');
       toast.info('מעלה קובץ...');
       
       const permanentUrl = await uploadMediaFile(selectedVideo);
       console.log('✅ File uploaded:', permanentUrl);
-      toast.success('הקובץ הועלה בהצלחה!');
+      
+      // Create post object with REAL user data
+      const realUserName = `${userProfile.first_name} ${userProfile.last_name}`;
+      const realUserImage = userProfile.avatar_url;
+      
+      console.log('📝 Creating post with:');
+      console.log('  user_id:', currentUserId);
+      console.log('  username:', realUserName);
+      console.log('  profile_image:', realUserImage);
       
       const newPost = {
         id: `post-${Date.now()}`,
-        user_id: currentUserId, // ✅ REAL user ID
-        username: userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש', // ✅ REAL user name
-        expertise: userProfile?.expertise_fields?.[0] || 'משתמש', // ✅ REAL user expertise
-        profile_image: userProfile?.avatar_url || '/default-avatar.jpg', // ✅ REAL user photo
+        user_id: currentUserId,
+        username: realUserName,
+        expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
+        profile_image: realUserImage,
         video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
         image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
         caption: caption.trim(),
         location: userProfile?.city || 'ישראל',
         is_verified: userProfile?.is_verified || false,
-        is_demo: false, // ✅ Mark as REAL content
+        is_demo: false,
         is_live: false,
         category: uploadCategory,
         channel_id: selectedChannel.id,
@@ -1089,12 +1111,12 @@ export default function Index() {
         comment_count: 0,
       };
       
-      console.log('📄 Post object:', newPost);
+      console.log('📄 Complete post object:', newPost);
+      console.log('👤 Post will show as:', newPost.username);
+      console.log('🖼️ Post will show image:', newPost.profile_image);
       
       // Save to database
       console.log('💾 Saving to database...');
-      toast.info('שומר פוסט...');
-      
       await saveDemoPost(newPost);
       console.log('✅ Post saved to database');
       
