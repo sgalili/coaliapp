@@ -106,9 +106,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       onSave();
       onClose();
       
-      // Auto-redirect to homepage after save
+      // Auto-redirect to PROFILE page after save
       setTimeout(() => {
-        window.location.href = '/';
+        window.location.href = '/profile';
       }, 500);
       
     } catch (error: any) {
