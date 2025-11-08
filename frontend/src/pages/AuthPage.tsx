@@ -88,9 +88,9 @@ export const AuthPage = () => {
       }
 
       const result = await response.json();
-      console.log('✅ OTP verified:', result);
+      console.log('✅ OTP verified successfully');
       
-      // Check if profile exists
+      // Check if user profile exists
       const { data: existingProfile } = await supabase
         .from('profiles')
         .select('*')
@@ -98,17 +98,25 @@ export const AuthPage = () => {
         .maybeSingle();
       
       if (existingProfile) {
-        // Existing user - log in
-        console.log('✅ Existing user, logging in');
+        // EXISTING USER - Log them in immediately
+        console.log('✅ EXISTING USER - Logging in as:', existingProfile.user_id);
+        console.log('User name:', existingProfile.first_name, existingProfile.last_name);
+        
         localStorage.setItem('authenticated_user_id', existingProfile.user_id);
         localStorage.setItem('authenticated_user_phone', authData.phone);
+        localStorage.setItem('authenticated_user_name', `${existingProfile.first_name} ${existingProfile.last_name}`);
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.removeItem('demo_mode');
+        
+        console.log('✅ Session stored - redirecting to homepage');
+        
         toast.success(`ברוך הבא ${existingProfile.first_name}!`);
-        navigate('/');
+        
+        // Force redirect
+        window.location.href = '/';
       } else {
-        // New user - go to profile completion
-        console.log('📝 New user, needs profile');
+        // NEW USER - Go to profile completion
+        console.log('📝 NEW USER - needs profile completion');
         toast.success('קוד אומת בהצלחה!');
         setAuthData(prev => ({ ...prev, otp }));
         setCurrentStep('profile');
