@@ -725,33 +725,43 @@ export default function ProfilePage() {
 
         {/* Profile Content */}
         <div className="relative p-6 pt-0 text-center">
-          {/* Profile Image */}
-          <img
-            src={userProfile?.avatar_url || "https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"}
-            className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
-          />
+          {profileLoading ? (
+            /* Loading state - prevents flash */
+            <div className="flex flex-col items-center gap-4 py-8">
+              <div className="w-24 h-24 rounded-full bg-muted animate-pulse"></div>
+              <div className="h-8 w-48 bg-muted rounded animate-pulse"></div>
+            </div>
+          ) : (
+            <>
+              {/* Profile Image */}
+              <img
+                src={userProfile?.avatar_url || "https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"}
+                className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
+              />
 
-          {/* Name & Handle with Edit Icon */}
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <h2 className="text-2xl font-bold">
-              {userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'משתמש דמו מאומת'}
-            </h2>
-            <button 
-              onClick={() => setShowEditProfile(true)}
-              className="p-1.5 hover:bg-muted rounded-full transition-colors"
-            >
-              <Edit2 className="w-4 h-4 text-muted-foreground" />
-            </button>
-          </div>
+              {/* Name & Handle with Edit Icon */}
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <h2 className="text-2xl font-bold">
+                  {userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'טוען...'}
+                </h2>
+                <button 
+                  onClick={() => setShowEditProfile(true)}
+                  className="p-1.5 hover:bg-muted rounded-full transition-colors"
+                >
+                  <Edit2 className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </div>
 
-          {/* Expertise Fields */}
-          <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
-            {(userProfile?.expertise_fields || expertiseFields).map((field: string, i: number) => (
-              <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
-                {field}
-              </span>
-            ))}
-          </div>
+              {/* Expertise Fields */}
+              <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
+                {(userProfile?.expertise_fields || expertiseFields || []).map((field: string, i: number) => (
+                  <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
+                    {field}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
 
           {/* Bio Section */}
           <div className="px-6 mb-4 text-center">
