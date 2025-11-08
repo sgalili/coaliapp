@@ -776,7 +776,7 @@ export default function Index() {
         watchCount: 0,
         commentCount: 0,
         shareCount: 0,
-        hasUserTrusted: false,
+        hasUserTrusted: userTrustIds.includes(post.user_id), // ✅ Mark if trusted
         hasUserWatched: userBookmarkIds.includes(post.id), // ✅ Mark if bookmarked
         _isDemo: post._isDemo,
         created_at: post.created_at,
