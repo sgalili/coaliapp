@@ -402,7 +402,7 @@ export default function ProfilePage() {
     try {
       // Fetch user's posts
       const { data, error } = await supabase
-        .from('demo_posts')
+        .from('posts') // ✅ Use posts table
         .select('*')
         .eq('user_id', currentUserId)
         .order('created_at', { ascending: false });
