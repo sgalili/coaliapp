@@ -92,6 +92,14 @@ export default function ProfilePage() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
+  // Auto-open edit modal if redirected from FAB with missing fields
+  React.useEffect(() => {
+    if (shouldEdit && missingFields.length > 0) {
+      console.log('🔴 Opening edit modal with missing fields:', missingFields);
+      setShowEditProfile(true);
+    }
+  }, [shouldEdit, missingFields]);
+  
   // REAL user profile data
   const [userProfile, setUserProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
