@@ -72,7 +72,7 @@ export const AuthPage = () => {
       setAuthError('');
       
       // Verify OTP via backend
-      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
+      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
       const response = await fetch(`${backendUrl}/api/otp/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
