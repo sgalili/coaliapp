@@ -73,11 +73,8 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Profile Picture Upload - MANDATORY */}
-        <div className={cn(
-          "border-2 rounded-lg p-4 transition-colors",
-          errors.profilePicture ? "border-red-500" : profilePicture ? "border-green-500" : "border-dashed border-border"
-        )}>
+        {/* Profile Picture Upload - No Box, Just Component */}
+        <div className="flex flex-col items-center">
           <ProfilePictureUpload
             currentImageUrl={profilePicture}
             onImageChange={setProfilePicture}
