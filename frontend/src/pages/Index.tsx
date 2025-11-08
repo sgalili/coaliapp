@@ -1564,7 +1564,7 @@ export default function Index() {
       }
       
       const { error } = await supabase
-        .from('posts')
+        .from('demo_posts')
         .delete()
         .eq('id', post.id)
         .eq('user_id', currentUserId);
@@ -2174,7 +2174,7 @@ export default function Index() {
                     }
                     
                     const { error } = await supabase
-                      .from('posts') // ✅ Use posts table
+                      .from('demo_posts') // ✅ Use posts table
                       .update({ 
                         content: editCaption, // ✅ Use 'content' field
                         updated_at: new Date().toISOString()
