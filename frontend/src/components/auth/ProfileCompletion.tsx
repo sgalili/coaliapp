@@ -62,8 +62,13 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   return (
     <div className="space-y-6 pb-20">
+      {/* Title */}
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-6">ברוכים הבאים לקואלי</h1>
+      </div>
+      
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Profile Picture - No Box */}
+        {/* Profile Picture - No Box, With Placeholder */}
         <div className="flex flex-col items-center">
           <ProfilePictureUpload
             currentImageUrl={profilePicture}
@@ -71,6 +76,9 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
             userInitials={`${firstName.charAt(0)}${lastName.charAt(0)}`}
             hideUploadButton={true}
           />
+          {!profilePicture && (
+            <p className="text-xs text-muted-foreground mt-2">לחץ להוספת תמונת פרופיל</p>
+          )}
           {errors.profilePicture && (
             <p className="text-sm text-red-500 text-center mt-2">{errors.profilePicture}</p>
           )}
