@@ -549,19 +549,23 @@ export default function Index() {
       setIsRealUser(true);
       setUnreadNotifications(0);
       
-      // Load real user profile
-      loadUserProfile(authUserId);
+      // Load real user profile first
+      loadUserProfile(authUserId).then(() => {
+        // Then reload posts with bookmark state
+        console.log('🔄 Reloading posts with bookmark state...');
+        loadPostsFromDB();
+      });
     } else {
       console.log('⚠️ Demo user - Will show demo content');
       setCurrentUserId('demo-user');
       setIsRealUser(false);
       setUnreadNotifications(3);
+      
+      // Reload posts for demo user too
+      setTimeout(() => {
+        loadPostsFromDB();
+      }, 500);
     }
-    
-    // Reload posts to apply bookmark state
-    setTimeout(() => {
-      loadPostsFromDB();
-    }, 500);
   }, []);
   
   const loadUserProfile = async (userId: string) => {
