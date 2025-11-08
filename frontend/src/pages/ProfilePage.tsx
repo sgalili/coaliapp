@@ -755,7 +755,7 @@ export default function ProfilePage() {
 
           {/* Expertise Fields */}
           <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
-            {expertiseFields.map((field, i) => (
+            {(userProfile?.expertise_fields || expertiseFields).map((field: string, i: number) => (
               <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
                 {field}
               </span>
