@@ -189,8 +189,7 @@ export default function DecisionsPage() {
   const navigate = useNavigate();
   const { selectedChannel } = useChannel();
   
-  // Check if real user dynamically
-  const [isReal, setIsReal] = useState(false);
+  // Always start with empty, populate in useEffect based on auth
   const [filteredDecisions, setFilteredDecisions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -198,20 +197,30 @@ export default function DecisionsPage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     
-    // Check auth status
+    // CRITICAL: Check if real user
     const authUserId = localStorage.getItem('authenticated_user_id');
-    const realUser = authUserId && authUserId !== 'demo-user';
-    setIsReal(realUser);
+    const isReal = authUserId && authUserId !== 'demo-user';
     
-    console.log('📊 Decisions page - Real user?:', realUser);
+    console.log('📊 Decisions page auth check:', { authUserId, isReal });
     
-    if (realUser) {
-      console.log('✅ REAL USER - Hiding ALL decisions');
+    if (isReal) {
+      // REAL USER: Show NOTHING
+      console.log('✅ REAL USER - Setting empty decisions array');
       setFilteredDecisions([]);
     } else {
+      // DEMO USER: Show demo decisions
       console.log('⚠️ DEMO USER - Showing demo decisions');
-      setFilteredDecisions(allDecisions.filter(d => d.channel_id === selectedChannel.id || (selectedChannel.id === null && d.channel_id === null)));
+      const filtered = allDecisions.filter(decision => {
+        if (selectedChannel.id === null) {
+          return decision.channel_id === null;
+        } else {
+          return decision.channel_id === selectedChannel.id;
+        }
+      });
+      setFilteredDecisions(filtered);
     }
+    
+    setCurrentIndex(0);
   }, [selectedChannel.id]);
 
   const currentDecision = filteredDecisions[currentIndex];
