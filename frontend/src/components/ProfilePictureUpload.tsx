@@ -19,7 +19,8 @@ interface ProfilePictureUploadProps {
 export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   currentImageUrl,
   onImageChange,
-  userInitials = '?'
+  userInitials = '?',
+  hideUploadButton = false
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
