@@ -13,6 +13,7 @@ interface ProfilePictureUploadProps {
   currentImageUrl: string;
   onImageChange: (url: string) => void;
   userInitials?: string;
+  hideUploadButton?: boolean;
 }
 
 export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
