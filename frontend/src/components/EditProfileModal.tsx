@@ -36,7 +36,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   userId,
   isOpen,
   onClose,
-  onSave
+  onSave,
+  missingFields = [],
+  action = ''
 }) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -49,6 +51,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   });
   
   const [loading, setLoading] = useState(false);
+  
+  // Check if field is missing and needs highlighting
+  const isFieldMissing = (fieldName: string) => missingFields.includes(fieldName);
 
   useEffect(() => {
     if (isOpen && userId) {
