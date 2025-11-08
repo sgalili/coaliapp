@@ -1,17 +1,17 @@
 /**
  * Streamlined Profile Completion - Step 2 of Onboarding
- * Only asks for First Name + Last Name
- * Progressive completion happens later when needed
+ * Asks for: First Name + Last Name + Profile Picture (all mandatory)
  */
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ProfilePictureUpload } from '@/components/ProfilePictureUpload';
 import { User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProfileCompletionProps {
-  onComplete: (firstName: string, lastName: string) => void;
+  onComplete: (firstName: string, lastName: string, profilePicture: string) => void;
   isLoading: boolean;
 }
 
@@ -30,20 +30,26 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
 
   const [firstName, setFirstName] = useState(savedState?.firstName || '');
   const [lastName, setLastName] = useState(savedState?.lastName || '');
-  const [errors, setErrors] = useState<{ firstName?: string; lastName?: string }>({});
+  const [profilePicture, setProfilePicture] = useState(savedState?.profilePicture || '');
+  const [errors, setErrors] = useState<{ 
+    firstName?: string; 
+    lastName?: string;
+    profilePicture?: string;
+  }>({});
 
   React.useEffect(() => {
-    const stateToSave = { firstName, lastName };
+    const stateToSave = { firstName, lastName, profilePicture };
     localStorage.setItem('signup_basic_info', JSON.stringify(stateToSave));
-  }, [firstName, lastName]);
+  }, [firstName, lastName, profilePicture]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const newErrors: { firstName?: string; lastName?: string } = {};
+    const newErrors: { firstName?: string; lastName?: string; profilePicture?: string } = {};
     
     if (!firstName.trim()) newErrors.firstName = 'שם פרטי נדרש';
     if (!lastName.trim()) newErrors.lastName = 'שם משפחה נדרש';
+    if (!profilePicture) newErrors.profilePicture = 'תמונת פרופיל נדרשת';
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -52,7 +58,7 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
     
     setErrors({});
     localStorage.removeItem('signup_basic_info');
-    onComplete(firstName.trim(), lastName.trim());
+    onComplete(firstName.trim(), lastName.trim(), profilePicture);
   };
 
   return (
@@ -63,33 +69,51 @@ export const ProfileCompletion: React.FC<ProfileCompletionProps> = ({ onComplete
         </div>
         
         <h1 className="text-2xl font-bold">ספר לנו קצת עליך</h1>
-        <p className="text-muted-foreground text-sm">רק שני פרטים ואתה בפנים!</p>
+        <p className="text-muted-foreground text-sm">רק שלושה פרטים ואתה בפנים!</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Input
-            type="text"
-            placeholder="שם פרטי *"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className={cn("text-lg py-6 text-right", errors.firstName && "border-red-500")}
-            disabled={isLoading}
-            autoFocus
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Profile Picture Upload - MANDATORY */}
+        <div className={cn(
+          "border-2 rounded-lg p-4 transition-colors",
+          errors.profilePicture ? "border-red-500" : profilePicture ? "border-green-500" : "border-dashed border-border"
+        )}>
+          <ProfilePictureUpload
+            currentImageUrl={profilePicture}
+            onImageChange={setProfilePicture}
+            userInitials={`${firstName.charAt(0)}${lastName.charAt(0)}`}
           />
-          {errors.firstName && <p className="text-sm text-red-500 text-right">{errors.firstName}</p>}
+          {errors.profilePicture && (
+            <p className="text-sm text-red-500 text-center mt-2">{errors.profilePicture}</p>
+          )}
         </div>
-        
-        <div className="space-y-2">
-          <Input
-            type="text"
-            placeholder="שם משפחה *"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className={cn("text-lg py-6 text-right", errors.lastName && "border-red-500")}
-            disabled={isLoading}
-          />
-          {errors.lastName && <p className="text-sm text-red-500 text-right">{errors.lastName}</p>}
+
+        {/* Name Fields */}
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="שם פרטי *"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className={cn("text-lg py-6 text-right", errors.firstName && "border-red-500")}
+              disabled={isLoading}
+              autoFocus
+            />
+            {errors.firstName && <p className="text-sm text-red-500 text-right">{errors.firstName}</p>}
+          </div>
+          
+          <div className="space-y-2">
+            <Input
+              type="text"
+              placeholder="שם משפחה *"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={cn("text-lg py-6 text-right", errors.lastName && "border-red-500")}
+              disabled={isLoading}
+            />
+            {errors.lastName && <p className="text-sm text-red-500 text-right">{errors.lastName}</p>}
+          </div>
         </div>
 
         <Button type="submit" className="w-full py-6 text-lg font-bold" disabled={isLoading}>
