@@ -696,29 +696,14 @@ export default function Index() {
       console.log('👤 Current user:', currentUserId, 'Is real?:', isRealUser);
       
       // Fetch posts - FILTER OUT DEMO if real user
-      let dbPosts;
+      let dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
       
-      if (isRealUser) {
-        // REAL USER: Only show real posts (NOT demo posts)
-        console.log('🔒 REAL USER - Filtering out demo content');
-        dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
-        // Filter out demo posts
-        dbPosts = dbPosts.filter((post: any) => {
-          const isDemo = post.user_id === 'demo-user' || post.is_demo === true;
-          return !isDemo;
-        });
-        console.log('✅ Filtered to', dbPosts.length, 'REAL posts (excluded demo)');
-      } else {
-        // DEMO USER: Show only demo posts
-        console.log('👁️ DEMO USER - Showing demo content');
-        dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
-        // Only show demo posts
-        dbPosts = dbPosts.filter((post: any) => {
-          const isDemo = post.user_id === 'demo-user' || post.is_demo === true;
-          return isDemo;
-        });
-        console.log('✅ Showing', dbPosts.length, 'demo posts');
-      }
+      console.log('📦 Raw posts from DB:', dbPosts.length);
+      
+      // Apply demo filter
+      dbPosts = filterDemoPosts(dbPosts);
+      
+      console.log('✅ After filtering:', dbPosts.length, 'posts for', isRealUser ? 'REAL' : 'DEMO', 'user');
       
       // Map database fields
       const mappedPosts = dbPosts.map((post: any) => ({
