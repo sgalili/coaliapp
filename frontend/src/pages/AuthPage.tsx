@@ -132,14 +132,6 @@ export const AuthPage = () => {
       toast.error(errorMessage);
     }
   };
-        toast.error('Code non trouvé');
-      } else {
-        toast.error('Code incorrect');
-      }
-      
-      setAuthError(errorMessage);
-    }
-  };
 
   const handleProfileComplete = async (firstName: string, lastName: string, profilePicture: string) => {
     try {
