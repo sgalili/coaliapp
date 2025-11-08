@@ -71,6 +71,10 @@ export const AuthPage = () => {
     try {
       setAuthError('');
       
+      console.log('🔐 STARTING OTP VERIFICATION');
+      console.log('Phone:', authData.phone);
+      console.log('OTP:', otp);
+      
       // Verify OTP via backend
       const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
       const response = await fetch(`${backendUrl}/api/otp/verify-otp`, {
@@ -87,77 +91,57 @@ export const AuthPage = () => {
         throw new Error(errorData.detail || 'Invalid OTP');
       }
 
-      const result = await response.json();
-      console.log('✅ OTP verified successfully');
-      console.log('📞 Phone verified:', authData.phone);
+      console.log('✅ OTP VERIFIED BY BACKEND');
       
-      // Check if user profile exists
-      console.log('🔍 Checking if profile exists for phone:', authData.phone);
+      // CRITICAL: IMMEDIATELY clear any demo mode
+      localStorage.removeItem('demo_mode');
+      localStorage.removeItem('isAuthenticated'); // Clear old auth
+      console.log('🧹 Cleared demo mode and old auth');
       
-      const { data: existingProfile, error: profileError } = await supabase
+      // Check if profile already exists
+      const { data: existingProfile } = await supabase
         .from('profiles')
         .select('*')
         .eq('phone', authData.phone)
         .maybeSingle();
       
-      console.log('📊 Profile query result:', { 
-        found: !!existingProfile, 
-        error: profileError,
-        user_id: existingProfile?.user_id,
-        name: existingProfile ? `${existingProfile.first_name} ${existingProfile.last_name}` : 'N/A'
-      });
-      
       if (existingProfile) {
-        // EXISTING USER - Log them in immediately
-        console.log('✅ EXISTING USER FOUND');
+        // EXISTING REAL USER - LOGIN
+        console.log('🔵 EXISTING REAL USER FOUND');
         console.log('User ID:', existingProfile.user_id);
-        console.log('User name:', existingProfile.first_name, existingProfile.last_name);
-        console.log('Is demo?:', existingProfile.is_demo);
+        console.log('Name:', existingProfile.first_name, existingProfile.last_name);
+        console.log('Is Demo?:', existingProfile.is_demo);
         
-        console.log('💾 Storing session in localStorage...');
+        // FORCE set as real user
+        localStorage.clear(); // Clear EVERYTHING first
         localStorage.setItem('authenticated_user_id', existingProfile.user_id);
         localStorage.setItem('authenticated_user_phone', authData.phone);
         localStorage.setItem('authenticated_user_name', `${existingProfile.first_name} ${existingProfile.last_name}`);
         localStorage.setItem('isAuthenticated', 'true');
-        localStorage.removeItem('demo_mode');
+        localStorage.setItem('user_is_real', 'true'); // Extra flag
         
-        console.log('✅ Session stored:');
-        console.log('  - authenticated_user_id:', localStorage.getItem('authenticated_user_id'));
-        console.log('  - authenticated_user_phone:', localStorage.getItem('authenticated_user_phone'));
-        console.log('  - isAuthenticated:', localStorage.getItem('isAuthenticated'));
+        console.log('✅ REAL USER SESSION STORED');
+        console.log('Stored user_id:', localStorage.getItem('authenticated_user_id'));
         
-        toast.success(`ברוך הבא ${existingProfile.first_name}!`, { duration: 3000 });
+        toast.success(`ברוך הבא ${existingProfile.first_name}!`);
         
-        console.log('🔄 Redirecting to homepage in 1 second...');
-        
-        // Wait a bit to ensure localStorage is written
+        // FORCE redirect with reload
         setTimeout(() => {
-          console.log('🚀 REDIRECTING NOW');
-          window.location.href = '/';
-        }, 1000);
+          console.log('🚀 REDIRECTING TO REAL USER HOMEPAGE');
+          window.location.href = '/?user=' + existingProfile.user_id;
+        }, 500);
       } else {
-        // NEW USER - Go to profile completion
-        console.log('📝 NEW USER - No profile found');
-        console.log('📝 Going to profile completion step');
-        toast.success('קוד אומת בהצלחה!');
+        // NEW USER - Go to profile creation
+        console.log('🟢 NEW USER - Going to profile completion');
+        toast.success('קוד אומת! עוד צעד אחד');
         setAuthData(prev => ({ ...prev, otp }));
         setCurrentStep('profile');
       }
       
     } catch (error: any) {
-      console.error('OTP verification error:', error);
-      
-      let errorMessage = 'שגיאה באימות הקוד';
-      if (error.message?.includes('expired')) {
-        errorMessage = 'הקוד פג תוקף';
-      } else if (error.message?.includes('invalid') || error.message?.includes('Invalid')) {
-        errorMessage = 'קוד לא נכון';
-      } else if (error.message?.includes('Too many')) {
-        errorMessage = 'יותר מדי ניסיונות';
-      }
-      
-      setAuthError(errorMessage);
-      toast.error(errorMessage);
+      console.error('❌ OTP verification error:', error);
+      setAuthError(error.message || 'שגיאה באימות הקוד');
+      toast.error(error.message || 'קוד לא נכון');
     }
   };
 
