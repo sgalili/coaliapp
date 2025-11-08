@@ -185,10 +185,12 @@ export const AuthPage = () => {
       // Store REAL user session
       localStorage.setItem('authenticated_user_id', userId);
       localStorage.setItem('authenticated_user_phone', authData.phone);
+      localStorage.setItem('authenticated_user_name', `${firstName} ${lastName}`);
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.removeItem('demo_mode');
       
       console.log('✅ Session stored for real user:', userId);
+      console.log('✅ Removing demo mode, setting authenticated');
 
       // Send welcome WhatsApp
       try {
