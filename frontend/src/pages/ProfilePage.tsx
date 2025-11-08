@@ -9,8 +9,20 @@ import { demoUsers } from "@/data/demoUsers";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const currentUserId = 'demo-user'; // In real app, get from auth context
+  
+  // Check if user is authenticated (real user) or demo
+  const getAuthenticatedUserId = () => {
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    if (authUserId) return authUserId;
+    
+    // Fallback to demo user
+    return 'demo-user';
+  };
+  
+  const currentUserId = getAuthenticatedUserId();
   const isDemoUser = currentUserId === 'demo-user';
+  
+  console.log('👤 Current user:', currentUserId, isDemoUser ? '(DEMO)' : '(REAL)');
   
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [trustCount, setTrustCount] = useState(0);
