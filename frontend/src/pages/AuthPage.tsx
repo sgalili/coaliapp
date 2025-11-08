@@ -202,17 +202,31 @@ export const AuthPage = () => {
         return;
       }
 
-      console.log('✅ REAL user profile created:', profile);
+      console.log('✅ REAL user profile created successfully');
+      console.log('📊 Profile details:', {
+        user_id: profile.user_id,
+        phone: profile.phone,
+        name: `${profile.first_name} ${profile.last_name}`,
+        is_demo: profile.is_demo,
+        zooz_balance: profile.zooz_balance
+      });
 
       // Store REAL user session
+      console.log('💾 Storing REAL user session...');
       localStorage.setItem('authenticated_user_id', userId);
       localStorage.setItem('authenticated_user_phone', authData.phone);
       localStorage.setItem('authenticated_user_name', `${firstName} ${lastName}`);
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.removeItem('demo_mode');
       
-      console.log('✅ Session stored for real user:', userId);
+      console.log('✅ Session stored for REAL user:', userId);
       console.log('✅ Removing demo mode, setting authenticated');
+      console.log('📋 localStorage contents:');
+      console.log('  - authenticated_user_id:', localStorage.getItem('authenticated_user_id'));
+      console.log('  - authenticated_user_phone:', localStorage.getItem('authenticated_user_phone'));
+      console.log('  - authenticated_user_name:', localStorage.getItem('authenticated_user_name'));
+      console.log('  - isAuthenticated:', localStorage.getItem('isAuthenticated'));
+      console.log('  - demo_mode:', localStorage.getItem('demo_mode'));
 
       // Send welcome WhatsApp
       try {
