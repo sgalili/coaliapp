@@ -83,7 +83,10 @@ export default function ProfilePage() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
-  const userBio = "בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים. תומך בחדשנות ישראלית ומאמין בכוח הקהילה לשנות את העולם. אוהב לטייל, לקרוא ספרים על היסטוריה ולצלם נופים.";
+  // REAL user profile data
+  const [userProfile, setUserProfile] = useState<any>(null);
+  
+  const userBio = userProfile?.bio || "בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים. תומך בחדשנות ישראלית ומאמין בכוח הקהילה לשנות את העולם. אוהב לטייל, לקרוא ספרים על היסטוריה ולצלם נופים.";
 
   const handleTrustBack = async (userId: string) => {
     try {
