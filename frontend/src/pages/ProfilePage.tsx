@@ -323,29 +323,20 @@ export default function ProfilePage() {
   const loadDraftPosts = async () => {
     try {
       const { data, error } = await supabase
-        .from('demo_posts')
+        .from('posts') // ✅ Use posts table
         .select('*')
         .eq('user_id', currentUserId)
-        .eq('status', 'draft')
+        .eq('is_draft', true) // Use is_draft instead of status
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('Draft posts may not exist, using demo data:', error);
-        // Use demo draft data with placeholder
-        setDraftPosts([
-          {
-            id: 'draft-1',
-            caption: 'טיוטה ראשונה - רעיונות על חדשנות בישראל',
-            image_url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400',
-            created_at: new Date().toISOString(),
-            status: 'draft'
-          }
-        ]);
+        console.warn('Error loading drafts:', error);
+        setDraftPosts([]);
         return;
       }
 
       setDraftPosts(data || []);
-      console.log('📝 Draft posts loaded:', data?.length);
+      console.log('📝 Draft posts loaded:', data?.length || 0);
     } catch (error) {
       console.error('Failed to load draft posts:', error);
       setDraftPosts([]);
