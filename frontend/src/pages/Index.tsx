@@ -547,7 +547,7 @@ export default function Index() {
       console.log('✅ REAL USER - Will hide all demo content');
       setCurrentUserId(authUserId);
       setIsRealUser(true);
-      setUnreadNotifications(0); // Real users: 0 notifications
+      setUnreadNotifications(0);
       
       // Load real user profile
       loadUserProfile(authUserId);
@@ -555,8 +555,13 @@ export default function Index() {
       console.log('⚠️ Demo user - Will show demo content');
       setCurrentUserId('demo-user');
       setIsRealUser(false);
-      setUnreadNotifications(3); // Demo users: 3 notifications
+      setUnreadNotifications(3);
     }
+    
+    // Reload posts to apply bookmark state
+    setTimeout(() => {
+      loadPostsFromDB();
+    }, 500);
   }, []);
   
   const loadUserProfile = async (userId: string) => {
