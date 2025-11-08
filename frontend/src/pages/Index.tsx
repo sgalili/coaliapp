@@ -1315,10 +1315,18 @@ export default function Index() {
             .delete()
             .eq('id', existing.id);
           
-          toast.success('הוסר מהמועדפים');
+          console.log('✅ Bookmark removed');
+          
+          // Update local state immediately
           setPosts(posts.map(p => 
-            p.id === postId ? { ...p, watchCount: newCount, hasUserWatched: !hasWatched } : p
+            p.id === postId ? { 
+              ...p, 
+              hasUserWatched: false, // ✅ Mark as not bookmarked
+              watchCount: Math.max(0, (p.watchCount || 0) - 1) // ✅ Decrement count
+            } : p
           ));
+          
+          toast.success('הוסר מהמועדפים');
           return;
         }
         
