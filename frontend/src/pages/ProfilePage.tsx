@@ -1261,12 +1261,12 @@ export default function ProfilePage() {
       
       {/* Edit Profile Modal */}
       <EditProfileModal
-        userId="demo-user"
+        userId={currentUserId}
         isOpen={showEditProfile}
         onClose={() => setShowEditProfile(false)}
         onSave={() => {
           setShowEditProfile(false);
-          loadUserPosts(); // Reload to show updated data
+          loadUserPosts();
         }}
       />
     </div>
