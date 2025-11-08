@@ -108,16 +108,24 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* Header with Coali Logo */}
       <div className="text-center space-y-4 pt-4">
-        <div className="w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
-          <Shield className="w-10 h-10 text-white" />
+        <div className="flex justify-center">
+          <img 
+            src="/coali-logo.webp" 
+            alt="Coali" 
+            className="w-24 h-24 object-contain"
+          />
         </div>
-        <div className="space-y-3">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-trust bg-clip-text text-transparent">
-            {t('auth.welcome')}
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">
+            ברוכים הבאים ל-Coali
           </h1>
-          <p className="text-lg font-medium text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
+            הרשת הראשונה של אמון דיגיטלי
+          </p>
+        </div>
+      </div>
             {t('auth.subtitle')}
           </p>
           <Button 
