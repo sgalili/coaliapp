@@ -75,6 +75,10 @@ app.include_router(zooz_router, prefix="/api/zooz", tags=["ZOOZ"])
 from routes.admin_users import router as admin_users_router
 app.include_router(admin_users_router, prefix="/api/admin", tags=["Admin Users"])
 
+# Include OTP routes
+from routes.otp import router as otp_router
+app.include_router(otp_router, prefix="/api/otp", tags=["OTP"])
+
 # Include the main router in the app
 app.include_router(api_router)
 
