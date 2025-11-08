@@ -1990,7 +1990,8 @@ export default function Index() {
               </button>
 
               {/* Caption - With edit timestamp if edited */}
-              {post.updated_at && post.updated_at !== post.created_at && (
+              {post.updated_at && post.updated_at !== post.created_at && 
+               new Date(post.updated_at).getTime() !== new Date(post.created_at).getTime() && (
                 <p className="text-white/60 text-xs drop-shadow-lg mb-1">
                   נערך {formatTimeAgo(post.updated_at)}
                 </p>
