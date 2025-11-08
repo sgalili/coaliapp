@@ -2008,14 +2008,24 @@ export default function Index() {
               <button
                 onClick={async () => {
                   try {
+                    console.log('💾 Updating post:', editingPost.id);
+                    console.log('👤 Post owner:', editingPost.user_id);
+                    console.log('👤 Current user:', currentUserId);
+                    
+                    // Verify ownership
+                    if (editingPost.user_id !== currentUserId) {
+                      toast.error('אין לך הרשאה לערוך פוסט זה');
+                      return;
+                    }
+                    
                     const { error } = await supabase
-                      .from('demo_posts')
+                      .from('posts') // ✅ Use posts table
                       .update({ 
-                        caption: editCaption, 
-                        category: editCategory,
+                        content: editCaption, // ✅ Use 'content' field
                         updated_at: new Date().toISOString()
                       })
-                      .eq('id', editingPost.id);
+                      .eq('id', editingPost.id)
+                      .eq('user_id', currentUserId); // ✅ Only update own posts
                     
                     if (error) throw error;
                     
