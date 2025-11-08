@@ -72,15 +72,28 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       
       // 2. Send OTP via backend
       const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+      
+      console.log('📤 Sending OTP to backend:', backendUrl);
+      console.log('📞 Phone number:', fullPhone);
+      
       const response = await fetch(`${backendUrl}/api/otp/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: fullPhone })
       });
 
+      console.log('📥 Response status:', response.status);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to send OTP');
+        const errorText = await response.text();
+        console.error('❌ Backend error:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.detail || 'Failed to send OTP');
+        } catch (parseError) {
+          throw new Error(errorText || `HTTP ${response.status}`);
+        }
       }
 
       const result = await response.json();
@@ -89,14 +102,22 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       // Show OTP in toast for testing (since WhatsApp might fail)
       if (result.otp) {
         console.log('🔑 OTP CODE:', result.otp);
-        toast.success(`קוד נשלח! (לצורך בדיקה: ${result.otp})`, { duration: 10000 });
+        toast.success(`קוד נשלח! הקוד שלך: ${result.otp}`, { duration: 15000 });
+      } else {
+        toast.success('קוד נשלח ל-WhatsApp');
       }
 
       onSubmit(fullPhone);
       
     } catch (err: any) {
-      console.error('Phone submit error:', err);
-      setError(err?.message || 'שגיאה לא צפויה');
+      console.error('❌ Phone submit error:', err);
+      console.error('Error message:', err.message);
+      console.error('Error stack:', err.stack);
+      
+      // Show detailed error to user
+      const errorMsg = err.message || 'שגיאה לא צפויה';
+      setError(`שגיאה בשליחת קוד: ${errorMsg}`);
+      toast.error(`שגיאה: ${errorMsg}`);
     } finally {
       setBusy(false);
     }
