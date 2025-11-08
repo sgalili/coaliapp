@@ -126,65 +126,34 @@ export const AuthPage = () => {
     }
   };
 
-  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string, expertiseFields?: string[]) => {
+  const handleProfileComplete = async (firstName: string, lastName: string) => {
     try {
       setAuthError('');
       
-      // Get current session
-      const { data: { session } } = await supabase.auth.getSession();
+      // Create simple profile with just phone + name
+      const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       
-      if (!session?.user) {
-        // If no session, try to create profile directly with phone
-        const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-        
-        const { data: profile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: userId,
-            phone: authData.phone,
-            first_name: firstName,
-            last_name: lastName,
-            avatar_url: profilePicture,
-            is_verified: true,
-            zooz_balance: 10, // Welcome bonus
-            created_at: new Date().toISOString()
-          })
-          .select()
-          .single();
+      const { data: profile, error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          phone: authData.phone,
+          first_name: firstName,
+          last_name: lastName,
+          is_verified: true,
+          zooz_balance: 10,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single();
 
-        if (createError) {
-          console.error('Error creating profile:', createError);
-          console.error('Error details:', JSON.stringify(createError, null, 2));
-          toast.error('שגיאה ביצירת הפרופיל');
-          return;
-        }
-
-        console.log('✅ Profile created:', profile);
-      } else {
-        // Update existing profile via hook
-        const { error: updateError } = await updateProfile(firstName, lastName, profilePicture);
-        
-        if (updateError) {
-          console.error('Error updating profile:', updateError);
-          toast.error('שגיאה בעדכון הפרופיל');
-          return;
-        }
+      if (createError) {
+        console.error('Error creating profile:', createError);
+        toast.error('שגיאה ביצירת הפרופיל');
+        return;
       }
 
-      // Save expertise fields if provided
-      if (expertiseFields && expertiseFields.length > 0) {
-        const { data: { user } } = await supabase.auth.getUser();
-        const userId = user?.id || `user_${authData.phone}`;
-        
-        for (const field of expertiseFields) {
-          await supabase.from('user_expertise').upsert({
-            user_id: userId,
-            expertise_field: field,
-            verified: false
-          }, { onConflict: 'user_id,expertise_field' });
-        }
-        console.log('✅ Expertise fields saved');
-      }
+      console.log('✅ Profile created:', profile);
 
       // Send welcome WhatsApp
       try {
@@ -200,13 +169,12 @@ export const AuthPage = () => {
 
 🪙 קיבלת 10z מתנה לחשבון שלך
 
-מה עכשיו?
-• גלה את רשת האמון שלנו
-• תן אמון למומחים בתחומים שמעניינים אותך
-• השתתף בהחלטות חשובות
-• צבור ZOOZ והשפעה
+התחל עכשיו:
+• גלה תכנים מעניינים
+• תן אמון למומחים
+• שמור פוסטים למועדפים
 
-🔗 התחל עכשיו: ${window.location.origin}
+🔗 ${window.location.origin}
 
 בהצלחה! 💪
 צוות Coali`
@@ -217,11 +185,10 @@ export const AuthPage = () => {
         console.error('Failed to send welcome WhatsApp:', whatsappError);
       }
       
-      // Clear form state
-      localStorage.removeItem('signup_form_state');
+      localStorage.removeItem('signup_basic_info');
       
-      setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
-      toast.success('🎉 הפרופיל נוצר בהצלחה! קיבלת 10z מתנה!');
+      setAuthData(prev => ({ ...prev, firstName, lastName }));
+      toast.success('🎉 ברוך הבא ל-Coali!');
       navigate('/');
     } catch (error) {
       console.error('Error creating profile:', error);
