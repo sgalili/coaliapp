@@ -137,8 +137,19 @@ export const AuthPage = () => {
         hasPicture: !!profilePicture 
       });
       
-      // Create profile - let Supabase generate UUID for user_id
+      // Generate a valid UUID for user_id
+      const generateUUID = () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      };
+      
+      const userId = generateUUID();
+      
       const profileData = {
+        user_id: userId,
         phone: authData.phone,
         first_name: firstName,
         last_name: lastName,
@@ -148,7 +159,7 @@ export const AuthPage = () => {
         created_at: new Date().toISOString()
       };
       
-      console.log('📤 Inserting profile data:', profileData);
+      console.log('📤 Inserting profile data with UUID:', userId);
       
       const { data: profile, error: createError } = await supabase
         .from('profiles')
