@@ -1339,6 +1339,15 @@ export default function Index() {
         }
         
         console.log('✅ Bookmark created');
+        
+        // Update local state immediately
+        setPosts(posts.map(p => 
+          p.id === postId ? { 
+            ...p, 
+            hasUserWatched: true, // ✅ Mark as bookmarked
+            watchCount: (p.watchCount || 0) + 1 // ✅ Increment count
+          } : p
+        ));
 
         // Auto-subscribe to post owner (if not self)
         if (post.user_id && post.user_id !== currentUserId) {
