@@ -1406,11 +1406,20 @@ export default function Index() {
     
     try {
       console.log('🗑️ Deleting post:', post.id);
+      console.log('👤 Post owner:', post.user_id);
+      console.log('👤 Current user:', currentUserId);
+      
+      // Verify ownership
+      if (post.user_id !== currentUserId) {
+        toast.error('אין לך הרשאה למחוק פוסט זה');
+        return;
+      }
       
       const { error } = await supabase
-        .from('demo_posts')
+        .from('posts') // ✅ Use posts table
         .delete()
-        .eq('id', post.id);
+        .eq('id', post.id)
+        .eq('user_id', currentUserId); // ✅ Only delete own posts
       
       if (error) throw error;
       
