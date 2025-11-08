@@ -286,17 +286,19 @@ export default function DecisionsPage() {
   if (!currentDecision) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-900/40 to-black pb-20">
+        {/* Channel Selector - Left side */}
         <div className="fixed top-4 left-4 z-50">
+          <ChannelSelector />
+        </div>
+        
+        {/* Back Arrow - Right side */}
+        <div className="fixed top-4 right-4 z-50">
           <button
             onClick={() => navigate(-1)}
             className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-        </div>
-        
-        <div className="fixed top-4 right-4 z-50">
-          <ChannelSelector />
         </div>
 
         <div className="flex flex-col items-center justify-center h-screen text-white px-6">
