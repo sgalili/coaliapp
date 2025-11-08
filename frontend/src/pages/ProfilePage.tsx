@@ -154,6 +154,11 @@ export default function ProfilePage() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
+    
+    // Load user profile first
+    loadUserProfile();
+    
+    // Then load posts and other data
     loadUserPosts();
     
     // Real-time subscription for posts
