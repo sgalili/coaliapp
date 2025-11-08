@@ -126,11 +126,11 @@ export const AuthPage = () => {
     }
   };
 
-  const handleProfileComplete = async (firstName: string, lastName: string) => {
+  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture: string) => {
     try {
       setAuthError('');
       
-      // Create simple profile with just phone + name
+      // Create simple profile with phone + name + picture
       const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       
       const { data: profile, error: createError } = await supabase
@@ -140,6 +140,7 @@ export const AuthPage = () => {
           phone: authData.phone,
           first_name: firstName,
           last_name: lastName,
+          avatar_url: profilePicture,
           is_verified: true,
           zooz_balance: 10,
           created_at: new Date().toISOString()
