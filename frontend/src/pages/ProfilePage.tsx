@@ -9,6 +9,15 @@ import { demoUsers } from "@/data/demoUsers";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Parse URL params for edit mode
+  const searchParams = new URLSearchParams(location.search);
+  const shouldEdit = searchParams.get('edit') === 'true';
+  const action = searchParams.get('action'); // 'post' or 'wallet'
+  const missingFields = searchParams.get('missing')?.split(',') || [];
+  
+  console.log('📍 Profile page params:', { shouldEdit, action, missingFields });
   
   // CRITICAL: Check authentication IMMEDIATELY on mount
   React.useEffect(() => {
