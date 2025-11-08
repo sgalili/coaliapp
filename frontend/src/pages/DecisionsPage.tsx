@@ -188,7 +188,11 @@ const allDecisions = [
 export default function DecisionsPage() {
   const navigate = useNavigate();
   const { selectedChannel } = useChannel();
-  const [filteredDecisions, setFilteredDecisions] = useState(allDecisions);
+  
+  // HIDE all decisions for real users
+  const shouldShowDecisions = !isRealUser();
+  
+  const [filteredDecisions, setFilteredDecisions] = useState(shouldShowDecisions ? allDecisions : []);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -196,8 +200,13 @@ export default function DecisionsPage() {
     document.documentElement.setAttribute('lang', 'he');
   }, []);
 
-  // Filter decisions by channel
+  // Filter decisions by channel (only for demo users)
   useEffect(() => {
+    if (!shouldShowDecisions) {
+      setFilteredDecisions([]);
+      return;
+    }
+    
     const filtered = allDecisions.filter(decision => {
       if (selectedChannel.id === null) {
         return decision.channel_id === null;
@@ -207,8 +216,8 @@ export default function DecisionsPage() {
     });
     
     setFilteredDecisions(filtered);
-    setCurrentIndex(0); // Reset to first decision
-  }, [selectedChannel.id]);
+    setCurrentIndex(0);
+  }, [selectedChannel.id, shouldShowDecisions]);
 
   const currentDecision = filteredDecisions[currentIndex];
 
