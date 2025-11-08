@@ -581,10 +581,33 @@ export default function ProfilePage() {
                 <span>תנאי שימוש</span>
               </button>
 
-              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4">
-                <LogOut className="w-5 h-5" />
-                <span>התנתק</span>
-              </button>
+              {/* Conditional: Demo user sees signup/login, Real user sees logout */}
+              {isDemoUser ? (
+                <button 
+                  onClick={() => {
+                    navigate('/auth');
+                    setShowBurgerMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/10 rounded-lg text-right text-primary mt-4"
+                >
+                  <User className="w-5 h-5" />
+                  <span>הרשמה/כניסה</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => {
+                    // Logout logic for real users
+                    supabase.auth.signOut();
+                    localStorage.clear();
+                    navigate('/');
+                    setShowBurgerMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>התנתק</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
