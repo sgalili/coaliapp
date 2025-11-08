@@ -86,7 +86,15 @@ export default function ProfilePage() {
   // REAL user profile data
   const [userProfile, setUserProfile] = useState<any>(null);
   
-  const userBio = userProfile?.bio || "בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים. תומך בחדשנות ישראלית ומאמין בכוח הקהילה לשנות את העולם. אוהב לטייל, לקרוא ספרים על היסטוריה ולצלם נופים.";
+  // Bio logic: Show real bio, or "edit" link, or "no bio yet"
+  const getUserBio = () => {
+    if (userProfile?.bio) {
+      return userProfile.bio;
+    }
+    return null; // No bio
+  };
+  
+  const userBio = getUserBio();
 
   const handleTrustBack = async (userId: string) => {
     try {
