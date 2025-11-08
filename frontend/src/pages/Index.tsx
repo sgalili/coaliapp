@@ -695,15 +695,15 @@ export default function Index() {
       console.log('📥 Loading posts - Channel:', selectedChannel.id, 'Category:', selectedCategory);
       console.log('👤 Current user:', currentUserId, 'Is real?:', isRealUser);
       
-      // Fetch posts - FILTER OUT DEMO if real user
+      // Fetch posts - LABEL demo content (don't remove it)
       let dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
       
       console.log('📦 Raw posts from DB:', dbPosts.length);
       
-      // Apply demo filter
-      dbPosts = filterDemoPosts(dbPosts);
+      // Apply demo labeling (keeps demo posts but marks them)
+      dbPosts = labelDemoPosts(dbPosts);
       
-      console.log('✅ After filtering:', dbPosts.length, 'posts for', isRealUser ? 'REAL' : 'DEMO', 'user');
+      console.log('✅ Posts labeled:', dbPosts.length, 'total (demo + real mixed)');
       
       // Map database fields
       const mappedPosts = dbPosts.map((post: any) => ({
