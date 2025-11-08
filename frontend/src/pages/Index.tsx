@@ -533,6 +533,7 @@ export default function Index() {
   const [userZoozBalance, setUserZoozBalance] = useState(1500); // Demo balance
   const [currentUserId, setCurrentUserId] = useState('demo-user');
   const [isRealUser, setIsRealUser] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
   
   useEffect(() => {
     const authUserId = localStorage.getItem('authenticated_user_id');
@@ -544,12 +545,32 @@ export default function Index() {
       console.log('✅ REAL USER - Will hide all demo content');
       setCurrentUserId(authUserId);
       setIsRealUser(true);
+      
+      // Load real user profile
+      loadUserProfile(authUserId);
     } else {
       console.log('⚠️ Demo user - Will show demo content');
       setCurrentUserId('demo-user');
       setIsRealUser(false);
     }
   }, []);
+  
+  const loadUserProfile = async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (data) {
+        console.log('✅ User profile loaded:', data);
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    }
+  };
   const [openMenuPostId, setOpenMenuPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<any | null>(null);
   const [editCaption, setEditCaption] = useState('');
