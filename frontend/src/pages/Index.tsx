@@ -1823,8 +1823,13 @@ export default function Index() {
                   )}
                 </div>
                 <div className="text-right">
-                  <h3 className="text-white font-bold text-base drop-shadow-lg">
+                  <h3 className="text-white font-bold text-base drop-shadow-lg flex items-center gap-2">
                     {post.username}
+                    {post._isDemo && (
+                      <span className="text-xs bg-gray-600/80 backdrop-blur-sm px-2 py-0.5 rounded-full font-medium">
+                        דמו
+                      </span>
+                    )}
                   </h3>
                   <p className="text-white/90 text-sm drop-shadow-lg">
                     {post.expertise}
