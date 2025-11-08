@@ -718,14 +718,23 @@ export default function Index() {
       
       // Load user's bookmarks to mark posts
       let userBookmarkIds: string[] = [];
-      if (currentUserId) {
-        const { data: bookmarks } = await supabase
+      if (currentUserId && currentUserId !== 'demo-user') {
+        console.log('🔍 Loading bookmarks for user:', currentUserId);
+        
+        const { data: bookmarks, error: bookmarkError } = await supabase
           .from('bookmarks')
           .select('post_id')
           .eq('bookmark_user_id', currentUserId);
         
-        userBookmarkIds = bookmarks?.map(b => b.post_id) || [];
-        console.log('🔖 User has bookmarked:', userBookmarkIds.length, 'posts');
+        if (bookmarkError) {
+          console.error('Error loading bookmarks:', bookmarkError);
+        } else {
+          userBookmarkIds = bookmarks?.map(b => b.post_id) || [];
+          console.log('🔖 User has bookmarked these post IDs:', userBookmarkIds);
+          console.log('🔖 Total bookmarks:', userBookmarkIds.length);
+        }
+      } else {
+        console.log('⚠️ Skipping bookmark load for demo user');
       }
       
       // Map database fields - Use profile join data
