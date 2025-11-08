@@ -1283,8 +1283,8 @@ export default function Index() {
           .from('bookmarks')
           .insert({
             post_id: postId,
-            user_id: post.user_id || 'demo-user',
-            bookmark_user_id: 'demo-user'
+            user_id: post.user_id || currentUserId,
+            bookmark_user_id: currentUserId // ✅ REAL user ID
           })
           .select()
           .single();
@@ -1292,11 +1292,11 @@ export default function Index() {
         if (bookmarkError) throw bookmarkError;
 
         // Create subscription to post owner (if not self)
-        if (post.user_id && post.user_id !== 'demo-user') {
+        if (post.user_id && post.user_id !== currentUserId) {
           const { error: subError } = await supabase
             .from('subscriptions')
             .upsert({
-              subscriber_id: 'demo-user',
+              subscriber_id: currentUserId, // ✅ REAL user ID
               creator_id: post.user_id
             }, {
               onConflict: 'subscriber_id,creator_id',
