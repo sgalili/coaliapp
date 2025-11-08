@@ -707,6 +707,18 @@ export default function Index() {
       
       console.log('✅ Posts labeled:', dbPosts.length, 'total (demo + real mixed)');
       
+      // Load user's bookmarks to mark posts
+      let userBookmarkIds: string[] = [];
+      if (currentUserId) {
+        const { data: bookmarks } = await supabase
+          .from('bookmarks')
+          .select('post_id')
+          .eq('bookmark_user_id', currentUserId);
+        
+        userBookmarkIds = bookmarks?.map(b => b.post_id) || [];
+        console.log('🔖 User has bookmarked:', userBookmarkIds.length, 'posts');
+      }
+      
       // Map database fields - Use profile join data
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
@@ -720,7 +732,7 @@ export default function Index() {
         location: post.profiles?.city || 'ישראל',
         isVerified: post.profiles?.is_verified || false,
         isLive: post.is_live || false,
-        category: post.category || 'כללי', // ✅ Use saved category
+        category: post.category || 'כללי',
         channel_id: null,
         voteCount: 0,
         zoozCount: 0,
@@ -729,10 +741,10 @@ export default function Index() {
         commentCount: 0,
         shareCount: 0,
         hasUserTrusted: false,
-        hasUserWatched: false,
+        hasUserWatched: userBookmarkIds.includes(post.id), // ✅ Mark if bookmarked
         _isDemo: post._isDemo,
         created_at: post.created_at,
-        updated_at: post.updated_at, // ✅ For edited timestamp
+        updated_at: post.updated_at,
       }));
       
       console.log('✅ Mapped', mappedPosts.length, 'posts');
