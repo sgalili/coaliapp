@@ -69,54 +69,69 @@ export const AuthPage = () => {
 
   const handleOTPVerify = async (otp: string) => {
     try {
-      setAuthError(''); // Clear any previous errors
+      setAuthError('');
       
+      // Verify OTP and create auth session
       const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify-and-login', {
         body: { phone: authData.phone, otp }
       });
 
       if (error) throw error;
 
-      // Établir la session Supabase avec les tokens retournés
-      await supabase.auth.setSession({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-      });
-
-      console.log('User session established:', data.user);
-      toast.success('Vérification réussie !');
-      
-      // Send welcome WhatsApp message
-      try {
-        const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
-        await fetch(`${backendUrl}/api/whatsapp/send-message`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone_number: authData.phone,
-            message: `🎉 תודה שהצטרפת ל-Coali!\n\nאנחנו שמחים שאת/ה כאן. בוא/י לגלות את רשת האמון שלנו, לקחת חלק בהחלטות חשובות ולבנות ביחד קהילה מבוססת אמון.\n\n🔗 התחל לפעול עכשיו: ${window.location.origin}\n\nבהצלחה! 💪`
-          })
+      // Set Supabase auth session
+      if (data.access_token && data.refresh_token) {
+        await supabase.auth.setSession({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
         });
-        console.log('✅ Welcome WhatsApp message sent');
-      } catch (whatsappError) {
-        console.error('Failed to send welcome WhatsApp:', whatsappError);
-        // Don't fail the auth flow if WhatsApp fails
+      }
+
+      // Get the authenticated user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        console.log('✅ User authenticated:', user.id);
+        
+        // Check if profile exists
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('phone', authData.phone)
+          .maybeSingle();
+        
+        if (existingProfile) {
+          // Existing user - log in
+          console.log('✅ Existing user, logging in');
+          localStorage.setItem('authenticated_user_id', existingProfile.user_id);
+          localStorage.setItem('authenticated_user_phone', authData.phone);
+          localStorage.setItem('isAuthenticated', 'true');
+          toast.success('ברוך הבא חזרה!');
+          navigate('/');
+        } else {
+          // New user - go to profile completion
+          console.log('📝 New user, needs profile');
+          toast.success('קוד אומת בהצלחה!');
+          setAuthData(prev => ({ ...prev, otp }));
+          setCurrentStep('profile');
+        }
+      } else {
+        throw new Error('No user returned from auth');
       }
       
-      setAuthData(prev => ({ ...prev, otp }));
-      setCurrentStep('profile');
     } catch (error: any) {
       console.error('OTP verification error:', error);
       
       let errorMessage = 'שגיאה באימות הקוד';
-      if (error.message?.includes('expired') || error.message?.includes('otp_expired')) {
+      if (error.message?.includes('expired')) {
         errorMessage = 'הקוד פג תוקף';
-        toast.error('Code expiré');
-      } else if (error.message?.includes('invalid') || error.message?.includes('otp_invalid')) {
+      } else if (error.message?.includes('invalid')) {
         errorMessage = 'קוד לא נכון';
-        toast.error('Code incorrect');
-      } else if (error.message?.includes('not found') || error.message?.includes('otp_not_found')) {
-        errorMessage = 'קוד לא נמצא';
+      }
+      
+      setAuthError(errorMessage);
+      toast.error(errorMessage);
+    }
+  };
         toast.error('Code non trouvé');
       } else {
         toast.error('Code incorrect');
