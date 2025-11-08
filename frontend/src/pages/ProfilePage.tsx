@@ -323,7 +323,7 @@ export default function ProfilePage() {
   const loadDraftPosts = async () => {
     try {
       const { data, error } = await supabase
-        .from('posts') // ✅ Use posts table
+        .from('demo_posts') // ✅ Use posts table
         .select('*')
         .eq('user_id', currentUserId)
         .eq('is_draft', true) // Use is_draft instead of status
@@ -357,7 +357,7 @@ export default function ProfilePage() {
       console.log('👤 Current user:', currentUserId);
       
       const { error } = await supabase
-        .from('posts') // ✅ Use posts table
+        .from('demo_posts') // ✅ Use posts table
         .delete()
         .eq('id', postId)
         .eq('user_id', currentUserId); // ✅ Only allow deleting own posts
@@ -382,7 +382,7 @@ export default function ProfilePage() {
   const handlePublishDraft = async (postId: string) => {
     try {
       const { error } = await supabase
-        .from('posts') // ✅ Use posts table
+        .from('demo_posts') // ✅ Use posts table
         .update({ is_draft: false }) // ✅ Use is_draft flag
         .eq('id', postId);
 
@@ -404,7 +404,7 @@ export default function ProfilePage() {
     try {
       // Fetch user's posts
       const { data, error } = await supabase
-        .from('posts') // ✅ Use posts table
+        .from('demo_posts') // ✅ Use posts table
         .select('*')
         .eq('user_id', currentUserId)
         .order('created_at', { ascending: false });
@@ -570,7 +570,7 @@ export default function ProfilePage() {
       let bookmarksWithPosts = [];
       for (const bookmark of data) {
         const { data: post } = await supabase
-          .from('posts') // ✅ Use posts table
+          .from('demo_posts') // ✅ Use posts table
           .select('*, profiles(*)') // Join with profiles
           .eq('id', bookmark.post_id)
           .single();
