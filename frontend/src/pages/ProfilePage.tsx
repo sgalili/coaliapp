@@ -209,7 +209,7 @@ export default function ProfilePage() {
     const postsSubscription = supabase
       .channel('profile-posts')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'posts', filter: `user_id=eq.${currentUserId}` },
+        { event: '*', schema: 'public', table: 'demo_posts', filter: `user_id=eq.${currentUserId}` },
         () => {
           console.log('🔄 Posts changed, reloading...');
           loadUserPosts();
