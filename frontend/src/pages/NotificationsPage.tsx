@@ -36,7 +36,10 @@ export default function NotificationsPage() {
       time: 'אתמול',
       read: true
     }
-  ]);
+  ];
+  
+  // Show empty for real users, demo notifications for demo users
+  const [notifications] = useState(isRealUser() ? [] : demoNotifications);
 
   return (
     <div className="min-h-screen bg-background pb-20">
