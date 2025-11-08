@@ -823,10 +823,29 @@ export default function Index() {
   }, [selectedChannel.id, selectedCategory]);
 
   const handleFABClick = () => {
-    // Check authentication
+    // Check if real user needs to complete profile first
+    if (isRealUser) {
+      console.log('🔍 Real user clicked FAB - checking profile completion');
+      
+      // Check if user has completed categories + city
+      const hasCategories = userProfile?.expertise_fields?.length > 0;
+      const hasCity = userProfile?.city;
+      
+      console.log('Profile completion:', { hasCategories, hasCity });
+      
+      if (!hasCategories || !hasCity) {
+        toast.info('כדי לפרסם תוכן, עליך להשלים את הפרופיל שלך', { duration: 5000 });
+        // Show progressive completion modal
+        // TODO: Open PublishContentModal
+        navigate('/profile'); // For now, redirect to profile to edit
+        return;
+      }
+    }
+    
+    // Check authentication for demo users
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isRealUser) {
       navigate('/auth');
       return;
     }
