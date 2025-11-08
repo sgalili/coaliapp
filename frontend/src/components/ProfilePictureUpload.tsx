@@ -76,16 +76,18 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         </div>
       </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={handleCameraClick}
-        className="flex items-center gap-2"
-      >
-        <Upload className="w-4 h-4" />
-        העלה תמונה
-      </Button>
+      {!hideUploadButton && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleCameraClick}
+          className="flex items-center gap-2"
+        >
+          <Upload className="w-4 h-4" />
+          העלה תמונה
+        </Button>
+      )}
 
       {/* Hidden file input */}
       <input
