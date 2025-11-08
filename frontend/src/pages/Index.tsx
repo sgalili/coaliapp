@@ -1415,12 +1415,19 @@ export default function Index() {
       }
       
       const { error } = await supabase
-        .from('posts') // ✅ Use posts table
+        .from('posts')
         .delete()
         .eq('id', post.id)
-        .eq('user_id', currentUserId); // ✅ Only delete own posts
+        .eq('user_id', currentUserId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Delete error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        throw error;
+      }
+      
+      console.log('✅ Post deleted from database');
       
       setPosts(posts.filter(p => p.id !== post.id));
       toast.success('הפוסט נמחק! 🗑️');
