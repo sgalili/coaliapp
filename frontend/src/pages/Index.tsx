@@ -1270,36 +1270,56 @@ export default function Index() {
     if (newWatched) {
       // Add bookmark and subscription
       try {
-        // Save to bookmarks table
-        const { data: bookmarkData, error: bookmarkError } = await supabase
+        // Check if already bookmarked
+        const { data: existing } = await supabase
+          .from('bookmarks')
+          .select('id')
+          .eq('bookmark_user_id', currentUserId)
+          .eq('post_id', postId)
+          .maybeSingle();
+        
+        if (existing) {
+          // Already bookmarked - remove it (unbookmark)
+          await supabase
+            .from('bookmarks')
+            .delete()
+            .eq('id', existing.id);
+          
+          toast.success('הוסר מהמועדפים');
+          setPosts(posts.map(p => 
+            p.id === postId ? { ...p, watchCount: newCount, hasUserWatched: !hasWatched } : p
+          ));
+          return;
+        }
+        
+        // Save new bookmark
+        const { error: bookmarkError } = await supabase
           .from('bookmarks')
           .insert({
             post_id: postId,
             user_id: post.user_id || currentUserId,
-            bookmark_user_id: currentUserId // ✅ REAL user ID
-          })
-          .select()
-          .single();
+            bookmark_user_id: currentUserId
+          });
 
         if (bookmarkError) throw bookmarkError;
 
-        // Create subscription to post owner (if not self)
+        // Auto-subscribe to post owner (if not self)
         if (post.user_id && post.user_id !== currentUserId) {
           const { error: subError } = await supabase
             .from('subscriptions')
             .upsert({
-              subscriber_id: currentUserId, // ✅ REAL user ID
+              subscriber_id: currentUserId,
               creator_id: post.user_id
             }, {
-              onConflict: 'subscriber_id,creator_id',
-              ignoreDuplicates: true
+              onConflict: 'subscriber_id,creator_id'
             });
 
-          if (subError) console.warn('Subscription already exists or error:', subError);
+          if (subError) console.warn('Subscription error:', subError);
           
           toast.success(`נשמר למועדפים! 🔖 + נרשמת למנוי של ${post.username || 'המשתמש'}`);
         } else {
           toast.success('נשמר למועדפים! 🔖');
+        }
         }
 
         // Update watch count in database
