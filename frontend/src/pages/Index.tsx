@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { uploadMediaFile } from "@/services/uploadService";
 import { saveDemoPost, fetchDemoPosts, fetchDemoDecisions, updatePostEngagement } from "@/services/database";
 import { toast } from "sonner";
+import { filterDemoPosts } from "@/utils/demoFilter";
 
 // Empty Category State Component
 const EmptyCategoryState = () => {
