@@ -111,6 +111,42 @@ export default function ProfilePage() {
     }
   };
 
+  const loadUserProfile = async () => {
+    try {
+      console.log('📋 Loading profile for user:', currentUserId);
+      
+      if (currentUserId === 'demo-user') {
+        // Demo user - use default data
+        setUserProfile({
+          first_name: 'משתמש דמו',
+          last_name: 'מאומת',
+          avatar_url: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+          bio: 'בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים.',
+          expertise_fields: ['טכנולוגיה', 'עסקים', 'חדשות']
+        });
+        return;
+      }
+      
+      // REAL USER - Load from database
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .single();
+      
+      if (error) {
+        console.error('Error loading profile:', error);
+        return;
+      }
+      
+      console.log('✅ REAL user profile loaded:', data);
+      setUserProfile(data);
+      
+    } catch (error) {
+      console.error('Failed to load user profile:', error);
+    }
+  };
+
   const handleUntrust = async (userId: string) => {
     if (!confirm('האם אתה בטוח שברצונך לבטל את האמון?')) return;
 
