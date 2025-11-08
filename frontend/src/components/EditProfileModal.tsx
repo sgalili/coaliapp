@@ -124,7 +124,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:left-4 [&>button]:right-auto" dir="rtl">
         <DialogHeader>
           <DialogTitle className="text-right">ערוך פרופיל</DialogTitle>
         </DialogHeader>
