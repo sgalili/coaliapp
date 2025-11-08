@@ -547,6 +547,7 @@ export default function Index() {
       console.log('✅ REAL USER - Will hide all demo content');
       setCurrentUserId(authUserId);
       setIsRealUser(true);
+      setUnreadNotifications(0); // Real users: 0 notifications
       
       // Load real user profile
       loadUserProfile(authUserId);
@@ -554,6 +555,7 @@ export default function Index() {
       console.log('⚠️ Demo user - Will show demo content');
       setCurrentUserId('demo-user');
       setIsRealUser(false);
+      setUnreadNotifications(3); // Demo users: 3 notifications
     }
   }, []);
   
