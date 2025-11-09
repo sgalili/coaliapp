@@ -240,7 +240,7 @@ export default function AdminChannelRequests() {
                   </div>
 
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                    <span>מבקש: {request.profiles?.first_name} {request.profiles?.last_name}</span>
+                    <span>מבקש: User ID {request.user_id.slice(0, 8)}...</span>
                     <span>•</span>
                     <span>{new Date(request.created_at).toLocaleDateString('he-IL')}</span>
                   </div>
