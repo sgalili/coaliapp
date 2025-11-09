@@ -1196,7 +1196,7 @@ export default function Index() {
       const newPost = {
         user_id: currentUserId,
         username: realUserName,
-        title: userProfile?.title || '', // ✅ Save user's title
+        title: userProfile?.title || '',
         profile_image: realUserImage,
         expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
         caption: caption.trim(),
@@ -1204,6 +1204,7 @@ export default function Index() {
         category: uploadCategory,
         location: userProfile?.city || 'ישראל',
         is_verified: userProfile?.is_verified || false,
+        is_camera_recorded: isFromCamera, // ✅ Track if from camera
         is_live: false
       };
       
