@@ -15,9 +15,12 @@ import {
   Globe,
   Lock,
   MessageSquare,
-  Vote
+  Vote,
+  RefreshCw
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function EnhancedAdminDashboard() {
   const navigate = useNavigate();
