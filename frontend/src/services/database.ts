@@ -18,17 +18,14 @@ export const saveDemoPost = async (post: any) => {
 export const fetchDemoPosts = async (channelId?: string | null, category?: string) => {
   let query = supabase
     .from('demo_posts')
-    .select('*, profiles(*)')  // Join with profiles to get user info
+    .select('*') // ✅ Simple select, demo_posts has all fields
     .order('created_at', { ascending: false });
-  
-  // Note: posts table may not have channel_id or category columns
-  // Only filter if these columns exist
   
   const { data, error } = await query;
   
   if (error) {
     console.error('Error fetching posts:', error);
-    return []; // Return empty instead of throwing
+    return [];
   }
   
   console.log('📦 Fetched posts:', data?.length || 0);
