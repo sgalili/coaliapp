@@ -27,17 +27,23 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
   const loadMyChannels = async () => {
     try {
       console.log('🔍 Querying channel_requests for user:', currentUserId);
+      console.log('Query: SELECT * FROM channel_requests WHERE user_id =', currentUserId);
       
       const { data, error } = await supabase
         .from('channel_requests')
         .select('*')
-        .eq('user_id', currentUserId)
-        .eq('status', 'approved');
+        .eq('user_id', currentUserId); // ✅ Get ALL (not just approved)
       
-      console.log('📊 Query result:', { found: data?.length || 0, error });
-      console.log('📋 My channels:', data);
+      console.log('📊 Query result:');
+      console.log('  Found:', data?.length || 0);
+      console.log('  Error:', error);
+      console.log('  Data:', data);
       
-      setMyChannels(data || []);
+      // Filter for approved only
+      const approvedChannels = data?.filter(ch => ch.status === 'approved') || [];
+      console.log('✅ Approved channels:', approvedChannels.length);
+      
+      setMyChannels(approvedChannels);
     } catch (error) {
       console.error('Error loading my channels:', error);
     }
