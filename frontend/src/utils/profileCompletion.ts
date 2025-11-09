@@ -23,6 +23,15 @@ export const checkProfileCompletion = (profile: any): ProfileCompletionStatus =>
     missingForPost.push('categories');
   }
   
+  // Title required for verified users (after completing bio + categories)
+  if (profile?.is_verified && 
+      profile?.expertise_fields?.length > 0 && 
+      profile?.bio?.length >= 10) {
+    if (!profile?.title || profile.title.trim() === '') {
+      missingForPost.push('title');
+    }
+  }
+  
   // Level 2: Required for wallet (includes Level 1)
   missingForWallet.push(...missingForPost);
   
