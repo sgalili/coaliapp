@@ -55,7 +55,8 @@ const App = () => (
             <Route path="/user/:userId/post/:postId" element={<PostDetailPage />} />
             <Route path="/toptrusted" element={<TopTrustedPage />} />
             <Route path="/decisions" element={<DecisionsPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin" element={<EnhancedAdminDashboard />} />
+            <Route path="/admin/dashboard" element={<EnhancedAdminDashboard />} />
             <Route path="/admin/content" element={<AdminContent />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />
