@@ -160,7 +160,14 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
               )}
 
               {/* Create Channel Button */}
-              <button className="w-full flex items-center justify-between gap-3 p-3 bg-muted/50 hover:bg-muted transition-colors" dir="rtl">
+              <button 
+                onClick={() => {
+                  setIsOpen(false);
+                  onCreateChannel?.();
+                }}
+                className="w-full flex items-center justify-between gap-3 p-3 bg-muted/50 hover:bg-muted transition-colors" 
+                dir="rtl"
+              >
                 <p className="text-sm font-medium text-foreground text-right flex-1">צור ערוץ חדש</p>
                 <Plus className="w-5 h-5 text-muted-foreground flex-shrink-0" />
               </button>
