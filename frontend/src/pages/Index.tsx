@@ -13,6 +13,7 @@ import { saveDemoPost, fetchDemoPosts, fetchDemoDecisions, updatePostEngagement 
 import { toast } from "sonner";
 import { labelDemoPosts, isDemoPost } from "@/utils/demoFilter";
 import { checkProfileCompletion, getMissingFieldsText } from "@/utils/profileCompletion";
+import { CreateChannelDialog } from "@/components/CreateChannelDialog";
 
 // Empty Category State Component
 const EmptyCategoryState = () => {
