@@ -209,7 +209,7 @@ export default function EnhancedAdminDashboard() {
 
           {/* Channels Management */}
           <button
-            onClick={() => navigate(`/admin/channels?area=${activeArea}`)}
+            onClick={() => navigate(`/admin/all-channels?area=${activeArea}`)}
             className="p-6 bg-card border rounded-xl hover:shadow-lg transition-all text-right"
           >
             <div className="flex items-center gap-3 mb-2">
@@ -219,7 +219,7 @@ export default function EnhancedAdminDashboard() {
             <p className="text-sm text-muted-foreground">
               {activeArea === 'demo'
                 ? 'ערוצי דמו (ערוץ 10, מכבי, אחווה)'
-                : 'בקשות ערוצים, אישורים'}
+                : 'כל הערוצים - ערוך, מחק, נהל חברים'}
             </p>
           </button>
 
