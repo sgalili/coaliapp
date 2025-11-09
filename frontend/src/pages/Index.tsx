@@ -770,29 +770,29 @@ export default function Index() {
       
       console.log('📊 Bookmark counts loaded:', Object.keys(bookmarkCountMap).length, 'posts have bookmarks');
       
-      // Map database fields - Use profile join data
+      // Map database fields
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
         user_id: post.user_id,
-        username: post.profiles ? `${post.profiles.first_name} ${post.profiles.last_name}` : 'משתמש',
-        expertise: post.profiles?.expertise_fields?.[0] || 'משתמש',
-        profileImage: post.profiles?.avatar_url || '/default-avatar.jpg',
+        username: post.username || 'משתמש',
+        expertise: post.expertise || 'משתמש',
+        profileImage: post.profile_image || '/default-avatar.jpg',
         videoUrl: post.video_url,
-        imageUrl: post.thumbnail_url,
-        caption: post.content || '',
-        location: post.profiles?.city || 'ישראל',
-        isVerified: post.profiles?.is_verified || false,
+        imageUrl: post.image_url || post.thumbnail_url,
+        caption: post.caption || post.content || '',
+        location: post.location || 'ישראל',
+        isVerified: post.is_verified || false,
         isLive: post.is_live || false,
         category: post.category || 'כללי',
-        channel_id: null,
+        channel_id: post.channel_id,
         voteCount: 0,
         zoozCount: 0,
         trustCount: 0,
-        watchCount: bookmarkCountMap[post.id] || 0, // ✅ Real bookmark count
+        watchCount: bookmarkCountMap[post.id] || 0,
         commentCount: 0,
         shareCount: 0,
-        hasUserTrusted: userTrustIds.includes(post.user_id), // ✅ Mark if trusted
-        hasUserWatched: userBookmarkIds.includes(post.id), // ✅ Mark if bookmarked
+        hasUserTrusted: userTrustIds.includes(post.user_id),
+        hasUserWatched: userBookmarkIds.includes(post.id),
         _isDemo: post._isDemo,
         created_at: post.created_at,
         updated_at: post.updated_at,
