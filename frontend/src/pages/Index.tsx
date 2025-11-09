@@ -822,7 +822,7 @@ export default function Index() {
         channel_id: post.channel_id,
         voteCount: 0,
         zoozCount: 0,
-        trustCount: 0,
+        trustCount: trustCountMap[post.user_id] || 0, // ✅ Real trust count
         watchCount: bookmarkCountMap[post.id] || 0,
         commentCount: 0,
         shareCount: 0,
