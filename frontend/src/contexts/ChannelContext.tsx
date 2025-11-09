@@ -68,11 +68,22 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [selectedChannel, setSelectedChannelState] = useState<Channel>(defaultChannel);
   const [selectedCategory, setSelectedCategoryState] = useState<string>('הכל');
   const [showChannelIndicator, setShowChannelIndicatorState] = useState<boolean>(true);
-  const [availableChannels] = useState<Channel[]>(demoChannels);
+  
+  // Check if real user - only show Coali for real users
+  const isReal = localStorage.getItem('authenticated_user_id') && 
+                 localStorage.getItem('authenticated_user_id') !== 'demo-user';
+  
+  const [availableChannels] = useState<Channel[]>(isReal ? [defaultChannel] : demoChannels);
   const [isLoading, setIsLoading] = useState(false);
 
   // Load saved channel and category from localStorage on mount
   useEffect(() => {
+    if (isReal) {
+      // Real users: Force Coali channel only
+      setSelectedChannelState(defaultChannel);
+      return;
+    }
+    
     const savedChannelId = localStorage.getItem('selected_channel_id');
     const savedCategory = localStorage.getItem('selected_category');
     
@@ -86,7 +97,7 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (savedCategory) {
       setSelectedCategoryState(savedCategory);
     }
-  }, []);
+  }, [isReal]);
 
   const setSelectedChannel = (channel: Channel) => {
     setIsLoading(true);
