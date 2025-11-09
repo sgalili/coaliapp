@@ -99,17 +99,25 @@ export const AuthPage = () => {
       console.log('🧹 Cleared demo mode and old auth');
       
       // Check if profile already exists
-      const { data: existingProfile } = await supabase
+      console.log('🔍 Checking for existing profile with phone:', authData.phone);
+      
+      const { data: existingProfile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('phone', authData.phone)
         .maybeSingle();
+      
+      console.log('📊 Profile query result:');
+      console.log('  Found:', !!existingProfile);
+      console.log('  Error:', profileError);
+      console.log('  Profile data:', existingProfile);
       
       if (existingProfile) {
         // EXISTING REAL USER - LOGIN
         console.log('🔵 EXISTING REAL USER FOUND');
         console.log('User ID:', existingProfile.user_id);
         console.log('Name:', existingProfile.first_name, existingProfile.last_name);
+        console.log('Phone:', existingProfile.phone);
         console.log('Is Demo?:', existingProfile.is_demo);
         
         // FORCE set as real user
