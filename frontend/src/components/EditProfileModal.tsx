@@ -81,8 +81,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
           city: data.city || '',
           bio: data.bio || '',
           avatar_url: data.avatar_url || '',
+          id_number: data.id_number || '',
           expertise_fields: data.expertise_fields || []
         });
+        
+        // Check if ID number already exists
+        setHasIdNumber(!!(data.id_number && data.id_number.length === 9));
       }
     } catch (error) {
       console.error('Error loading profile:', error);
