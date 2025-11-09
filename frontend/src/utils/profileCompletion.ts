@@ -14,34 +14,34 @@ export const checkProfileCompletion = (profile: any): ProfileCompletionStatus =>
   const missingForPost: string[] = [];
   const missingForWallet: string[] = [];
   
-  // Level 1: Required for posting
+  // REQUIRED FOR POSTING IN COALI CHANNEL:
+  // 1. Bio (min 10 chars)
   if (!profile?.bio || profile.bio.length < 10) {
     missingForPost.push('bio');
   }
   
+  // 2. Categories (min 1)
   if (!profile?.expertise_fields || profile.expertise_fields.length === 0) {
     missingForPost.push('categories');
   }
   
-  // Title required for verified users (after completing bio + categories)
-  if (profile?.is_verified && 
-      profile?.expertise_fields?.length > 0 && 
-      profile?.bio?.length >= 10) {
-    if (!profile?.title || profile.title.trim() === '') {
-      missingForPost.push('title');
-    }
+  // 3. Job Title (mandatory)
+  if (!profile?.title || profile.title.trim() === '') {
+    missingForPost.push('title');
   }
   
-  // Level 2: Required for wallet (includes Level 1)
-  missingForWallet.push(...missingForPost);
-  
-  if (!profile?.id_number || !/^\d{9}$/.test(profile.id_number)) {
-    missingForWallet.push('id_number');
-  }
-  
+  // 4. City
   if (!profile?.city || profile.city.trim() === '') {
-    missingForWallet.push('city');
+    missingForPost.push('city');
   }
+  
+  // 5. ID Number (mandatory for Coali - 9 digits)
+  if (!profile?.id_number || !/^\d{9}$/.test(profile.id_number)) {
+    missingForPost.push('id_number');
+  }
+  
+  // Level 2: Wallet (same as posting for Coali)
+  missingForWallet.push(...missingForPost);
   
   return {
     canPost: missingForPost.length === 0,
