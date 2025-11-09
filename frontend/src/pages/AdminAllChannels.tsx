@@ -43,7 +43,6 @@ export default function AdminAllChannels() {
     try {
       console.log('📺 Loading all channels for area:', area);
       
-      // Load from channel_requests (all channels)
       const { data, error } = await supabase
         .from('channel_requests')
         .select('*')
@@ -51,8 +50,38 @@ export default function AdminAllChannels() {
 
       if (error) throw error;
 
-      console.log('✅ Loaded channels:', data?.length || 0);
-      setChannels(data || []);
+      // Load additional data for each channel
+      const channelsWithData = await Promise.all((data || []).map(async (channel) => {
+        // Load owner profile
+        const { data: owner } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, title, avatar_url')
+          .eq('user_id', channel.user_id)
+          .single();
+
+        // Count members
+        const { count: memberCount } = await supabase
+          .from('channel_members')
+          .select('*', { count: 'exact', head: true })
+          .eq('channel_id', channel.id);
+
+        // Count posts
+        const { count: postCount } = await supabase
+          .from('demo_posts')
+          .select('*', { count: 'exact', head: true })
+          .eq('channel_id', channel.id);
+
+        return {
+          ...channel,
+          owner: owner || { first_name: 'Unknown', last_name: '', title: '' },
+          memberCount: memberCount || 0,
+          postCount: postCount || 0,
+          engagement: 0 // TODO: Calculate
+        };
+      }));
+
+      console.log('✅ Loaded channels with data:', channelsWithData.length);
+      setChannels(channelsWithData);
     } catch (error) {
       console.error('Error loading channels:', error);
       toast.error('שגיאה בטעינת ערוצים');
