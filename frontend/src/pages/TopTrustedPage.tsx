@@ -209,11 +209,41 @@ export default function TopTrustedPage() {
               </button>
             )}
           </div>
+          ) : (
+            /* Skeleton for real users - Show structure */
+            <div className="flex items-end justify-center gap-4">
+              {/* 2nd Place Skeleton */}
+              <div className="flex flex-col items-center flex-1 opacity-20">
+                <div className="text-3xl mb-2">🥈</div>
+                <div className="w-16 h-16 rounded-full bg-muted mb-3"></div>
+                <div className="h-4 w-20 bg-muted rounded mb-2"></div>
+                <div className="h-3 w-16 bg-muted rounded"></div>
+              </div>
+              
+              {/* 1st Place Skeleton */}
+              <div className="flex flex-col items-center flex-1 -mt-8 opacity-20">
+                <Crown className="w-8 h-8 text-muted mb-1" />
+                <div className="text-4xl mb-2">👑</div>
+                <div className="w-20 h-20 rounded-full bg-muted mb-3"></div>
+                <div className="h-4 w-24 bg-muted rounded mb-2"></div>
+                <div className="h-3 w-20 bg-muted rounded"></div>
+              </div>
+              
+              {/* 3rd Place Skeleton */}
+              <div className="flex flex-col items-center flex-1 opacity-20">
+                <div className="text-3xl mb-2">🥉</div>
+                <div className="w-16 h-16 rounded-full bg-muted mb-3"></div>
+                <div className="h-4 w-20 bg-muted rounded mb-2"></div>
+                <div className="h-3 w-16 bg-muted rounded"></div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Ranked List */}
+        {/* Ranked List - Show skeleton or empty state */}
         <div className="px-4 space-y-2">
-          {rankedList.map((user) => (
+          {users.length > 0 ? (
+            rankedList.map((user) => (
             <button
               key={user.rank}
               onClick={() => navigate(`/user/${user.rank}`)}
