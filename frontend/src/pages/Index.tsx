@@ -802,7 +802,6 @@ export default function Index() {
         shareCount: 0,
         hasUserTrusted: userTrustIds.includes(post.user_id),
         hasUserWatched: userBookmarkIds.includes(post.id),
-        _isDemo: post._isDemo,
         created_at: post.created_at,
         updated_at: post.updated_at,
       }));
