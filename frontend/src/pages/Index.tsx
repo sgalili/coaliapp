@@ -714,19 +714,22 @@ export default function Index() {
       let dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
       
       console.log('📦 Raw posts from DB:', dbPosts.length);
+      console.log('👤 Current user:', activeUserId);
+      console.log('🎭 Is real user?:', activeUserId !== 'demo-user');
       
-      // CRITICAL: Filter out ALL demo content for real users
-      if (isRealUser) {
+      // CRITICAL: Filter out ALL demo content for real users ONLY
+      if (activeUserId !== 'demo-user') {
         console.log('🔒 REAL USER - Filtering out ALL demo content');
+        const beforeFilter = dbPosts.length;
         dbPosts = dbPosts.filter(post => {
           const isDemo = post.user_id === 'demo-user' || 
                         post.user_id?.startsWith('user-') ||
                         post.is_demo === true;
           return !isDemo; // Only keep NON-demo posts
         });
-        console.log('✅ After filtering:', dbPosts.length, 'REAL posts only');
+        console.log(`✅ Filtered: ${beforeFilter} → ${dbPosts.length} posts (removed ${beforeFilter - dbPosts.length} demo posts)`);
       } else {
-        console.log('👁️ DEMO USER - Showing all posts');
+        console.log('👁️ DEMO USER - Showing ALL demo content');
       }
       
       // Load user's bookmarks
