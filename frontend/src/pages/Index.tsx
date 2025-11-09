@@ -1312,30 +1312,70 @@ export default function Index() {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
     
+    const postOwnerId = post.user_id;
     const newTrusted = !post.hasUserTrusted;
-    const newCount = newTrusted ? post.trustCount + 1 : post.trustCount - 1;
     
-    console.log('🛡️ Toggling trust:', postId, newTrusted);
+    console.log('🛡️ Toggling trust for USER:', postOwnerId);
+    console.log('Current user:', currentUserId);
+    console.log('Action:', newTrusted ? 'GIVE trust' : 'REMOVE trust');
     
     // Optimistic update
     setPosts(posts.map(p => 
-      p.id === postId 
-        ? { ...p, hasUserTrusted: newTrusted, trustCount: newCount }
+      p.user_id === postOwnerId
+        ? { ...p, hasUserTrusted: newTrusted }
         : p
     ));
     
-    if (newTrusted) {
-      toast.success('נתת אמון! 🛡️');
-    }
-    
     try {
-      await updatePostEngagement(postId, 'trust_count', newCount);
+      if (newTrusted) {
+        // GIVE TRUST - Insert into trust_relationships
+        const { error } = await supabase
+          .from('trust_relationships')
+          .insert({
+            truster_user_id: currentUserId,
+            trusted_user_id: postOwnerId,
+            created_at: new Date().toISOString()
+          });
+        
+        if (error) {
+          console.error('Trust insert error:', error);
+          // Check if already exists
+          if (error.code === '23505') {
+            toast.info('כבר נתת אמון למשתמש זה');
+          } else {
+            throw error;
+          }
+        } else {
+          console.log('✅ Trust relationship created');
+          toast.success('נתת אמון! 🛡️');
+        }
+      } else {
+        // REMOVE TRUST - Delete from trust_relationships
+        const { error } = await supabase
+          .from('trust_relationships')
+          .delete()
+          .eq('truster_user_id', currentUserId)
+          .eq('trusted_user_id', postOwnerId);
+        
+        if (error) throw error;
+        
+        console.log('✅ Trust relationship removed');
+        toast.success('הסרת אמון');
+      }
+      
+      // Reload posts to update trust state
+      setTimeout(() => {
+        loadPostsFromDB(currentUserId);
+      }, 500);
     } catch (error) {
       console.error('Failed to update trust:', error);
       // Revert on error
       setPosts(posts.map(p => 
-        p.id === postId ? { ...p, trustCount: post.trustCount, hasUserTrusted: post.hasUserTrusted } : p
+        p.user_id === postOwnerId
+          ? { ...p, hasUserTrusted: !newTrusted }
+          : p
       ));
+      toast.error('שגיאה בעדכון אמון');
     }
   };
 
