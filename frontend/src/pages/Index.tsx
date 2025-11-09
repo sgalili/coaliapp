@@ -1166,10 +1166,16 @@ export default function Index() {
       
       const newPost = {
         user_id: currentUserId,
-        content: caption.trim(),
+        username: realUserName, // ✅ Save real name
+        profile_image: realUserImage, // ✅ Save real photo
+        expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
+        caption: caption.trim(),
         video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
-        thumbnail_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
-        category: uploadCategory, // ✅ Save selected category
+        image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
+        category: uploadCategory,
+        location: userProfile?.city || 'ישראל',
+        is_verified: userProfile?.is_verified || false,
+        is_demo: false, // ✅ Mark as real content
         is_live: false,
         created_at: new Date().toISOString()
       };
