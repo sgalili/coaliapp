@@ -18,7 +18,7 @@ export const saveDemoPost = async (post: any) => {
 export const fetchDemoPosts = async (channelId?: string | null, category?: string) => {
   let query = supabase
     .from('demo_posts')
-    .select('*') // ✅ Simple select, demo_posts has all fields
+    .select('*')
     .order('created_at', { ascending: false });
   
   const { data, error } = await query;
