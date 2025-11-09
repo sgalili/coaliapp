@@ -15,47 +15,83 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
   const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
   
-  // Load user's approved channels - Force reload when menu opens
+  // Load user's approved channels - ALWAYS try to load
   useEffect(() => {
-    if (isOpen && currentUserId && currentUserId !== 'demo-user') {
-      console.log('📺 Menu opened - Force loading channels for:', currentUserId);
+    console.log('🎬 ChannelSelector mounted');
+    console.log('Current user state:', currentUserId);
+    
+    // Try loading even without currentUserId set
+    const userId = currentUserId || localStorage.getItem('authenticated_user_id');
+    
+    if (userId && userId !== 'demo-user') {
+      console.log('📺 Will load channels for:', userId);
       loadMyChannels();
+    } else {
+      console.log('⚠️ No valid user ID:', userId);
     }
-  }, [isOpen, currentUserId]);
+  }, []);
+  
+  // Reload when menu opens
+  useEffect(() => {
+    if (isOpen) {
+      const userId = currentUserId || localStorage.getItem('authenticated_user_id');
+      if (userId && userId !== 'demo-user') {
+        console.log('📺 Menu opened - Reloading channels');
+        loadMyChannels();
+      }
+    }
+  }, [isOpen]);
   
   const loadMyChannels = async () => {
     try {
       const userId = currentUserId || localStorage.getItem('authenticated_user_id');
-      console.log('🔍 Loading channels with userId:', userId);
+      console.log('🔍 Loading channels for userId:', userId);
       
       if (!userId || userId === 'demo-user') {
-        console.log('⚠️ No valid user ID, skipping');
+        console.log('⚠️ Invalid userId, aborting');
         return;
       }
       
+      // First, test if table exists
+      console.log('🧪 Testing channel_requests table...');
+      const { count, error: countError } = await supabase
+        .from('channel_requests')
+        .select('*', { count: 'exact', head: true });
+      
+      console.log('📊 Table test:', { totalRows: count, error: countError });
+      
+      // Now query for user's channels
       const { data, error } = await supabase
         .from('channel_requests')
         .select('*')
         .eq('user_id', userId);
       
-      console.log('📊 ALL channel requests for user:');
-      console.log('  Total found:', data?.length || 0);
+      console.log('📊 User channel query:');
+      console.log('  User ID searched:', userId);
+      console.log('  Found:', data?.length || 0);
       console.log('  Error:', error);
-      console.log('  Raw data:', JSON.stringify(data, null, 2));
+      console.log('  Raw data:', data);
       
-      if (data) {
+      if (data && data.length > 0) {
         data.forEach((ch, i) => {
-          console.log(`  Channel ${i+1}:`, ch.channel_name, '- Status:', ch.status);
+          console.log(`  📺 Channel ${i+1}:`, {
+            id: ch.id,
+            name: ch.channel_name,
+            status: ch.status,
+            user_id: ch.user_id
+          });
         });
+        
+        const approved = data.filter(ch => ch.status === 'approved');
+        console.log('✅ Approved channels:', approved.length);
+        setMyChannels(approved);
+      } else {
+        console.log('❌ No channels found for this user');
+        setMyChannels([]);
       }
-      
-      // Filter for approved only
-      const approvedChannels = data?.filter(ch => ch.status === 'approved') || [];
-      console.log('✅ Approved channels:', approvedChannels.length);
-      
-      setMyChannels(approvedChannels);
     } catch (error) {
-      console.error('❌ Error loading my channels:', error);
+      console.error('❌ Critical error loading channels:', error);
+      setMyChannels([]);
     }
   };
 
