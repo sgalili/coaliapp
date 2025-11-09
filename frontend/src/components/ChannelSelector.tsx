@@ -14,30 +14,39 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
   const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
   
-  // Load user's approved channels
+  // Load user's approved channels - Force reload when menu opens
   useEffect(() => {
-    if (currentUserId && currentUserId !== 'demo-user') {
-      console.log('📺 Loading approved channels for user:', currentUserId);
+    if (isOpen && currentUserId && currentUserId !== 'demo-user') {
+      console.log('📺 Menu opened - Force loading channels for:', currentUserId);
       loadMyChannels();
-    } else {
-      console.log('⚠️ Skipping channel load - no user or demo user');
     }
-  }, [currentUserId]);
+  }, [isOpen, currentUserId]);
   
   const loadMyChannels = async () => {
     try {
-      console.log('🔍 Querying channel_requests for user:', currentUserId);
-      console.log('Query: SELECT * FROM channel_requests WHERE user_id =', currentUserId);
+      const userId = currentUserId || localStorage.getItem('authenticated_user_id');
+      console.log('🔍 Loading channels with userId:', userId);
+      
+      if (!userId || userId === 'demo-user') {
+        console.log('⚠️ No valid user ID, skipping');
+        return;
+      }
       
       const { data, error } = await supabase
         .from('channel_requests')
         .select('*')
-        .eq('user_id', currentUserId); // ✅ Get ALL (not just approved)
+        .eq('user_id', userId);
       
-      console.log('📊 Query result:');
-      console.log('  Found:', data?.length || 0);
+      console.log('📊 ALL channel requests for user:');
+      console.log('  Total found:', data?.length || 0);
       console.log('  Error:', error);
-      console.log('  Data:', data);
+      console.log('  Raw data:', JSON.stringify(data, null, 2));
+      
+      if (data) {
+        data.forEach((ch, i) => {
+          console.log(`  Channel ${i+1}:`, ch.channel_name, '- Status:', ch.status);
+        });
+      }
       
       // Filter for approved only
       const approvedChannels = data?.filter(ch => ch.status === 'approved') || [];
@@ -45,7 +54,7 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
       
       setMyChannels(approvedChannels);
     } catch (error) {
-      console.error('Error loading my channels:', error);
+      console.error('❌ Error loading my channels:', error);
     }
   };
 
