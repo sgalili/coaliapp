@@ -327,7 +327,44 @@ export default function ChannelManagement() {
                     className="w-full px-3 py-2 border rounded-lg mt-1 min-h-[100px]"
                   />
                 </div>
-                <Button>שמור שינויים</Button>
+                <div className="flex gap-3">
+                  <Button>שמור שינויים</Button>
+                  <Button
+                    onClick={async () => {
+                      if (!confirm(`האם למחוק את ערוץ "${channel?.name}"?\n\nפעולה זו תמחק את כל החברים והתוכן ולא ניתן לשחזר!`)) {
+                        return;
+                      }
+                      
+                      try {
+                        // Delete channel
+                        await supabase
+                          .from('channel_members')
+                          .delete()
+                          .eq('channel_id', channelId);
+                        
+                        await supabase
+                          .from('channel_invitations')
+                          .delete()
+                          .eq('channel_id', channelId);
+                        
+                        await supabase
+                          .from('channel_requests')
+                          .delete()
+                          .eq('id', channelId);
+                        
+                        toast.success('הערוץ נמחק');
+                        navigate('/');
+                      } catch (error) {
+                        console.error('Delete error:', error);
+                        toast.error('שגיאה במחיקה');
+                      }
+                    }}
+                    variant="destructive"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    מחק ערוץ
+                  </Button>
+                </div>
               </div>
             </Card>
           </TabsContent>
