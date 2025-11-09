@@ -176,7 +176,7 @@ export default function AdminAllChannels() {
             <div>
               <h1 className="text-xl font-bold">ניהול כל הערוצים</h1>
               <p className="text-sm text-muted-foreground">
-                {area === 'production' ? 'ייצור' : 'דמו'}
+                {area === 'production' ? 'Production' : 'Demo'}
               </p>
             </div>
           </div>
