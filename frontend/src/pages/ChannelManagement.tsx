@@ -23,6 +23,8 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { ExcelMemberUpload } from '@/components/ExcelMemberUpload';
+import { WhatsAppInviteDialog, GoPublicDialog } from '@/components/ChannelInviteDialogs';
 
 export default function ChannelManagement() {
   const navigate = useNavigate();
