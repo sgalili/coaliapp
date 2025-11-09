@@ -708,17 +708,26 @@ export default function Index() {
       console.log('📥 Channel:', selectedChannel.id, 'Category:', selectedCategory);
       console.log('👤 Is real user?:', isRealUser);
       
-      // Fetch posts - LABEL demo content (don't remove it)
+      // Fetch posts
       let dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
       
       console.log('📦 Raw posts from DB:', dbPosts.length);
       
-      // Apply demo labeling (keeps demo posts but marks them)
-      dbPosts = labelDemoPosts(dbPosts);
+      // CRITICAL: Filter out ALL demo content for real users
+      if (isRealUser) {
+        console.log('🔒 REAL USER - Filtering out ALL demo content');
+        dbPosts = dbPosts.filter(post => {
+          const isDemo = post.user_id === 'demo-user' || 
+                        post.user_id?.startsWith('user-') ||
+                        post.is_demo === true;
+          return !isDemo; // Only keep NON-demo posts
+        });
+        console.log('✅ After filtering:', dbPosts.length, 'REAL posts only');
+      } else {
+        console.log('👁️ DEMO USER - Showing all posts');
+      }
       
-      console.log('✅ Posts labeled:', dbPosts.length, 'total (demo + real mixed)');
-      
-      // Load user's bookmarks to mark posts
+      // Load user's bookmarks
       let userBookmarkIds: string[] = [];
       if (activeUserId && activeUserId !== 'demo-user') {
         console.log('🔍 Loading bookmarks for user:', activeUserId);
