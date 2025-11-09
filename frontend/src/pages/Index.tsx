@@ -1118,6 +1118,7 @@ export default function Index() {
         
         // Valid video
         setSelectedVideo(file);
+        setIsFromCamera(false); // ✅ From file upload
         setShowOptionsMenu(false);
         setShowUploadModal(true);
         setUploadMethod('file');
