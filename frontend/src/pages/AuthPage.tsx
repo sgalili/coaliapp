@@ -59,10 +59,7 @@ export const AuthPage = () => {
   }, [user, authLoading, navigate]);
 
   const handlePhoneSubmit = async (phone: string) => {
-    // L'OTP WhatsApp a déjà été envoyé avec succès par PhoneInput
-    // On passe directement à l'étape de vérification
-    setAuthError(''); // Clear any previous errors
-    toast.success('Code envoyé via WhatsApp !');
+    setAuthError('');
     setAuthData(prev => ({ ...prev, phone }));
     setCurrentStep('otp');
   };
