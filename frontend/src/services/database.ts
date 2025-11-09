@@ -2,6 +2,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 // Posts Services
 export const saveDemoPost = async (post: any) => {
+  console.log('💾 Attempting to save post:', post);
+  
   const { data, error } = await supabase
     .from('demo_posts') // ✅ Use REAL posts table, not demo_posts
     .insert([post])
@@ -9,9 +11,15 @@ export const saveDemoPost = async (post: any) => {
     .single();
   
   if (error) {
-    console.error('Error saving post:', error);
+    console.error('❌ Database save error:', error);
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    console.error('Error details:', error.details);
+    console.error('Error hint:', error.hint);
     throw error;
   }
+  
+  console.log('✅ Post saved to database:', data);
   return data;
 };
 
