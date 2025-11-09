@@ -3,7 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { ChannelSelector } from "@/components/ChannelSelector";
 import { CategoryDropdown } from "@/components/CategoryDropdown";
 import { Comments } from "@/components/Comments";
-import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPin, Plus, X, Video, Upload, RefreshCw, Square, Loader2, Shield, ShieldCheck, Bookmark, MoreVertical, Play, Pause, Gift, Handshake, Crown, Edit2, Trash2, Bell } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPin, Plus, X, Video, Upload, RefreshCw, Square, Loader2, Shield, ShieldCheck, Bookmark, MoreVertical, Play, Pause, Gift, Handshake, Crown, Edit2, Trash2, Bell, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
