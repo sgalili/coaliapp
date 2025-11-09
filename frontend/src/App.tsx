@@ -27,6 +27,7 @@ import MyStatsPage from "./pages/MyStatsPage";
 import LanguageSettingsPage from "./pages/LanguageSettingsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import MyDelegatedVotesPage from "./pages/MyDelegatedVotesPage";
+import ChannelManagement from "./pages/ChannelManagement";
 import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { UserProvider } from "./contexts/UserContext";
