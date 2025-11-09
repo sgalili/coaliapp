@@ -86,6 +86,8 @@ export const CreateChannelDialog: React.FC<CreateChannelDialogProps> = ({
       // Reset and close
       setChannelName('');
       setDescription('');
+      setLogoFile(null);
+      setLogoPreview('');
       onClose();
     } catch (error) {
       console.error('Error creating channel request:', error);
@@ -110,6 +112,38 @@ export const CreateChannelDialog: React.FC<CreateChannelDialogProps> = ({
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Channel Logo Upload */}
+          <div>
+            <label className="text-sm font-medium block mb-2 text-right">לוגו הערוץ *</label>
+            <div className="flex items-center gap-4">
+              {logoPreview && (
+                <img 
+                  src={logoPreview} 
+                  alt="Logo preview" 
+                  className="w-16 h-16 rounded-lg object-cover border-2 border-primary"
+                />
+              )}
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                  id="logo-upload"
+                />
+                <label
+                  htmlFor="logo-upload"
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  <Upload className="w-4 h-4" />
+                  {logoPreview ? 'שנה לוגו' : 'העלה לוגו'}
+                </label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  PNG, JPG או SVG (מומלץ: 200x200px)
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-900">
               💡 ערוצים חדשים מתחילים כ<strong>פרטיים</strong> ויאושרו תוך 24 שעות
