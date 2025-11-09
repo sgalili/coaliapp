@@ -518,6 +518,7 @@ export default function Index() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [isFromCamera, setIsFromCamera] = useState(false); // Track if from camera
   const [caption, setCaption] = useState('');
   const [uploadChannel, setUploadChannel] = useState(selectedChannel.id);
   const [uploadCategory, setUploadCategory] = useState(selectedCategory);
