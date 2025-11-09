@@ -513,6 +513,7 @@ export default function Index() {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showRecordingInterface, setShowRecordingInterface] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
