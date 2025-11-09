@@ -21,6 +21,7 @@ import AdminNotifications from "./pages/AdminNotifications";
 import DataManagementPage from "./pages/DataManagementPage";
 import EnhancedAdminDashboard from "./pages/EnhancedAdminDashboard";
 import AdminChannelRequests from "./pages/AdminChannelRequests";
+import AdminPublicRequests from "./pages/AdminPublicRequests";
 import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import InviteFriendsPage from "./pages/InviteFriendsPage";
 import MyStatsPage from "./pages/MyStatsPage";
