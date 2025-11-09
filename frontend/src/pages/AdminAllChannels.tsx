@@ -13,7 +13,8 @@ import {
   Globe, 
   Lock,
   Settings,
-  RefreshCw
+  RefreshCw,
+  Upload
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
