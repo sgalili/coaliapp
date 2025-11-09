@@ -154,6 +154,38 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
                 </>
               )}
 
+              {/* My Approved Channels */}
+              {myChannels.length > 0 && (
+                <>
+                  <div className="px-3 py-2 bg-muted/30 text-right">
+                    <p className="text-xs font-medium text-muted-foreground">הערוצים שלי</p>
+                  </div>
+                  {myChannels.map(channel => (
+                    <div
+                      key={channel.id}
+                      className="w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50 hover:bg-muted/30"
+                      dir="rtl"
+                    >
+                      <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">📺</span>
+                      </div>
+                      <p className="font-semibold text-sm text-foreground flex-1">{channel.channel_name}</p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsOpen(false);
+                          window.location.href = `/channel/${channel.id}/manage`;
+                        }}
+                        className="p-1.5 hover:bg-primary/10 rounded-full transition-colors"
+                        title="נהל ערוץ"
+                      >
+                        <Settings className="w-4 h-4 text-primary" />
+                      </button>
+                    </div>
+                  ))}
+                </>
+              )}
+
               {/* Private Channels */}
               {privateChannels.length > 0 && (
                 <>
