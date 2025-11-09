@@ -152,13 +152,12 @@ export const AuthPage = () => {
         console.log('✅ REAL USER SESSION STORED');
         console.log('Stored user_id:', localStorage.getItem('authenticated_user_id'));
         
-        toast.success(`ברוך הבא ${existingProfile.first_name}!`);
+        toast.success(`ברוך הבא ${existingProfile.first_name}!`, { duration: 2000 });
         
-        // FORCE redirect with reload
-        setTimeout(() => {
-          console.log('🚀 REDIRECTING TO REAL USER HOMEPAGE');
-          window.location.href = '/?user=' + existingProfile.user_id;
-        }, 500);
+        console.log('🚀 REDIRECTING TO HOMEPAGE IMMEDIATELY');
+        
+        // Immediate redirect (no delay)
+        window.location.href = '/';
       } else {
         // NEW USER - Go to profile creation
         console.log('🟢 NEW USER - Going to profile completion');
