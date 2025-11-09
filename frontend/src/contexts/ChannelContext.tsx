@@ -76,10 +76,49 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
   console.log('🎬 ChannelContext - authUserId:', authUserId);
   console.log('🎬 ChannelContext - isReal:', isReal);
   
-  const [availableChannels] = useState<Channel[]>(isReal ? [defaultChannel] : demoChannels);
+  const [availableChannels, setAvailableChannels] = useState<Channel[]>(isReal ? [defaultChannel] : demoChannels);
   const [isLoading, setIsLoading] = useState(false);
 
   console.log('📺 Available channels:', availableChannels.length);
+
+  // Load public channels dynamically
+  useEffect(() => {
+    loadPublicChannels();
+  }, []);
+
+  const loadPublicChannels = async () => {
+    try {
+      // Load approved public channels
+      const { data: publicChannelRequests } = await supabase
+        .from('channel_requests')
+        .select('*')
+        .eq('status', 'approved')
+        .eq('is_private', false);
+
+      if (publicChannelRequests && publicChannelRequests.length > 0) {
+        const newChannels = publicChannelRequests.map(ch => ({
+          id: ch.id,
+          name: ch.channel_name,
+          description: ch.description || '',
+          logo_url: ch.logo_url || '📺',
+          is_public: true,
+          member_count: null,
+          categories: ['הכל', 'פוליטיקה', 'טכנולוגיה', 'כלכלה', 'חברה', 'בריאות', 'תרבות']
+        }));
+
+        // Add public channels to available list
+        setAvailableChannels(prev => {
+          // Keep Coali + demo channels + add public channels
+          const base = isReal ? [defaultChannel] : demoChannels;
+          return [...base, ...newChannels];
+        });
+
+        console.log('✅ Loaded public channels:', newChannels.length);
+      }
+    } catch (error) {
+      console.error('Error loading public channels:', error);
+    }
+  };
 
   // Load saved channel and category from localStorage on mount
   useEffect(() => {
