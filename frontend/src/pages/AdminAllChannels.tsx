@@ -292,15 +292,37 @@ export default function AdminAllChannels() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">URL לוגו</label>
-                <Input
-                  value={editingChannel.logo_url || ''}
-                  onChange={(e) => setEditingChannel({ ...editingChannel, logo_url: e.target.value })}
-                  placeholder="https://..."
-                />
-                {editingChannel.logo_url && (
-                  <img src={editingChannel.logo_url} className="w-16 h-16 rounded-lg mt-2" alt="Logo" />
-                )}
+                <label className="text-sm font-medium">לוגו הערוץ</label>
+                <div className="flex items-center gap-4 mt-2">
+                  {editingChannel.logo_url && (
+                    <img src={editingChannel.logo_url} className="w-16 h-16 rounded-lg object-cover border-2" alt="Logo" />
+                  )}
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setEditingChannel({ ...editingChannel, logo_url: reader.result as string });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="hidden"
+                      id="admin-logo-upload"
+                    />
+                    <label
+                      htmlFor="admin-logo-upload"
+                      className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+                    >
+                      <Upload className="w-4 h-4" />
+                      {editingChannel.logo_url ? 'שנה לוגו' : 'העלה לוגו'}
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div className="flex gap-2">
