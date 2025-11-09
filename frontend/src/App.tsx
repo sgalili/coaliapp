@@ -70,6 +70,7 @@ const App = () => (
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/my-delegated-votes" element={<MyDelegatedVotesPage />} />
+            <Route path="/channel/:channelId/manage" element={<ChannelManagement />} />
             <Route path="/data-management" element={<DataManagementPage />} />
             <Route path="/notifications-settings" element={<NotificationsSettingsPage />} />
             <Route path="/invite-friends" element={<InviteFriendsPage />} />
