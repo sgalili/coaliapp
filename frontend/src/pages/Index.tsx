@@ -787,6 +787,23 @@ export default function Index() {
       
       console.log('📊 Bookmark counts loaded:', Object.keys(bookmarkCountMap).length, 'posts have bookmarks');
       
+      // Load trust counts per user (how many people trust each user)
+      console.log('🤝 Loading trust counts for users...');
+      const userIds = [...new Set(dbPosts.map(p => p.user_id))]; // Unique user IDs
+      
+      const { data: trustCounts } = await supabase
+        .from('trust_relationships')
+        .select('trusted_user_id')
+        .in('trusted_user_id', userIds);
+      
+      // Count trust per user
+      const trustCountMap: Record<string, number> = {};
+      trustCounts?.forEach(t => {
+        trustCountMap[t.trusted_user_id] = (trustCountMap[t.trusted_user_id] || 0) + 1;
+      });
+      
+      console.log('🤝 Trust counts loaded:', Object.keys(trustCountMap).length, 'users have trust');
+      
       // Map database fields
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
