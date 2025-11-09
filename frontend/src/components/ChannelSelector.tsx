@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Check, Plus, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => void }) => {
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
