@@ -1050,6 +1050,7 @@ export default function Index() {
       setRecordingStream(null);
       
       setSelectedVideo(file);
+      setIsFromCamera(true); // ✅ From camera
       setShowRecordingInterface(false);
       setShowUploadModal(true);
       
