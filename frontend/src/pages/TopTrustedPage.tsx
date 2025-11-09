@@ -287,7 +287,28 @@ export default function TopTrustedPage() {
                 </div>
               </div>
             </button>
-          ))}
+          ))
+          ) : (
+            /* Skeleton list for real users */
+            <>
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="w-full flex items-center gap-3 p-4 bg-card border border-border rounded-xl opacity-20">
+                  <div className="w-8 text-center">
+                    <span className="text-lg font-bold text-muted-foreground">#{i+3}</span>
+                  </div>
+                  <div className="w-12 h-12 rounded-full bg-muted"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 bg-muted rounded"></div>
+                    <div className="h-3 w-24 bg-muted rounded"></div>
+                  </div>
+                  <div className="text-left space-y-1">
+                    <div className="h-4 w-16 bg-muted rounded"></div>
+                    <div className="h-3 w-12 bg-muted rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
 
