@@ -48,16 +48,32 @@ export default function ChannelManagement() {
 
   const loadChannelData = async () => {
     try {
-      // Load channel info
-      const { data: channelData } = await supabase
-        .from('channels')
+      console.log('📺 Loading channel data for ID:', channelId);
+      
+      // Load from channel_requests (approved channels)
+      const { data: channelData, error: channelError } = await supabase
+        .from('channel_requests')
         .select('*')
         .eq('id', channelId)
         .single();
       
-      setChannel(channelData);
+      console.log('📊 Channel data:', channelData);
+      console.log('Error:', channelError);
+      
+      if (channelData) {
+        setChannel({
+          id: channelData.id,
+          name: channelData.channel_name,
+          description: channelData.description,
+          logo_url: channelData.logo_url,
+          is_private: channelData.is_private,
+          is_public: false, // New channels start as private
+          created_by: channelData.user_id,
+          status: channelData.status
+        });
+      }
 
-      // Load members
+      // Load members (will be empty initially)
       const { data: memberData } = await supabase
         .from('channel_members')
         .select('*')
