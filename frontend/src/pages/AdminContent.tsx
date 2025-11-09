@@ -7,6 +7,9 @@ import { toast } from "sonner";
 
 export default function AdminContent() {
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const area = searchParams.get('area') || 'production';
+  
   const [tab, setTab] = useState<'posts' | 'decisions' | 'news'>('posts');
   const [posts, setPosts] = useState<any[]>([]);
   const [decisions, setDecisions] = useState<any[]>([]);
@@ -17,10 +20,12 @@ export default function AdminContent() {
   const [filterUser, setFilterUser] = useState<string>('all');
   const [previewVideo, setPreviewVideo] = useState<string | null>(null);
 
+  console.log('👨‍💼 Admin Content - Area:', area);
+
   useEffect(() => {
     loadContent();
     loadUsers();
-  }, [tab, filterChannel, filterCategory, filterUser]);
+  }, [tab, filterChannel, filterCategory, filterUser, area]);
 
   const loadUsers = async () => {
     try {
