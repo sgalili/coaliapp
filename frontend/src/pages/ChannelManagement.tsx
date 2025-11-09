@@ -258,7 +258,60 @@ export default function ChannelManagement() {
           <TabsContent value="settings">
             <Card className="p-4">
               <h3 className="font-bold mb-4">הגדרות ערוץ</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Channel Logo */}
+                <div>
+                  <label className="text-sm font-medium block mb-2">לוגו הערוץ</label>
+                  <div className="flex items-center gap-4">
+                    {channel?.logo_url && (
+                      <img 
+                        src={channel.logo_url} 
+                        alt="Channel logo" 
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-primary"
+                      />
+                    )}
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = async () => {
+                              try {
+                                await supabase
+                                  .from('channel_requests')
+                                  .update({ logo_url: reader.result as string })
+                                  .eq('id', channelId);
+                                
+                                toast.success('הלוגו עודכן! ✨');
+                                loadChannelData();
+                              } catch (error) {
+                                toast.error('שגיאה בעדכון לוגו');
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="hidden"
+                        id="channel-logo-upload"
+                      />
+                      <label
+                        htmlFor="channel-logo-upload"
+                        className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                      >
+                        <Upload className="w-4 h-4" />
+                        {channel?.logo_url ? 'שנה לוגו' : 'העלה לוגו'}
+                      </label>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        PNG, JPG (מומלץ: 200x200px)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Channel Name */}
                 <div>
                   <label className="text-sm font-medium">שם הערוץ</label>
                   <input 
