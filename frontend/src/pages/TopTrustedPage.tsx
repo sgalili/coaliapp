@@ -116,11 +116,13 @@ export default function TopTrustedPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        {/* Top 3 Podium */}
+        {/* Top 3 Podium - Show skeleton for real users */}
         <div className="p-6 bg-gradient-to-b from-primary/5 to-transparent">
-          <div className="flex items-end justify-center gap-4">
-            {/* 2nd Place */}
-            {topThree[1] && (
+          {users.length > 0 ? (
+            <div className="flex items-end justify-center gap-4">
+              {/* Actual top 3 for demo users */}
+              {/* 2nd Place */}
+              {topThree[1] && (
               <button
                 onClick={() => navigate(`/user/${topThree[1].rank}`)}
                 className="flex flex-col items-center flex-1"
