@@ -786,6 +786,7 @@ export default function Index() {
         id: post.id,
         user_id: post.user_id,
         username: post.username || 'משתמש',
+        title: post.title || post.expertise || '', // ✅ Use title field
         expertise: post.expertise || 'משתמש',
         profileImage: post.profile_image || '/default-avatar.jpg',
         videoUrl: post.video_url,
