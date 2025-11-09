@@ -47,10 +47,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     city: '',
     bio: '',
     avatar_url: '',
+    id_number: '',
     expertise_fields: [] as string[]
   });
   
   const [loading, setLoading] = useState(false);
+  const [hasIdNumber, setHasIdNumber] = useState(false); // Track if ID already set
   
   // Check if field is missing and needs highlighting
   const isFieldMissing = (fieldName: string) => missingFields.includes(fieldName);
