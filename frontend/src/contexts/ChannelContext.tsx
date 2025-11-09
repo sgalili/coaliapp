@@ -88,12 +88,19 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const loadPublicChannels = async () => {
     try {
+      console.log('🔍 Loading public channels...');
+      
       // Load approved public channels
-      const { data: publicChannelRequests } = await supabase
+      const { data: publicChannelRequests, error } = await supabase
         .from('channel_requests')
         .select('*')
         .eq('status', 'approved')
         .eq('is_private', false);
+
+      console.log('📊 Public channel query result:');
+      console.log('  Found:', publicChannelRequests?.length || 0);
+      console.log('  Error:', error);
+      console.log('  Data:', publicChannelRequests);
 
       if (publicChannelRequests && publicChannelRequests.length > 0) {
         const newChannels = publicChannelRequests.map(ch => ({
@@ -106,17 +113,20 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
           categories: ['הכל', 'פוליטיקה', 'טכנולוגיה', 'כלכלה', 'חברה', 'בריאות', 'תרבות']
         }));
 
+        console.log('📺 Adding public channels:', newChannels);
+
         // Add public channels to available list
         setAvailableChannels(prev => {
-          // Keep Coali + demo channels + add public channels
           const base = isReal ? [defaultChannel] : demoChannels;
-          return [...base, ...newChannels];
+          const updated = [...base, ...newChannels];
+          console.log('✅ Total channels now:', updated.length);
+          return updated;
         });
-
-        console.log('✅ Loaded public channels:', newChannels.length);
+      } else {
+        console.log('⚠️ No public channels found');
       }
     } catch (error) {
-      console.error('Error loading public channels:', error);
+      console.error('❌ Error loading public channels:', error);
     }
   };
 
