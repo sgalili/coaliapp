@@ -91,9 +91,22 @@ export default function EnhancedAdminDashboard() {
     <div className="min-h-screen bg-background pb-20">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">לוח בקרה - מנהל</h1>
-          <p className="text-muted-foreground">ניהול מערכת Coali</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">לוח בקרה - מנהל</h1>
+            <p className="text-muted-foreground">ניהול מערכת Coali</p>
+          </div>
+          <Button
+            onClick={() => {
+              loadStats();
+              toast.success('נתונים עודכנו! 🔄');
+            }}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            רענן
+          </Button>
         </div>
 
         {/* Area Toggle */}
