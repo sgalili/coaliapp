@@ -222,11 +222,19 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
                   {myChannels.map(channel => (
                     <div
                       key={channel.id}
-                      className="w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50 hover:bg-muted/30"
+                      onClick={() => {
+                        setIsOpen(false);
+                        window.location.href = `/?channel=${channel.id}`;
+                      }}
+                      className="w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50 hover:bg-muted/30 cursor-pointer"
                       dir="rtl"
                     >
                       <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
-                        <span className="text-lg">📺</span>
+                        {channel.logo_url ? (
+                          <img src={channel.logo_url} className="w-8 h-8 rounded-lg object-cover" alt="Logo" />
+                        ) : (
+                          <span className="text-lg">📺</span>
+                        )}
                       </div>
                       <p className="font-semibold text-sm text-foreground flex-1">{channel.channel_name}</p>
                       <button
