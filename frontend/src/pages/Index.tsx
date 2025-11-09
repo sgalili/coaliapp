@@ -1166,27 +1166,26 @@ export default function Index() {
       
       const newPost = {
         user_id: currentUserId,
-        username: realUserName, // ✅ Save real name
-        profile_image: realUserImage, // ✅ Save real photo
+        username: realUserName,
+        profile_image: realUserImage,
         expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
         caption: caption.trim(),
         video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
-        image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
         category: uploadCategory,
         location: userProfile?.city || 'ישראל',
         is_verified: userProfile?.is_verified || false,
-        is_demo: false, // ✅ Mark as real content
-        is_live: false,
-        created_at: new Date().toISOString()
+        is_live: false
       };
       
       console.log('📄 Post object for database:', newPost);
-      console.log('📂 Category being saved:', uploadCategory);
+      console.log('📂 Uploading to demo_posts table');
       
       // Save to database
-      console.log('💾 Saving to posts table...');
+      console.log('💾 Saving to database...');
       toast.info('שומר פוסט...');
-      await saveDemoPost(newPost);
+      
+      const result = await saveDemoPost(newPost);
+      console.log('✅ Post saved successfully:', result);
       console.log('✅ Post saved to database');
       
       // Add to local state
