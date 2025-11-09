@@ -2382,23 +2382,6 @@ export default function Index() {
               />
             </label>
             
-            {/* Create Channel Option */}
-            <button
-              onClick={() => {
-                setShowOptionsMenu(false);
-                setShowCreateChannel(true);
-              }}
-              className="w-full p-5 border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all flex items-center justify-between group"
-            >
-              <div className="text-right flex-1">
-                <p className="font-bold text-lg mb-1">צור ערוץ חדש</p>
-                <p className="text-sm text-muted-foreground">בקש ליצור ערוץ פרטי</p>
-              </div>
-              <div className="w-14 h-14 bg-purple-50 group-hover:bg-purple-100 rounded-full flex items-center justify-center">
-                <MessageSquare className="w-7 h-7 text-purple-500" />
-              </div>
-            </button>
-            
             <button
               onClick={() => setShowOptionsMenu(false)}
               className="w-full p-4 text-muted-foreground hover:text-foreground"
