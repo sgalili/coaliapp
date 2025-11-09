@@ -25,7 +25,28 @@ export const CreateChannelDialog: React.FC<CreateChannelDialogProps> = ({
 }) => {
   const [channelName, setChannelName] = useState('');
   const [description, setDescription] = useState('');
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('נא לבחור קובץ תמונה');
+      return;
+    }
+
+    setLogoFile(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async () => {
     if (!channelName.trim()) {
@@ -38,17 +59,23 @@ export const CreateChannelDialog: React.FC<CreateChannelDialogProps> = ({
       return;
     }
 
+    if (!logoFile && !logoPreview) {
+      toast.error('נא להעלות לוגו לערוץ');
+      return;
+    }
+
     setLoading(true);
     try {
-      // Create channel request (pending admin approval)
+      // Create channel request with logo
       const { error } = await supabase
         .from('channel_requests')
         .insert({
           user_id: userId,
           channel_name: channelName.trim(),
           description: description.trim(),
+          logo_url: logoPreview, // Base64 or URL
           status: 'pending',
-          is_private: true, // All new channels start as private
+          is_private: true,
           created_at: new Date().toISOString()
         });
 
