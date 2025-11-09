@@ -2110,9 +2110,9 @@ export default function Index() {
                 {post.caption}
               </p>
 
-              {/* Timestamp Below Caption (Moved from above) */}
+              {/* Timestamp Below Caption */}
               <div className="flex items-center gap-2 text-white/60 text-xs mb-2">
-                {post.isVerified && (
+                {post.isVerified && post.is_camera_recorded && (
                   <>
                     <CheckCircle className="w-3.5 h-3.5 text-trust" />
                     <span className="drop-shadow-lg">אותנטי</span>
