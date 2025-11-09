@@ -231,8 +231,33 @@ export default function AdminAllChannels() {
                   </div>
                 </div>
 
-                <div className="text-xs text-muted-foreground mb-3">
-                  User ID: {channel.user_id?.slice(0, 8)}... • {new Date(channel.created_at).toLocaleDateString('he-IL')}
+                {/* Owner Info */}
+                <button
+                  onClick={() => navigate(`/user/${channel.user_id}`)}
+                  className="flex items-center gap-2 mb-3 hover:bg-muted/50 p-2 rounded-lg transition-colors"
+                >
+                  {channel.owner?.avatar_url && (
+                    <img 
+                      src={channel.owner.avatar_url} 
+                      alt="Owner" 
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  )}
+                  <div className="text-right">
+                    <p className="text-sm font-medium">
+                      {channel.owner?.first_name} {channel.owner?.last_name}
+                    </p>
+                    {channel.owner?.title && (
+                      <p className="text-xs text-muted-foreground">{channel.owner.title}</p>
+                    )}
+                  </div>
+                </button>
+
+                {/* Stats */}
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                  <span>👥 {channel.memberCount} חברים</span>
+                  <span>📝 {channel.postCount} פוסטים</span>
+                  <span>💫 {channel.engagement} מעורבות</span>
                 </div>
 
                 {/* Actions */}
