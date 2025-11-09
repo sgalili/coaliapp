@@ -124,29 +124,40 @@ export default function AdminAllChannels() {
     }
 
     try {
-      // Delete channel members
-      await supabase
+      console.log('🗑️ Deleting channel:', channelId);
+      
+      // Delete in order (foreign keys)
+      const { error: membersError } = await supabase
         .from('channel_members')
         .delete()
         .eq('channel_id', channelId);
+      
+      if (membersError) console.warn('Members delete:', membersError);
 
-      // Delete channel invitations
-      await supabase
+      const { error: invitesError } = await supabase
         .from('channel_invitations')
         .delete()
         .eq('channel_id', channelId);
+      
+      if (invitesError) console.warn('Invitations delete:', invitesError);
 
-      // Delete the channel
-      await supabase
+      // Delete the channel request
+      const { error: channelError } = await supabase
         .from('channel_requests')
         .delete()
         .eq('id', channelId);
 
+      if (channelError) {
+        console.error('Channel delete error:', channelError);
+        throw channelError;
+      }
+
+      console.log('✅ Channel deleted successfully');
       toast.success('ערוץ נמחק! 🗑️');
       loadChannels();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting channel:', error);
-      toast.error('שגיאה במחיקה');
+      toast.error(`שגיאה במחיקה: ${error.message || 'Unknown error'}`);
     }
   };
 
