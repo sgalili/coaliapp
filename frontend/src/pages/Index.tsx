@@ -1170,6 +1170,7 @@ export default function Index() {
       const newPost = {
         user_id: currentUserId,
         username: realUserName,
+        title: userProfile?.title || '', // ✅ Save user's title
         profile_image: realUserImage,
         expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
         caption: caption.trim(),
