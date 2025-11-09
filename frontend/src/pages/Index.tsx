@@ -2042,23 +2042,12 @@ export default function Index() {
                 </div>
               </button>
 
-              {/* Timestamp - Created or Edited */}
-              {post.updated_at && post.updated_at !== post.created_at && 
-               new Date(post.updated_at).getTime() !== new Date(post.created_at).getTime() ? (
-                <p className="text-white/60 text-xs drop-shadow-lg mb-1">
-                  נערך {formatTimeAgo(post.updated_at)}
-                </p>
-              ) : (
-                <p className="text-white/60 text-xs drop-shadow-lg mb-1">
-                  נוצר {formatTimeAgo(post.created_at)}
-                </p>
-              )}
               <p className="text-white text-sm leading-relaxed mb-2 drop-shadow-lg">
                 {post.caption}
               </p>
 
-              {/* Location and Authenticity */}
-              <div className="flex items-center gap-2 text-white/90 text-xs">
+              {/* Timestamp Below Caption (Moved from above) */}
+              <div className="flex items-center gap-2 text-white/60 text-xs mb-2">
                 {post.isVerified && (
                   <>
                     <CheckCircle className="w-3.5 h-3.5 text-trust" />
@@ -2066,8 +2055,12 @@ export default function Index() {
                     <span>|</span>
                   </>
                 )}
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="drop-shadow-lg">{post.location}</span>
+                {post.updated_at && post.updated_at !== post.created_at && 
+                 new Date(post.updated_at).getTime() !== new Date(post.created_at).getTime() ? (
+                  <span className="drop-shadow-lg">נערך {formatTimeAgo(post.updated_at)}</span>
+                ) : (
+                  <span className="drop-shadow-lg">נוצר {formatTimeAgo(post.created_at)}</span>
+                )}
               </div>
             </div>
           </div>
