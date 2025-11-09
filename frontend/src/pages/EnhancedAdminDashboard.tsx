@@ -123,7 +123,7 @@ export default function EnhancedAdminDashboard() {
             }`}
           >
             <Globe className="w-5 h-5 inline mr-2" />
-            אזור ייצור (Production)
+            Production
           </button>
           <button
             onClick={() => setActiveArea('demo')}
