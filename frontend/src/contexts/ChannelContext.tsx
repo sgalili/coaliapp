@@ -69,21 +69,29 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [selectedCategory, setSelectedCategoryState] = useState<string>('הכל');
   const [showChannelIndicator, setShowChannelIndicatorState] = useState<boolean>(true);
   
-  // Check if real user - only show Coali for real users
-  const isReal = localStorage.getItem('authenticated_user_id') && 
-                 localStorage.getItem('authenticated_user_id') !== 'demo-user';
+  // Check if real user - FIXED: default to demo if no auth
+  const authUserId = localStorage.getItem('authenticated_user_id');
+  const isReal = authUserId && authUserId !== 'demo-user' && authUserId !== 'null' && authUserId !== 'undefined';
+  
+  console.log('🎬 ChannelContext - authUserId:', authUserId);
+  console.log('🎬 ChannelContext - isReal:', isReal);
   
   const [availableChannels] = useState<Channel[]>(isReal ? [defaultChannel] : demoChannels);
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log('📺 Available channels:', availableChannels.length);
 
   // Load saved channel and category from localStorage on mount
   useEffect(() => {
     if (isReal) {
       // Real users: Force Coali channel only
+      console.log('✅ Real user - Only Coali channel');
       setSelectedChannelState(defaultChannel);
       return;
     }
     
+    // Demo user: Load saved or default
+    console.log('👁️ Demo user - All channels available');
     const savedChannelId = localStorage.getItem('selected_channel_id');
     const savedCategory = localStorage.getItem('selected_category');
     
