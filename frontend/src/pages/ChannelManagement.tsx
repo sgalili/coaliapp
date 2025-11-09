@@ -15,7 +15,8 @@ import {
   Crown,
   UserPlus,
   Globe,
-  Lock
+  Lock,
+  Trash2
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
