@@ -1734,7 +1734,7 @@ export default function Index() {
 
       {/* Top Right Corner - Channel Selector */}
       <div className="fixed top-4 right-4 z-50">
-        <ChannelSelector />
+        <ChannelSelector onCreateChannel={() => setShowCreateChannel(true)} />
       </div>
 
       {/* Posts Feed */}
