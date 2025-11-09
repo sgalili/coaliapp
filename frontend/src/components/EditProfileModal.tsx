@@ -143,22 +143,32 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Profile Picture Upload */}
+          {/* Profile Picture Upload - No button */}
           <ProfilePictureUpload
             currentImageUrl={formData.avatar_url}
             onImageChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
             userInitials={`${formData.first_name.charAt(0)}${formData.last_name.charAt(0)}`}
+            hideUploadButton={true}
           />
 
-          {/* Title Field */}
+          {/* Job Title Field */}
           <div>
-            <label className="text-sm font-medium text-right block mb-1">תואר (אופציונלי)</label>
+            <label className="text-sm font-medium text-right block mb-1">
+              Job Title
+              {missingFields.includes('title') && <span className="text-red-500 mr-1">*</span>}
+            </label>
             <Input
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              placeholder='לדוגמה: פרופ׳, ד"ר, עו"ד, מאמן'
-              className="text-right"
+              placeholder='e.g., Software Engineer, Product Manager'
+              className={cn(
+                "text-right",
+                missingFields.includes('title') && "border-red-500 border-2"
+              )}
             />
+            {missingFields.includes('title') && (
+              <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+            )}
           </div>
 
           {/* Name Fields */}
