@@ -28,11 +28,15 @@ export default function AdminChannelRequests() {
     try {
       const { data, error } = await supabase
         .from('channel_requests')
-        .select('*, profiles(*)')
+        .select('*') // ✅ Simple select (profiles join might fail)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading requests:', error);
+        throw error;
+      }
 
+      console.log('✅ Loaded channel requests:', data?.length || 0);
       setRequests(data || []);
     } catch (error) {
       console.error('Error loading requests:', error);
@@ -44,33 +48,58 @@ export default function AdminChannelRequests() {
 
   const handleApprove = async (request: any) => {
     try {
+      console.log('✅ Approving channel:', request.channel_name);
+      
       // Update request status
       const { error: updateError } = await supabase
         .from('channel_requests')
         .update({
           status: 'approved',
           approved_at: new Date().toISOString(),
-          approved_by: 'admin' // In production, use actual admin user_id
+          approved_by: 'admin'
         })
         .eq('id', request.id);
 
       if (updateError) throw updateError;
 
-      // Create the actual channel
-      const { error: channelError } = await supabase
-        .from('channels')
-        .insert({
-          name: request.channel_name,
-          description: request.description,
-          created_by: request.user_id,
-          is_private: request.is_private,
-          is_public: !request.is_private,
-          created_at: new Date().toISOString()
-        });
+      console.log('✅ Request approved in database');
+      
+      // Send WhatsApp notification to user
+      try {
+        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        
+        // Get user phone from profiles
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('phone, first_name')
+          .eq('user_id', request.user_id)
+          .single();
+        
+        if (userProfile?.phone) {
+          await fetch(`${backendUrl}/api/whatsapp/send-message`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              phone_number: userProfile.phone,
+              message: `🎉 הערוץ שלך אושר!
 
-      if (channelError) {
-        console.warn('Channel table might not exist:', channelError);
-        // Continue anyway - request approved
+ערוץ "${request.channel_name}" אושר על ידי המנהל!
+
+עכשיו אתה יכול:
+• לפרסם תוכן בערוץ
+• להזמין חברים
+• לנהל את הערוץ
+
+התחל לפרסם: ${window.location.origin}
+
+בהצלחה! 🚀
+צוות Coali`
+            })
+          });
+          console.log('✅ WhatsApp notification sent');
+        }
+      } catch (notifError) {
+        console.error('Failed to send notification:', notifError);
       }
 
       toast.success(`ערוץ "${request.channel_name}" אושר! ✅`);
@@ -85,6 +114,8 @@ export default function AdminChannelRequests() {
     if (!confirm(`האם לדחות את הבקשה ליצירת "${request.channel_name}"?`)) return;
 
     try {
+      console.log('❌ Rejecting channel:', request.channel_name);
+      
       const { error } = await supabase
         .from('channel_requests')
         .update({
@@ -95,6 +126,41 @@ export default function AdminChannelRequests() {
         .eq('id', request.id);
 
       if (error) throw error;
+
+      console.log('✅ Request rejected in database');
+      
+      // Send WhatsApp notification
+      try {
+        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('phone, first_name')
+          .eq('user_id', request.user_id)
+          .single();
+        
+        if (userProfile?.phone) {
+          await fetch(`${backendUrl}/api/whatsapp/send-message`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              phone_number: userProfile.phone,
+              message: `📋 עדכון לגבי הערוץ שלך
+
+לצערנו, הבקשה ליצירת ערוץ "${request.channel_name}" לא אושרה.
+
+אתה יכול:
+• לשלוח בקשה חדשה עם תיאור מפורט יותר
+• ליצור קשר עם התמיכה לקבלת משוב
+
+צוות Coali`
+            })
+          });
+          console.log('✅ Rejection WhatsApp sent');
+        }
+      } catch (notifError) {
+        console.error('Failed to send notification:', notifError);
+      }
 
       toast.success('הבקשה נדחתה');
       loadRequests();
