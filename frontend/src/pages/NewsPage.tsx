@@ -402,8 +402,8 @@ export default function NewsPage() {
                     )}
                   </button>
 
-                  {/* Expanded Expert Comments */}
-                  {expandedNews[news.id] && (
+                  {/* Expanded Expert Comments - HIDE for real users */}
+                  {expandedNews[news.id] && !isRealUser() && (
                     <div className="mt-2 space-y-2">
                       {news.experts?.slice(0, 3).map((expert: string, idx: number) => (
                         <div key={idx} className="p-4 bg-card rounded-lg border border-border">
