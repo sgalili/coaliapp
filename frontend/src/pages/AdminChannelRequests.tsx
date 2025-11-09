@@ -279,7 +279,7 @@ export default function AdminChannelRequests() {
                     <div>
                       <h3 className="font-medium">{request.channel_name}</h3>
                       <p className="text-sm text-muted-foreground">
-                        {request.profiles?.first_name} {request.profiles?.last_name}
+                        User {request.user_id.slice(0, 8)}...
                       </p>
                     </div>
                     {getStatusBadge(request.status)}
