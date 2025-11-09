@@ -55,6 +55,7 @@ export const getMissingFieldsText = (fields: string[]): string => {
   const fieldNames: Record<string, string> = {
     bio: 'ביוגרפיה',
     categories: 'קטגוריות',
+    title: 'תואר',
     id_number: 'מספר תעודת זהות',
     city: 'עיר מגורים'
   };
