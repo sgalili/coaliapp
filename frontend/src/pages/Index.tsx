@@ -2642,6 +2642,13 @@ export default function Index() {
         </div>
         </div>
       )}
+      
+      {/* Create Channel Dialog */}
+      <CreateChannelDialog
+        isOpen={showCreateChannel}
+        onClose={() => setShowCreateChannel(false)}
+        userId={currentUserId}
+      />
     </div>
   );
 }
