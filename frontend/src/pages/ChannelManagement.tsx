@@ -139,7 +139,7 @@ export default function ChannelManagement() {
                   onClick={() => setShowGoPublicDialog(true)}
                   className="text-xs text-primary hover:underline"
                 >
-                  בקש להפוך לציבורי →
+                  ← בקש להפוך לציבורי
                 </button>
               )}
             </div>
