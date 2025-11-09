@@ -3,7 +3,7 @@ import { Check, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 
-export const ChannelSelector = () => {
+export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => void }) => {
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
