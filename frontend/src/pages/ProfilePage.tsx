@@ -569,27 +569,31 @@ export default function ProfilePage() {
       // Load post data for each bookmark
       let bookmarksWithPosts = [];
       for (const bookmark of data) {
-        const { data: post } = await supabase
-          .from('demo_posts') // ✅ Use posts table
-          .select('*, profiles(*)') // Join with profiles
+        const { data: post, error: postError } = await supabase
+          .from('demo_posts')
+          .select('*')
           .eq('id', bookmark.post_id)
           .single();
         
+        if (postError) {
+          console.warn('Post not found for bookmark:', bookmark.post_id, postError);
+          continue;
+        }
+        
         if (post) {
+          // Don't filter - show ALL bookmarked posts (demo or real)
           bookmarksWithPosts.push({
             id: bookmark.id,
             post: {
               ...post,
-              username: post.profiles ? `${post.profiles.first_name} ${post.profiles.last_name}` : 'משתמש',
-              profile_image: post.profiles?.avatar_url,
-              caption: post.content
+              caption: post.caption || post.content
             }
           });
         }
       }
       
       setSavedBookmarks(bookmarksWithPosts);
-      console.log('🔖 Bookmarks loaded:', bookmarksWithPosts.length);
+      console.log('🔖 Bookmarks with posts loaded:', bookmarksWithPosts.length);
     } catch (error) {
       console.error('Failed to load saved bookmarks:', error);
       setSavedBookmarks([]);
