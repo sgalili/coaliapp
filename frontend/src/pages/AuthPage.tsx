@@ -98,27 +98,48 @@ export const AuthPage = () => {
       localStorage.removeItem('isAuthenticated'); // Clear old auth
       console.log('🧹 Cleared demo mode and old auth');
       
-      // Check if profile already exists
+      // Check if profile already exists - FLEXIBLE phone search
       console.log('🔍 Checking for existing profile with phone:', authData.phone);
       
-      const { data: existingProfile, error: profileError } = await supabase
+      // Try exact match first
+      let { data: existingProfile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('phone', authData.phone)
         .maybeSingle();
       
+      // If not found, try without country code prefix
+      if (!existingProfile) {
+        const phoneDigits = authData.phone.replace(/\D/g, ''); // Only digits
+        console.log('🔍 Trying with digits only:', phoneDigits);
+        
+        const { data: profile2 } = await supabase
+          .from('profiles')
+          .select('*')
+          .ilike('phone', `%${phoneDigits.slice(-9)}%`) // Last 9 digits
+          .maybeSingle();
+        
+        existingProfile = profile2;
+      }
+      
       console.log('📊 Profile query result:');
       console.log('  Found:', !!existingProfile);
       console.log('  Error:', profileError);
-      console.log('  Profile data:', existingProfile);
+      if (existingProfile) {
+        console.log('  Profile data:', {
+          user_id: existingProfile.user_id,
+          first_name: existingProfile.first_name,
+          last_name: existingProfile.last_name,
+          phone: existingProfile.phone,
+          is_demo: existingProfile.is_demo
+        });
+      }
       
       if (existingProfile) {
         // EXISTING REAL USER - LOGIN
-        console.log('🔵 EXISTING REAL USER FOUND');
-        console.log('User ID:', existingProfile.user_id);
-        console.log('Name:', existingProfile.first_name, existingProfile.last_name);
-        console.log('Phone:', existingProfile.phone);
-        console.log('Is Demo?:', existingProfile.is_demo);
+        console.log('🔵 EXISTING USER FOUND - LOGGING IN');
+        console.log('User: שי גלילי');
+        console.log('Phone match:', existingProfile.phone, '===', authData.phone);
         
         // FORCE set as real user
         localStorage.clear(); // Clear EVERYTHING first
