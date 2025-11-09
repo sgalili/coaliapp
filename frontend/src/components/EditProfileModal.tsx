@@ -201,27 +201,82 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
           {/* City with Autocomplete */}
           <div>
-            <label className="text-sm font-medium text-right block mb-1">עיר מגורים</label>
+            <label className="text-sm font-medium text-right block mb-1">
+              עיר מגורים
+              {missingFields.includes('city') && <span className="text-red-500 mr-1">*</span>}
+            </label>
             <CityAutocomplete
               value={formData.city}
               onChange={(city) => setFormData(prev => ({ ...prev, city }))}
-              className="text-right"
+              className={cn(
+                "text-right",
+                missingFields.includes('city') && "border-red-500 border-2"
+              )}
             />
+            {missingFields.includes('city') && (
+              <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+            )}
+          </div>
+
+          {/* ID Number - Can't edit once set */}
+          <div>
+            <label className="text-sm font-medium text-right block mb-1">
+              מספר תעודת זהות
+              {missingFields.includes('id_number') && <span className="text-red-500 mr-1">*</span>}
+            </label>
+            {hasIdNumber ? (
+              <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="text-sm text-green-700 font-medium">תעודת זהות אומתה ✓</span>
+              </div>
+            ) : (
+              <>
+                <Input
+                  value={formData.id_number}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 9);
+                    setFormData(prev => ({ ...prev, id_number: value }));
+                  }}
+                  placeholder="9 ספרות"
+                  maxLength={9}
+                  className={cn(
+                    "text-right",
+                    missingFields.includes('id_number') && "border-red-500 border-2"
+                  )}
+                  dir="ltr"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  🔒 המספר יישמר מוצפן ולא יוצג למשתמשים אחרים
+                </p>
+                {missingFields.includes('id_number') && (
+                  <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+                )}
+              </>
+            )}
           </div>
 
           {/* Bio */}
           <div>
-            <label className="text-sm font-medium">ביוגרפיה</label>
+            <label className="text-sm font-medium">
+              ביוגרפיה
+              {missingFields.includes('bio') && <span className="text-red-500 mr-1">*</span>}
+            </label>
             <Textarea
               value={formData.bio}
               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
               placeholder="ספר קצת על עצמך..."
-              className="min-h-[100px]"
+              className={cn(
+                "min-h-[100px]",
+                missingFields.includes('bio') && "border-red-500 border-2"
+              )}
               maxLength={500}
             />
             <p className="text-xs text-muted-foreground mt-1">
               {formData.bio.length}/500 תווים
             </p>
+            {missingFields.includes('bio') && (
+              <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+            )}
           </div>
 
           {/* Expertise Fields - Max 3 */}
