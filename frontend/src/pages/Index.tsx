@@ -2033,7 +2033,7 @@ export default function Index() {
                     )}
                   </h3>
                   <p className="text-white/90 text-sm drop-shadow-lg">
-                    {post.expertise}
+                    {post.title || post.expertise}
                   </p>
                 </div>
               </button>
