@@ -690,10 +690,13 @@ export default function ProfilePage() {
                 <button 
                   onClick={() => {
                     // Logout logic for real users
+                    console.log('🚪 Logging out real user');
                     supabase.auth.signOut();
                     localStorage.clear();
-                    navigate('/');
                     setShowBurgerMenu(false);
+                    toast.success('התנתקת בהצלחה');
+                    // Redirect to auth page
+                    window.location.href = '/auth';
                   }}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4"
                 >
