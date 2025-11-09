@@ -64,6 +64,7 @@ const App = () => (
             <Route path="/admin/content" element={<AdminContent />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/channels" element={<AdminChannelRequests />} />
+            <Route path="/admin/all-channels" element={<AdminAllChannels />} />
             <Route path="/admin/public-requests" element={<AdminPublicRequests />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />
             <Route path="/notifications" element={<NotificationsPage />} />
