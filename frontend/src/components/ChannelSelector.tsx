@@ -17,19 +17,26 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
   // Load user's approved channels
   useEffect(() => {
     if (currentUserId && currentUserId !== 'demo-user') {
+      console.log('📺 Loading approved channels for user:', currentUserId);
       loadMyChannels();
+    } else {
+      console.log('⚠️ Skipping channel load - no user or demo user');
     }
   }, [currentUserId]);
   
   const loadMyChannels = async () => {
     try {
-      const { data } = await supabase
+      console.log('🔍 Querying channel_requests for user:', currentUserId);
+      
+      const { data, error } = await supabase
         .from('channel_requests')
         .select('*')
         .eq('user_id', currentUserId)
         .eq('status', 'approved');
       
-      console.log('📺 My approved channels:', data?.length || 0);
+      console.log('📊 Query result:', { found: data?.length || 0, error });
+      console.log('📋 My channels:', data);
+      
       setMyChannels(data || []);
     } catch (error) {
       console.error('Error loading my channels:', error);
