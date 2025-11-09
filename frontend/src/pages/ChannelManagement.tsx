@@ -256,6 +256,26 @@ export default function ChannelManagement() {
       </div>
 
       <Navigation zoozBalance={999} />
+      
+      {/* Dialogs */}
+      <WhatsAppInviteDialog
+        isOpen={showInviteDialog}
+        onClose={() => setShowInviteDialog(false)}
+        channelId={channelId || ''}
+      />
+      
+      <ExcelMemberUpload
+        isOpen={showExcelUpload}
+        onClose={() => setShowExcelUpload(false)}
+        channelId={channelId || ''}
+      />
+      
+      <GoPublicDialog
+        isOpen={showGoPublicDialog}
+        onClose={() => setShowGoPublicDialog(false)}
+        channelId={channelId || ''}
+        onSubmit={handleRequestGoPublic}
+      />
     </div>
   );
 }
