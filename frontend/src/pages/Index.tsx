@@ -715,10 +715,13 @@ export default function Index() {
       
       console.log('📦 Raw posts from DB:', dbPosts.length);
       console.log('👤 Current user:', activeUserId);
-      console.log('🎭 Is real user?:', activeUserId !== 'demo-user');
+      console.log('🎭 Is real user?:', activeUserId && activeUserId !== 'demo-user');
       
       // CRITICAL: Filter out ALL demo content for real users ONLY
-      if (activeUserId !== 'demo-user') {
+      // If activeUserId is undefined/null, treat as demo user
+      const isRealAuthenticatedUser = activeUserId && activeUserId !== 'demo-user' && activeUserId !== 'null' && activeUserId !== 'undefined';
+      
+      if (isRealAuthenticatedUser) {
         console.log('🔒 REAL USER - Filtering out ALL demo content');
         const beforeFilter = dbPosts.length;
         dbPosts = dbPosts.filter(post => {
@@ -729,7 +732,7 @@ export default function Index() {
         });
         console.log(`✅ Filtered: ${beforeFilter} → ${dbPosts.length} posts (removed ${beforeFilter - dbPosts.length} demo posts)`);
       } else {
-        console.log('👁️ DEMO USER - Showing ALL demo content');
+        console.log('👁️ DEMO USER - Showing ALL demo content (activeUserId:', activeUserId, ')');
       }
       
       // Load user's bookmarks
