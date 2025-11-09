@@ -222,6 +222,22 @@ export default function EnhancedAdminDashboard() {
                 : 'החלטות אמיתיות, תוצאות'}
             </p>
           </button>
+          
+          {/* Go Public Requests - Production only */}
+          {activeArea === 'production' && (
+            <button
+              onClick={() => navigate('/admin/public-requests')}
+              className="p-6 bg-card border rounded-xl hover:shadow-lg transition-all text-right"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <Globe className="w-6 h-6 text-green-600" />
+                <h3 className="text-lg font-bold">בקשות להפוך לציבורי</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                אשר/דחה ערוצים פרטיים שרוצים להפוך לציבוריים
+              </p>
+            </button>
+          )}
         </div>
 
         {/* Quick Actions */}
