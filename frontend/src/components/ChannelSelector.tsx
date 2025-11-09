@@ -6,10 +6,35 @@ import { useChannel } from "@/contexts/ChannelContext";
 export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => void }) => {
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
   const [isOpen, setIsOpen] = useState(false);
+  const [myChannels, setMyChannels] = useState<any[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const currentUserId = localStorage.getItem('authenticated_user_id');
 
   const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
+  
+  // Load user's approved channels
+  useEffect(() => {
+    if (currentUserId && currentUserId !== 'demo-user') {
+      loadMyChannels();
+    }
+  }, [currentUserId]);
+  
+  const loadMyChannels = async () => {
+    try {
+      const { data } = await supabase
+        .from('channel_requests')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .eq('status', 'approved');
+      
+      console.log('📺 My approved channels:', data?.length || 0);
+      setMyChannels(data || []);
+    } catch (error) {
+      console.error('Error loading my channels:', error);
+    }
+  };
 
   const handleSelectChannel = (channel: any) => {
     console.log('=== CHANNEL SWITCH START ===');
