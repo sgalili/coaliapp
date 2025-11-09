@@ -130,9 +130,19 @@ export default function ChannelManagement() {
           </button>
           <div className="flex-1">
             <h1 className="text-xl font-bold">{channel?.name || 'טוען...'}</h1>
-            <p className="text-sm text-muted-foreground">
-              {channel?.is_private ? '🔒 ערוץ פרטי' : '🌐 ערוץ ציבורי'}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-muted-foreground">
+                {channel?.is_private || channel?.is_public === false ? '🔒 ערוץ פרטי' : '🌐 ערוץ ציבורי'}
+              </p>
+              {channel?.is_private && (
+                <button
+                  onClick={() => setShowGoPublicDialog(true)}
+                  className="text-xs text-primary hover:underline"
+                >
+                  בקש להפוך לציבורי →
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
