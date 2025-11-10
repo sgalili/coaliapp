@@ -7,6 +7,12 @@ import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 import { useNavigate } from "react-router-dom";
 
+// Check if real user
+const isRealUser = () => {
+  const authUserId = localStorage.getItem('authenticated_user_id');
+  return !!(authUserId && authUserId !== 'demo-user');
+};
+
 const categories = [
   { id: 'all', label: 'הכל', apiValue: null },
   { id: 'politics', label: 'פוליטיקה', apiValue: 'politics' },
@@ -396,8 +402,8 @@ export default function NewsPage() {
                     )}
                   </button>
 
-                  {/* Expanded Expert Comments */}
-                  {expandedNews[news.id] && (
+                  {/* Expanded Expert Comments - HIDE for real users */}
+                  {expandedNews[news.id] && !isRealUser() && (
                     <div className="mt-2 space-y-2">
                       {news.experts?.slice(0, 3).map((expert: string, idx: number) => (
                         <div key={idx} className="p-4 bg-card rounded-lg border border-border">

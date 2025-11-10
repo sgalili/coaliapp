@@ -28,11 +28,17 @@ const InviteFriendsPage = () => {
   
   const { referralCode, fetchReferralCode, generateInvitationLink, createTrustIntent } = useInvitation();
   
+  // Get user's last name for referral code
+  const userName = localStorage.getItem('authenticated_user_name') || '';
+  const userLastName = userName.split(' ').pop() || 'user';
+  const refCode = userLastName.toLowerCase().replace(/[^a-z0-9]/g, ''); // Clean for URL
+  
   useEffect(() => {
     fetchReferralCode();
   }, []);
 
-  const referralLink = generateInvitationLink(referralCode || 'user123');
+  // Use demo.coali.app with user's last name as ref
+  const referralLink = `https://demo.coali.app/auth?ref=${refCode}`;
 
   const handleContactsPermission = () => {
     const hasPermission = Math.random() > 0.5;

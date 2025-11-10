@@ -6,47 +6,24 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
 
-// Demo users data (50 users)
-const generateDemoUsers = () => {
-  const users = [
-    { rank: 1, name: 'תמר סייבר', category: 'Technology', bio: 'מומחה מוכר ואמין בתחום', avatar: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg', verified: true, trusters: 1789, weeklyChange: 276, tags: ['Technology', 'Security'] },
-    { rank: 2, name: 'שרה לוי', category: 'Education', bio: 'חוקרת חינוך, מומחית פדגוגיה דיגיטלית ויועצת ארגונית', avatar: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg', verified: true, trusters: 1523, weeklyChange: 189, tags: ['Education', 'Culture'] },
-    { rank: 3, name: 'יוסי טכנולוגיה', category: 'Technology', bio: 'מומחה מוכר ואמין בתחום', avatar: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg', verified: true, trusters: 1543, weeklyChange: 221, tags: ['Technology'] },
-    { rank: 4, name: 'אמית כהן', category: 'Economy', bio: 'מומחה כלכלה וטכנולוגיה, יועץ השקעות ומרצה בכיר באוניברסיטת תל אביב', avatar: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg', verified: true, trusters: 2847, weeklyChange: 452, tags: ['Economy', 'Technology'] },
-    { rank: 5, name: 'רחל אברהם', category: 'Economy', bio: 'כלכלנית בכירה, יועצת עסקית ומומחית בשווקים פיננסיים', avatar: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg', verified: true, trusters: 3421, weeklyChange: 583, tags: ['Economy', 'Culture'] },
-    { rank: 6, name: 'אלון AI', category: 'Technology', bio: 'מומחה מוכר ואמין בתחום', avatar: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg', verified: true, trusters: 2156, weeklyChange: 348, tags: ['Technology'] },
-    { rank: 7, name: 'נועה שמואל', category: 'Technology', bio: 'מפתחת תוכנה בכירה, מומחית בינה מלאכותית ומובילת צוותים', avatar: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg', verified: true, trusters: 987, weeklyChange: 112, tags: ['Technology', 'Education'] },
-    { rank: 8, name: 'ליאת קוד', category: 'Technology', bio: 'מומחה מוכר ואמין בתחום', avatar: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg', verified: true, trusters: 892, weeklyChange: 134, tags: ['Technology'] },
-    { rank: 9, name: 'ענת דטה', category: 'Technology', bio: 'מומחה מוכר ואמין בתחום', avatar: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg', verified: true, trusters: 1334, weeklyChange: 198, tags: ['Technology'] },
-    { rank: 10, name: 'מאיה רוזן', category: 'Health', bio: 'רופאה מומחית, חוקרת בתחום הבריאות הדיגיטלית ומרצה', avatar: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg', verified: true, trusters: 1234, weeklyChange: 156, tags: ['Health', 'Education'] },
-    { rank: 11, name: 'דוד מושקוביץ', category: 'Security', bio: 'מומחה אבטחת מידע, יועץ סייבר וחוקר באקדמיה', avatar: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg', verified: true, trusters: 856, weeklyChange: 124, tags: ['Security', 'Technology'] },
-    { rank: 12, name: 'רועי בלוקצ\'יין', category: 'Technology', bio: 'מומחה מוכר ואמין בתחום', avatar: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg', verified: true, trusters: 945, weeklyChange: 162, tags: ['Technology', 'Economy'] },
-  ];
-
-  return users;
-};
-
-type TimeFilter = 'all' | 'week' | 'month';
-
 export default function TopTrustedPage() {
   const navigate = useNavigate();
-  const { selectedChannel, setSelectedChannel, availableChannels } = useChannel();
-  const [showChannelIndicator, setShowChannelIndicator] = useState(true);
-  const [users] = useState(generateDemoUsers());
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
+  const { selectedChannel } = useChannel();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
+  
+  // Check if real user - HIDE all demo leaders
+  const isReal = localStorage.getItem('authenticated_user_id') && 
+                 localStorage.getItem('authenticated_user_id') !== 'demo-user';
+  
+  // Empty for real users, demo data for demo users
+  const [users] = useState(isReal ? [] : []);
+  const [unreadNotifications, setUnreadNotifications] = useState(isReal ? 0 : 3);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
   }, []);
-
-  // Reset indicator when channel changes
-  useEffect(() => {
-    setShowChannelIndicator(true);
-  }, [selectedChannel.id]);
 
   const topThree = users.slice(0, 3);
   const rankedList = users.slice(3);
@@ -139,11 +116,13 @@ export default function TopTrustedPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        {/* Top 3 Podium */}
+        {/* Top 3 Podium - Show skeleton for real users */}
         <div className="p-6 bg-gradient-to-b from-primary/5 to-transparent">
-          <div className="flex items-end justify-center gap-4">
-            {/* 2nd Place */}
-            {topThree[1] && (
+          {users.length > 0 ? (
+            <div className="flex items-end justify-center gap-4">
+              {/* Actual top 3 for demo users */}
+              {/* 2nd Place */}
+              {topThree[1] && (
               <button
                 onClick={() => navigate(`/user/${topThree[1].rank}`)}
                 className="flex flex-col items-center flex-1"
@@ -230,11 +209,41 @@ export default function TopTrustedPage() {
               </button>
             )}
           </div>
+          ) : (
+            /* Skeleton for real users - Show structure */
+            <div className="flex items-end justify-center gap-4">
+              {/* 2nd Place Skeleton */}
+              <div className="flex flex-col items-center flex-1 opacity-20">
+                <div className="text-3xl mb-2">🥈</div>
+                <div className="w-16 h-16 rounded-full bg-muted mb-3"></div>
+                <div className="h-4 w-20 bg-muted rounded mb-2"></div>
+                <div className="h-3 w-16 bg-muted rounded"></div>
+              </div>
+              
+              {/* 1st Place Skeleton */}
+              <div className="flex flex-col items-center flex-1 -mt-8 opacity-20">
+                <Crown className="w-8 h-8 text-muted mb-1" />
+                <div className="text-4xl mb-2">👑</div>
+                <div className="w-20 h-20 rounded-full bg-muted mb-3"></div>
+                <div className="h-4 w-24 bg-muted rounded mb-2"></div>
+                <div className="h-3 w-20 bg-muted rounded"></div>
+              </div>
+              
+              {/* 3rd Place Skeleton */}
+              <div className="flex flex-col items-center flex-1 opacity-20">
+                <div className="text-3xl mb-2">🥉</div>
+                <div className="w-16 h-16 rounded-full bg-muted mb-3"></div>
+                <div className="h-4 w-20 bg-muted rounded mb-2"></div>
+                <div className="h-3 w-16 bg-muted rounded"></div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Ranked List */}
+        {/* Ranked List - Show skeleton or empty state */}
         <div className="px-4 space-y-2">
-          {rankedList.map((user) => (
+          {users.length > 0 ? (
+            rankedList.map((user) => (
             <button
               key={user.rank}
               onClick={() => navigate(`/user/${user.rank}`)}
@@ -278,7 +287,28 @@ export default function TopTrustedPage() {
                 </div>
               </div>
             </button>
-          ))}
+          ))
+          ) : (
+            /* Skeleton list for real users */
+            <>
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="w-full flex items-center gap-3 p-4 bg-card border border-border rounded-xl opacity-20">
+                  <div className="w-8 text-center">
+                    <span className="text-lg font-bold text-muted-foreground">#{i+3}</span>
+                  </div>
+                  <div className="w-12 h-12 rounded-full bg-muted"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 bg-muted rounded"></div>
+                    <div className="h-3 w-24 bg-muted rounded"></div>
+                  </div>
+                  <div className="text-left space-y-1">
+                    <div className="h-4 w-16 bg-muted rounded"></div>
+                    <div className="h-3 w-12 bg-muted rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
 

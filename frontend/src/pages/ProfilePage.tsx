@@ -1,19 +1,77 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Settings, Heart, Eye, ShieldCheck, Handshake, Crown, Vote, Gavel, Menu, Bell, X, LogOut, User, Lock, HelpCircle, FileText, MessageSquare, Share2, Bookmark, Gift, Edit2, Grid3x3, Info, CheckSquare, FileEdit, Trash2, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { EditProfileModal } from "@/components/EditProfileModal";
 import { demoUsers } from "@/data/demoUsers";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Parse URL params for edit mode
+  const searchParams = new URLSearchParams(location.search);
+  const shouldEdit = searchParams.get('edit') === 'true';
+  const action = searchParams.get('action'); // 'post' or 'wallet'
+  const missingFields = searchParams.get('missing')?.split(',') || [];
+  
+  console.log('📍 Profile page params:', { shouldEdit, action, missingFields });
+  
+  // CRITICAL: Check authentication IMMEDIATELY on mount
+  React.useEffect(() => {
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    const authPhone = localStorage.getItem('authenticated_user_phone');
+    const demoMode = localStorage.getItem('demo_mode');
+    
+    console.log('🚨 PROFILE PAGE MOUNTED');
+    console.log('📋 Full localStorage dump:');
+    Object.keys(localStorage).forEach(key => {
+      console.log(`  ${key}:`, localStorage.getItem(key));
+    });
+    
+    if (authUserId && authUserId !== 'demo-user') {
+      console.log('✅ REAL USER DETECTED:', authUserId);
+      console.log('🧹 Ensuring no demo mode...');
+      
+      // Force remove any demo flags
+      if (demoMode) {
+        localStorage.removeItem('demo_mode');
+        console.log('🔄 Removed demo_mode flag, reloading...');
+        window.location.reload();
+      }
+    } else if (!authUserId) {
+      console.log('⚠️ NO authenticated_user_id - Will use demo-user');
+    }
+  }, []);
+  
+  // Check if user is authenticated (real user) or demo
+  const getAuthenticatedUserId = () => {
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    
+    // CRITICAL: If we have an authenticated user ID that's not demo-user, USE IT
+    if (authUserId && authUserId !== 'demo-user' && authUserId !== 'undefined' && authUserId !== 'null') {
+      console.log('✅ Using REAL authenticated user:', authUserId);
+      return authUserId;
+    }
+    
+    console.log('⚠️ Defaulting to demo-user');
+    return 'demo-user';
+  };
+  
+  const currentUserId = getAuthenticatedUserId();
+  const isDemoUser = currentUserId === 'demo-user';
+  
+  console.log('👤 FINAL Current user:', currentUserId);
+  console.log('👤 Is demo?:', isDemoUser);
+  console.log('👤 Will load data for:', currentUserId);
+  
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [trustCount, setTrustCount] = useState(0);
   const [decisionsCount, setDecisionsCount] = useState(0);
   const [userDecisions, setUserDecisions] = useState<any[]>([]);
-  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
+  const [unreadNotifications, setUnreadNotifications] = useState(isDemoUser ? 3 : 0); // 0 for real users
   const [showBurgerMenu, setShowBurgerMenu] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'trust' | 'favorites' | 'decisions'>('posts');
   const [showDrafts, setShowDrafts] = useState(false);
@@ -34,28 +92,66 @@ export default function ProfilePage() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [isBioLong, setIsBioLong] = useState(false);
   
-  const userBio = "בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים. תומך בחדשנות ישראלית ומאמין בכוח הקהילה לשנות את העולם. אוהב לטייל, לקרוא ספרים על היסטוריה ולצלם נופים.";
+  // Auto-open edit modal if redirected from FAB with missing fields
+  React.useEffect(() => {
+    if (shouldEdit && missingFields.length > 0) {
+      console.log('🔴 Opening edit modal with missing fields:', missingFields);
+      setShowEditProfile(true);
+    }
+  }, [shouldEdit, missingFields]);
+  
+  // REAL user profile data
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  
+  // Bio logic: Show real bio, or "edit" link, or "no bio yet"
+  const getUserBio = () => {
+    if (userProfile?.bio) {
+      return userProfile.bio;
+    }
+    return null; // No bio
+  };
+  
+  const userBio = getUserBio();
 
-  const handleTrustBack = async (userId: string) => {
+  const loadUserProfile = async () => {
     try {
-      // Add trust relationship
-      const { error } = await supabase
-        .from('trust_relationships')
-        .insert({
-          truster_user_id: 'demo-user',
-          trusted_user_id: userId,
-          created_at: new Date().toISOString(),
+      setProfileLoading(true);
+      console.log('📋 Loading profile for user:', currentUserId);
+      
+      if (currentUserId === 'demo-user') {
+        // Demo user - use default data
+        setUserProfile({
+          first_name: 'משתמש דמו',
+          last_name: 'מאומת',
+          avatar_url: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+          bio: 'בוגר תקשורת מאוניברסיטת תל אביב, עובד בתחום הטכנולוגיה כמנהל מוצר במשך 8 שנים.',
+          expertise_fields: ['טכנולוגיה', 'עסקים', 'חדשות']
         });
-
-      if (error) {
-        console.error('Error trusting user:', error);
-      } else {
-        console.log('✅ Trust relationship created');
-        // Reload trust data
-        await loadTrustCount();
+        setProfileLoading(false);
+        return;
       }
+      
+      // REAL USER - Load from database
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .single();
+      
+      if (error) {
+        console.error('Error loading profile:', error);
+        setProfileLoading(false);
+        return;
+      }
+      
+      console.log('✅ REAL user profile loaded:', data);
+      setUserProfile(data);
+      setProfileLoading(false);
+      
     } catch (error) {
-      console.error('Failed to trust user:', error);
+      console.error('Failed to load user profile:', error);
+      setProfileLoading(false);
     }
   };
 
@@ -66,7 +162,7 @@ export default function ProfilePage() {
       const { error } = await supabase
         .from('trust_relationships')
         .delete()
-        .eq('truster_user_id', 'demo-user')
+        .eq('truster_user_id', currentUserId)
         .eq('trusted_user_id', userId);
 
       if (error) throw error;
@@ -84,7 +180,7 @@ export default function ProfilePage() {
       const { error } = await supabase
         .from('subscriptions')
         .delete()
-        .eq('subscriber_id', 'demo-user')
+        .eq('subscriber_id', currentUserId)
         .eq('creator_id', creatorId);
 
       if (error) {
@@ -102,13 +198,18 @@ export default function ProfilePage() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
+    
+    // Load user profile first
+    loadUserProfile();
+    
+    // Then load posts and other data
     loadUserPosts();
     
     // Real-time subscription for posts
     const postsSubscription = supabase
       .channel('profile-posts')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'demo_posts', filter: `user_id=eq.demo-user` },
+        { event: '*', schema: 'public', table: 'demo_posts', filter: `user_id=eq.${currentUserId}` },
         () => {
           console.log('🔄 Posts changed, reloading...');
           loadUserPosts();
@@ -120,7 +221,7 @@ export default function ProfilePage() {
     const votesSubscription = supabase
       .channel('profile-votes')
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.demo-user` },
+        { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.${currentUserId}` },
         () => {
           console.log('🔄 Votes changed, reloading...');
           loadUserDecisions();
@@ -132,7 +233,7 @@ export default function ProfilePage() {
     const bookmarksSubscription = supabase
       .channel('profile-bookmarks')
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.demo-user` },
+        { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.${currentUserId}` },
         () => {
           console.log('🔄 Bookmarks changed, reloading...');
           loadSavedBookmarks();
@@ -222,29 +323,20 @@ export default function ProfilePage() {
   const loadDraftPosts = async () => {
     try {
       const { data, error } = await supabase
-        .from('demo_posts')
+        .from('demo_posts') // ✅ Use posts table
         .select('*')
-        .eq('user_id', 'demo-user')
-        .eq('status', 'draft')
+        .eq('user_id', currentUserId)
+        .eq('is_draft', true) // Use is_draft instead of status
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('Draft posts may not exist, using demo data:', error);
-        // Use demo draft data with placeholder
-        setDraftPosts([
-          {
-            id: 'draft-1',
-            caption: 'טיוטה ראשונה - רעיונות על חדשנות בישראל',
-            image_url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400',
-            created_at: new Date().toISOString(),
-            status: 'draft'
-          }
-        ]);
+        console.warn('Error loading drafts:', error);
+        setDraftPosts([]);
         return;
       }
 
       setDraftPosts(data || []);
-      console.log('📝 Draft posts loaded:', data?.length);
+      console.log('📝 Draft posts loaded:', data?.length || 0);
     } catch (error) {
       console.error('Failed to load draft posts:', error);
       setDraftPosts([]);
@@ -261,49 +353,60 @@ export default function ProfilePage() {
     if (!confirm('האם אתה בטוח שברצונך למחוק?')) return;
 
     try {
+      console.log('🗑️ Deleting post:', postId);
+      console.log('👤 Current user:', currentUserId);
+      
       const { error } = await supabase
-        .from('demo_posts')
+        .from('demo_posts') // ✅ Use posts table
         .delete()
         .eq('id', postId)
-        .eq('user_id', 'demo-user'); // Only allow deleting own posts
+        .eq('user_id', currentUserId); // ✅ Only allow deleting own posts
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Delete error:', error);
+        throw error;
+      }
 
-      console.log('✅ Post deleted');
-      // Reload posts
+      console.log('✅ Post deleted from database');
+      toast.success('הפוסט נמחק! 🗑️');
+      
+      // Reload posts and drafts
       await loadUserPosts();
       await loadDraftPosts();
     } catch (error) {
       console.error('Failed to delete post:', error);
-      alert('שגיאה במחיקת הפוסט');
+      toast.error('שגיאה במחיקת הפוסט');
     }
   };
 
   const handlePublishDraft = async (postId: string) => {
     try {
       const { error } = await supabase
-        .from('demo_posts')
-        .update({ status: 'published' })
+        .from('demo_posts') // ✅ Use posts table
+        .update({ is_draft: false }) // ✅ Use is_draft flag
         .eq('id', postId);
 
       if (error) throw error;
 
       console.log('✅ Draft published');
+      toast.success('הטיוטה פורסמה!');
+      
       // Reload posts and drafts
       await loadUserPosts();
       await loadDraftPosts();
     } catch (error) {
       console.error('Failed to publish draft:', error);
+      toast.error('שגיאה בפרסום');
     }
   };
 
   const loadUserPosts = async () => {
     try {
-      // Fetch demo user's posts
+      // Fetch user's posts
       const { data, error } = await supabase
-        .from('demo_posts')
+        .from('demo_posts') // ✅ Use posts table
         .select('*')
-        .eq('user_id', 'demo-user')
+        .eq('user_id', currentUserId)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -341,7 +444,7 @@ export default function ProfilePage() {
       const { data } = await supabase
         .from('subscriptions')
         .select('*')
-        .eq('subscriber_id', 'demo-user')
+        .eq('subscriber_id', currentUserId)
         .order('created_at', { ascending: false });
 
       // Map to demo users from demoUsers.ts
@@ -372,7 +475,7 @@ export default function ProfilePage() {
       const { data } = await supabase
         .from('user_votes')
         .select('*')
-        .eq('user_id', 'demo-user')
+        .eq('user_id', currentUserId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
@@ -382,26 +485,10 @@ export default function ProfilePage() {
         return;
       }
 
-      // Load decision data for each vote
-      let votesWithDecisions = [];
-      for (const vote of data) {
-        const { data: decision } = await supabase
-          .from('demo_decisions')
-          .select('*')
-          .eq('id', vote.decision_id)
-          .single();
-        
-        if (decision) {
-          votesWithDecisions.push({
-            ...vote,
-            decision: decision
-          });
-        }
-      }
-
-      setUserDecisions(votesWithDecisions);
-      setDecisionsCount(votesWithDecisions.length);
-      console.log('🗳️ User decisions loaded:', votesWithDecisions.length);
+      // Note: No demo_decisions table, just store votes
+      setUserDecisions(data);
+      setDecisionsCount(data.length);
+      console.log('🗳️ User decisions loaded:', data.length);
     } catch (error) {
       console.error('Failed to load user decisions:', error);
       setDecisionsCount(0);
@@ -415,12 +502,12 @@ export default function ProfilePage() {
       const { data: trustedMeData } = await supabase
         .from('trust_relationships')
         .select('*')
-        .eq('trusted_user_id', 'demo-user');
+        .eq('trusted_user_id', currentUserId);
 
       const { data: trustedByMeData } = await supabase
         .from('trust_relationships')
         .select('*')
-        .eq('truster_user_id', 'demo-user');
+        .eq('truster_user_id', currentUserId);
 
       // Map to demo users from demoUsers.ts
       let trustedMeList = (trustedMeData || []).map(trust => {
@@ -470,7 +557,7 @@ export default function ProfilePage() {
       const { data } = await supabase
         .from('bookmarks')
         .select('*')
-        .eq('bookmark_user_id', 'demo-user')
+        .eq('bookmark_user_id', currentUserId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
@@ -482,22 +569,31 @@ export default function ProfilePage() {
       // Load post data for each bookmark
       let bookmarksWithPosts = [];
       for (const bookmark of data) {
-        const { data: post } = await supabase
+        const { data: post, error: postError } = await supabase
           .from('demo_posts')
           .select('*')
           .eq('id', bookmark.post_id)
           .single();
         
+        if (postError) {
+          console.warn('Post not found for bookmark:', bookmark.post_id, postError);
+          continue;
+        }
+        
         if (post) {
+          // Don't filter - show ALL bookmarked posts (demo or real)
           bookmarksWithPosts.push({
             id: bookmark.id,
-            post: post
+            post: {
+              ...post,
+              caption: post.caption || post.content
+            }
           });
         }
       }
       
       setSavedBookmarks(bookmarksWithPosts);
-      console.log('🔖 Bookmarks loaded:', bookmarksWithPosts.length);
+      console.log('🔖 Bookmarks with posts loaded:', bookmarksWithPosts.length);
     } catch (error) {
       console.error('Failed to load saved bookmarks:', error);
       setSavedBookmarks([]);
@@ -578,10 +674,36 @@ export default function ProfilePage() {
                 <span>תנאי שימוש</span>
               </button>
 
-              <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4">
-                <LogOut className="w-5 h-5" />
-                <span>התנתק</span>
-              </button>
+              {/* Conditional: Demo user sees signup/login, Real user sees logout */}
+              {isDemoUser ? (
+                <button 
+                  onClick={() => {
+                    navigate('/auth');
+                    setShowBurgerMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/10 rounded-lg text-right text-primary mt-4"
+                >
+                  <User className="w-5 h-5" />
+                  <span>הרשמה/כניסה</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => {
+                    // Logout logic for real users
+                    console.log('🚪 Logging out real user');
+                    supabase.auth.signOut();
+                    localStorage.clear();
+                    setShowBurgerMenu(false);
+                    toast.success('התנתקת בהצלחה');
+                    // Redirect to auth page
+                    window.location.href = '/auth';
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-right text-red-600 mt-4"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>התנתק</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -618,43 +740,71 @@ export default function ProfilePage() {
 
         {/* Profile Content */}
         <div className="relative p-6 pt-0 text-center">
-          {/* Profile Image */}
-          <img
-            src="https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"
-            className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
-          />
+          {profileLoading ? (
+            /* Loading state - prevents flash */
+            <div className="flex flex-col items-center gap-4 py-8">
+              <div className="w-24 h-24 rounded-full bg-muted animate-pulse"></div>
+              <div className="h-8 w-48 bg-muted rounded animate-pulse"></div>
+            </div>
+          ) : (
+            <>
+              {/* Profile Image */}
+              <img
+                src={userProfile?.avatar_url || "https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg"}
+                className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-primary"
+              />
 
-          {/* Name & Handle with Edit Icon */}
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <h2 className="text-2xl font-bold">משתמש דמו מאומת</h2>
-            <button 
-              onClick={() => setShowEditProfile(true)}
-              className="p-1.5 hover:bg-muted rounded-full transition-colors"
-            >
-              <Edit2 className="w-4 h-4 text-muted-foreground" />
-            </button>
-          </div>
+              {/* Name & Handle with Edit Icon */}
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <h2 className="text-2xl font-bold">
+                  {userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'טוען...'}
+                </h2>
+                <button 
+                  onClick={() => setShowEditProfile(true)}
+                  className="p-1.5 hover:bg-muted rounded-full transition-colors"
+                >
+                  <Edit2 className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </div>
 
-          {/* Expertise Fields */}
-          <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
-            {expertiseFields.map((field, i) => (
-              <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
-                {field}
-              </span>
-            ))}
-          </div>
+              {/* Expertise Fields */}
+              <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
+                {(userProfile?.expertise_fields || expertiseFields || []).map((field: string, i: number) => (
+                  <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">
+                    {field}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
 
-          {/* Bio Section - Clickable to expand/collapse */}
+          {/* Bio Section */}
           <div className="px-6 mb-4 text-center">
-            <p 
-              onClick={() => setShowFullBio(!showFullBio)}
-              className={cn(
-                "text-sm text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors",
-                !showFullBio && "line-clamp-3"
-              )}
-            >
-              {userBio}
-            </p>
+            {userBio ? (
+              <p 
+                onClick={() => setShowFullBio(!showFullBio)}
+                className={cn(
+                  "text-sm text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors",
+                  !showFullBio && "line-clamp-3"
+                )}
+              >
+                {userBio}
+              </p>
+            ) : (
+              // No bio - show appropriate message
+              isDemoUser ? (
+                <button
+                  onClick={() => setShowEditProfile(true)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  הוסף ביוגרפיה
+                </button>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">
+                  אין ביוגרפיה
+                </p>
+              )
+            )}
           </div>
         </div>
 
@@ -1223,13 +1373,15 @@ export default function ProfilePage() {
       
       {/* Edit Profile Modal */}
       <EditProfileModal
-        userId="demo-user"
+        userId={currentUserId}
         isOpen={showEditProfile}
         onClose={() => setShowEditProfile(false)}
         onSave={() => {
           setShowEditProfile(false);
-          loadUserPosts(); // Reload to show updated data
+          loadUserPosts();
         }}
+        missingFields={missingFields}
+        action={action || ''}
       />
     </div>
   );

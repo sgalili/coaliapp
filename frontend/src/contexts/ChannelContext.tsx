@@ -68,11 +68,79 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [selectedChannel, setSelectedChannelState] = useState<Channel>(defaultChannel);
   const [selectedCategory, setSelectedCategoryState] = useState<string>('הכל');
   const [showChannelIndicator, setShowChannelIndicatorState] = useState<boolean>(true);
-  const [availableChannels] = useState<Channel[]>(demoChannels);
+  
+  // Check if real user - FIXED: default to demo if no auth
+  const authUserId = localStorage.getItem('authenticated_user_id');
+  const isReal = authUserId && authUserId !== 'demo-user' && authUserId !== 'null' && authUserId !== 'undefined';
+  
+  console.log('🎬 ChannelContext - authUserId:', authUserId);
+  console.log('🎬 ChannelContext - isReal:', isReal);
+  
+  const [availableChannels, setAvailableChannels] = useState<Channel[]>(isReal ? [defaultChannel] : demoChannels);
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log('📺 Available channels:', availableChannels.length);
+
+  // Load public channels dynamically
+  useEffect(() => {
+    loadPublicChannels();
+  }, []);
+
+  const loadPublicChannels = async () => {
+    try {
+      console.log('🔍 Loading public channels...');
+      
+      // Load approved public channels
+      const { data: publicChannelRequests, error } = await supabase
+        .from('channel_requests')
+        .select('*')
+        .eq('status', 'approved')
+        .eq('is_private', false);
+
+      console.log('📊 Public channel query result:');
+      console.log('  Found:', publicChannelRequests?.length || 0);
+      console.log('  Error:', error);
+      console.log('  Data:', publicChannelRequests);
+
+      if (publicChannelRequests && publicChannelRequests.length > 0) {
+        const newChannels = publicChannelRequests.map(ch => ({
+          id: ch.id,
+          name: ch.channel_name,
+          description: ch.description || '',
+          logo_url: ch.logo_url || '📺',
+          is_public: true,
+          member_count: null,
+          categories: ['הכל', 'פוליטיקה', 'טכנולוגיה', 'כלכלה', 'חברה', 'בריאות', 'תרבות']
+        }));
+
+        console.log('📺 Adding public channels:', newChannels);
+
+        // Add public channels to available list
+        setAvailableChannels(prev => {
+          const base = isReal ? [defaultChannel] : demoChannels;
+          const updated = [...base, ...newChannels];
+          console.log('✅ Total channels now:', updated.length);
+          return updated;
+        });
+      } else {
+        console.log('⚠️ No public channels found');
+      }
+    } catch (error) {
+      console.error('❌ Error loading public channels:', error);
+    }
+  };
 
   // Load saved channel and category from localStorage on mount
   useEffect(() => {
+    if (isReal) {
+      // Real users: Force Coali channel only
+      console.log('✅ Real user - Only Coali channel');
+      setSelectedChannelState(defaultChannel);
+      return;
+    }
+    
+    // Demo user: Load saved or default
+    console.log('👁️ Demo user - All channels available');
     const savedChannelId = localStorage.getItem('selected_channel_id');
     const savedCategory = localStorage.getItem('selected_category');
     
@@ -86,7 +154,7 @@ export const ChannelProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (savedCategory) {
       setSelectedCategoryState(savedCategory);
     }
-  }, []);
+  }, [isReal]);
 
   const setSelectedChannel = (channel: Channel) => {
     setIsLoading(true);

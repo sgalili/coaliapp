@@ -4,6 +4,7 @@ import { ChannelSelector } from "@/components/ChannelSelector";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
+import { isRealUser } from "@/utils/demoFilter";
 
 const allDecisions = [
   // Coali Main Decisions (3)
@@ -187,26 +188,39 @@ const allDecisions = [
 export default function DecisionsPage() {
   const navigate = useNavigate();
   const { selectedChannel } = useChannel();
-  const [filteredDecisions, setFilteredDecisions] = useState(allDecisions);
+  
+  // Always start with empty, populate in useEffect based on auth
+  const [filteredDecisions, setFilteredDecisions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
-  }, []);
-
-  // Filter decisions by channel
-  useEffect(() => {
-    const filtered = allDecisions.filter(decision => {
-      if (selectedChannel.id === null) {
-        return decision.channel_id === null;
-      } else {
-        return decision.channel_id === selectedChannel.id;
-      }
-    });
     
-    setFilteredDecisions(filtered);
-    setCurrentIndex(0); // Reset to first decision
+    // CRITICAL: Check if real user
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    const isReal = authUserId && authUserId !== 'demo-user';
+    
+    console.log('📊 Decisions page auth check:', { authUserId, isReal });
+    
+    if (isReal) {
+      // REAL USER: Show NOTHING
+      console.log('✅ REAL USER - Setting empty decisions array');
+      setFilteredDecisions([]);
+    } else {
+      // DEMO USER: Show demo decisions
+      console.log('⚠️ DEMO USER - Showing demo decisions');
+      const filtered = allDecisions.filter(decision => {
+        if (selectedChannel.id === null) {
+          return decision.channel_id === null;
+        } else {
+          return decision.channel_id === selectedChannel.id;
+        }
+      });
+      setFilteredDecisions(filtered);
+    }
+    
+    setCurrentIndex(0);
   }, [selectedChannel.id]);
 
   const currentDecision = filteredDecisions[currentIndex];
@@ -272,17 +286,19 @@ export default function DecisionsPage() {
   if (!currentDecision) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-900/40 to-black pb-20">
+        {/* Channel Selector - Left side */}
         <div className="fixed top-4 left-4 z-50">
+          <ChannelSelector />
+        </div>
+        
+        {/* Back Arrow - Right side */}
+        <div className="fixed top-4 right-4 z-50">
           <button
             onClick={() => navigate(-1)}
             className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-        </div>
-        
-        <div className="fixed top-4 right-4 z-50">
-          <ChannelSelector />
         </div>
 
         <div className="flex flex-col items-center justify-center h-screen text-white px-6">
@@ -306,19 +322,19 @@ export default function DecisionsPage() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 to-black" />
 
-      {/* Back Button - Left */}
+      {/* Channel Selector - Left */}
       <div className="fixed top-4 left-4 z-50">
+        <ChannelSelector />
+      </div>
+
+      {/* Back Button - Right */}
+      <div className="fixed top-4 right-4 z-50">
         <button
           onClick={() => navigate(-1)}
           className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
-      </div>
-
-      {/* Channel Selector - Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <ChannelSelector />
       </div>
 
       {/* Scrollable Decisions Feed */}

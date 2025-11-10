@@ -13,6 +13,7 @@ import { Shield, ChevronDown, HelpCircle } from 'lucide-react';
 import { countries, Country, detectCountryFromTimezone } from '@/lib/countries';
 import { CoaliOnboarding } from '../CoaliOnboarding';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface PhoneInputProps {
   onSubmit: (phone: string) => void;
@@ -67,41 +68,57 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
         .maybeSingle();
       
       if (existingUser && existingUser.is_verified) {
-        // User exists and is verified - direct login
-        console.log('✅ Existing user found, logging in...');
-        
-        // Send OTP for login
-        const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
-          body: { phone: fullPhone, is_login: true },
-        });
-
-        if (fnError) {
-          setError('שגיאה בשליחת קוד אימות');
-          return;
-        }
-
-        console.log('OTP sent for login');
-        onSubmit(fullPhone);
-        return;
+        console.log('✅ Existing user found');
       }
       
-      // 2. New user - send OTP for signup
-      const { data, error: fnError } = await supabase.functions.invoke('whatsapp-otp-send', {
-        body: { phone: fullPhone, is_signup: true },
+      // 2. Send OTP via backend
+      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+      
+      console.log('📤 Sending OTP to backend:', backendUrl);
+      console.log('📞 Phone number:', fullPhone);
+      
+      const response = await fetch(`${backendUrl}/api/otp/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: fullPhone })
       });
 
-      if (fnError) {
-        setError('שגיאה בשליחת קוד אימות');
-        console.error('OTP send error:', fnError);
-        return;
+      console.log('📥 Response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Backend error:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.detail || 'Failed to send OTP');
+        } catch (parseError) {
+          throw new Error(errorText || `HTTP ${response.status}`);
+        }
       }
 
-      console.log('OTP sent for signup:', data);
+      const result = await response.json();
+      console.log('✅ OTP sent:', result);
+      
+      // Show OTP in toast for testing (since WhatsApp might fail)
+      if (result.otp) {
+        console.log('🔑 OTP CODE:', result.otp);
+        toast.success(`קוד נשלח! הקוד שלך: ${result.otp}`, { duration: 15000 });
+      } else {
+        toast.success('קוד נשלח ל-WhatsApp');
+      }
+
       onSubmit(fullPhone);
       
     } catch (err: any) {
-      console.error('Phone submit error:', err);
-      setError(err?.message || 'שגיאה לא צפויה');
+      console.error('❌ Phone submit error:', err);
+      console.error('Error message:', err.message);
+      console.error('Error stack:', err.stack);
+      
+      // Show detailed error to user
+      const errorMsg = err.message || 'שגיאה לא צפויה';
+      setError(`שגיאה בשליחת קוד: ${errorMsg}`);
+      toast.error(`שגיאה: ${errorMsg}`);
     } finally {
       setBusy(false);
     }
@@ -114,27 +131,22 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* Header with Coali Logo */}
       <div className="text-center space-y-4 pt-4">
-        <div className="w-20 h-20 bg-gradient-to-br from-primary to-trust rounded-full flex items-center justify-center mx-auto shadow-lg">
-          <Shield className="w-10 h-10 text-white" />
+        <div className="flex justify-center">
+          <img 
+            src="/coali-logo.webp" 
+            alt="Coali" 
+            className="w-24 h-24 object-contain"
+          />
         </div>
-        <div className="space-y-3">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-trust bg-clip-text text-transparent">
-            {t('auth.welcome')}
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">
+            ברוכים הבאים ל-Coali
           </h1>
-          <p className="text-lg font-medium text-muted-foreground">
-            {t('auth.subtitle')}
+          <p className="text-sm text-muted-foreground">
+            הרשת הראשונה של אמון דיגיטלי
           </p>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-sm text-muted-foreground hover:text-foreground"
-            onClick={() => setShowOnboarding(true)}
-          >
-            <HelpCircle className="w-4 h-4 mr-1" />
-            {t('auth.whatIsCoali')}
-          </Button>
         </div>
       </div>
 

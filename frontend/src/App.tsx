@@ -19,12 +19,17 @@ import AdminContent from "./pages/AdminContent";
 import AdminUsers from "./pages/AdminUsers";
 import AdminNotifications from "./pages/AdminNotifications";
 import DataManagementPage from "./pages/DataManagementPage";
+import EnhancedAdminDashboard from "./pages/EnhancedAdminDashboard";
+import AdminChannelRequests from "./pages/AdminChannelRequests";
+import AdminPublicRequests from "./pages/AdminPublicRequests";
+import AdminAllChannels from "./pages/AdminAllChannels";
 import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import InviteFriendsPage from "./pages/InviteFriendsPage";
 import MyStatsPage from "./pages/MyStatsPage";
 import LanguageSettingsPage from "./pages/LanguageSettingsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import MyDelegatedVotesPage from "./pages/MyDelegatedVotesPage";
+import ChannelManagement from "./pages/ChannelManagement";
 import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { UserProvider } from "./contexts/UserContext";
@@ -54,9 +59,13 @@ const App = () => (
             <Route path="/user/:userId/post/:postId" element={<PostDetailPage />} />
             <Route path="/toptrusted" element={<TopTrustedPage />} />
             <Route path="/decisions" element={<DecisionsPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin" element={<EnhancedAdminDashboard />} />
+            <Route path="/admin/dashboard" element={<EnhancedAdminDashboard />} />
             <Route path="/admin/content" element={<AdminContent />} />
             <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/channels" element={<AdminChannelRequests />} />
+            <Route path="/admin/all-channels" element={<AdminAllChannels />} />
+            <Route path="/admin/public-requests" element={<AdminPublicRequests />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             
@@ -65,6 +74,7 @@ const App = () => (
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/my-delegated-votes" element={<MyDelegatedVotesPage />} />
+            <Route path="/channel/:channelId/manage" element={<ChannelManagement />} />
             <Route path="/data-management" element={<DataManagementPage />} />
             <Route path="/notifications-settings" element={<NotificationsSettingsPage />} />
             <Route path="/invite-friends" element={<InviteFriendsPage />} />

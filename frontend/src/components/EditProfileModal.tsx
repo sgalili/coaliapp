@@ -21,6 +21,8 @@ interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
+  missingFields?: string[];
+  action?: string;
 }
 
 const ALL_EXPERTISE_FIELDS = [
@@ -34,7 +36,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   userId,
   isOpen,
   onClose,
-  onSave
+  onSave,
+  missingFields = [],
+  action = ''
 }) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -43,10 +47,15 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     city: '',
     bio: '',
     avatar_url: '',
+    id_number: '',
     expertise_fields: [] as string[]
   });
   
   const [loading, setLoading] = useState(false);
+  const [hasIdNumber, setHasIdNumber] = useState(false); // Track if ID already set
+  
+  // Check if field is missing and needs highlighting
+  const isFieldMissing = (fieldName: string) => missingFields.includes(fieldName);
 
   useEffect(() => {
     if (isOpen && userId) {
@@ -72,8 +81,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
           city: data.city || '',
           bio: data.bio || '',
           avatar_url: data.avatar_url || '',
+          id_number: data.id_number || '',
           expertise_fields: data.expertise_fields || []
         });
+        
+        // Check if ID number already exists
+        setHasIdNumber(!!(data.id_number && data.id_number.length === 9));
       }
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -98,6 +111,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       toast.success('הפרופיל עודכן בהצלחה! ✨');
       onSave();
       onClose();
+      
+      // Auto-redirect to PROFILE page after save
+      setTimeout(() => {
+        window.location.href = '/profile';
+      }, 500);
+      
     } catch (error: any) {
       console.error('Error saving profile:', error);
       toast.error(`שגיאה בשמירה: ${error.message || 'שגיאה לא ידועה'}`);
@@ -124,28 +143,38 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:left-4 [&>button]:right-auto" dir="rtl">
         <DialogHeader>
           <DialogTitle className="text-right">ערוך פרופיל</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Profile Picture Upload */}
+          {/* Profile Picture Upload - No button */}
           <ProfilePictureUpload
             currentImageUrl={formData.avatar_url}
             onImageChange={(url) => setFormData(prev => ({ ...prev, avatar_url: url }))}
             userInitials={`${formData.first_name.charAt(0)}${formData.last_name.charAt(0)}`}
+            hideUploadButton={true}
           />
 
-          {/* Title Field */}
+          {/* Job Title Field */}
           <div>
-            <label className="text-sm font-medium text-right block mb-1">תואר (אופציונלי)</label>
+            <label className="text-sm font-medium text-right block mb-1">
+              Job Title
+              {missingFields.includes('title') && <span className="text-red-500 mr-1">*</span>}
+            </label>
             <Input
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              placeholder='לדוגמה: פרופ׳, ד"ר, עו"ד, מאמן'
-              className="text-right"
+              placeholder='e.g., Software Engineer, Product Manager'
+              className={cn(
+                "text-right",
+                missingFields.includes('title') && "border-red-500 border-2"
+              )}
             />
+            {missingFields.includes('title') && (
+              <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+            )}
           </div>
 
           {/* Name Fields */}
@@ -172,27 +201,82 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
           {/* City with Autocomplete */}
           <div>
-            <label className="text-sm font-medium text-right block mb-1">עיר מגורים</label>
+            <label className="text-sm font-medium text-right block mb-1">
+              עיר מגורים
+              {missingFields.includes('city') && <span className="text-red-500 mr-1">*</span>}
+            </label>
             <CityAutocomplete
               value={formData.city}
               onChange={(city) => setFormData(prev => ({ ...prev, city }))}
-              className="text-right"
+              className={cn(
+                "text-right",
+                missingFields.includes('city') && "border-red-500 border-2"
+              )}
             />
+            {missingFields.includes('city') && (
+              <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+            )}
+          </div>
+
+          {/* ID Number - Can't edit once set */}
+          <div>
+            <label className="text-sm font-medium text-right block mb-1">
+              מספר תעודת זהות
+              {missingFields.includes('id_number') && <span className="text-red-500 mr-1">*</span>}
+            </label>
+            {hasIdNumber ? (
+              <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="text-sm text-green-700 font-medium">תעודת זהות אומתה ✓</span>
+              </div>
+            ) : (
+              <>
+                <Input
+                  value={formData.id_number}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 9);
+                    setFormData(prev => ({ ...prev, id_number: value }));
+                  }}
+                  placeholder="9 ספרות"
+                  maxLength={9}
+                  className={cn(
+                    "text-right",
+                    missingFields.includes('id_number') && "border-red-500 border-2"
+                  )}
+                  dir="ltr"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  🔒 המספר יישמר מוצפן ולא יוצג למשתמשים אחרים
+                </p>
+                {missingFields.includes('id_number') && (
+                  <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+                )}
+              </>
+            )}
           </div>
 
           {/* Bio */}
           <div>
-            <label className="text-sm font-medium">ביוגרפיה</label>
+            <label className="text-sm font-medium">
+              ביוגרפיה
+              {missingFields.includes('bio') && <span className="text-red-500 mr-1">*</span>}
+            </label>
             <Textarea
               value={formData.bio}
               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
               placeholder="ספר קצת על עצמך..."
-              className="min-h-[100px]"
+              className={cn(
+                "min-h-[100px]",
+                missingFields.includes('bio') && "border-red-500 border-2"
+              )}
               maxLength={500}
             />
             <p className="text-xs text-muted-foreground mt-1">
               {formData.bio.length}/500 תווים
             </p>
+            {missingFields.includes('bio') && (
+              <p className="text-sm text-red-500 mt-1">שדה חובה לפרסום בקואלי</p>
+            )}
           </div>
 
           {/* Expertise Fields - Max 3 */}

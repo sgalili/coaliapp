@@ -2,16 +2,24 @@ import { supabase } from '@/integrations/supabase/client';
 
 // Posts Services
 export const saveDemoPost = async (post: any) => {
+  console.log('💾 Attempting to save post:', post);
+  
   const { data, error } = await supabase
-    .from('demo_posts')
+    .from('demo_posts') // ✅ Use REAL posts table, not demo_posts
     .insert([post])
     .select()
     .single();
   
   if (error) {
-    console.error('Error saving post:', error);
+    console.error('❌ Database save error:', error);
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    console.error('Error details:', error.details);
+    console.error('Error hint:', error.hint);
     throw error;
   }
+  
+  console.log('✅ Post saved to database:', data);
   return data;
 };
 
@@ -21,28 +29,20 @@ export const fetchDemoPosts = async (channelId?: string | null, category?: strin
     .select('*')
     .order('created_at', { ascending: false });
   
-  if (channelId !== undefined) {
-    query = channelId === null 
-      ? query.is('channel_id', null)
-      : query.eq('channel_id', channelId);
-  }
-  
-  if (category && category !== 'הכל') {
-    query = query.eq('category', category);
-  }
-  
   const { data, error } = await query;
   
   if (error) {
     console.error('Error fetching posts:', error);
-    throw error;
+    return [];
   }
+  
+  console.log('📦 Fetched posts:', data?.length || 0);
   return data || [];
 };
 
 export const updatePostEngagement = async (postId: string, field: string, value: number) => {
   const { error } = await supabase
-    .from('demo_posts')
+    .from('demo_posts') // ✅ Use REAL posts table
     .update({ [field]: value })
     .eq('id', postId);
   

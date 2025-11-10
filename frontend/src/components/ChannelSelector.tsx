@@ -1,15 +1,99 @@
 import { useState, useEffect, useRef } from "react";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
+import { supabase } from "@/integrations/supabase/client";
 
-export const ChannelSelector = () => {
+export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => void }) => {
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
   const [isOpen, setIsOpen] = useState(false);
+  const [myChannels, setMyChannels] = useState<any[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const currentUserId = localStorage.getItem('authenticated_user_id');
 
   const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
+  
+  // Load user's approved channels - ALWAYS try to load
+  useEffect(() => {
+    console.log('🎬 ChannelSelector mounted');
+    console.log('Current user state:', currentUserId);
+    
+    // Try loading even without currentUserId set
+    const userId = currentUserId || localStorage.getItem('authenticated_user_id');
+    
+    if (userId && userId !== 'demo-user') {
+      console.log('📺 Will load channels for:', userId);
+      loadMyChannels();
+    } else {
+      console.log('⚠️ No valid user ID:', userId);
+    }
+  }, []);
+  
+  // Reload when menu opens
+  useEffect(() => {
+    if (isOpen) {
+      const userId = currentUserId || localStorage.getItem('authenticated_user_id');
+      if (userId && userId !== 'demo-user') {
+        console.log('📺 Menu opened - Reloading channels');
+        loadMyChannels();
+      }
+    }
+  }, [isOpen]);
+  
+  const loadMyChannels = async () => {
+    try {
+      const userId = currentUserId || localStorage.getItem('authenticated_user_id');
+      console.log('🔍 Loading channels for userId:', userId);
+      
+      if (!userId || userId === 'demo-user') {
+        console.log('⚠️ Invalid userId, aborting');
+        return;
+      }
+      
+      // First, test if table exists
+      console.log('🧪 Testing channel_requests table...');
+      const { count, error: countError } = await supabase
+        .from('channel_requests')
+        .select('*', { count: 'exact', head: true });
+      
+      console.log('📊 Table test:', { totalRows: count, error: countError });
+      
+      // Now query for user's channels
+      const { data, error } = await supabase
+        .from('channel_requests')
+        .select('*')
+        .eq('user_id', userId);
+      
+      console.log('📊 User channel query:');
+      console.log('  User ID searched:', userId);
+      console.log('  Found:', data?.length || 0);
+      console.log('  Error:', error);
+      console.log('  Raw data:', data);
+      
+      if (data && data.length > 0) {
+        data.forEach((ch, i) => {
+          console.log(`  📺 Channel ${i+1}:`, {
+            id: ch.id,
+            name: ch.channel_name,
+            status: ch.status,
+            user_id: ch.user_id
+          });
+        });
+        
+        const approved = data.filter(ch => ch.status === 'approved');
+        console.log('✅ Approved channels:', approved.length);
+        setMyChannels(approved);
+      } else {
+        console.log('❌ No channels found for this user');
+        setMyChannels([]);
+      }
+    } catch (error) {
+      console.error('❌ Critical error loading channels:', error);
+      setMyChannels([]);
+    }
+  };
 
   const handleSelectChannel = (channel: any) => {
     console.log('=== CHANNEL SWITCH START ===');
@@ -129,6 +213,46 @@ export const ChannelSelector = () => {
                 </>
               )}
 
+              {/* My Approved Channels */}
+              {myChannels.length > 0 && (
+                <>
+                  <div className="px-3 py-2 bg-muted/30 text-right">
+                    <p className="text-xs font-medium text-muted-foreground">הערוצים שלי</p>
+                  </div>
+                  {myChannels.map(channel => (
+                    <div
+                      key={channel.id}
+                      onClick={() => {
+                        setIsOpen(false);
+                        window.location.href = `/?channel=${channel.id}`;
+                      }}
+                      className="w-full flex items-center gap-3 p-3 transition-colors border-b border-border/50 hover:bg-muted/30 cursor-pointer"
+                      dir="rtl"
+                    >
+                      <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                        {channel.logo_url ? (
+                          <img src={channel.logo_url} className="w-8 h-8 rounded-lg object-cover" alt="Logo" />
+                        ) : (
+                          <span className="text-lg">📺</span>
+                        )}
+                      </div>
+                      <p className="font-semibold text-sm text-foreground flex-1">{channel.channel_name}</p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsOpen(false);
+                          window.location.href = `/channel/${channel.id}/manage`;
+                        }}
+                        className="p-1.5 hover:bg-primary/10 rounded-full transition-colors"
+                        title="נהל ערוץ"
+                      >
+                        <Settings className="w-4 h-4 text-primary" />
+                      </button>
+                    </div>
+                  ))}
+                </>
+              )}
+
               {/* Private Channels */}
               {privateChannels.length > 0 && (
                 <>
@@ -160,7 +284,14 @@ export const ChannelSelector = () => {
               )}
 
               {/* Create Channel Button */}
-              <button className="w-full flex items-center justify-between gap-3 p-3 bg-muted/50 hover:bg-muted transition-colors" dir="rtl">
+              <button 
+                onClick={() => {
+                  setIsOpen(false);
+                  onCreateChannel?.();
+                }}
+                className="w-full flex items-center justify-between gap-3 p-3 bg-muted/50 hover:bg-muted transition-colors" 
+                dir="rtl"
+              >
                 <p className="text-sm font-medium text-foreground text-right flex-1">צור ערוץ חדש</p>
                 <Plus className="w-5 h-5 text-muted-foreground flex-shrink-0" />
               </button>

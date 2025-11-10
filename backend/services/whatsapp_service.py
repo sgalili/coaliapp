@@ -17,26 +17,42 @@ class WhatsAppService:
         Send WhatsApp message to a phone number
         
         Args:
-            phone_number: Phone number in format: 972501234567 (country code + number)
+            phone_number: Phone number in format: +972501234567 or 972501234567
             message: Message text to send
         """
         try:
+            # Clean phone number - remove +, -, spaces
+            clean_phone = phone_number.replace('+', '').replace('-', '').replace(' ', '')
+            
+            logger.info(f"Sending WhatsApp to: {clean_phone}")
+            
             url = f"{self.api_url}/waInstance{self.instance_id}/sendMessage/{self.token}"
             
             payload = {
-                "chatId": f"{phone_number}@c.us",
+                "chatId": f"{clean_phone}@c.us",
                 "message": message
             }
             
-            response = requests.post(url, json=payload)
+            logger.info(f"WhatsApp URL: {url}")
+            logger.info(f"Payload: {payload}")
+            
+            response = requests.post(url, json=payload, timeout=10)
+            
+            logger.info(f"WhatsApp response status: {response.status_code}")
+            logger.info(f"WhatsApp response: {response.text}")
+            
             response.raise_for_status()
             
             result = response.json()
-            logger.info(f"WhatsApp message sent: {result}")
+            logger.info(f"✅ WhatsApp message sent successfully: {result}")
             return result
             
+        except requests.exceptions.HTTPError as e:
+            logger.error(f"❌ WhatsApp HTTP error: {e}")
+            logger.error(f"Response text: {e.response.text if hasattr(e, 'response') else 'N/A'}")
+            raise
         except Exception as e:
-            logger.error(f"Failed to send WhatsApp: {str(e)}")
+            logger.error(f"❌ Failed to send WhatsApp: {str(e)}")
             raise
     
     def send_bulk_message(self, phone_numbers: list, message: str):

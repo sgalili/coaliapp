@@ -59,136 +59,187 @@ export const AuthPage = () => {
   }, [user, authLoading, navigate]);
 
   const handlePhoneSubmit = async (phone: string) => {
-    // L'OTP WhatsApp a déjà été envoyé avec succès par PhoneInput
-    // On passe directement à l'étape de vérification
-    setAuthError(''); // Clear any previous errors
-    toast.success('Code envoyé via WhatsApp !');
+    setAuthError('');
     setAuthData(prev => ({ ...prev, phone }));
     setCurrentStep('otp');
   };
 
   const handleOTPVerify = async (otp: string) => {
     try {
-      setAuthError(''); // Clear any previous errors
+      setAuthError('');
       
-      const { data, error } = await supabase.functions.invoke('whatsapp-otp-verify-and-login', {
-        body: { phone: authData.phone, otp }
+      console.log('🔐 STARTING OTP VERIFICATION');
+      console.log('Phone:', authData.phone);
+      console.log('OTP:', otp);
+      
+      // Verify OTP via backend
+      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+      const response = await fetch(`${backendUrl}/api/otp/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          phone: authData.phone, 
+          otp: otp 
+        })
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Invalid OTP');
+      }
 
-      // Établir la session Supabase avec les tokens retournés
-      await supabase.auth.setSession({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-      });
-
-      console.log('User session established:', data.user);
-      toast.success('Vérification réussie !');
+      console.log('✅ OTP VERIFIED BY BACKEND');
       
-      // Send welcome WhatsApp message
-      try {
-        const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
-        await fetch(`${backendUrl}/api/whatsapp/send-message`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone_number: authData.phone,
-            message: `🎉 תודה שהצטרפת ל-Coali!\n\nאנחנו שמחים שאת/ה כאן. בוא/י לגלות את רשת האמון שלנו, לקחת חלק בהחלטות חשובות ולבנות ביחד קהילה מבוססת אמון.\n\n🔗 התחל לפעול עכשיו: ${window.location.origin}\n\nבהצלחה! 💪`
-          })
+      // CRITICAL: IMMEDIATELY clear any demo mode
+      localStorage.removeItem('demo_mode');
+      localStorage.removeItem('isAuthenticated'); // Clear old auth
+      console.log('🧹 Cleared demo mode and old auth');
+      
+      // Check if profile already exists - FLEXIBLE phone search
+      console.log('🔍 Checking for existing profile with phone:', authData.phone);
+      
+      // Try exact match first
+      let { data: existingProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('phone', authData.phone)
+        .maybeSingle();
+      
+      // If not found, try without country code prefix
+      if (!existingProfile) {
+        const phoneDigits = authData.phone.replace(/\D/g, ''); // Only digits
+        console.log('🔍 Trying with digits only:', phoneDigits);
+        
+        const { data: profile2 } = await supabase
+          .from('profiles')
+          .select('*')
+          .ilike('phone', `%${phoneDigits.slice(-9)}%`) // Last 9 digits
+          .maybeSingle();
+        
+        existingProfile = profile2;
+      }
+      
+      console.log('📊 Profile query result:');
+      console.log('  Found:', !!existingProfile);
+      console.log('  Error:', profileError);
+      if (existingProfile) {
+        console.log('  Profile data:', {
+          user_id: existingProfile.user_id,
+          first_name: existingProfile.first_name,
+          last_name: existingProfile.last_name,
+          phone: existingProfile.phone,
+          is_demo: existingProfile.is_demo
         });
-        console.log('✅ Welcome WhatsApp message sent');
-      } catch (whatsappError) {
-        console.error('Failed to send welcome WhatsApp:', whatsappError);
-        // Don't fail the auth flow if WhatsApp fails
       }
       
-      setAuthData(prev => ({ ...prev, otp }));
-      setCurrentStep('profile');
-    } catch (error: any) {
-      console.error('OTP verification error:', error);
-      
-      let errorMessage = 'שגיאה באימות הקוד';
-      if (error.message?.includes('expired') || error.message?.includes('otp_expired')) {
-        errorMessage = 'הקוד פג תוקף';
-        toast.error('Code expiré');
-      } else if (error.message?.includes('invalid') || error.message?.includes('otp_invalid')) {
-        errorMessage = 'קוד לא נכון';
-        toast.error('Code incorrect');
-      } else if (error.message?.includes('not found') || error.message?.includes('otp_not_found')) {
-        errorMessage = 'קוד לא נמצא';
-        toast.error('Code non trouvé');
+      if (existingProfile) {
+        // EXISTING REAL USER - LOGIN
+        console.log('🔵 EXISTING USER FOUND - LOGGING IN');
+        console.log('User: שי גלילי');
+        console.log('Phone match:', existingProfile.phone, '===', authData.phone);
+        
+        // FORCE set as real user
+        localStorage.clear(); // Clear EVERYTHING first
+        localStorage.setItem('authenticated_user_id', existingProfile.user_id);
+        localStorage.setItem('authenticated_user_phone', authData.phone);
+        localStorage.setItem('authenticated_user_name', `${existingProfile.first_name} ${existingProfile.last_name}`);
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('user_is_real', 'true'); // Extra flag
+        
+        console.log('✅ REAL USER SESSION STORED');
+        console.log('Stored user_id:', localStorage.getItem('authenticated_user_id'));
+        
+        toast.success(`ברוך הבא ${existingProfile.first_name}!`, { duration: 2000 });
+        
+        console.log('🚀 REDIRECTING TO HOMEPAGE IMMEDIATELY');
+        
+        // Immediate redirect (no delay)
+        window.location.href = '/';
       } else {
-        toast.error('Code incorrect');
+        // NEW USER - Go to profile creation
+        console.log('🟢 NEW USER - Going to profile completion');
+        toast.success('קוד אומת! עוד צעד אחד');
+        setAuthData(prev => ({ ...prev, otp }));
+        setCurrentStep('profile');
       }
       
-      setAuthError(errorMessage);
+    } catch (error: any) {
+      console.error('❌ OTP verification error:', error);
+      setAuthError(error.message || 'שגיאה באימות הקוד');
+      toast.error(error.message || 'קוד לא נכון');
     }
   };
 
-  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture?: string, expertiseFields?: string[]) => {
+  const handleProfileComplete = async (firstName: string, lastName: string, profilePicture: string) => {
     try {
       setAuthError('');
       
-      // Get current session
-      const { data: { session } } = await supabase.auth.getSession();
+      // Generate UUID for new user
+      const generateUUID = () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      };
       
-      if (!session?.user) {
-        // If no session, try to create profile directly with phone
-        const userId = `user_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-        
-        const { data: profile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: userId,
-            phone: authData.phone,
-            first_name: firstName,
-            last_name: lastName,
-            avatar_url: profilePicture,
-            is_verified: true,
-            zooz_balance: 10, // Welcome bonus
-            created_at: new Date().toISOString()
-          })
-          .select()
-          .single();
+      const userId = generateUUID();
+      
+      console.log('📝 Creating profile for new user:', userId);
+      
+      const profileData = {
+        user_id: userId,
+        phone: authData.phone,
+        first_name: firstName,
+        last_name: lastName,
+        avatar_url: profilePicture,
+        is_verified: true,
+        zooz_balance: 10,
+        is_demo: false,
+        created_at: new Date().toISOString()
+      };
+      
+      const { data: profile, error: createError } = await supabase
+        .from('profiles')
+        .insert(profileData)
+        .select()
+        .single();
 
-        if (createError) {
-          console.error('Error creating profile:', createError);
-          console.error('Error details:', JSON.stringify(createError, null, 2));
-          toast.error('שגיאה ביצירת הפרופיל');
-          return;
-        }
-
-        console.log('✅ Profile created:', profile);
-      } else {
-        // Update existing profile via hook
-        const { error: updateError } = await updateProfile(firstName, lastName, profilePicture);
-        
-        if (updateError) {
-          console.error('Error updating profile:', updateError);
-          toast.error('שגיאה בעדכון הפרופיל');
-          return;
-        }
+      if (createError) {
+        console.error('❌ Profile creation error:', createError);
+        toast.error(`שגיאה: ${createError.message}`);
+        return;
       }
 
-      // Save expertise fields if provided
-      if (expertiseFields && expertiseFields.length > 0) {
-        const { data: { user } } = await supabase.auth.getUser();
-        const userId = user?.id || `user_${authData.phone}`;
-        
-        for (const field of expertiseFields) {
-          await supabase.from('user_expertise').upsert({
-            user_id: userId,
-            expertise_field: field,
-            verified: false
-          }, { onConflict: 'user_id,expertise_field' });
-        }
-        console.log('✅ Expertise fields saved');
-      }
+      console.log('✅ REAL user profile created successfully');
+      console.log('📊 Profile details:', {
+        user_id: profile.user_id,
+        phone: profile.phone,
+        name: `${profile.first_name} ${profile.last_name}`,
+        is_demo: profile.is_demo,
+        zooz_balance: profile.zooz_balance
+      });
+
+      // Store REAL user session
+      console.log('💾 Storing REAL user session...');
+      localStorage.setItem('authenticated_user_id', userId);
+      localStorage.setItem('authenticated_user_phone', authData.phone);
+      localStorage.setItem('authenticated_user_name', `${firstName} ${lastName}`);
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.removeItem('demo_mode');
+      
+      console.log('✅ Session stored for REAL user:', userId);
+      console.log('✅ Removing demo mode, setting authenticated');
+      console.log('📋 localStorage contents:');
+      console.log('  - authenticated_user_id:', localStorage.getItem('authenticated_user_id'));
+      console.log('  - authenticated_user_phone:', localStorage.getItem('authenticated_user_phone'));
+      console.log('  - authenticated_user_name:', localStorage.getItem('authenticated_user_name'));
+      console.log('  - isAuthenticated:', localStorage.getItem('isAuthenticated'));
+      console.log('  - demo_mode:', localStorage.getItem('demo_mode'));
 
       // Send welcome WhatsApp
       try {
-        const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
         await fetch(`${backendUrl}/api/whatsapp/send-message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -200,13 +251,12 @@ export const AuthPage = () => {
 
 🪙 קיבלת 10z מתנה לחשבון שלך
 
-מה עכשיו?
-• גלה את רשת האמון שלנו
-• תן אמון למומחים בתחומים שמעניינים אותך
-• השתתף בהחלטות חשובות
-• צבור ZOOZ והשפעה
+התחל עכשיו:
+• גלה תכנים מעניינים
+• תן אמון למומחים
+• שמור פוסטים למועדפים
 
-🔗 התחל עכשיו: ${window.location.origin}
+🔗 ${window.location.origin}
 
 בהצלחה! 💪
 צוות Coali`
@@ -217,12 +267,15 @@ export const AuthPage = () => {
         console.error('Failed to send welcome WhatsApp:', whatsappError);
       }
       
-      // Clear form state
-      localStorage.removeItem('signup_form_state');
+      localStorage.removeItem('signup_basic_info');
       
-      setAuthData(prev => ({ ...prev, firstName, lastName, profilePicture }));
-      toast.success('🎉 הפרופיל נוצר בהצלחה! קיבלת 10z מתנה!');
-      navigate('/');
+      setAuthData(prev => ({ ...prev, firstName, lastName }));
+      toast.success('🎉 ברוך הבא ל-Coali!');
+      
+      console.log('🔄 Redirecting to homepage as REAL user');
+      
+      // Force page reload to ensure new session is loaded
+      window.location.href = '/';
     } catch (error) {
       console.error('Error creating profile:', error);
       setAuthError('שגיאה טכנית');

@@ -7,6 +7,9 @@ import { toast } from "sonner";
 
 export default function AdminContent() {
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const area = searchParams.get('area') || 'production';
+  
   const [tab, setTab] = useState<'posts' | 'decisions' | 'news'>('posts');
   const [posts, setPosts] = useState<any[]>([]);
   const [decisions, setDecisions] = useState<any[]>([]);
@@ -17,10 +20,12 @@ export default function AdminContent() {
   const [filterUser, setFilterUser] = useState<string>('all');
   const [previewVideo, setPreviewVideo] = useState<string | null>(null);
 
+  console.log('👨‍💼 Admin Content - Area:', area);
+
   useEffect(() => {
     loadContent();
     loadUsers();
-  }, [tab, filterChannel, filterCategory, filterUser]);
+  }, [tab, filterChannel, filterCategory, filterUser, area]);
 
   const loadUsers = async () => {
     try {
@@ -43,11 +48,23 @@ export default function AdminContent() {
 
   const loadContent = async () => {
     try {
+      console.log('📋 Loading content for area:', area);
+      
       if (tab === 'posts') {
         let query = supabase
           .from('demo_posts')
           .select('*')
           .order('created_at', { ascending: false });
+        
+        // Filter by demo/production area
+        if (area === 'demo') {
+          console.log('🎭 Loading DEMO posts only');
+          query = query.or('user_id.eq.demo-user,user_id.like.user-%');
+        } else {
+          console.log('🌐 Loading REAL posts only');
+          query = query.not('user_id', 'eq', 'demo-user')
+                       .not('user_id', 'like', 'user-%');
+        }
         
         // Apply filters to query
         if (filterChannel !== 'all') {
@@ -67,7 +84,7 @@ export default function AdminContent() {
         }
         
         const { data } = await query;
-        console.log('📊 Loaded', data?.length, 'posts with filters');
+        console.log('📊 Loaded', data?.length, 'posts for', area, 'area');
         setPosts(data || []);
       } else if (tab === 'decisions') {
         let query = supabase

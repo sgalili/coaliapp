@@ -3,7 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { ChannelSelector } from "@/components/ChannelSelector";
 import { CategoryDropdown } from "@/components/CategoryDropdown";
 import { Comments } from "@/components/Comments";
-import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPin, Plus, X, Video, Upload, RefreshCw, Square, Loader2, Shield, ShieldCheck, Bookmark, MoreVertical, Play, Pause, Gift, Handshake, Crown, Edit2, Trash2, Bell } from "lucide-react";
+import { Heart, Eye, MessageCircle, Share2, Volume2, VolumeX, CheckCircle, MapPin, Plus, X, Video, Upload, RefreshCw, Square, Loader2, Shield, ShieldCheck, Bookmark, MoreVertical, Play, Pause, Gift, Handshake, Crown, Edit2, Trash2, Bell, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
@@ -11,6 +11,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { uploadMediaFile } from "@/services/uploadService";
 import { saveDemoPost, fetchDemoPosts, fetchDemoDecisions, updatePostEngagement } from "@/services/database";
 import { toast } from "sonner";
+import { labelDemoPosts, isDemoPost } from "@/utils/demoFilter";
+import { checkProfileCompletion, getMissingFieldsText } from "@/utils/profileCompletion";
+import { CreateChannelDialog } from "@/components/CreateChannelDialog";
 
 // Empty Category State Component
 const EmptyCategoryState = () => {
@@ -506,14 +509,16 @@ export default function Index() {
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
   const [decisionsCount, setDecisionsCount] = useState(0);
-  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
+  const [unreadNotifications, setUnreadNotifications] = useState(0); // Will be set dynamically
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [showCreateChannel, setShowCreateChannel] = useState(false);
   const [showRecordingInterface, setShowRecordingInterface] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [isFromCamera, setIsFromCamera] = useState(false); // Track if from camera
   const [caption, setCaption] = useState('');
   const [uploadChannel, setUploadChannel] = useState(selectedChannel.id);
   const [uploadCategory, setUploadCategory] = useState(selectedCategory);
@@ -531,7 +536,55 @@ export default function Index() {
   const [zoozPressTimer, setZoozPressTimer] = useState<NodeJS.Timeout | null>(null);
   const [currentZoozPost, setCurrentZoozPost] = useState<string | null>(null);
   const [userZoozBalance, setUserZoozBalance] = useState(1500); // Demo balance
-  const [currentUserId] = useState('demo-user');
+  const [currentUserId, setCurrentUserId] = useState('demo-user');
+  const [isRealUser, setIsRealUser] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  
+  useEffect(() => {
+    const authUserId = localStorage.getItem('authenticated_user_id');
+    const isReal = authUserId && authUserId !== 'demo-user';
+    
+    console.log('🏠 Homepage auth check:', { authUserId, isReal });
+    
+    if (isReal) {
+      console.log('✅ REAL USER - Will hide all demo content');
+      setCurrentUserId(authUserId);
+      setIsRealUser(true);
+      setUnreadNotifications(0);
+      
+      // Load real user profile first, then posts with userId
+      loadUserProfile(authUserId).then(() => {
+        console.log('🔄 Reloading posts with userId:', authUserId);
+        loadPostsFromDB(authUserId); // ✅ Pass userId directly
+      });
+    } else {
+      console.log('⚠️ Demo user - Will show demo content');
+      setCurrentUserId('demo-user');
+      setIsRealUser(false);
+      setUnreadNotifications(3);
+      
+      setTimeout(() => {
+        loadPostsFromDB('demo-user'); // ✅ Pass demo-user
+      }, 500);
+    }
+  }, []);
+  
+  const loadUserProfile = async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (data) {
+        console.log('✅ User profile loaded:', data);
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    }
+  };
   const [openMenuPostId, setOpenMenuPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<any | null>(null);
   const [editCaption, setEditCaption] = useState('');
@@ -573,19 +626,18 @@ export default function Index() {
   useEffect(() => {
     const loadDecisionsCount = async () => {
       try {
-        console.log('🗳️ Loading decisions count for:', selectedChannel.name, selectedChannel.id);
+        // HIDE decisions for real users
+        if (isRealUser) {
+          console.log('✅ REAL USER - Setting decisions count to 0');
+          setDecisionsCount(0);
+          return;
+        }
+        
+        console.log('🗳️ Loading decisions count for demo user');
         const decisions = await fetchDemoDecisions(selectedChannel.id);
-        console.log('📊 Fetched decisions:', decisions);
-        console.log('📊 Total count:', decisions.length);
+        console.log('📊 Fetched decisions:', decisions.length);
         
         setDecisionsCount(decisions.length);
-        
-        // Force show badge for testing
-        if (decisions.length === 0) {
-          console.warn('⚠️ No decisions found for this channel');
-        } else {
-          console.log('✅ Badge should show:', decisions.length);
-        }
       } catch (error) {
         console.error('Failed to load decisions count:', error);
         setDecisionsCount(0);
@@ -593,7 +645,7 @@ export default function Index() {
     };
     
     loadDecisionsCount();
-  }, [selectedChannel.id]);
+  }, [selectedChannel.id, isRealUser]);
 
   // Monitor channel changes and verify category reset
   useEffect(() => {
@@ -649,38 +701,136 @@ export default function Index() {
     };
   }, []); // Empty dependency array - only run once on mount
 
-  const loadPostsFromDB = async () => {
+  const loadPostsFromDB = async (userId?: string) => {
     setIsLoadingPosts(true);
     try {
-      console.log('📥 Loading posts - Channel:', selectedChannel.id, 'Category:', selectedCategory);
+      // Use passed userId or state userId
+      const activeUserId = userId || currentUserId;
       
-      // Fetch from database with current filters
-      const dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
-      console.log('✅ DB returned', dbPosts.length, 'posts');
+      console.log('📥 Loading posts for user:', activeUserId);
+      console.log('📥 Channel:', selectedChannel.id, 'Category:', selectedCategory);
+      console.log('👤 Is real user?:', isRealUser);
+      
+      // Fetch posts
+      let dbPosts = await fetchDemoPosts(selectedChannel.id, selectedCategory);
+      
+      console.log('📦 Raw posts from DB:', dbPosts.length);
+      console.log('👤 Current user:', activeUserId);
+      console.log('🎭 Is real user?:', activeUserId && activeUserId !== 'demo-user');
+      
+      // CRITICAL: Filter out ALL demo content for real users ONLY
+      // If activeUserId is undefined/null, treat as demo user
+      const isRealAuthenticatedUser = activeUserId && activeUserId !== 'demo-user' && activeUserId !== 'null' && activeUserId !== 'undefined';
+      
+      if (isRealAuthenticatedUser) {
+        console.log('🔒 REAL USER - Filtering out ALL demo content');
+        const beforeFilter = dbPosts.length;
+        dbPosts = dbPosts.filter(post => {
+          const isDemo = post.user_id === 'demo-user' || 
+                        post.user_id?.startsWith('user-') ||
+                        post.is_demo === true;
+          return !isDemo; // Only keep NON-demo posts
+        });
+        console.log(`✅ Filtered: ${beforeFilter} → ${dbPosts.length} posts (removed ${beforeFilter - dbPosts.length} demo posts)`);
+      } else {
+        console.log('👁️ DEMO USER - Showing ALL demo content (activeUserId:', activeUserId, ')');
+      }
+      
+      // Load user's bookmarks
+      let userBookmarkIds: string[] = [];
+      if (activeUserId && activeUserId !== 'demo-user') {
+        console.log('🔍 Loading bookmarks for user:', activeUserId);
+        
+        const { data: bookmarks, error: bookmarkError } = await supabase
+          .from('bookmarks')
+          .select('post_id')
+          .eq('bookmark_user_id', activeUserId);
+        
+        if (bookmarkError) {
+          console.error('Error loading bookmarks:', bookmarkError);
+        } else {
+          userBookmarkIds = bookmarks?.map(b => b.post_id) || [];
+          console.log('🔖 User has bookmarked these post IDs:', userBookmarkIds);
+          console.log('🔖 Total bookmarks:', userBookmarkIds.length);
+        }
+      } else {
+        console.log('⚠️ Skipping bookmark load for demo user or no userId');
+      }
+      
+      // Load user's trust relationships to mark posts
+      let userTrustIds: string[] = [];
+      if (activeUserId && activeUserId !== 'demo-user') {
+        console.log('🔍 Loading trust relationships for user:', activeUserId);
+        
+        const { data: trusts } = await supabase
+          .from('trust_relationships')
+          .select('trusted_user_id')
+          .eq('truster_user_id', activeUserId);
+        
+        userTrustIds = trusts?.map(t => t.trusted_user_id) || [];
+        console.log('🤝 User has trusted:', userTrustIds.length, 'users');
+      }
+      
+      // Load bookmark counts for each post
+      console.log('📊 Loading bookmark counts for posts...');
+      const postIds = dbPosts.map(p => p.id);
+      
+      const { data: bookmarkCounts } = await supabase
+        .from('bookmarks')
+        .select('post_id')
+        .in('post_id', postIds);
+      
+      // Count bookmarks per post
+      const bookmarkCountMap: Record<string, number> = {};
+      bookmarkCounts?.forEach(b => {
+        bookmarkCountMap[b.post_id] = (bookmarkCountMap[b.post_id] || 0) + 1;
+      });
+      
+      console.log('📊 Bookmark counts loaded:', Object.keys(bookmarkCountMap).length, 'posts have bookmarks');
+      
+      // Load trust counts per user (how many people trust each user)
+      console.log('🤝 Loading trust counts for users...');
+      const userIds = [...new Set(dbPosts.map(p => p.user_id))]; // Unique user IDs
+      
+      const { data: trustCounts } = await supabase
+        .from('trust_relationships')
+        .select('trusted_user_id')
+        .in('trusted_user_id', userIds);
+      
+      // Count trust per user
+      const trustCountMap: Record<string, number> = {};
+      trustCounts?.forEach(t => {
+        trustCountMap[t.trusted_user_id] = (trustCountMap[t.trusted_user_id] || 0) + 1;
+      });
+      
+      console.log('🤝 Trust counts loaded:', Object.keys(trustCountMap).length, 'users have trust');
       
       // Map database fields
       const mappedPosts = dbPosts.map((post: any) => ({
         id: post.id,
         user_id: post.user_id,
-        username: post.username,
-        expertise: post.expertise,
-        profileImage: post.profile_image,
+        username: post.username || 'משתמש',
+        title: post.title || post.expertise || '', // ✅ Use title field
+        expertise: post.expertise || 'משתמש',
+        profileImage: post.profile_image || '/default-avatar.jpg',
         videoUrl: post.video_url,
-        imageUrl: post.image_url,
-        caption: post.caption,
-        location: post.location,
-        isVerified: post.is_verified,
-        isLive: post.is_live,
-        category: post.category,
+        imageUrl: post.image_url || post.thumbnail_url,
+        caption: post.caption || post.content || '',
+        location: post.location || 'ישראל',
+        isVerified: post.is_verified || false,
+        isLive: post.is_live || false,
+        category: post.category || 'כללי',
         channel_id: post.channel_id,
-        voteCount: post.vote_count || 0,
-        zoozCount: post.zooz_count || 0,
-        trustCount: post.trust_count || 0,
-        watchCount: post.watch_count || 0,
-        commentCount: post.comment_count || 0,
-        shareCount: post.share_count || 0,
-        hasUserTrusted: false,
-        hasUserWatched: false,
+        voteCount: 0,
+        zoozCount: 0,
+        trustCount: trustCountMap[post.user_id] || 0, // ✅ Real trust count
+        watchCount: bookmarkCountMap[post.id] || 0,
+        commentCount: 0,
+        shareCount: 0,
+        hasUserTrusted: userTrustIds.includes(post.user_id),
+        hasUserWatched: userBookmarkIds.includes(post.id),
+        created_at: post.created_at,
+        updated_at: post.updated_at,
       }));
       
       console.log('✅ Mapped', mappedPosts.length, 'posts');
@@ -783,15 +933,35 @@ export default function Index() {
   }, [selectedChannel.id, selectedCategory]);
 
   const handleFABClick = () => {
-    // Check authentication
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
-    
-    if (!isAuthenticated) {
-      navigate('/auth');
-      return;
+    // Check if real user needs to complete profile first
+    if (isRealUser && userProfile) {
+      console.log('🔍 Real user clicked FAB - checking profile completion');
+      
+      const completionStatus = checkProfileCompletion(userProfile);
+      
+      console.log('Profile completion status:', completionStatus);
+      
+      if (!completionStatus.canPost) {
+        const missingText = getMissingFieldsText(completionStatus.missingForPost);
+        toast.info(`כדי לפרסם תוכן, נצטרך עוד כמה פרטים: ${missingText}`, { duration: 5000 });
+        
+        // Redirect to edit profile with missing fields highlighted
+        const missingFields = completionStatus.missingForPost.join(',');
+        navigate(`/profile?edit=true&action=post&missing=${missingFields}`);
+        return;
+      }
     }
     
-    // Show options menu
+    // Check authentication for demo users
+    if (!isRealUser) {
+      const isAuthenticated = localStorage.getItem('isAuthenticated');
+      if (!isAuthenticated) {
+        navigate('/auth');
+        return;
+      }
+    }
+    
+    // Profile complete or demo user - show upload options
     setShowOptionsMenu(true);
   };
 
@@ -880,6 +1050,7 @@ export default function Index() {
       setRecordingStream(null);
       
       setSelectedVideo(file);
+      setIsFromCamera(true); // ✅ From camera
       setShowRecordingInterface(false);
       setShowUploadModal(true);
       
@@ -947,6 +1118,7 @@ export default function Index() {
         
         // Valid video
         setSelectedVideo(file);
+        setIsFromCamera(false); // ✅ From file upload
         setShowOptionsMenu(false);
         setShowUploadModal(true);
         setUploadMethod('file');
@@ -967,58 +1139,84 @@ export default function Index() {
   };
 
   const handleUploadSubmit = async () => {
-    if (!selectedVideo || !uploadCategory) {
-      console.error('❌ Missing required fields:', { 
-        hasFile: !!selectedVideo, 
-        category: uploadCategory 
-      });
+    // Validation
+    if (!selectedVideo) {
+      toast.error('נא לבחור קובץ');
       return;
     }
     
-    console.log('🚀 Starting upload process...');
-    console.log('📁 File:', selectedVideo.name, selectedVideo.type, selectedVideo.size);
-    console.log('📂 Category:', uploadCategory);
-    console.log('📺 Channel:', selectedChannel.id, selectedChannel.name);
+    if (!uploadCategory || uploadCategory === 'הכל' || uploadCategory === '') {
+      toast.error('חובה לבחור קטגוריה ספציפית');
+      return;
+    }
+    
+    if (!caption.trim()) {
+      toast.error('נא להוסיף כיתוב');
+      return;
+    }
+    
+    // CRITICAL: Check user data before upload
+    console.log('🔍 PRE-UPLOAD CHECK:');
+    console.log('  currentUserId:', currentUserId);
+    console.log('  isRealUser:', isRealUser);
+    console.log('  userProfile:', userProfile);
+    console.log('  userProfile.first_name:', userProfile?.first_name);
+    console.log('  userProfile.last_name:', userProfile?.last_name);
+    console.log('  userProfile.avatar_url:', userProfile?.avatar_url);
+    
+    if (!userProfile && isRealUser) {
+      console.error('❌ CRITICAL: Real user but no profile loaded!');
+      toast.error('טוען פרטי משתמש...');
+      // Try to load profile
+      await loadUserProfile(currentUserId);
+      return;
+    }
+    
+    console.log('🚀 Starting upload as REAL user');
     
     setIsUploading(true);
     
     try {
-      // Upload file to Supabase Storage
-      console.log('📤 Uploading file to Supabase...');
+      // Upload file
+      console.log('📤 Uploading file...');
       toast.info('מעלה קובץ...');
       
       const permanentUrl = await uploadMediaFile(selectedVideo);
       console.log('✅ File uploaded:', permanentUrl);
-      toast.success('הקובץ הועלה בהצלחה!');
+      
+      // Create post object with REAL user data
+      const realUserName = `${userProfile.first_name} ${userProfile.last_name}`;
+      const realUserImage = userProfile.avatar_url;
+      
+      console.log('📝 Creating post with:');
+      console.log('  user_id:', currentUserId);
+      console.log('  username:', realUserName);
+      console.log('  profile_image:', realUserImage);
       
       const newPost = {
-        id: `post-${Date.now()}`,
-        user_id: 'demo-user',
-        username: 'אתה',
-        expertise: 'משתמש',
-        profile_image: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
-        video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
-        image_url: selectedVideo.type.startsWith('image/') ? permanentUrl : null,
+        user_id: currentUserId,
+        username: realUserName,
+        title: userProfile?.title || '',
+        profile_image: realUserImage,
+        expertise: userProfile?.expertise_fields?.[0] || 'משתמש',
         caption: caption.trim(),
-        location: 'ישראל',
-        is_verified: true,
-        is_live: false,
+        video_url: selectedVideo.type.startsWith('video/') ? permanentUrl : null,
         category: uploadCategory,
-        channel_id: selectedChannel.id,
-        vote_count: 0,
-        zooz_count: 0,
-        trust_count: 0,
-        watch_count: 0,
-        comment_count: 0,
+        location: userProfile?.city || 'ישראל',
+        is_verified: userProfile?.is_verified || false,
+        is_camera_recorded: isFromCamera, // ✅ Track if from camera
+        is_live: false
       };
       
-      console.log('📄 Post object:', newPost);
+      console.log('📄 Post object for database:', newPost);
+      console.log('📂 Uploading to demo_posts table');
       
       // Save to database
       console.log('💾 Saving to database...');
       toast.info('שומר פוסט...');
       
-      await saveDemoPost(newPost);
+      const result = await saveDemoPost(newPost);
+      console.log('✅ Post saved successfully:', result);
       console.log('✅ Post saved to database');
       
       // Add to local state
@@ -1135,30 +1333,70 @@ export default function Index() {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
     
+    const postOwnerId = post.user_id;
     const newTrusted = !post.hasUserTrusted;
-    const newCount = newTrusted ? post.trustCount + 1 : post.trustCount - 1;
     
-    console.log('🛡️ Toggling trust:', postId, newTrusted);
+    console.log('🛡️ Toggling trust for USER:', postOwnerId);
+    console.log('Current user:', currentUserId);
+    console.log('Action:', newTrusted ? 'GIVE trust' : 'REMOVE trust');
     
     // Optimistic update
     setPosts(posts.map(p => 
-      p.id === postId 
-        ? { ...p, hasUserTrusted: newTrusted, trustCount: newCount }
+      p.user_id === postOwnerId
+        ? { ...p, hasUserTrusted: newTrusted }
         : p
     ));
     
-    if (newTrusted) {
-      toast.success('נתת אמון! 🛡️');
-    }
-    
     try {
-      await updatePostEngagement(postId, 'trust_count', newCount);
+      if (newTrusted) {
+        // GIVE TRUST - Insert into trust_relationships
+        const { error } = await supabase
+          .from('trust_relationships')
+          .insert({
+            truster_user_id: currentUserId,
+            trusted_user_id: postOwnerId,
+            created_at: new Date().toISOString()
+          });
+        
+        if (error) {
+          console.error('Trust insert error:', error);
+          // Check if already exists
+          if (error.code === '23505') {
+            toast.info('כבר נתת אמון למשתמש זה');
+          } else {
+            throw error;
+          }
+        } else {
+          console.log('✅ Trust relationship created');
+          toast.success('נתת אמון! 🛡️');
+        }
+      } else {
+        // REMOVE TRUST - Delete from trust_relationships
+        const { error } = await supabase
+          .from('trust_relationships')
+          .delete()
+          .eq('truster_user_id', currentUserId)
+          .eq('trusted_user_id', postOwnerId);
+        
+        if (error) throw error;
+        
+        console.log('✅ Trust relationship removed');
+        toast.success('הסרת אמון');
+      }
+      
+      // Reload posts to update trust state
+      setTimeout(() => {
+        loadPostsFromDB(currentUserId);
+      }, 500);
     } catch (error) {
       console.error('Failed to update trust:', error);
       // Revert on error
       setPosts(posts.map(p => 
-        p.id === postId ? { ...p, trustCount: post.trustCount, hasUserTrusted: post.hasUserTrusted } : p
+        p.user_id === postOwnerId
+          ? { ...p, hasUserTrusted: !newTrusted }
+          : p
       ));
+      toast.error('שגיאה בעדכון אמון');
     }
   };
 
@@ -1179,32 +1417,89 @@ export default function Index() {
     if (newWatched) {
       // Add bookmark and subscription
       try {
-        // Save to bookmarks table
-        const { data: bookmarkData, error: bookmarkError } = await supabase
+        // Check if already bookmarked
+        const { data: existing } = await supabase
+          .from('bookmarks')
+          .select('id')
+          .eq('bookmark_user_id', currentUserId)
+          .eq('post_id', postId)
+          .maybeSingle();
+        
+        if (existing) {
+          // Already bookmarked - remove it (unbookmark)
+          console.log('🔖 Removing bookmark ID:', existing.id);
+          
+          await supabase
+            .from('bookmarks')
+            .delete()
+            .eq('id', existing.id);
+          
+          console.log('✅ Bookmark removed from database');
+          
+          // Update local state immediately
+          setPosts(posts.map(p => 
+            p.id === postId ? { 
+              ...p, 
+              hasUserWatched: false,
+              watchCount: Math.max(0, (p.watchCount || 0) - 1)
+            } : p
+          ));
+          
+          toast.success('הוסר מהמועדפים');
+          
+          // Force reload posts to refresh bookmark counts
+          setTimeout(() => {
+            loadPostsFromDB(currentUserId);
+          }, 500);
+          
+          return;
+        }
+        
+        // Save new bookmark
+        const { error: bookmarkError } = await supabase
           .from('bookmarks')
           .insert({
             post_id: postId,
-            user_id: post.user_id || 'demo-user',
-            bookmark_user_id: 'demo-user'
-          })
-          .select()
-          .single();
+            user_id: post.user_id || currentUserId,
+            bookmark_user_id: currentUserId
+          });
 
-        if (bookmarkError) throw bookmarkError;
+        if (bookmarkError) {
+          console.error('❌ Bookmark insert error:', bookmarkError);
+          console.error('Error code:', bookmarkError.code);
+          console.error('Error message:', bookmarkError.message);
+          throw bookmarkError;
+        }
+        
+        console.log('✅ Bookmark created');
+        
+        // Update local state immediately
+        setPosts(posts.map(p => 
+          p.id === postId ? { 
+            ...p, 
+            hasUserWatched: true, // ✅ Mark as bookmarked
+            watchCount: (p.watchCount || 0) + 1 // ✅ Increment count
+          } : p
+        ));
 
-        // Create subscription to post owner (if not self)
-        if (post.user_id && post.user_id !== 'demo-user') {
+        // Auto-subscribe to post owner (if not self)
+        if (post.user_id && post.user_id !== currentUserId) {
+          console.log('📱 Auto-subscribing to creator:', post.user_id);
+          
           const { error: subError } = await supabase
             .from('subscriptions')
             .upsert({
-              subscriber_id: 'demo-user',
+              subscriber_id: currentUserId,
               creator_id: post.user_id
             }, {
-              onConflict: 'subscriber_id,creator_id',
-              ignoreDuplicates: true
+              onConflict: 'subscriber_id,creator_id'
             });
 
-          if (subError) console.warn('Subscription already exists or error:', subError);
+          if (subError) {
+            console.warn('Subscription error:', subError);
+          } else {
+            console.log('✅ Auto-subscribed to creator');
+          }
           
           toast.success(`נשמר למועדפים! 🔖 + נרשמת למנוי של ${post.username || 'המשתמש'}`);
         } else {
@@ -1222,12 +1517,37 @@ export default function Index() {
         toast.error('שגיאה בשמירה למועדפים');
       }
     } else {
-      // Just toggle the UI, actual removal happens in profile bookmarks page
-      toast.success('הוסר מהמועדפים');
+      // Unbookmark - DELETE from database
       try {
-        await updatePostEngagement(postId, 'watch_count', newCount);
+        console.log('🔖 Unbookmarking post:', postId);
+        
+        const { data: existing } = await supabase
+          .from('bookmarks')
+          .select('id')
+          .eq('bookmark_user_id', currentUserId)
+          .eq('post_id', postId)
+          .maybeSingle();
+        
+        if (existing) {
+          console.log('🗑️ Deleting bookmark:', existing.id);
+          
+          await supabase
+            .from('bookmarks')
+            .delete()
+            .eq('id', existing.id);
+          
+          console.log('✅ Bookmark deleted from database');
+          toast.success('הוסר מהמועדפים');
+          
+          // Force reload to update profile
+          setTimeout(() => {
+            loadPostsFromDB(currentUserId);
+          }, 500);
+        } else {
+          console.log('⚠️ No bookmark found to delete');
+        }
       } catch (error) {
-        console.error('Failed to update watch count:', error);
+        console.error('Failed to unbookmark:', error);
       }
     }
   };
@@ -1318,13 +1638,29 @@ export default function Index() {
     
     try {
       console.log('🗑️ Deleting post:', post.id);
+      console.log('👤 Post owner:', post.user_id);
+      console.log('👤 Current user:', currentUserId);
+      
+      // Verify ownership
+      if (post.user_id !== currentUserId) {
+        toast.error('אין לך הרשאה למחוק פוסט זה');
+        return;
+      }
       
       const { error } = await supabase
         .from('demo_posts')
         .delete()
-        .eq('id', post.id);
+        .eq('id', post.id)
+        .eq('user_id', currentUserId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Delete error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        throw error;
+      }
+      
+      console.log('✅ Post deleted from database');
       
       setPosts(posts.filter(p => p.id !== post.id));
       toast.success('הפוסט נמחק! 🗑️');
@@ -1438,12 +1774,11 @@ export default function Index() {
           onCategoryChange={setSelectedCategory}
         />
         
-        {/* החלטות Button - Text style, reduced by 2px */}
+        {/* החלטות Button - No number */}
         <button
           onClick={() => navigate('/decisions')}
           className="flex items-center gap-1 px-2 py-2 text-white font-semibold text-sm transition-opacity hover:opacity-80"
         >
-          <span>{decisionsCount > 0 ? `${decisionsCount} ` : ''}</span>
           <span>החלטות</span>
         </button>
 
@@ -1463,7 +1798,7 @@ export default function Index() {
 
       {/* Top Right Corner - Channel Selector */}
       <div className="fixed top-4 right-4 z-50">
-        <ChannelSelector />
+        <ChannelSelector onCreateChannel={() => setShowCreateChannel(true)} />
       </div>
 
       {/* Posts Feed */}
@@ -1525,7 +1860,7 @@ export default function Index() {
       {/* Mute Button moved to top with FAB */}
 
       {/* Three-Dot Menu - Opposite side, aligned horizontally with speaker */}
-      {uniquePosts[currentPostIndex]?.user_id === 'demo-user' && (
+      {uniquePosts[currentPostIndex]?.user_id === currentUserId && (
         <div className="fixed top-[85px] right-4 z-30">
           <button
             onClick={(e) => {
@@ -1757,36 +2092,39 @@ export default function Index() {
                   )}
                 </div>
                 <div className="text-right">
-                  <h3 className="text-white font-bold text-base drop-shadow-lg">
+                  <h3 className="text-white font-bold text-base drop-shadow-lg flex items-center gap-2">
                     {post.username}
+                    {post._isDemo && (
+                      <span className="text-xs bg-gray-600/80 backdrop-blur-sm px-2 py-0.5 rounded-full font-medium">
+                        דמו
+                      </span>
+                    )}
                   </h3>
                   <p className="text-white/90 text-sm drop-shadow-lg">
-                    {post.expertise}
+                    {post.title || post.expertise}
                   </p>
                 </div>
               </button>
 
-              {/* Caption - With edit timestamp if edited */}
-              {post.updated_at && post.updated_at !== post.created_at && (
-                <p className="text-white/60 text-xs drop-shadow-lg mb-1">
-                  נערך {formatTimeAgo(post.updated_at)}
-                </p>
-              )}
               <p className="text-white text-sm leading-relaxed mb-2 drop-shadow-lg">
                 {post.caption}
               </p>
 
-              {/* Location and Authenticity */}
-              <div className="flex items-center gap-2 text-white/90 text-xs">
-                {post.isVerified && (
+              {/* Timestamp Below Caption */}
+              <div className="flex items-center gap-2 text-white/60 text-xs mb-2">
+                {post.isVerified && post.is_camera_recorded && (
                   <>
                     <CheckCircle className="w-3.5 h-3.5 text-trust" />
                     <span className="drop-shadow-lg">אותנטי</span>
                     <span>|</span>
                   </>
                 )}
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="drop-shadow-lg">{post.location}</span>
+                {post.updated_at && post.updated_at !== post.created_at && 
+                 new Date(post.updated_at).getTime() !== new Date(post.created_at).getTime() ? (
+                  <span className="drop-shadow-lg">נערך {formatTimeAgo(post.updated_at)}</span>
+                ) : (
+                  <span className="drop-shadow-lg">נוצר {formatTimeAgo(post.created_at)}</span>
+                )}
               </div>
             </div>
           </div>
@@ -1906,14 +2244,24 @@ export default function Index() {
               <button
                 onClick={async () => {
                   try {
+                    console.log('💾 Updating post:', editingPost.id);
+                    console.log('👤 Post owner:', editingPost.user_id);
+                    console.log('👤 Current user:', currentUserId);
+                    
+                    // Verify ownership
+                    if (editingPost.user_id !== currentUserId) {
+                      toast.error('אין לך הרשאה לערוך פוסט זה');
+                      return;
+                    }
+                    
                     const { error } = await supabase
-                      .from('demo_posts')
+                      .from('demo_posts') // ✅ Use posts table
                       .update({ 
-                        caption: editCaption, 
-                        category: editCategory,
+                        content: editCaption, // ✅ Use 'content' field
                         updated_at: new Date().toISOString()
                       })
-                      .eq('id', editingPost.id);
+                      .eq('id', editingPost.id)
+                      .eq('user_id', currentUserId); // ✅ Only update own posts
                     
                     if (error) throw error;
                     
@@ -2241,21 +2589,25 @@ export default function Index() {
                   />
                 </div>
 
-                {/* Category Selection */}
+                {/* Category Selection - NO "הכל" */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">קטגוריה</label>
+                  <label className="block text-sm font-medium mb-2">קטגוריה *</label>
                   <select
                     value={uploadCategory}
                     onChange={(e) => setUploadCategory(e.target.value)}
                     className="w-full px-4 py-3 border border-border rounded-lg bg-background"
                     dir="rtl"
                   >
-                    {selectedChannel.categories.map(category => (
+                    <option value="" disabled>בחר קטגוריה</option>
+                    {selectedChannel.categories.filter(cat => cat !== 'הכל').map(category => (
                       <option key={category} value={category}>
                         {category}
                       </option>
                     ))}
                   </select>
+                  {(!uploadCategory || uploadCategory === 'הכל') && (
+                    <p className="text-sm text-red-500 mt-1">חובה לבחור קטגוריה ספציפית</p>
+                  )}
                 </div>
 
                 {/* Also Post to Coali Checkbox */}
@@ -2335,6 +2687,13 @@ export default function Index() {
         </div>
         </div>
       )}
+      
+      {/* Create Channel Dialog */}
+      <CreateChannelDialog
+        isOpen={showCreateChannel}
+        onClose={() => setShowCreateChannel(false)}
+        userId={currentUserId}
+      />
     </div>
   );
 }
