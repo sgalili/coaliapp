@@ -6,10 +6,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { EditProfileModal } from "@/components/EditProfileModal";
 import { demoUsers } from "@/data/demoUsers";
+import { useAuth } from "@/hooks/useAuth";
+import { cleanupDuplicates } from "@/scripts/cleanupDuplicates";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   
   // Parse URL params for edit mode
   const searchParams = new URLSearchParams(location.search);
@@ -46,22 +49,9 @@ export default function ProfilePage() {
     }
   }, []);
   
-  // Check if user is authenticated (real user) or demo
-  const getAuthenticatedUserId = () => {
-    const authUserId = localStorage.getItem('authenticated_user_id');
-    
-    // CRITICAL: If we have an authenticated user ID that's not demo-user, USE IT
-    if (authUserId && authUserId !== 'demo-user' && authUserId !== 'undefined' && authUserId !== 'null') {
-      console.log('✅ Using REAL authenticated user:', authUserId);
-      return authUserId;
-    }
-    
-    console.log('⚠️ Defaulting to demo-user');
-    return 'demo-user';
-  };
-  
-  const currentUserId = getAuthenticatedUserId();
-  const isDemoUser = currentUserId === 'demo-user';
+  // Get current user ID from useAuth hook
+  const currentUserId = user?.id || null;
+  const isDemoUser = !user;
   
   console.log('👤 FINAL Current user:', currentUserId);
   console.log('👤 Is demo?:', isDemoUser);
@@ -114,12 +104,51 @@ export default function ProfilePage() {
   
   const userBio = getUserBio();
 
+  // Helper function to remove duplicates from arrays
+  const removeDuplicates = <T extends { id?: string }>(items: T[], uniqueKey?: keyof T): T[] => {
+    if (!items || items.length === 0) return [];
+    
+    if (uniqueKey) {
+      const seen = new Set();
+      return items.filter(item => {
+        const key = item[uniqueKey];
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+    
+    // Default: use id field
+    const seen = new Set();
+    return items.filter(item => {
+      if (!item.id) return true; // Keep items without id
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
+  };
+
+  // Helper to remove duplicates by composite key
+  const removeDuplicatesByCompositeKey = <T>(items: T[], keyFn: (item: T) => string): T[] => {
+    if (!items || items.length === 0) return [];
+    const seen = new Map<string, T>();
+    
+    items.forEach(item => {
+      const key = keyFn(item);
+      if (!seen.has(key)) {
+        seen.set(key, item);
+      }
+    });
+    
+    return Array.from(seen.values());
+  };
+
   const loadUserProfile = async () => {
     try {
       setProfileLoading(true);
-      console.log('📋 Loading profile for user:', currentUserId);
+      console.log('📋 Loading profile for user:', currentUserId, 'isDemoUser:', isDemoUser);
       
-      if (currentUserId === 'demo-user') {
+      if (isDemoUser || !currentUserId) {
         // Demo user - use default data
         setUserProfile({
           first_name: 'משתמש דמו',
@@ -199,80 +228,112 @@ export default function ProfilePage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     
-    // Load user profile first
-    loadUserProfile();
+    let subscriptions: any[] = [];
     
-    // Then load posts and other data
-    loadUserPosts();
+    const setupSubscriptions = (userId: string) => {
+      // Real-time subscription for posts
+      const postsSubscription = supabase
+        .channel('profile-posts')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'demo_posts', filter: `user_id=eq.${userId}` },
+          () => {
+            console.log('🔄 Posts changed, reloading...');
+            loadUserPosts();
+          }
+        )
+        .subscribe();
+      
+      // Real-time subscription for decisions/votes
+      const votesSubscription = supabase
+        .channel('profile-votes')
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.${userId}` },
+          () => {
+            console.log('🔄 Votes changed, reloading...');
+            loadUserDecisions();
+          }
+        )
+        .subscribe();
+      
+      // Real-time subscription for bookmarks
+      const bookmarksSubscription = supabase
+        .channel('profile-bookmarks')
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.${userId}` },
+          () => {
+            console.log('🔄 Bookmarks changed, reloading...');
+            loadSavedBookmarks();
+          }
+        )
+        .subscribe();
+      
+      // Real-time subscription for trust relationships
+      const trustSubscription = supabase
+        .channel('profile-trust')
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'trust_relationships' },
+          (payload) => {
+            console.log('🔄 Trust relationships changed, reloading...');
+            loadTrustCount();
+          }
+        )
+        .subscribe();
+      
+      // Real-time subscription for subscriptions
+      const subsSubscription = supabase
+        .channel('profile-subscriptions')
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'subscriptions', filter: `subscriber_id=eq.${userId}` },
+          () => {
+            console.log('🔄 Subscriptions changed, reloading...');
+            loadSubscriptions();
+          }
+        )
+        .subscribe();
+      
+      subscriptions = [postsSubscription, votesSubscription, bookmarksSubscription, trustSubscription, subsSubscription];
+    };
     
-    // Real-time subscription for posts
-    const postsSubscription = supabase
-      .channel('profile-posts')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'demo_posts', filter: `user_id=eq.${currentUserId}` },
-        () => {
-          console.log('🔄 Posts changed, reloading...');
-          loadUserPosts();
-        }
-      )
-      .subscribe();
-    
-    // Real-time subscription for decisions/votes
-    const votesSubscription = supabase
-      .channel('profile-votes')
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'user_votes', filter: `user_id=eq.${currentUserId}` },
-        () => {
-          console.log('🔄 Votes changed, reloading...');
-          loadUserDecisions();
-        }
-      )
-      .subscribe();
-    
-    // Real-time subscription for bookmarks
-    const bookmarksSubscription = supabase
-      .channel('profile-bookmarks')
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'bookmarks', filter: `bookmark_user_id=eq.${currentUserId}` },
-        () => {
-          console.log('🔄 Bookmarks changed, reloading...');
-          loadSavedBookmarks();
-        }
-      )
-      .subscribe();
-    
-    // Real-time subscription for trust relationships
-    const trustSubscription = supabase
-      .channel('profile-trust')
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'trust_relationships' },
-        (payload) => {
-          console.log('🔄 Trust relationships changed, reloading...');
-          loadTrustCount();
-        }
-      )
-      .subscribe();
-    
-    // Real-time subscription for subscriptions
-    const subsSubscription = supabase
-      .channel('profile-subscriptions')
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'subscriptions', filter: `subscriber_id=eq.demo-user` },
-        () => {
-          console.log('🔄 Subscriptions changed, reloading...');
-          loadSubscriptions();
-        }
-      )
-      .subscribe();
+    // Clean up duplicates for demo users on mount
+    if (isDemoUser) {
+      console.log('🧹 Demo user detected - running cleanup...');
+      cleanupDuplicates().then(() => {
+        console.log('✅ Cleanup completed, loading data...');
+        // Load user profile after cleanup
+        loadUserProfile();
+        // Then load posts and other data
+        loadUserPosts();
+        
+        // Setup subscriptions after cleanup
+        const userId = 'demo-user';
+        setupSubscriptions(userId);
+      }).catch(err => {
+        console.error('❌ Cleanup failed:', err);
+        // Still load data even if cleanup fails
+        loadUserProfile();
+        loadUserPosts();
+        
+        // Setup subscriptions even if cleanup failed
+        const userId = 'demo-user';
+        setupSubscriptions(userId);
+      });
+    } else {
+      // Load user profile first
+      loadUserProfile();
+      
+      // Then load posts and other data
+      loadUserPosts();
+      
+      // Setup subscriptions for real users
+      if (currentUserId) {
+        setupSubscriptions(currentUserId);
+      }
+    }
     
     return () => {
-      postsSubscription.unsubscribe();
-      votesSubscription.unsubscribe();
-      bookmarksSubscription.unsubscribe();
-      trustSubscription.unsubscribe();
-      subsSubscription.unsubscribe();
+      subscriptions.forEach(sub => sub?.unsubscribe());
     };
-  }, []);
+  }, [isDemoUser, currentUserId]);
 
   // Check bio length on mount
   useEffect(() => {
@@ -322,10 +383,19 @@ export default function ProfilePage() {
 
   const loadDraftPosts = async () => {
     try {
+      // Use 'demo-user' for demo users, otherwise use currentUserId
+      const userId = isDemoUser ? 'demo-user' : currentUserId;
+      
+      if (!userId) {
+        console.log('⚠️ No user ID, skipping drafts load');
+        setDraftPosts([]);
+        return;
+      }
+      
       const { data, error } = await supabase
         .from('demo_posts') // ✅ Use posts table
         .select('*')
-        .eq('user_id', currentUserId)
+        .eq('user_id', userId)
         .eq('is_draft', true) // Use is_draft instead of status
         .order('created_at', { ascending: false });
 
@@ -402,17 +472,31 @@ export default function ProfilePage() {
 
   const loadUserPosts = async () => {
     try {
+      // Use 'demo-user' for demo users, otherwise use currentUserId
+      const userId = isDemoUser ? 'demo-user' : currentUserId;
+      
+      if (!userId) {
+        console.log('⚠️ No user ID, skipping post load');
+        return;
+      }
+      
       // Fetch user's posts
       const { data, error } = await supabase
         .from('demo_posts') // ✅ Use posts table
         .select('*')
-        .eq('user_id', currentUserId)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
       
-      console.log('📊 User posts loaded:', data?.length);
-      setUserPosts(data || []);
+      // Remove duplicates by id, then by composite key (user_id + caption + video_url)
+      let uniquePosts = removeDuplicates(data || []);
+      uniquePosts = removeDuplicatesByCompositeKey(uniquePosts, (post: any) => 
+        `${post.user_id}-${post.caption || ''}-${post.video_url || ''}`
+      );
+      
+      console.log('📊 User posts loaded:', data?.length, 'unique:', uniquePosts.length, 'for userId:', userId);
+      setUserPosts(uniquePosts);
       
       // Calculate stats from posts
       if (data && data.length > 0) {
@@ -441,14 +525,28 @@ export default function ProfilePage() {
 
   const loadSubscriptions = async () => {
     try {
+      // Use 'demo-user' for demo users, otherwise use currentUserId
+      const userId = isDemoUser ? 'demo-user' : currentUserId;
+      
+      if (!userId) {
+        console.log('⚠️ No user ID, skipping subscriptions load');
+        setSubscriptions([]);
+        return;
+      }
+      
       const { data } = await supabase
         .from('subscriptions')
         .select('*')
-        .eq('subscriber_id', currentUserId)
+        .eq('subscriber_id', userId)
         .order('created_at', { ascending: false });
 
+      // Remove duplicates first
+      const uniqueSubs = removeDuplicatesByCompositeKey(data || [], (sub: any) => 
+        `${sub.subscriber_id}-${sub.creator_id}`
+      );
+      
       // Map to demo users from demoUsers.ts
-      let subsWithProfiles = (data || []).map(sub => {
+      let subsWithProfiles = uniqueSubs.map(sub => {
         const user = demoUsers.find(u => u.id === sub.creator_id);
         return user ? {
           id: sub.id || Math.random().toString(),
@@ -462,8 +560,13 @@ export default function ProfilePage() {
         } : null;
       }).filter(Boolean);
       
+      // Remove duplicates from mapped results by creator_id
+      subsWithProfiles = removeDuplicatesByCompositeKey(subsWithProfiles, (sub: any) => 
+        sub.creator_id
+      );
+      
       setSubscriptions(subsWithProfiles);
-      console.log('📱 Subscriptions loaded:', subsWithProfiles.length);
+      console.log('📱 Subscriptions loaded:', data?.length, 'unique:', subsWithProfiles.length, 'for userId:', userId);
     } catch (error) {
       console.error('Failed to load subscriptions:', error);
       setSubscriptions([]);
@@ -472,10 +575,20 @@ export default function ProfilePage() {
 
   const loadUserDecisions = async () => {
     try {
+      // Use 'demo-user' for demo users, otherwise use currentUserId
+      const userId = isDemoUser ? 'demo-user' : currentUserId;
+      
+      if (!userId) {
+        console.log('⚠️ No user ID, skipping decisions load');
+        setUserDecisions([]);
+        setDecisionsCount(0);
+        return;
+      }
+      
       const { data } = await supabase
         .from('user_votes')
         .select('*')
-        .eq('user_id', currentUserId)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
@@ -485,10 +598,15 @@ export default function ProfilePage() {
         return;
       }
 
+      // Remove duplicates by composite key (user_id + decision_id)
+      const uniqueDecisions = removeDuplicatesByCompositeKey(data, (vote: any) => 
+        `${vote.user_id}-${vote.decision_id}`
+      );
+      
       // Note: No demo_decisions table, just store votes
-      setUserDecisions(data);
-      setDecisionsCount(data.length);
-      console.log('🗳️ User decisions loaded:', data.length);
+      setUserDecisions(uniqueDecisions);
+      setDecisionsCount(uniqueDecisions.length);
+      console.log('🗳️ User decisions loaded:', data.length, 'unique:', uniqueDecisions.length, 'for userId:', userId);
     } catch (error) {
       console.error('Failed to load user decisions:', error);
       setDecisionsCount(0);
@@ -498,19 +616,38 @@ export default function ProfilePage() {
 
   const loadTrustCount = async () => {
     try {
+      // Use 'demo-user' for demo users, otherwise use currentUserId
+      const userId = isDemoUser ? 'demo-user' : currentUserId;
+      
+      if (!userId) {
+        console.log('⚠️ No user ID, skipping trust count load');
+        setTrustCount(0);
+        setTrustedMe([]);
+        setTrustedByMe([]);
+        return;
+      }
+      
       // Load trust relationships from database
       const { data: trustedMeData } = await supabase
         .from('trust_relationships')
         .select('*')
-        .eq('trusted_user_id', currentUserId);
+        .eq('trusted_user_id', userId);
 
       const { data: trustedByMeData } = await supabase
         .from('trust_relationships')
         .select('*')
-        .eq('truster_user_id', currentUserId);
+        .eq('truster_user_id', userId);
+
+      // Remove duplicates first
+      const uniqueTrustedMe = removeDuplicatesByCompositeKey(trustedMeData || [], (trust: any) => 
+        `${trust.truster_user_id}-${trust.trusted_user_id}`
+      );
+      const uniqueTrustedByMe = removeDuplicatesByCompositeKey(trustedByMeData || [], (trust: any) => 
+        `${trust.truster_user_id}-${trust.trusted_user_id}`
+      );
 
       // Map to demo users from demoUsers.ts
-      let trustedMeList = (trustedMeData || []).map(trust => {
+      let trustedMeList = uniqueTrustedMe.map(trust => {
         const user = demoUsers.find(u => u.id === trust.truster_user_id);
         return user ? {
           id: trust.id || Math.random().toString(),
@@ -524,7 +661,7 @@ export default function ProfilePage() {
         } : null;
       }).filter(Boolean);
 
-      let trustedByMeList = (trustedByMeData || []).map(trust => {
+      let trustedByMeList = uniqueTrustedByMe.map(trust => {
         const user = demoUsers.find(u => u.id === trust.trusted_user_id);
         return user ? {
           id: trust.id || Math.random().toString(),
@@ -538,11 +675,23 @@ export default function ProfilePage() {
         } : null;
       }).filter(Boolean);
 
+      // Remove duplicates from mapped results
+      trustedMeList = removeDuplicatesByCompositeKey(trustedMeList, (trust: any) => 
+        trust.truster?.user_id || trust.truster_user_id
+      );
+      trustedByMeList = removeDuplicatesByCompositeKey(trustedByMeList, (trust: any) => 
+        trust.trusted?.user_id || trust.trusted_user_id
+      );
+
       setTrustedMe(trustedMeList);
       setTrustedByMe(trustedByMeList);
       setTrustCount(trustedMeList.length);
       
-      console.log('🤝 Loaded trust data:', { trustedMe: trustedMeList.length, trustedByMe: trustedByMeList.length });
+      console.log('🤝 Loaded trust data:', { 
+        raw: { trustedMe: trustedMeData?.length || 0, trustedByMe: trustedByMeData?.length || 0 },
+        unique: { trustedMe: trustedMeList.length, trustedByMe: trustedByMeList.length },
+        userId 
+      });
       
     } catch (error) {
       console.error('Failed to load trust relationships:', error);
@@ -554,10 +703,19 @@ export default function ProfilePage() {
 
   const loadSavedBookmarks = async () => {
     try {
+      // Use 'demo-user' for demo users, otherwise use currentUserId
+      const userId = isDemoUser ? 'demo-user' : currentUserId;
+      
+      if (!userId) {
+        console.log('⚠️ No user ID, skipping bookmarks load');
+        setSavedBookmarks([]);
+        return;
+      }
+      
       const { data } = await supabase
         .from('bookmarks')
         .select('*')
-        .eq('bookmark_user_id', currentUserId)
+        .eq('bookmark_user_id', userId)
         .order('created_at', { ascending: false });
 
       if (!data || data.length === 0) {
@@ -566,9 +724,14 @@ export default function ProfilePage() {
         return;
       }
 
+      // Remove duplicates first
+      const uniqueBookmarks = removeDuplicatesByCompositeKey(data, (bookmark: any) => 
+        `${bookmark.bookmark_user_id}-${bookmark.post_id}`
+      );
+
       // Load post data for each bookmark
       let bookmarksWithPosts = [];
-      for (const bookmark of data) {
+      for (const bookmark of uniqueBookmarks) {
         const { data: post, error: postError } = await supabase
           .from('demo_posts')
           .select('*')
@@ -592,8 +755,13 @@ export default function ProfilePage() {
         }
       }
       
-      setSavedBookmarks(bookmarksWithPosts);
-      console.log('🔖 Bookmarks with posts loaded:', bookmarksWithPosts.length);
+      // Remove duplicates from final bookmarks list
+      const uniqueBookmarksWithPosts = removeDuplicatesByCompositeKey(bookmarksWithPosts, (bookmark: any) => 
+        bookmark.post_id || bookmark.id
+      );
+      
+      setSavedBookmarks(uniqueBookmarksWithPosts);
+      console.log('🔖 Bookmarks loaded:', data.length, 'unique:', uniqueBookmarksWithPosts.length, 'for userId:', userId);
     } catch (error) {
       console.error('Failed to load saved bookmarks:', error);
       setSavedBookmarks([]);

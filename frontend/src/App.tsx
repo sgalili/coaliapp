@@ -34,6 +34,7 @@ import { AuthPage } from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { UserProvider } from "./contexts/UserContext";
 import { DemoDataInitializer } from "./components/DemoDataInitializer";
+import "./scripts/cleanupDuplicates"; // Make cleanup function available
 
 const queryClient = new QueryClient();
 

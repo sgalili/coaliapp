@@ -8,10 +8,12 @@ import { Navigation } from '@/components/Navigation';
 import { DelegatedVotesDashboard } from '@/components/DelegatedVotesDashboard';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function MyDelegatedVotesPage() {
   const navigate = useNavigate();
-  const currentUserId = 'demo-user'; // Replace with actual user ID from auth
+  const { user } = useAuth();
+  const currentUserId = user?.id || null;
 
   return (
     <div className="min-h-screen bg-background pb-20" dir="rtl">

@@ -6,12 +6,7 @@ import { ChevronUp, ChevronDown, Plus, Play, ThumbsUp, MessageCircle, Eye, Share
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 import { useNavigate } from "react-router-dom";
-
-// Check if real user
-const isRealUser = () => {
-  const authUserId = localStorage.getItem('authenticated_user_id');
-  return !!(authUserId && authUserId !== 'demo-user');
-};
+import { useAuth } from "@/hooks/useAuth";
 
 const categories = [
   { id: 'all', label: 'הכל', apiValue: null },
@@ -105,6 +100,7 @@ const placeholderNewsData = [
 
 export default function NewsPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
   const [loading, setLoading] = useState(false);
@@ -112,6 +108,8 @@ export default function NewsPage() {
   const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
   const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
   const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
+  
+  const isRealUser = () => !!user;
   const [selectedExpert, setSelectedExpert] = useState<{ newsId: string; expertIndex: number } | null>(null);
   const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
 

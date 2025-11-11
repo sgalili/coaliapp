@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { labelDemoPosts, isDemoPost } from "@/utils/demoFilter";
 import { checkProfileCompletion, getMissingFieldsText } from "@/utils/profileCompletion";
 import { CreateChannelDialog } from "@/components/CreateChannelDialog";
+import { useAuth } from "@/hooks/useAuth";
 
 // Empty Category State Component
 const EmptyCategoryState = () => {
@@ -503,6 +504,7 @@ const samplePosts = [...channel10Posts, ...achvaPosts, ...maccabiPosts, ...origi
 
 export default function Index() {
   const navigate = useNavigate();
+  const { user, profile } = useAuth();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [posts, setPosts] = useState(samplePosts);
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
@@ -536,55 +538,31 @@ export default function Index() {
   const [zoozPressTimer, setZoozPressTimer] = useState<NodeJS.Timeout | null>(null);
   const [currentZoozPost, setCurrentZoozPost] = useState<string | null>(null);
   const [userZoozBalance, setUserZoozBalance] = useState(1500); // Demo balance
-  const [currentUserId, setCurrentUserId] = useState('demo-user');
-  const [isRealUser, setIsRealUser] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  
+  // Get current user ID from useAuth hook
+  const currentUserId = user?.id || null;
+  const isRealUser = !!user;
+  const userProfile = profile;
   
   useEffect(() => {
-    const authUserId = localStorage.getItem('authenticated_user_id');
-    const isReal = authUserId && authUserId !== 'demo-user';
+    console.log('🏠 Homepage auth check:', { userId: currentUserId, isRealUser });
     
-    console.log('🏠 Homepage auth check:', { authUserId, isReal });
-    
-    if (isReal) {
+    if (isRealUser && currentUserId) {
       console.log('✅ REAL USER - Will hide all demo content');
-      setCurrentUserId(authUserId);
-      setIsRealUser(true);
       setUnreadNotifications(0);
       
-      // Load real user profile first, then posts with userId
-      loadUserProfile(authUserId).then(() => {
-        console.log('🔄 Reloading posts with userId:', authUserId);
-        loadPostsFromDB(authUserId); // ✅ Pass userId directly
-      });
+      // Load posts with userId
+      loadPostsFromDB(currentUserId);
     } else {
-      console.log('⚠️ Demo user - Will show demo content');
-      setCurrentUserId('demo-user');
-      setIsRealUser(false);
+      console.log('⚠️ No authenticated user - Will show demo content');
       setUnreadNotifications(3);
       
       setTimeout(() => {
-        loadPostsFromDB('demo-user'); // ✅ Pass demo-user
+        loadPostsFromDB(null); // Pass null for demo mode
       }, 500);
     }
-  }, []);
+  }, [currentUserId, isRealUser]);
   
-  const loadUserProfile = async (userId: string) => {
-    try {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-      
-      if (data) {
-        console.log('✅ User profile loaded:', data);
-        setUserProfile(data);
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    }
-  };
   const [openMenuPostId, setOpenMenuPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<any | null>(null);
   const [editCaption, setEditCaption] = useState('');
@@ -704,7 +682,7 @@ export default function Index() {
   const loadPostsFromDB = async (userId?: string) => {
     setIsLoadingPosts(true);
     try {
-      // Use passed userId or state userId
+      // Use passed userId or current authenticated user
       const activeUserId = userId || currentUserId;
       
       console.log('📥 Loading posts for user:', activeUserId);
@@ -716,11 +694,11 @@ export default function Index() {
       
       console.log('📦 Raw posts from DB:', dbPosts.length);
       console.log('👤 Current user:', activeUserId);
-      console.log('🎭 Is real user?:', activeUserId && activeUserId !== 'demo-user');
+      console.log('🎭 Is real user?:', isRealUser);
       
       // CRITICAL: Filter out ALL demo content for real users ONLY
-      // If activeUserId is undefined/null, treat as demo user
-      const isRealAuthenticatedUser = activeUserId && activeUserId !== 'demo-user' && activeUserId !== 'null' && activeUserId !== 'undefined';
+      // If activeUserId is null/undefined, treat as demo user
+      const isRealAuthenticatedUser = !!activeUserId && isRealUser;
       
       if (isRealAuthenticatedUser) {
         console.log('🔒 REAL USER - Filtering out ALL demo content');
@@ -738,7 +716,7 @@ export default function Index() {
       
       // Load user's bookmarks
       let userBookmarkIds: string[] = [];
-      if (activeUserId && activeUserId !== 'demo-user') {
+      if (activeUserId && isRealUser) {
         console.log('🔍 Loading bookmarks for user:', activeUserId);
         
         const { data: bookmarks, error: bookmarkError } = await supabase
@@ -759,7 +737,7 @@ export default function Index() {
       
       // Load user's trust relationships to mark posts
       let userTrustIds: string[] = [];
-      if (activeUserId && activeUserId !== 'demo-user') {
+      if (activeUserId && isRealUser) {
         console.log('🔍 Loading trust relationships for user:', activeUserId);
         
         const { data: trusts } = await supabase
@@ -952,13 +930,10 @@ export default function Index() {
       }
     }
     
-    // Check authentication for demo users
-    if (!isRealUser) {
-      const isAuthenticated = localStorage.getItem('isAuthenticated');
-      if (!isAuthenticated) {
-        navigate('/auth');
-        return;
-      }
+    // Check authentication
+    if (!isRealUser || !currentUserId) {
+      navigate('/auth');
+      return;
     }
     
     // Profile complete or demo user - show upload options
@@ -1167,8 +1142,12 @@ export default function Index() {
     if (!userProfile && isRealUser) {
       console.error('❌ CRITICAL: Real user but no profile loaded!');
       toast.error('טוען פרטי משתמש...');
-      // Try to load profile
-      await loadUserProfile(currentUserId);
+      return;
+    }
+    
+    if (!currentUserId) {
+      toast.error('יש להתחבר כדי לפרסם תוכן');
+      navigate('/auth');
       return;
     }
     
@@ -1185,8 +1164,10 @@ export default function Index() {
       console.log('✅ File uploaded:', permanentUrl);
       
       // Create post object with REAL user data
-      const realUserName = `${userProfile.first_name} ${userProfile.last_name}`;
-      const realUserImage = userProfile.avatar_url;
+      const realUserName = userProfile 
+        ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim()
+        : user?.phone || 'משתמש';
+      const realUserImage = userProfile?.avatar_url || '/default-avatar.jpg';
       
       console.log('📝 Creating post with:');
       console.log('  user_id:', currentUserId);
@@ -1205,7 +1186,8 @@ export default function Index() {
         location: userProfile?.city || 'ישראל',
         is_verified: userProfile?.is_verified || false,
         is_camera_recorded: isFromCamera, // ✅ Track if from camera
-        is_live: false
+        is_live: false,
+        is_demo: false
       };
       
       console.log('📄 Post object for database:', newPost);
@@ -1386,7 +1368,7 @@ export default function Index() {
       
       // Reload posts to update trust state
       setTimeout(() => {
-        loadPostsFromDB(currentUserId);
+        loadPostsFromDB(currentUserId || null);
       }, 500);
     } catch (error) {
       console.error('Failed to update trust:', error);
@@ -1449,7 +1431,7 @@ export default function Index() {
           
           // Force reload posts to refresh bookmark counts
           setTimeout(() => {
-            loadPostsFromDB(currentUserId);
+            loadPostsFromDB(currentUserId || null);
           }, 500);
           
           return;
@@ -1541,7 +1523,7 @@ export default function Index() {
           
           // Force reload to update profile
           setTimeout(() => {
-            loadPostsFromDB(currentUserId);
+            loadPostsFromDB(currentUserId || null);
           }, 500);
         } else {
           console.log('⚠️ No bookmark found to delete');
@@ -2072,8 +2054,10 @@ export default function Index() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const userId = post.user_id || 'demo-user';
-                  navigate(`/profile/${userId}`);
+                  const userId = post.user_id || currentUserId;
+                  if (userId) {
+                    navigate(`/profile/${userId}`);
+                  }
                 }}
                 className="flex items-center gap-3 mb-3"
               >

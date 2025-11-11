@@ -3,14 +3,16 @@ import { Check, Plus, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useChannel } from "@/contexts/ChannelContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => void }) => {
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory } = useChannel();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [myChannels, setMyChannels] = useState<any[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  const currentUserId = localStorage.getItem('authenticated_user_id');
+  const currentUserId = user?.id || null;
 
   const publicChannels = availableChannels.filter(ch => ch.is_public && ch.id !== null);
   const privateChannels = availableChannels.filter(ch => !ch.is_public);
@@ -20,34 +22,27 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
     console.log('🎬 ChannelSelector mounted');
     console.log('Current user state:', currentUserId);
     
-    // Try loading even without currentUserId set
-    const userId = currentUserId || localStorage.getItem('authenticated_user_id');
-    
-    if (userId && userId !== 'demo-user') {
-      console.log('📺 Will load channels for:', userId);
+    if (currentUserId) {
+      console.log('📺 Will load channels for:', currentUserId);
       loadMyChannels();
     } else {
-      console.log('⚠️ No valid user ID:', userId);
+      console.log('⚠️ No valid user ID');
     }
-  }, []);
+  }, [currentUserId]);
   
   // Reload when menu opens
   useEffect(() => {
-    if (isOpen) {
-      const userId = currentUserId || localStorage.getItem('authenticated_user_id');
-      if (userId && userId !== 'demo-user') {
-        console.log('📺 Menu opened - Reloading channels');
-        loadMyChannels();
-      }
+    if (isOpen && currentUserId) {
+      console.log('📺 Menu opened - Reloading channels');
+      loadMyChannels();
     }
-  }, [isOpen]);
+  }, [isOpen, currentUserId]);
   
   const loadMyChannels = async () => {
     try {
-      const userId = currentUserId || localStorage.getItem('authenticated_user_id');
-      console.log('🔍 Loading channels for userId:', userId);
+      console.log('🔍 Loading channels for userId:', currentUserId);
       
-      if (!userId || userId === 'demo-user') {
+      if (!currentUserId) {
         console.log('⚠️ Invalid userId, aborting');
         return;
       }

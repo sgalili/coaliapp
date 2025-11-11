@@ -5,16 +5,17 @@ import { Crown, Search, Heart, TrendingUp, TrendingDown, Bell } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function TopTrustedPage() {
   const navigate = useNavigate();
   const { selectedChannel } = useChannel();
+  const { user } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
   // Check if real user - HIDE all demo leaders
-  const isReal = localStorage.getItem('authenticated_user_id') && 
-                 localStorage.getItem('authenticated_user_id') !== 'demo-user';
+  const isReal = !!user;
   
   // Empty for real users, demo data for demo users
   const [users] = useState(isReal ? [] : []);

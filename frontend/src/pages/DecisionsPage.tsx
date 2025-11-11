@@ -4,7 +4,7 @@ import { ChannelSelector } from "@/components/ChannelSelector";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useChannel } from "@/contexts/ChannelContext";
-import { isRealUser } from "@/utils/demoFilter";
+import { useAuth } from "@/hooks/useAuth";
 
 const allDecisions = [
   // Coali Main Decisions (3)
@@ -188,6 +188,7 @@ const allDecisions = [
 export default function DecisionsPage() {
   const navigate = useNavigate();
   const { selectedChannel } = useChannel();
+  const { user } = useAuth();
   
   // Always start with empty, populate in useEffect based on auth
   const [filteredDecisions, setFilteredDecisions] = useState<any[]>([]);
@@ -198,8 +199,7 @@ export default function DecisionsPage() {
     document.documentElement.setAttribute('lang', 'he');
     
     // CRITICAL: Check if real user
-    const authUserId = localStorage.getItem('authenticated_user_id');
-    const isReal = authUserId && authUserId !== 'demo-user';
+    const isReal = !!user;
     
     console.log('📊 Decisions page auth check:', { authUserId, isReal });
     
