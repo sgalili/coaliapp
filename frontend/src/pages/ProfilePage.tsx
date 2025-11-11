@@ -129,7 +129,7 @@ export default function ProfilePage() {
   };
 
   // Helper to remove duplicates by composite key
-  const removeDuplicatesByCompositeKey = <T>(items: T[], keyFn: (item: T) => string): T[] => {
+  const removeDuplicatesByCompositeKey = <T,>(items: T[], keyFn: (item: T) => string): T[] => {
     if (!items || items.length === 0) return [];
     const seen = new Map<string, T>();
     
