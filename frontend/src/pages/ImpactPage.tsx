@@ -249,66 +249,59 @@ export default function ImpactPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header with Stats */}
-      <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 pb-8">
-        {/* Top Bar */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">השפעה</h1>
-          <button
-            onClick={() => navigate('/notifications')}
-            className="relative p-2 hover:bg-white/10 rounded-full transition"
-          >
-            <Bell className="w-6 h-6" />
-            {unreadNotifications > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">
-                {unreadNotifications}
-              </span>
-            )}
-          </button>
+      {/* Channel Selector & Header */}
+      <div className="sticky top-0 z-50 bg-background border-b">
+        <div className="flex items-center justify-between px-4 py-3">
+          <ChannelSelector />
+          
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/notifications')}
+              className="relative p-2 hover:bg-muted rounded-full transition"
+            >
+              <Bell className="w-5 h-5" />
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
+                  {unreadNotifications}
+                </span>
+              )}
+            </button>
+            <button className="p-2 hover:bg-muted rounded-full transition">
+              <Search className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-
-        {/* User Stats Grid */}
-        <div className="grid grid-cols-3 gap-3">
-          {/* My Impact Score */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
-            <Crown className="w-6 h-6 mx-auto mb-2 text-yellow-300" />
-            <div className="text-2xl font-bold">{myImpactScore.toLocaleString()}</div>
-            <div className="text-xs text-white/80 mt-1">ציון ההשפעה שלי</div>
-          </div>
-
-          {/* Trusted Experts */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
-            <Users className="w-6 h-6 mx-auto mb-2 text-green-300" />
-            <div className="text-2xl font-bold">{trustedExperts}</div>
-            <div className="text-xs text-white/80 mt-1">מומחים באמון</div>
-          </div>
-
-          {/* Votes Influenced */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
-            <Vote className="w-6 h-6 mx-auto mb-2 text-blue-300" />
-            <div className="text-2xl font-bold">{votesInfluenced}</div>
-            <div className="text-xs text-white/80 mt-1">קולות מושפעים</div>
-          </div>
+        
+        {/* Category Dropdown */}
+        <div className="px-4 pb-3">
+          <CategoryDropdown />
         </div>
       </div>
 
-      {/* Category Filter */}
-      <div className="sticky top-0 z-10 bg-background border-b px-4 py-3">
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-          <Filter className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap transition ${
-                selectedCategory === category
-                  ? 'bg-primary text-white'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+      {/* User Stats Section */}
+      <div className="bg-gradient-to-br from-primary to-primary/80 text-white px-4 py-6 mb-4">
+        <h2 className="text-xl font-bold mb-4">ההשפעה שלי</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {/* My Impact Score */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
+            <Crown className="w-5 h-5 mx-auto mb-2 text-yellow-300" />
+            <div className="text-xl font-bold">{myImpactScore.toLocaleString()}</div>
+            <div className="text-[10px] text-white/80 mt-1">ציון השפעה</div>
+          </div>
+
+          {/* Trusted Experts */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
+            <Users className="w-5 h-5 mx-auto mb-2 text-green-300" />
+            <div className="text-xl font-bold">{trustedExperts}</div>
+            <div className="text-[10px] text-white/80 mt-1">מומחים</div>
+          </div>
+
+          {/* Votes Influenced */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
+            <Vote className="w-5 h-5 mx-auto mb-2 text-blue-300" />
+            <div className="text-xl font-bold">{votesInfluenced}</div>
+            <div className="text-[10px] text-white/80 mt-1">קולות</div>
+          </div>
         </div>
       </div>
 
