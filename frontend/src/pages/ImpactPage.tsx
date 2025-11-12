@@ -1,24 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Navigation } from '@/components/Navigation';
-import { ChannelSelector } from '@/components/ChannelSelector';
-import { CategoryDropdown } from '@/components/CategoryDropdown';
-import { useAuth } from '@/hooks/useAuth';
-import { useChannel } from '@/contexts/ChannelContext';
-import { supabase } from '@/integrations/supabase/client';
-import { 
-  TrendingUp, 
-  Users, 
-  Vote, 
-  Award, 
-  ArrowUp, 
-  ArrowDown,
-  Bell,
-  Search,
-  Crown,
-  Target
-} from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { ImpactItemComponent } from "@/components/ImpactItem";
+import { ImpactFilters } from "@/components/ImpactFilters";
+import { useToast } from "@/hooks/use-toast";
+import { Navigation } from "@/components/Navigation";
 
 interface ImpactItem {
   id: string;
