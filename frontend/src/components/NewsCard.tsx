@@ -183,16 +183,6 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
 
   console.log('🎴 About to render JSX for:', news.id);
 
-  // TEMPORARY: Minimal render for testing
-  return (
-    <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 p-4">
-      <h3 className="text-lg font-bold">{news.title}</h3>
-      <p>Category: {news.categoryLabel || news.category}</p>
-      <p>ID: {news.id}</p>
-    </article>
-  );
-
-  /* FULL VERSION - Temporarily commented
   return (
     <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 transition-shadow">
       <div className="px-2 py-5">
