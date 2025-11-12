@@ -341,9 +341,21 @@ export default function NewsPage() {
         <div className="max-w-2xl mx-auto">
           {filteredNews.map((news) => (
             <div key={news.id} className="mb-4">
-              {/* News item with image on right, title and category on left */}
+              {/* News item with image on right, title and category on left (RTL) */}
               <div className="flex items-center gap-3 px-4 py-3">
-                {/* Left side - Title and Category */}
+                {/* Right side - Smaller Image (first in HTML for RTL) */}
+                <button
+                  onClick={() => navigate(`/news/${news.id}`)}
+                  className="flex-shrink-0"
+                >
+                  <img
+                    src={news.image}
+                    alt={news.title}
+                    className="w-[120px] h-[120px] object-cover rounded-lg hover:opacity-95 transition-opacity"
+                  />
+                </button>
+
+                {/* Left side - Title and Category (second in HTML for RTL) */}
                 <div className="flex-1 min-w-0">
                   <button
                     onClick={() => navigate(`/news/${news.id}`)}
@@ -355,18 +367,6 @@ export default function NewsPage() {
                   </button>
                   <p className="text-sm text-muted-foreground">{news.categoryLabel || news.category}</p>
                 </div>
-
-                {/* Right side - Smaller Image */}
-                <button
-                  onClick={() => navigate(`/news/${news.id}`)}
-                  className="flex-shrink-0"
-                >
-                  <img
-                    src={news.image}
-                    alt={news.title}
-                    className="w-[120px] h-[120px] object-cover rounded-lg hover:opacity-95 transition-opacity"
-                  />
-                </button>
               </div>
 
               <div className="px-4 pb-4">
