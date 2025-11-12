@@ -184,6 +184,46 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     console.log('Open video recorder for news:', news.id);
   };
 
+  const saveVoteToLocalStorage = (newsId: string, pollOptions: any[], totalVotes: number) => {
+    try {
+      const savedVotes = JSON.parse(localStorage.getItem('impact_news_votes') || '{}');
+      savedVotes[newsId] = { poll_options: pollOptions, total_votes: totalVotes };
+      localStorage.setItem('impact_news_votes', JSON.stringify(savedVotes));
+    } catch (e) {
+      console.error('Error saving vote to localStorage:', e);
+    }
+  };
+
+  const handleLocalVote = (optionId: string, userId: string) => {
+    // Update poll options locally
+    const updatedOptions = localPollOptions.map(opt => {
+      // Remove user from all options first (change vote)
+      const voterIds = (opt.voter_ids || []).filter((id: string) => id !== userId);
+      let votes = opt.votes || 0;
+      
+      // Add user to selected option
+      if (opt.id === optionId) {
+        voterIds.push(userId);
+        votes += 1;
+      } else if ((opt.voter_ids || []).includes(userId)) {
+        // User was in this option, decrement
+        votes = Math.max(0, votes - 1);
+      }
+      
+      return { ...opt, voter_ids: voterIds, votes };
+    });
+    
+    const newTotalVotes = updatedOptions.reduce((sum, opt) => sum + (opt.votes || 0), 0);
+    
+    setLocalPollOptions(updatedOptions);
+    setLocalTotalVotes(newTotalVotes);
+    
+    // Save to localStorage
+    saveVoteToLocalStorage(news.id, updatedOptions, newTotalVotes);
+    
+    console.log('✅ Vote saved locally');
+  };
+
   // Safety check
   if (!news || !news.id || !localPollOptions) {
     console.error('❌ Invalid news data:', news);
