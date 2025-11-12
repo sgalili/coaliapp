@@ -362,8 +362,11 @@ export default function NewsPage() {
         </div>
       )}
 
-      {/* Expert Detail Modal */}
-      {selectedExpert && (
+      <Navigation zoozBalance={999} />
+    </div>
+  );
+}
+
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
           <div className="bg-background w-full md:max-w-2xl md:rounded-lg overflow-hidden max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-background border-b border-border p-3 flex justify-between items-center">
