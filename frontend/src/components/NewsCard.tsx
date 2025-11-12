@@ -64,6 +64,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   // Get demo expert avatars (for Phase 1)
   const demoExperts = expertProfiles.slice(0, Math.floor(Math.random() * 5) + 3);
 
+  // Debug: Log when poll options change
+  useEffect(() => {
+    console.log('🔄 Poll options updated:', localPollOptions);
+    console.log('🔄 Total votes:', localTotalVotes);
+  }, [localPollOptions, localTotalVotes]);
+
   // Calculate poll percentages from local state
   const totalVotes = localTotalVotes || localPollOptions.reduce((sum, opt) => sum + opt.votes, 0) || 100;
   const pollWithPercentages = localPollOptions.map(opt => ({
