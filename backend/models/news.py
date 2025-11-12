@@ -55,3 +55,18 @@ class NewsSearchResponse(BaseModel):
     articles: List[NewsArticle]
     total_count: int
     search_query: str
+
+class VoteRequest(BaseModel):
+    """Request to vote on a poll."""
+    news_id: str
+    option_id: str
+    user_id: str
+
+class CommentRequest(BaseModel):
+    """Request to add expert comment."""
+    news_id: str
+    user_id: str
+    user_name: str
+    user_avatar: str
+    video_url: str
+    trust_score: int = 0
