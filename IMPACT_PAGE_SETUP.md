@@ -2,10 +2,13 @@
 
 ## ✅ Completed Tasks
 
-1. **Created Impact Page Component** (`/app/frontend/src/pages/ImpactPage.tsx`)
+1. **Restored Impact Page Component** (`/app/frontend/src/pages/ImpactPage.tsx`)
+   - **Matches original trust.coali.app/news design**
+   - Integrated ChannelSelector component (identical to homepage)
+   - Integrated CategoryDropdown for filtering
    - Displays user impact stats (impact score, trusted experts, votes influenced)
    - Shows feed of impact events (decisions, trust gained, votes influenced, achievements)
-   - Category filtering system
+   - News-card style layout with expert profiles
    - Fully responsive design with Hebrew RTL support
    - Graceful fallback to demo data when database is not set up
 
