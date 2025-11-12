@@ -54,7 +54,7 @@ export const useAuth = () => {
   };
   
   // Run IMMEDIATELY on mount (before useEffect)
-  const [hasRealUser] = React.useState(() => checkLocalStorageAuth());
+  const [hasRealUser] = useState(() => checkLocalStorageAuth());
 
   useEffect(() => {
     console.log('useAuth useEffect running');
