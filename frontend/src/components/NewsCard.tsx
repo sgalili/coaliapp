@@ -108,7 +108,8 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     
     try {
       const userId = getUserId();
-      const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || '/api';
+      // Vite uses import.meta.env, not process.env
+      const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || '/api';
       
       console.log('🔗 Backend URL:', BACKEND_URL);
       console.log('🔗 Voting for news:', news.id, 'option:', optionId, 'user:', userId);
