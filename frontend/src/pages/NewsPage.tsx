@@ -343,7 +343,7 @@ export default function NewsPage() {
             <div key={news.id} className="mb-4">
               {/* News item with image on right, title and category on left (RTL) */}
               <div className="flex items-center gap-3 px-4 py-3">
-                {/* Right side - Smaller Image (first in HTML for RTL) */}
+                {/* Right side - Smaller Image 16:9 (first in HTML for RTL) */}
                 <button
                   onClick={() => navigate(`/news/${news.id}`)}
                   className="flex-shrink-0"
@@ -351,7 +351,7 @@ export default function NewsPage() {
                   <img
                     src={news.image}
                     alt={news.title}
-                    className="w-[120px] h-[120px] object-cover rounded-lg hover:opacity-95 transition-opacity"
+                    className="w-[160px] h-[90px] object-cover rounded-lg hover:opacity-95 transition-opacity"
                   />
                 </button>
 
