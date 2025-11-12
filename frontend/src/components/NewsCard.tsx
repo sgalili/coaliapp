@@ -348,11 +348,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs text-muted-foreground mr-2 flex-wrap">
               {pollWithPercentages.map((option, index) => (
-                <div key={option.id} className="flex items-center gap-2">
-                  <span className="font-medium">{option.label}</span>
-                  <span className="text-primary font-bold">{option.percentage}%</span>
-                  <span className="text-muted-foreground">({option.votes})</span>
-                  {index < pollWithPercentages.length - 1 && <span>•</span>}
+                <div key={option.id} className="flex items-center gap-1">
+                  <div className="text-center">
+                    <div className="font-medium">{option.label}</div>
+                    <div className="text-primary font-bold">{option.percentage}%</div>
+                  </div>
+                  {index < pollWithPercentages.length - 1 && <span className="mx-1">•</span>}
                 </div>
               ))}
             </div>
