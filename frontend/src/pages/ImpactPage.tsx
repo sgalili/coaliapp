@@ -120,27 +120,53 @@ export default function ImpactPage() {
     loadNewsWithVotes();
   }, []);
 
-  const initializePlaceholderVotes = () => {
-    // Check if we have saved votes in localStorage
-    const savedVotes = localStorage.getItem('impact_news_votes');
-    if (savedVotes) {
-      try {
-        const votesData = JSON.parse(savedVotes);
-        // Update placeholder news with saved votes
-        const updatedNews = placeholderNewsData.map(news => {
-          if (votesData[news.id]) {
-            return {
-              ...news,
-              poll_options: votesData[news.id].poll_options,
-              total_votes: votesData[news.id].total_votes
-            };
+  const loadNewsWithVotes = async () => {
+    try {
+      const BACKEND_URL = '/api';
+      
+      // Fetch latest news data with votes from MongoDB
+      const updatedNews = await Promise.all(
+        placeholderNewsData.map(async (news) => {
+          try {
+            const response = await fetch(`${BACKEND_URL}/news/${news.id}?channel_id=${selectedChannel.id}`);
+            if (response.ok) {
+              const data = await response.json();
+              console.log(`✅ Loaded votes for ${news.id}:`, data.poll_options);
+              // Return news with updated votes from database
+              return {
+                ...news,
+                poll_options: data.poll_options || news.poll_options,
+                total_votes: data.total_votes || news.total_votes
+              };
+            }
+          } catch (err) {
+            console.log(`⚠️ No saved data for ${news.id}, using default`);
           }
+          
+          // Fallback to localStorage if API fails
+          const savedVotes = localStorage.getItem('impact_news_votes');
+          if (savedVotes) {
+            const votesData = JSON.parse(savedVotes);
+            if (votesData[news.id]) {
+              console.log(`📱 Loaded from localStorage for ${news.id}`);
+              return {
+                ...news,
+                poll_options: votesData[news.id].poll_options,
+                total_votes: votesData[news.id].total_votes
+              };
+            }
+          }
+          
           return news;
-        });
-        setNewsArticles(updatedNews);
-      } catch (e) {
-        console.error('Error loading saved votes:', e);
-      }
+        })
+      );
+      
+      setNewsArticles(updatedNews);
+      console.log('✅ All news loaded with votes');
+    } catch (error) {
+      console.error('Error loading news with votes:', error);
+      // Fallback to placeholder data
+      setNewsArticles(placeholderNewsData);
     }
   };
 
