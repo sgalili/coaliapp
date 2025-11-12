@@ -66,6 +66,9 @@ export const TrustButton: React.FC<TrustButtonProps> = ({
         // Create trust
         await trustDelegationService.createDelegation(currentUserId, expertId, field);
         setTrustedFields(prev => [...prev, field]);
+        
+        // Track impact for the expert who gained trust
+        await trackTrustGained(expertId, currentUserId, field);
       }
 
       onTrustChange?.();
