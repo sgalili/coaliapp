@@ -61,11 +61,12 @@ const placeholderNewsData = [
     image: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop',
     experts: expertProfiles.slice(0, 7),
     poll_options: [
-      { id: "1", label: "תומך", value: 45 },
-      { id: "2", label: "מתנגד", value: 35 },
-      { id: "3", label: "צריך שינויים", value: 15 },
-      { id: "4", label: "לא בטוח", value: 5 },
+      { id: "1", label: "תומך", votes: 45, voter_ids: [] },
+      { id: "2", label: "מתנגד", votes: 35, voter_ids: [] },
+      { id: "3", label: "צריך שינויים", votes: 15, voter_ids: [] },
+      { id: "4", label: "לא בטוח", votes: 5, voter_ids: [] },
     ],
+    total_votes: 100,
   },
   {
     id: 'placeholder-3',
