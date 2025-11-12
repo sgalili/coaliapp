@@ -333,8 +333,14 @@ export default function NewsPage() {
 
       {/* News Feed */}
       {!loading && filteredNews.length > 0 && (
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto px-4">
           {filteredNews.map((news) => (
+            <NewsCard
+              key={news.id}
+              news={news}
+              currentUser={user}
+              userProfile={profile}
+            />
             <div key={news.id} className="mb-4">
               {/* News item with image on right, title and category on left (RTL) */}
               <div className="flex items-center gap-3 px-4 py-3">
