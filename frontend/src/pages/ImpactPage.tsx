@@ -40,15 +40,13 @@ interface ImpactItem {
 export default function ImpactPage() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
+  const { selectedChannel, selectedCategory, setSelectedCategory } = useChannel();
   const [impactItems, setImpactItems] = useState<ImpactItem[]>([]);
   const [myImpactScore, setMyImpactScore] = useState(0);
   const [trustedExperts, setTrustedExperts] = useState(0);
   const [votesInfluenced, setVotesInfluenced] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState('הכל');
   const [isLoading, setIsLoading] = useState(true);
   const [unreadNotifications, setUnreadNotifications] = useState(3);
-
-  const categories = ['הכל', 'פוליטיקה', 'כלכלה', 'טכנולוגיה', 'בריאות', 'חינוך', 'תחבורה'];
 
   useEffect(() => {
     loadImpactData();
