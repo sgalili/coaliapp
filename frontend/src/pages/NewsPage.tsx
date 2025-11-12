@@ -341,7 +341,6 @@ export default function NewsPage() {
               currentUser={user}
               userProfile={profile}
             />
-            <div key={news.id} className="mb-4">
               {/* News item with image on right, title and category on left (RTL) */}
               <div className="flex items-center gap-3 px-4 py-3">
                 {/* Right side - Smaller Image 16:9 (first in HTML for RTL) */}
