@@ -151,12 +151,6 @@ class NewsService:
                     total_votes=0
                 )
                 articles.append(article)
-                
-                # Save to MongoDB
-                try:
-                    await self.db_service.save_news(article)
-                except Exception as e:
-                    self.logger.error(f"Error saving news to DB: {str(e)}")
         except Exception as e:
             self.logger.error(f"Error parsing response: {str(e)}")
             # Return empty list if parsing fails
