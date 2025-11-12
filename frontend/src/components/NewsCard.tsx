@@ -239,7 +239,15 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
       <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm !rounded-none">
         <div
           className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200 rounded-none"
-          onClick={() => !pollExpanded && setPollExpanded(true)}
+          onClick={() => {
+            if (!pollExpanded) {
+              setPollExpanded(true);
+              setManuallyOpened(true);
+            } else {
+              setPollExpanded(false);
+              setManuallyOpened(false);
+            }
+          }}
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 ml-2 px-[7px]">
