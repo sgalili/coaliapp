@@ -204,181 +204,181 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
           </div>
         </div>
       </div>
-// 
-//       {/* Expert Comments Section */}
-//       <div className="w-full px-2 pb-1 -mt-1">
-//         <div className="flex items-center gap-1 mb-1">
-//           <span className="font-medium text-foreground text-sm">דעת המומחים</span>
-//           <button
-//             onClick={() => setExpertsExpanded(!expertsExpanded)}
-//             className="ml-auto p-1 hover:bg-muted rounded-sm transition-colors"
-//           >
-//             {expertsExpanded ? (
-//               <ChevronUp className="w-4 h-4 text-muted-foreground" />
-//             ) : (
-//               <ChevronDown className="w-4 h-4 text-muted-foreground" />
-//             )}
-//           </button>
-//         </div>
-// 
-//         {expertsExpanded && (
-//           <div className="relative animate-fade-in">
-//             <div className="relative">
-//               {/* Gradient overlay on left */}
-//               <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-40" />
-//               
-//               {/* Current user with + button (if expert in category) */}
-//               {isExpertInCategory() && (
-//                 <button
-//                   onClick={handleRecordVideo}
-//                   className="absolute left-0 top-0 z-50 group"
-//                 >
-//                   <div className="relative">
-//                     <img
-//                       src={userProfile?.avatar_url || '/assets/yaakov-profile-B9QmZK8h.jpg'}
-//                       alt={userProfile?.full_name || 'User'}
-//                       className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform"
-//                     />
-//                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
-//                       <Plus className="w-3 h-3 text-white" />
-//                     </div>
-//                   </div>
-//                 </button>
-//               )}
-// 
-//               {/* Scrollable expert list */}
-//               <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
-//                 <div className="flex gap-1 pt-1">
-//                   {demoExperts.map((expert) => (
-//                     <button
-//                       key={expert.id}
-//                       className="relative flex-shrink-0"
-//                       onClick={() => console.log('Open expert video:', expert.name)}
-//                     >
-//                       <img
-//                         src={expert.avatar}
-//                         alt={expert.name}
-//                         className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
-//                       />
-//                     </button>
-//                   ))}
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-// 
-//       {/* Poll Section */}
-//       <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm !rounded-none">
-//         <div
-//           className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200 rounded-none"
-//           onClick={() => {
-//             if (!pollExpanded) {
-//               setPollExpanded(true);
-//               setManuallyOpened(true);
-//             } else {
-//               setPollExpanded(false);
-//               setManuallyOpened(false);
-//             }
-//           }}
-//         >
-//           <div className="flex items-center justify-between mb-3">
-//             <div className="flex items-center gap-2 ml-2 px-[7px]">
-//               <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background hover:text-accent-foreground rounded-md h-7 px-2 text-xs border-primary/20 text-primary hover:bg-primary/10">
-//                 מה דעתך?
-//               </button>
-//               <ChevronDown className={cn(
-//                 "h-4 w-4 text-muted-foreground transition-transform duration-200",
-//                 pollExpanded && "rotate-180"
-//               )} />
-//             </div>
-//           </div>
-// 
-//           {/* Progress bar with top 2 options */}
-//           <div className="space-y-2">
-//             <div className="flex items-center gap-4 text-xs text-muted-foreground mr-2">
-//               <span>{topTwo[0]?.percentage || 0}% {topTwo[0]?.label}</span>
-//               <span>•</span>
-//               <span>{topTwo[1]?.percentage || 0}% {topTwo[1]?.label}</span>
-//             </div>
-//             <div className="relative h-2 bg-muted overflow-hidden">
-//               <div
-//                 className="absolute right-0 top-0 h-full bg-primary transition-all duration-500"
-//                 style={{ width: `${topTwo[0]?.percentage || 0}%` }}
-//               />
-//               <div
-//                 className="absolute top-0 h-full bg-secondary transition-all duration-500"
-//                 style={{
-//                   right: `${topTwo[0]?.percentage || 0}%`,
-//                   width: `${topTwo[1]?.percentage || 0}%`
-//                 }}
-//               />
-//             </div>
-//           </div>
-//         </div>
-// 
-//         {/* Expanded poll options */}
-//         <div
-//           className={cn(
-//             "overflow-hidden transition-all duration-300 ease-in-out border-t border-border/50",
-//             pollExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-//           )}
-//         >
-//           {pollExpanded && (
-//             <div className="p-4 space-y-3">
-//               <div className="text-center mb-4">
-//                 <h4 className="font-semibold text-lg mb-1">מה דעתך על {news.categoryLabel}?</h4>
-//               </div>
-// 
-//               {pollWithPercentages.map((option) => (
-//                 <button
-//                   key={option.id}
-//                   onClick={() => handleVote(option.id)}
-//                   disabled={isVoting}
-//                   className={cn(
-//                     "w-full p-4 rounded-lg border-2 transition-all duration-200 text-right",
-//                     selectedOption === option.id
-//                       ? "bg-green-50 border-green-500"
-//                       : "bg-white border-slate-200 hover:border-primary/50",
-//                     isVoting && "opacity-50 cursor-not-allowed"
-//                   )}
-//                 >
-//                   <div className="flex items-center justify-between">
-//                     <div className="flex items-center gap-3">
-//                       {selectedOption === option.id && !isVoting && (
-//                         <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-in zoom-in duration-300">
-//                           <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-//                           </svg>
-//                         </div>
-//                       )}
-//                       {isVoting && selectedOption === option.id && (
-//                         <div className="w-6 h-6">
-//                           <svg className="animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-//                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-//                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-//                           </svg>
-//                         </div>
-//                       )}
-//                       <span className="font-medium text-base">{option.label}</span>
-//                     </div>
-//                     <div className="flex items-center gap-2">
-//                       <span className="text-2xl font-bold">{option.percentage}%</span>
-//                       <span className="text-sm text-muted-foreground">({option.votes})</span>
-//                     </div>
-//                   </div>
-//                 </button>
-//               ))}
-// 
-//               <div className="flex items-center justify-between pt-4 border-t">
-//                 <span className="text-sm text-muted-foreground">תוצאות חיות</span>
-//                 <span className="text-sm font-medium">סה״כ: {totalVotes}</span>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//       </div>
+ 
+       {/* Expert Comments Section */}
+       <div className="w-full px-2 pb-1 -mt-1">
+         <div className="flex items-center gap-1 mb-1">
+           <span className="font-medium text-foreground text-sm">דעת המומחים</span>
+           <button
+             onClick={() => setExpertsExpanded(!expertsExpanded)}
+             className="ml-auto p-1 hover:bg-muted rounded-sm transition-colors"
+           >
+             {expertsExpanded ? (
+               <ChevronUp className="w-4 h-4 text-muted-foreground" />
+             ) : (
+               <ChevronDown className="w-4 h-4 text-muted-foreground" />
+             )}
+           </button>
+         </div>
+ 
+         {expertsExpanded && (
+           <div className="relative animate-fade-in">
+             <div className="relative">
+               {/* Gradient overlay on left */}
+               <div className="absolute left-0 top-0 w-20 h-12 bg-gradient-to-r from-white from-75% to-white/50 z-40" />
+               
+               {/* Current user with + button (if expert in category) */}
+               {isExpertInCategory() && (
+                 <button
+                   onClick={handleRecordVideo}
+                   className="absolute left-0 top-0 z-50 group"
+                 >
+                   <div className="relative">
+                     <img
+                       src={userProfile?.avatar_url || '/assets/yaakov-profile-B9QmZK8h.jpg'}
+                       alt={userProfile?.full_name || 'User'}
+                       className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-110 transition-transform"
+                     />
+                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white">
+                       <Plus className="w-3 h-3 text-white" />
+                     </div>
+                   </div>
+                 </button>
+               )}
+ 
+               {/* Scrollable expert list */}
+               <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
+                 <div className="flex gap-1 pt-1">
+                   {demoExperts.map((expert) => (
+                     <button
+                       key={expert.id}
+                       className="relative flex-shrink-0"
+                       onClick={() => console.log('Open expert video:', expert.name)}
+                     >
+                       <img
+                         src={expert.avatar}
+                         alt={expert.name}
+                         className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
+                       />
+                     </button>
+                   ))}
+                 </div>
+               </div>
+             </div>
+           </div>
+         )}
+       </div>
+ 
+       {/* Poll Section */}
+       <div className="-mx-4 border-t border-slate-200/50 bg-card shadow-sm !rounded-none">
+         <div
+           className="w-full p-4 cursor-pointer hover:bg-muted/30 transition-all duration-200 rounded-none"
+           onClick={() => {
+             if (!pollExpanded) {
+               setPollExpanded(true);
+               setManuallyOpened(true);
+             } else {
+               setPollExpanded(false);
+               setManuallyOpened(false);
+             }
+           }}
+         >
+           <div className="flex items-center justify-between mb-3">
+             <div className="flex items-center gap-2 ml-2 px-[7px]">
+               <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background hover:text-accent-foreground rounded-md h-7 px-2 text-xs border-primary/20 text-primary hover:bg-primary/10">
+                 מה דעתך?
+               </button>
+               <ChevronDown className={cn(
+                 "h-4 w-4 text-muted-foreground transition-transform duration-200",
+                 pollExpanded && "rotate-180"
+               )} />
+             </div>
+           </div>
+ 
+           {/* Progress bar with top 2 options */}
+           <div className="space-y-2">
+             <div className="flex items-center gap-4 text-xs text-muted-foreground mr-2">
+               <span>{topTwo[0]?.percentage || 0}% {topTwo[0]?.label}</span>
+               <span>•</span>
+               <span>{topTwo[1]?.percentage || 0}% {topTwo[1]?.label}</span>
+             </div>
+             <div className="relative h-2 bg-muted overflow-hidden">
+               <div
+                 className="absolute right-0 top-0 h-full bg-primary transition-all duration-500"
+                 style={{ width: `${topTwo[0]?.percentage || 0}%` }}
+               />
+               <div
+                 className="absolute top-0 h-full bg-secondary transition-all duration-500"
+                 style={{
+                   right: `${topTwo[0]?.percentage || 0}%`,
+                   width: `${topTwo[1]?.percentage || 0}%`
+                 }}
+               />
+             </div>
+           </div>
+         </div>
+ 
+         {/* Expanded poll options */}
+         <div
+           className={cn(
+             "overflow-hidden transition-all duration-300 ease-in-out border-t border-border/50",
+             pollExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+           )}
+         >
+           {pollExpanded && (
+             <div className="p-4 space-y-3">
+               <div className="text-center mb-4">
+                 <h4 className="font-semibold text-lg mb-1">מה דעתך על {news.categoryLabel}?</h4>
+               </div>
+ 
+               {pollWithPercentages.map((option) => (
+                 <button
+                   key={option.id}
+                   onClick={() => handleVote(option.id)}
+                   disabled={isVoting}
+                   className={cn(
+                     "w-full p-4 rounded-lg border-2 transition-all duration-200 text-right",
+                     selectedOption === option.id
+                       ? "bg-green-50 border-green-500"
+                       : "bg-white border-slate-200 hover:border-primary/50",
+                     isVoting && "opacity-50 cursor-not-allowed"
+                   )}
+                 >
+                   <div className="flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                       {selectedOption === option.id && !isVoting && (
+                         <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-in zoom-in duration-300">
+                           <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                           </svg>
+                         </div>
+                       )}
+                       {isVoting && selectedOption === option.id && (
+                         <div className="w-6 h-6">
+                           <svg className="animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                           </svg>
+                         </div>
+                       )}
+                       <span className="font-medium text-base">{option.label}</span>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <span className="text-2xl font-bold">{option.percentage}%</span>
+                       <span className="text-sm text-muted-foreground">({option.votes})</span>
+                     </div>
+                   </div>
+                 </button>
+               ))}
+ 
+               <div className="flex items-center justify-between pt-4 border-t">
+                 <span className="text-sm text-muted-foreground">תוצאות חיות</span>
+                 <span className="text-sm font-medium">סה״כ: {totalVotes}</span>
+               </div>
+             </div>
+           )}
+         </div>
+       </div>
     </article>
   );
 }
