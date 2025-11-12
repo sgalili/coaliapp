@@ -4,414 +4,310 @@ import { ImpactFilters } from "@/components/ImpactFilters";
 import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/Navigation";
 
-interface ImpactItem {
-  id: string;
-  type: 'decision' | 'trust' | 'vote' | 'achievement';
-  title: string;
-  description: string;
-  expert_id: string;
-  expert_name: string;
-  expert_image: string;
-  expert_score: number;
-  category: string;
-  timestamp: string;
-  impact_value: number;
-  delegated_votes?: number;
-  total_votes?: number;
-  outcome?: string;
-}
+// Import profile images for mock data
+import sarahProfile from "@/assets/sarah-profile.jpg";
+import davidProfile from "@/assets/david-profile.jpg";
+import mayaProfile from "@/assets/maya-profile.jpg";
+import amitProfile from "@/assets/amit-profile.jpg";
+import rachelProfile from "@/assets/rachel-profile.jpg";
+import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
+import noaProfile from "@/assets/noa-profile.jpg";
+import warrenProfile from "@/assets/warren-buffett-profile.jpg";
+import yaronProfile from "@/assets/yaron-profile.jpg";
+import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
+import yaakovProfile from "@/assets/yaakov-profile.jpg";
 
-export default function ImpactPage() {
-  const navigate = useNavigate();
-  const { user, profile } = useAuth();
-  const { selectedChannel, selectedCategory, setSelectedCategory } = useChannel();
-  const [impactItems, setImpactItems] = useState<ImpactItem[]>([]);
-  const [myImpactScore, setMyImpactScore] = useState(0);
-  const [trustedExperts, setTrustedExperts] = useState(0);
-  const [votesInfluenced, setVotesInfluenced] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [unreadNotifications, setUnreadNotifications] = useState(3);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('dir', 'rtl');
-    document.documentElement.setAttribute('lang', 'he');
-  }, []);
-
-  useEffect(() => {
-    loadImpactData();
-    loadUserStats();
-  }, [user, selectedCategory, selectedChannel]);
-
-  const loadImpactData = async () => {
-    setIsLoading(true);
-    try {
-      console.log('📊 Loading impact data...');
-      
-      // Fetch impact events from database
-      let query = supabase
-        .from('impact_events')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      // Filter by category if not "הכל"
-      if (selectedCategory && selectedCategory !== 'הכל') {
-        query = query.eq('category', selectedCategory);
+// Mock impact data
+const mockImpacts = [
+  {
+    id: "impact-1",
+    type: "decision" as const,
+    title: "תמך בהצעת תקציב החינוך - השפיע על 234 משתמשים",
+    description: "החלטה קריטית שעזרה למאות משתמשים להבין את ההשלכות של תקציב החינוך החדש והשפעתו על העתיד",
+    thumbnail: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&h=200&fit=crop",
+    publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    category: "פוליטיקה",
+    source: "Coali Trust Network",
+    impactValue: 2340,
+    delegatedVotes: 234,
+    totalVotes: 1500,
+    outcome: "אושרה",
+    comments: [
+      {
+        id: "comment-1",
+        userId: "1",
+        username: "דוד לוי",
+        userImage: davidProfile,
+        videoUrl: "mock-video-1",
+        duration: 45,
+        likes: 234,
+        replies: 45,
+        trustLevel: 2340,
+        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-2",
+        userId: "2",
+        username: "שרה כהן",
+        userImage: sarahProfile,
+        videoUrl: "mock-video-2",
+        duration: 32,
+        likes: 156,
+        replies: 28,
+        trustLevel: 1890,
+        timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 2 as const
+      },
+      {
+        id: "comment-3",
+        userId: "3",
+        username: "בנימין נתניהו",
+        userImage: netanyahuProfile,
+        videoUrl: "mock-video-3",
+        duration: 58,
+        likes: 567,
+        replies: 89,
+        trustLevel: 4560,
+        timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-4",
+        userId: "4",
+        username: "ירון זליכה",
+        userImage: yaronZelekhaProfile,
+        videoUrl: "mock-video-4",
+        duration: 41,
+        likes: 289,
+        replies: 52,
+        trustLevel: 3120,
+        timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-5",
+        userId: "5",
+        username: "יעקב אליעזרוב",
+        userImage: yaakovProfile,
+        videoUrl: "mock-video-5",
+        duration: 35,
+        likes: 178,
+        replies: 31,
+        trustLevel: 2450,
+        timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
+        category: "פוליטיקה",
+        kycLevel: 2 as const
       }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('❌ Error loading impact events:', error);
-        throw error;
+    ]
+  },
+  {
+    id: "impact-2",
+    type: "trust" as const,
+    title: "קיבל אמון מ-45 משתמשים חדשים בתחום הכלכלה",
+    description: "הפך למומחה מהימן בתחום הכלכלה והשקעות, משתמשים רבים מאצילים לו כוח הצבעה בנושאים כלכליים",
+    thumbnail: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=300&h=200&fit=crop",
+    publishedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    category: "כלכלה",
+    source: "Coali Trust Network",
+    impactValue: 2250,
+    comments: [
+      {
+        id: "comment-6",
+        userId: "6",
+        username: "וורן באפט",
+        userImage: warrenProfile,
+        videoUrl: "mock-video-6",
+        duration: 52,
+        likes: 892,
+        replies: 134,
+        trustLevel: 8920,
+        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        category: "כלכלה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-7",
+        userId: "7",
+        username: "ירון לונדון",
+        userImage: yaronProfile,
+        videoUrl: "mock-video-7",
+        duration: 38,
+        likes: 445,
+        replies: 67,
+        trustLevel: 4230,
+        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+        category: "כלכלה",
+        kycLevel: 3 as const
+      },
+      {
+        id: "comment-8",
+        userId: "8",
+        username: "רחל גולד",
+        userImage: rachelProfile,
+        videoUrl: "mock-video-8",
+        duration: 29,
+        likes: 234,
+        replies: 41,
+        trustLevel: 2890,
+        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+        category: "כלכלה",
+        kycLevel: 2 as const
       }
+    ]
+  },
+  {
+    id: "impact-3",
+    type: "vote" as const,
+    title: "השפיע על 120 קולות בהצבעה על מיסוי הייטק",
+    description: "דעתו המקצועית שינתה את תוצאות ההצבעה והשפיעה על החלטה קריטית בנושא מיסוי חברות הייטק",
+    thumbnail: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&h=200&fit=crop",
+    publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    category: "טכנולוגיה",
+    source: "Coali Trust Network",
+    impactValue: 600,
+    delegatedVotes: 120,
+    totalVotes: 450,
+    outcome: "השפעה גבוהה",
+    comments: [
+      {
+        id: "comment-9",
+        userId: "9",
+        username: "מיה רוזן",
+        userImage: mayaProfile,
+        videoUrl: "mock-video-9",
+        duration: 31,
+        likes: 123,
+        replies: 19,
+        trustLevel: 1560,
+        timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
+        category: "טכנולוגיה",
+        kycLevel: 2 as const
+      },
+      {
+        id: "comment-10",
+        userId: "10",
+        username: "עמית שטיין",
+        userImage: amitProfile,
+        videoUrl: "mock-video-10",
+        duration: 27,
+        likes: 98,
+        replies: 15,
+        trustLevel: 1120,
+        timestamp: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
+        category: "טכנולוגיה",
+        kycLevel: 1 as const
+      }
+    ]
+  },
+  {
+    id: "impact-4",
+    type: "achievement" as const,
+    title: "הגיע ל-1000 עוקבים והפך למומחה בעל השפעה",
+    description: "השיג ציון אמון גבוה והפך לאחד המומחים המשפיעים ביותר בתחום הבריאות והתזונה",
+    thumbnail: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=200&fit=crop",
+    publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    category: "בריאות",
+    source: "Coali Trust Network",
+    impactValue: 500,
+    outcome: "הישג חדש",
+    comments: [
+      {
+        id: "comment-11",
+        userId: "11",
+        username: "נועה קירל",
+        userImage: noaProfile,
+        videoUrl: "mock-video-11",
+        duration: 24,
+        likes: 567,
+        replies: 78,
+        trustLevel: 3450,
+        timestamp: new Date(Date.now() - 40 * 60 * 60 * 1000).toISOString(),
+        category: "בריאות",
+        kycLevel: 2 as const
+      }
+    ]
+  },
+  {
+    id: "impact-5",
+    type: "decision" as const,
+    title: "תמך ברפורמת תחבורה - עזר ל-180 משתמשים להחליט",
+    description: "עזר למשתמשים רבים להבין את ההשלכות של רפורמת התחבורה הציבורית ולקבל החלטה מושכלת",
+    thumbnail: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop",
+    publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    category: "תחבורה",
+    source: "Coali Trust Network",
+    impactValue: 1800,
+    delegatedVotes: 180,
+    totalVotes: 890,
+    outcome: "נדחתה",
+    comments: []
+  }
+];
 
-      console.log('✅ Loaded impact events:', data?.length || 0);
+const ImpactPage = () => {
+  const [activeFilter, setActiveFilter] = useState("all");
+  const { toast } = useToast();
 
-      // Transform data and fetch expert info
-      const items: ImpactItem[] = await Promise.all(
-        (data || []).map(async (item: any) => {
-          // Fetch expert profile
-          const { data: expertProfile } = await supabase
-            .from('profiles')
-            .select('first_name, last_name, avatar_url, impact_score, user_id')
-            .eq('user_id', item.expert_id)
-            .single();
-
-          return {
-            id: item.id,
-            type: item.type,
-            title: item.title,
-            description: item.description,
-            expert_id: item.expert_id,
-            expert_name: expertProfile 
-              ? `${expertProfile.first_name} ${expertProfile.last_name}`
-              : 'משתמש',
-            expert_image: expertProfile?.avatar_url || 'https://trust.coali.app/assets/default-avatar.jpg',
-            expert_score: expertProfile?.impact_score || 0,
-            category: item.category,
-            timestamp: item.created_at,
-            impact_value: item.impact_value,
-            delegated_votes: item.delegated_votes,
-            total_votes: item.total_votes,
-            outcome: item.outcome
-          };
-        })
-      );
-
-      setImpactItems(items);
-    } catch (error) {
-      console.error('Failed to load impact data:', error);
-      toast.error('שגיאה בטעינת נתונים');
-      
-      // Use demo data as fallback
-      setImpactItems([
-        {
-          id: '1',
-          type: 'decision',
-          title: 'תמך בהצעת תקציב',
-          description: 'עזר ל-234 אנשים להחליט בנושא תקציב החינוך',
-          expert_id: 'demo-user',
-          expert_name: 'דוד לוי',
-          expert_image: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-          expert_score: 7490,
-          category: 'פוליטיקה',
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          impact_value: 2340,
-          delegated_votes: 234,
-          total_votes: 1500,
-          outcome: 'אושרה'
-        },
-        {
-          id: '2',
-          type: 'trust',
-          title: 'קיבל אמון מ-45 משתמשים',
-          description: 'הפך למומחה מהימן בתחום הכלכלה',
-          expert_id: 'demo-user',
-          expert_name: 'דוד לוי',
-          expert_image: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-          expert_score: 7490,
-          category: 'כלכלה',
-          timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-          impact_value: 2250,
-        },
-        {
-          id: '3',
-          type: 'vote',
-          title: 'השפיע על 120 קולות',
-          description: 'דעתו שינתה את תוצאות ההצבעה על מיסוי הייטק',
-          expert_id: 'demo-user',
-          expert_name: 'דוד לוי',
-          expert_image: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
-          expert_score: 7490,
-          category: 'טכנולוגיה',
-          timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          impact_value: 600,
-          delegated_votes: 120,
-          total_votes: 450,
-          outcome: 'השפעה גבוהה'
-        }
-      ]);
-    } finally {
-      setIsLoading(false);
+  const getFilteredImpacts = () => {
+    if (activeFilter === "all") return mockImpacts;
+    
+    if (activeFilter === "trending") {
+      // Show impacts with most trusted comments
+      return [...mockImpacts].sort((a, b) => {
+        const aTrustSum = a.comments.reduce((sum, comment) => sum + comment.trustLevel, 0);
+        const bTrustSum = b.comments.reduce((sum, comment) => sum + comment.trustLevel, 0);
+        return bTrustSum - aTrustSum;
+      });
     }
+
+    return mockImpacts.filter(impact => impact.type === activeFilter);
   };
 
-  const loadUserStats = async () => {
-    if (!user) {
-      // Demo user stats
-      setMyImpactScore(850);
-      setTrustedExperts(12);
-      setVotesInfluenced(45);
-      return;
-    }
-
-    try {
-      // Get user's impact score
-      const { data: userData } = await supabase
-        .from('profiles')
-        .select('impact_score')
-        .eq('user_id', user.id)
-        .single();
-
-      setMyImpactScore(userData?.impact_score || 0);
-
-      // Get trusted experts count
-      const { count: expertsCount } = await supabase
-        .from('trust_delegations')
-        .select('*', { count: 'exact', head: true })
-        .eq('delegator_id', user.id);
-
-      setTrustedExperts(expertsCount || 0);
-
-      // Get votes influenced (as an expert)
-      const { count: influencedCount } = await supabase
-        .from('trust_delegations')
-        .select('*', { count: 'exact', head: true })
-        .eq('expert_id', user.id);
-
-      setVotesInfluenced(influencedCount || 0);
-    } catch (error) {
-      console.error('Failed to load user stats:', error);
-    }
+  const handleImpactClick = (impactId: string) => {
+    toast({
+      title: "פותח אירוע השפעה",
+      description: "מעבר לפרטי האירוע המלא...",
+    });
   };
 
-  const formatTimeAgo = (timestamp: string) => {
-    const now = new Date();
-    const past = new Date(timestamp);
-    const diffMs = now.getTime() - past.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) return `לפני ${diffMins} דקות`;
-    if (diffHours < 24) return `לפני ${diffHours} שעות`;
-    if (diffDays < 30) return `לפני ${diffDays} ימים`;
-    return past.toLocaleDateString('he-IL');
-  };
-
-  const getImpactIcon = (type: string) => {
-    switch (type) {
-      case 'decision':
-        return <Vote className="w-5 h-5 text-blue-500" />;
-      case 'trust':
-        return <Users className="w-5 h-5 text-green-500" />;
-      case 'vote':
-        return <Target className="w-5 h-5 text-purple-500" />;
-      case 'achievement':
-        return <Award className="w-5 h-5 text-yellow-500" />;
-      default:
-        return <TrendingUp className="w-5 h-5 text-gray-500" />;
-    }
-  };
-
-  const getImpactColor = (value: number) => {
-    if (value > 0) return 'text-green-600';
-    if (value < 0) return 'text-red-600';
-    return 'text-gray-600';
+  const handleProfileClick = (impactId: string, comment: any) => {
+    toast({
+      title: "מפעיל תגובת וידאו",
+      description: `מפעיל את התגובה של ${comment.username}`,
+    });
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Channel Selector & Header */}
-      <div className="sticky top-0 z-50 bg-background border-b">
-        <div className="flex items-center justify-between px-4 py-3">
-          <ChannelSelector />
-          
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/notifications')}
-              className="relative p-2 hover:bg-muted rounded-full transition"
-            >
-              <Bell className="w-5 h-5" />
-              {unreadNotifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
-                  {unreadNotifications}
-                </span>
-              )}
-            </button>
-            <button className="p-2 hover:bg-muted rounded-full transition">
-              <Search className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-        
-        {/* Category Dropdown */}
-        <div className="px-4 pb-3">
-          <CategoryDropdown />
-        </div>
-      </div>
-
-      {/* User Stats Section */}
-      <div className="bg-gradient-to-br from-primary to-primary/80 text-white px-4 py-6 mb-4">
-        <h2 className="text-xl font-bold mb-4">ההשפעה שלי</h2>
-        <div className="grid grid-cols-3 gap-3">
-          {/* My Impact Score */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Crown className="w-5 h-5 mx-auto mb-2 text-yellow-300" />
-            <div className="text-xl font-bold">{myImpactScore.toLocaleString()}</div>
-            <div className="text-[10px] text-white/80 mt-1">ציון השפעה</div>
-          </div>
-
-          {/* Trusted Experts */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Users className="w-5 h-5 mx-auto mb-2 text-green-300" />
-            <div className="text-xl font-bold">{trustedExperts}</div>
-            <div className="text-[10px] text-white/80 mt-1">מומחים</div>
-          </div>
-
-          {/* Votes Influenced */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-            <Vote className="w-5 h-5 mx-auto mb-2 text-blue-300" />
-            <div className="text-xl font-bold">{votesInfluenced}</div>
-            <div className="text-[10px] text-white/80 mt-1">קולות</div>
-          </div>
-        </div>
-      </div>
+    <div className="h-screen bg-slate-100 overflow-hidden">
+      {/* Filters */}
+      <ImpactFilters 
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+      />
 
       {/* Impact Feed */}
-      <div className="px-4 space-y-4">
-        {isLoading ? (
-          // Loading skeleton
-          [...Array(3)].map((_, i) => (
-            <div key={i} className="bg-card rounded-2xl p-4 border animate-pulse">
-              <div className="flex gap-3 mb-3">
-                <div className="w-12 h-12 bg-muted rounded-full flex-shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-2/3" />
-                  <div className="h-3 bg-muted rounded w-1/3" />
-                </div>
-              </div>
-              <div className="h-3 bg-muted rounded w-full mb-2" />
-              <div className="h-3 bg-muted rounded w-4/5" />
-            </div>
-          ))
-        ) : impactItems.length === 0 ? (
-          // Empty state
-          <div className="text-center py-20">
-            <TrendingUp className="w-20 h-20 mx-auto text-muted-foreground/30 mb-4" />
-            <h3 className="text-xl font-bold mb-2">אין אירועי השפעה</h3>
-            <p className="text-muted-foreground text-sm px-8">
-              {selectedCategory === 'הכל' 
-                ? 'התחל לעקוב אחרי מומחים כדי לראות את השפעתם'
-                : `אין אירועי השפעה ב${selectedCategory}`
-              }
-            </p>
-          </div>
-        ) : (
-          // Impact items
-          impactItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-card rounded-2xl border hover:border-primary/30 transition-all cursor-pointer overflow-hidden"
-              onClick={() => {
-                if (item.type === 'decision') {
-                  toast.info('פרטי החלטה יוצגו בקרוב');
-                } else {
-                  navigate(`/profile/${item.expert_id}`);
-                }
-              }}
-            >
-              <div className="p-4">
-                {/* Header */}
-                <div className="flex items-start gap-3 mb-3">
-                  {/* Expert Avatar */}
-                  <img
-                    src={item.expert_image}
-                    alt={item.expert_name}
-                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://trust.coali.app/assets/default-avatar.jpg';
-                    }}
-                  />
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-sm">{item.expert_name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {formatTimeAgo(item.timestamp)}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      {getImpactIcon(item.type)}
-                      <span>{item.category}</span>
-                    </div>
-                  </div>
-
-                  {/* Impact Score Badge */}
-                  <div className={`flex flex-col items-center justify-center px-3 py-2 rounded-xl ${
-                    item.impact_value > 0 ? 'bg-green-50' : 'bg-red-50'
-                  }`}>
-                    {item.impact_value > 0 ? (
-                      <ArrowUp className="w-4 h-4 text-green-600" />
-                    ) : (
-                      <ArrowDown className="w-4 h-4 text-red-600" />
-                    )}
-                    <span className={`text-sm font-bold ${getImpactColor(item.impact_value)}`}>
-                      {Math.abs(item.impact_value)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Title & Description */}
-                <h3 className="font-bold text-base mb-2 leading-snug">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Stats Footer */}
-              {(item.delegated_votes || item.total_votes || item.outcome) && (
-                <div className="flex items-center gap-4 px-4 py-3 bg-muted/30 border-t text-xs">
-                  {item.delegated_votes && (
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <Users className="w-3.5 h-3.5" />
-                      <span>{item.delegated_votes} קולות</span>
-                    </div>
-                  )}
-                  {item.total_votes && (
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <Vote className="w-3.5 h-3.5" />
-                      <span>{item.total_votes} סה"כ</span>
-                    </div>
-                  )}
-                  {item.outcome && (
-                    <div className="flex items-center gap-1.5 mr-auto">
-                      <Award className="w-3.5 h-3.5 text-green-600" />
-                      <span className="text-green-700 font-medium">{item.outcome}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          ))
-        )}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 pb-20">
+          {getFilteredImpacts().map((impactItem) => (
+            <ImpactItemComponent
+              key={impactItem.id}
+              item={impactItem}
+              onImpactClick={handleImpactClick}
+              onProfileClick={handleProfileClick}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Navigation */}
       <Navigation />
     </div>
   );
-}
+};
+
+export default ImpactPage;
