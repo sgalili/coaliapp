@@ -135,83 +135,31 @@ export const AuthPage = () => {
       if (existingProfile) {
         // EXISTING REAL USER - LOGIN
         console.log('🔵 EXISTING USER FOUND - LOGGING IN');
+        console.log('User:', existingProfile.first_name, existingProfile.last_name);
         console.log('Phone match:', existingProfile.phone, '===', authData.phone);
         
-        // Create Supabase auth session
-        console.log('🔐 Creating Supabase auth session...');
-        
-        // Generate email from phone for Supabase auth
-        const authEmail = `${authData.phone.replace(/\D/g, '')}@coali.app`;
-        const authPassword = authData.phone; // Use phone as password
-        
-        try {
-          console.log('🔐 Attempting Supabase signIn with:', authEmail);
-          
-          // Try to sign in first
-          let authResult = await supabase.auth.signInWithPassword({
-            email: authEmail,
-            password: authPassword,
-          });
-          
-          console.log('🔐 SignIn result:', authResult.error ? 'Error' : 'Success', authResult.error?.message);
-          
-          // If user doesn't exist in Supabase Auth, create it
-          if (authResult.error && (authResult.error.message.includes('Invalid') || authResult.error.message.includes('not found'))) {
-            console.log('📝 User not in auth table, creating new Supabase Auth user...');
-            
-            authResult = await supabase.auth.signUp({
-              email: authEmail,
-              password: authPassword,
-              options: {
-                data: {
-                  phone: authData.phone,
-                  full_name: `${existingProfile.first_name} ${existingProfile.last_name}`,
-                },
-                emailRedirectTo: window.location.origin
-              }
-            });
-            
-            console.log('📝 SignUp result:', authResult.error ? 'Error' : 'Success', authResult.error?.message);
-          }
-          
-          if (authResult.error) {
-            console.error('❌ Supabase auth error:', authResult.error);
-            console.error('Error details:', JSON.stringify(authResult.error));
-            throw authResult.error;
-          }
-          
-          console.log('✅ Supabase auth session created!');
-          console.log('Auth user:', authResult.data.user);
-          console.log('Auth session:', authResult.data.session);
-          
-          // Update profile with Supabase auth user_id if different
-          if (authResult.data.user && existingProfile.user_id !== authResult.data.user.id) {
-            console.log('🔄 Updating profile with Supabase auth user_id...');
-            await supabase
-              .from('profiles')
-              .update({ user_id: authResult.data.user.id })
-              .eq('id', existingProfile.id);
-          }
-          
-        } catch (authError) {
-          console.error('❌ Auth error:', authError);
-          toast.error('שגיאה באימות - אנא נסה שוב');
-          return;
-        }
-        
-        // Also set localStorage for backwards compatibility
+        // Set localStorage for authentication
+        console.log('💾 Storing user session in localStorage...');
+        localStorage.clear(); // Clear everything first
         localStorage.setItem('authenticated_user_id', existingProfile.user_id);
         localStorage.setItem('authenticated_user_phone', authData.phone);
         localStorage.setItem('authenticated_user_name', `${existingProfile.first_name} ${existingProfile.last_name}`);
+        localStorage.setItem('authenticated_user_profile', JSON.stringify(existingProfile));
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('user_is_real', 'true');
         
-        console.log('✅ REAL USER SESSION CREATED');
+        console.log('✅ Session stored:', {
+          user_id: existingProfile.user_id,
+          phone: authData.phone,
+          name: `${existingProfile.first_name} ${existingProfile.last_name}`,
+          is_real: true
+        });
         
-        toast.success(`ברוך הבא ${existingProfile.first_name}!`, { duration: 2000 });
+        toast.success(`ברוך הבא ${existingProfile.first_name}! 🎉`, { duration: 2000 });
         
         console.log('🚀 REDIRECTING TO HOMEPAGE');
         
-        // Redirect after a short delay to ensure auth state updates
+        // Force reload to ensure useAuth picks up the session
         setTimeout(() => {
           window.location.href = '/';
         }, 500);
