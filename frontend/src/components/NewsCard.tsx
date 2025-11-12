@@ -363,12 +363,13 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
                   .slice(0, index)
                   .reduce((sum, opt) => sum + opt.percentage, 0);
                 
-                const colors = ['bg-primary', 'bg-secondary', 'bg-purple-500', 'bg-amber-500', 'bg-green-500'];
+                // Blue tones only
+                const blueColors = ['bg-blue-600', 'bg-blue-400', 'bg-blue-500', 'bg-blue-300', 'bg-blue-700'];
                 
                 return (
                   <div
                     key={option.id}
-                    className={`absolute top-0 h-full transition-all duration-500 ${colors[index % colors.length]}`}
+                    className={`absolute top-0 h-full transition-all duration-500 ${blueColors[index % blueColors.length]}`}
                     style={{
                       right: `${100 - leftPosition - option.percentage}%`,
                       width: `${option.percentage}%`
