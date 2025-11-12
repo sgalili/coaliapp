@@ -70,32 +70,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     console.log('🔄 Total votes:', localTotalVotes);
   }, [localPollOptions, localTotalVotes]);
 
-  // Calculate poll percentages from local state
+  // Calculate poll percentages - simple and safe
   const totalVotes = localTotalVotes || localPollOptions.reduce((sum, opt) => sum + (opt.votes || 0), 0) || 100;
-  
-  // Simple and safe percentage calculation
-  const pollWithPercentages = localPollOptions.map((opt, index) => {
-    if (totalVotes === 0) return { ...opt, percentage: 0 };
-    
-    // Calculate exact percentage
-    const exactPercent = (opt.votes / totalVotes) * 100;
-    
-    // For the last item, calculate to make total = 100
-    if (index === localPollOptions.length - 1) {
-      const sumSoFar = localPollOptions
-        .slice(0, index)
-        .reduce((sum, o) => sum + Math.round((o.votes / totalVotes) * 100), 0);
-      return {
-        ...opt,
-        percentage: Math.max(0, 100 - sumSoFar)
-      };
-    }
-    
-    return {
-      ...opt,
-      percentage: Math.round(exactPercent)
-    };
-  });
+  const pollWithPercentages = localPollOptions.map(opt => ({
+    ...opt,
+    percentage: totalVotes > 0 ? Math.round(((opt.votes || 0) / totalVotes) * 100) : 0
+  }));
 
   // Get top 2 options for progress bar
   const sortedOptions = [...pollWithPercentages].sort((a, b) => b.votes - a.votes);
