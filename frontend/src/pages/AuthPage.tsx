@@ -247,7 +247,7 @@ export const AuthPage = () => {
 
       // Send welcome WhatsApp
       try {
-        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        const backendUrl = 'https://user-impact.preview.emergentagent.com';
         await fetch(`${backendUrl}/api/whatsapp/send-message`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

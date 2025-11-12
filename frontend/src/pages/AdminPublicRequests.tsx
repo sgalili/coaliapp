@@ -78,7 +78,7 @@ export default function AdminPublicRequests() {
 
       // Send WhatsApp notification
       try {
-        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        const backendUrl = 'https://user-impact.preview.emergentagent.com';
         const { data: userProfile } = await supabase
           .from('profiles')
           .select('phone, first_name')
@@ -132,7 +132,7 @@ export default function AdminPublicRequests() {
 
       // Send notification
       try {
-        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        const backendUrl = 'https://user-impact.preview.emergentagent.com';
         const { data: userProfile } = await supabase
           .from('profiles')
           .select('phone')

@@ -29,7 +29,7 @@ You should see:
 - OR specific counts for inserted rows
 
 ### Step 4: Refresh Your App
-1. Go back to: https://trustflow-4.preview.emergentagent.com
+1. Go back to: https://user-impact.preview.emergentagent.com
 2. Hard refresh (Ctrl+Shift+R)
 3. Open browser console (F12)
 4. You should see: "🎉 Demo data seeding complete!"

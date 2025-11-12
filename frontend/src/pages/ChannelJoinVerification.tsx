@@ -33,7 +33,7 @@ export default function ChannelJoinVerification() {
   const handleOTPSubmit = async () => {
     try {
       // Verify OTP via backend
-      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+      const backendUrl = 'https://user-impact.preview.emergentagent.com';
       const response = await fetch(`${backendUrl}/api/otp/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

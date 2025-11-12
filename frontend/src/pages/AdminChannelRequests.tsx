@@ -66,7 +66,7 @@ export default function AdminChannelRequests() {
       
       // Send WhatsApp notification to user
       try {
-        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        const backendUrl = 'https://user-impact.preview.emergentagent.com';
         
         // Get user phone from profiles
         const { data: userProfile } = await supabase
@@ -131,7 +131,7 @@ export default function AdminChannelRequests() {
       
       // Send WhatsApp notification
       try {
-        const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+        const backendUrl = 'https://user-impact.preview.emergentagent.com';
         
         const { data: userProfile } = await supabase
           .from('profiles')
