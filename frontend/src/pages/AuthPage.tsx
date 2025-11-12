@@ -73,8 +73,8 @@ export const AuthPage = () => {
       console.log('OTP:', otp);
       
       // Verify OTP via backend
-      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
-      const response = await fetch(`${backendUrl}/api/otp/verify-otp`, {
+      const backendUrl = '/api';
+      const response = await fetch(`${backendUrl}/otp/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
