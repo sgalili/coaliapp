@@ -116,8 +116,8 @@ export default function ImpactPage() {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
     
-    // Initialize placeholder news with localStorage votes
-    initializePlaceholderVotes();
+    // Load news with latest votes from database
+    loadNewsWithVotes();
   }, []);
 
   const initializePlaceholderVotes = () => {
