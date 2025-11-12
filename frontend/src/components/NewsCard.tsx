@@ -280,7 +280,7 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
           {pollExpanded && (
             <div className="p-4 space-y-3">
               <div className="text-center mb-4">
-                <h4 className="font-semibold text-lg mb-1">מה דעתך על חוק השידור החדש?</h4>
+                <h4 className="font-semibold text-lg mb-1">מה דעתך על {news.categoryLabel}?</h4>
               </div>
 
               {pollWithPercentages.map((option) => (
