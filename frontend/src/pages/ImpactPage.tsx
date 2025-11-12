@@ -49,9 +49,14 @@ export default function ImpactPage() {
   const [unreadNotifications, setUnreadNotifications] = useState(3);
 
   useEffect(() => {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'he');
+  }, []);
+
+  useEffect(() => {
     loadImpactData();
     loadUserStats();
-  }, [user, selectedCategory]);
+  }, [user, selectedCategory, selectedChannel]);
 
   const loadImpactData = async () => {
     setIsLoading(true);
