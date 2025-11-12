@@ -8,6 +8,7 @@ import { Handshake, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { trustDelegationService } from '@/services/trustDelegationService';
 import { supabase } from '@/integrations/supabase/client';
+import { trackTrustGained } from '@/utils/impactTracking';
 
 interface TrustButtonProps {
   expertId: string;
