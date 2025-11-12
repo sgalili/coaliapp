@@ -175,6 +175,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     console.log('Open video recorder for news:', news.id);
   };
 
+  // Safety check
+  if (!news || !news.id || !localPollOptions) {
+    console.error('❌ Invalid news data:', news);
+    return null;
+  }
+
   return (
     <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 transition-shadow">
       {/* News Header with Image and Title */}
