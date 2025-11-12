@@ -13,16 +13,14 @@ export const useAuth = () => {
 
   console.log('useAuth called');
 
-  useEffect(() => {
-    console.log('useAuth useEffect running');
-    
-    // FIRST: Check localStorage for authenticated user
+  // CRITICAL: Check localStorage BEFORE any render (synchronous)
+  const checkLocalStorageAuth = () => {
     const storedUserId = localStorage.getItem('authenticated_user_id');
     const storedProfile = localStorage.getItem('authenticated_user_profile');
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
     
     if (storedUserId && isAuthenticated && storedUserId !== 'demo-user') {
-      console.log('✅ Found authenticated user in localStorage:', storedUserId);
+      console.log('✅ REAL USER found in localStorage (sync):', storedUserId);
       
       // Create a mock user object for compatibility
       const mockUser = {
@@ -37,22 +35,33 @@ export const useAuth = () => {
       
       setUser(mockUser as any);
       
-      // Load profile
+      // Load profile synchronously if available
       if (storedProfile) {
         try {
           const profileData = JSON.parse(storedProfile);
           setProfile(profileData);
-          console.log('✅ Profile loaded from localStorage');
+          console.log('✅ Profile loaded from localStorage (sync)');
         } catch (e) {
           console.error('Error parsing stored profile:', e);
-          fetchProfile(storedUserId);
         }
-      } else {
-        fetchProfile(storedUserId);
       }
       
       setLoading(false);
       setInitializing(false);
+      return true;
+    }
+    return false;
+  };
+  
+  // Run IMMEDIATELY on mount (before useEffect)
+  const [hasRealUser] = React.useState(() => checkLocalStorageAuth());
+
+  useEffect(() => {
+    console.log('useAuth useEffect running');
+    
+    // If we already found a real user in localStorage, skip Supabase auth
+    if (hasRealUser) {
+      console.log('⏭️ Skipping Supabase auth check - real user already loaded');
       return;
     }
     
