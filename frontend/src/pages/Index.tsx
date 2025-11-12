@@ -504,9 +504,11 @@ const samplePosts = [...channel10Posts, ...achvaPosts, ...maccabiPosts, ...origi
 
 export default function Index() {
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile, initializing } = useAuth();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
-  const [posts, setPosts] = useState(samplePosts);
+  
+  // CRITICAL: Don't show demo content while checking auth
+  const [posts, setPosts] = useState<any[]>([]);  // Start with empty, not samplePosts
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [currentPostIndex, setCurrentPostIndex] = useState(0);
   const [mutedVideos, setMutedVideos] = useState<{ [key: string]: boolean }>({});
