@@ -40,12 +40,14 @@ const demoExpertUsers = [
 ];
 
 export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
+  console.log('🎴 NewsCard rendering for:', news.id);
+  
   const navigate = useNavigate();
   const [expertsExpanded, setExpertsExpanded] = useState(true);
   const [pollExpanded, setPollExpanded] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isVoting, setIsVoting] = useState(false);
-  const [localPollOptions, setLocalPollOptions] = useState(news.poll_options);
+  const [localPollOptions, setLocalPollOptions] = useState(news.poll_options || []);
   const [localTotalVotes, setLocalTotalVotes] = useState(news.total_votes || 0);
   const [manuallyOpened, setManuallyOpened] = useState(false);
   // FIXED: Use real demo users from database, pick random 3-6 experts per news
@@ -54,6 +56,8 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     const count = Math.floor(Math.random() * 4) + 3; // 3-6 experts
     return shuffled.slice(0, count);
   });
+  
+  console.log('🎴 Poll options:', localPollOptions);
 
   // Check if current user is expert in this category
   const isExpertInCategory = () => {
