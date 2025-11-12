@@ -10,7 +10,7 @@ interface NavigationProps {
 
 const tabs = [
   { id: 'home', icon: Home, label: 'בית', path: '/' },
-  { id: 'news', icon: ImpactIcon, label: 'אימפקט', path: '/news' },
+  { id: 'impact', icon: ImpactIcon, label: 'אימפקט', path: '/impact' },
   { id: 'toptrusted', icon: Crown, label: 'מובילים', path: '/toptrusted' },
   { id: 'wallet', icon: Wallet, label: 'ארנק', path: '/wallet' },
   { id: 'profile', icon: User, label: 'פרופיל', path: '/profile' },
