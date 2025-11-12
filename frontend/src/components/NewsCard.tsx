@@ -181,6 +181,8 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     return null;
   }
 
+  console.log('🎴 About to render JSX for:', news.id);
+
   return (
     <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 transition-shadow">
       {/* News Header with Image and Title */}
