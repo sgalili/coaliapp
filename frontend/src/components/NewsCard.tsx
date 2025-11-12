@@ -50,6 +50,7 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   const [isVoting, setIsVoting] = useState(false);
   const [localPollOptions, setLocalPollOptions] = useState(news.poll_options);
   const [localTotalVotes, setLocalTotalVotes] = useState(news.total_votes || 0);
+  const [manuallyOpened, setManuallyOpened] = useState(false);
 
   // Check if current user is expert in this category
   const isExpertInCategory = () => {
