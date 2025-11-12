@@ -145,15 +145,19 @@ export const AuthPage = () => {
         const authPassword = authData.phone; // Use phone as password
         
         try {
+          console.log('🔐 Attempting Supabase signIn with:', authEmail);
+          
           // Try to sign in first
           let authResult = await supabase.auth.signInWithPassword({
             email: authEmail,
             password: authPassword,
           });
           
+          console.log('🔐 SignIn result:', authResult.error ? 'Error' : 'Success', authResult.error?.message);
+          
           // If user doesn't exist in Supabase Auth, create it
-          if (authResult.error && authResult.error.message.includes('Invalid')) {
-            console.log('📝 Creating new Supabase Auth user...');
+          if (authResult.error && (authResult.error.message.includes('Invalid') || authResult.error.message.includes('not found'))) {
+            console.log('📝 User not in auth table, creating new Supabase Auth user...');
             
             authResult = await supabase.auth.signUp({
               email: authEmail,
@@ -162,18 +166,23 @@ export const AuthPage = () => {
                 data: {
                   phone: authData.phone,
                   full_name: `${existingProfile.first_name} ${existingProfile.last_name}`,
-                }
+                },
+                emailRedirectTo: window.location.origin
               }
             });
+            
+            console.log('📝 SignUp result:', authResult.error ? 'Error' : 'Success', authResult.error?.message);
           }
           
           if (authResult.error) {
             console.error('❌ Supabase auth error:', authResult.error);
+            console.error('Error details:', JSON.stringify(authResult.error));
             throw authResult.error;
           }
           
           console.log('✅ Supabase auth session created!');
-          console.log('Auth user ID:', authResult.data.user?.id);
+          console.log('Auth user:', authResult.data.user);
+          console.log('Auth session:', authResult.data.session);
           
           // Update profile with Supabase auth user_id if different
           if (authResult.data.user && existingProfile.user_id !== authResult.data.user.id) {
