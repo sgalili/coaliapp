@@ -7,6 +7,7 @@ import { ChannelProvider } from "@/contexts/ChannelContext";
 import Index from "./pages/Index";
 import UserProfile from "./pages/UserProfile";
 import NewsPage from "./pages/NewsPage";
+import ImpactPage from "./pages/ImpactPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import PostDetailPage from "./pages/PostDetailPage";
 import MessagesPage from "./pages/MessagesPage";
