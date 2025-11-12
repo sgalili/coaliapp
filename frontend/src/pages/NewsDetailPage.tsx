@@ -182,6 +182,13 @@ export default function NewsDetailPage() {
             })}
           </div>
 
+          {/* View Count */}
+          <div className="mt-8 mb-6">
+            <p className="text-2xl font-bold text-foreground">
+              {(Math.floor(Math.random() * 9000000) + 1000000).toLocaleString('he-IL')}
+            </p>
+          </div>
+
           {/* Engagement Bar */}
           <div className="flex items-center gap-4 py-6 border-y border-border my-6">
             <button className="flex items-center gap-2 hover:text-trust transition-colors">
@@ -201,7 +208,7 @@ export default function NewsDetailPage() {
           {/* Source Credit */}
           <div className="bg-muted/30 rounded-lg p-4 mb-6">
             <p className="text-sm text-muted-foreground">
-              מקור: <span className="font-medium text-foreground">{newsArticle.source}</span>
+              מקור: <span className="font-medium text-foreground">{newsArticle.source || 'חדשות 12'}</span>
             </p>
           </div>
         </div>
