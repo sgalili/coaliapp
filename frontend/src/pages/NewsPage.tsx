@@ -101,17 +101,11 @@ const placeholderNewsData = [
 
 export default function NewsPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
   const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [expandedNews, setExpandedNews] = useState<{ [key: string]: boolean }>({});
-  const [expandedPolls, setExpandedPolls] = useState<{ [key: string]: boolean }>({});
-  const [userVotes, setUserVotes] = useState<{ [key: string]: string }>({});
-  
-  const isRealUser = () => !!user;
-  const [selectedExpert, setSelectedExpert] = useState<{ newsId: string; expertIndex: number } | null>(null);
   const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
 
   useEffect(() => {
