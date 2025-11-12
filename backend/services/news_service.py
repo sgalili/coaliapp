@@ -103,6 +103,13 @@ class NewsService:
                 category
             )
             
+            # Save articles to MongoDB
+            for article in articles:
+                try:
+                    await self.db_service.save_news(article)
+                except Exception as e:
+                    self.logger.error(f"Error saving news to DB: {str(e)}")
+            
             return NewsSearchResponse(
                 category=category.value,
                 articles=articles[:max_results],
