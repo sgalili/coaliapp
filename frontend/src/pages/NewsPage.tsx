@@ -222,41 +222,6 @@ export default function NewsPage() {
     }
   };
 
-  const toggleExperts = (newsId: string) => {
-    setExpandedNews(prev => ({
-      ...prev,
-      [newsId]: !prev[newsId]
-    }));
-  };
-
-  const togglePoll = (newsId: string) => {
-    setExpandedPolls(prev => ({
-      ...prev,
-      [newsId]: !prev[newsId]
-    }));
-  };
-
-  const handleVote = (newsId: string, option: string) => {
-    setUserVotes(prev => ({
-      ...prev,
-      [newsId]: option
-    }));
-    setTimeout(() => {
-      setExpandedPolls(prev => ({
-        ...prev,
-        [newsId]: false
-      }));
-    }, 500);
-  };
-
-  const openExpertDetail = (newsId: string, expertIndex: number) => {
-    setSelectedExpert({ newsId, expertIndex });
-  };
-
-  const closeExpertDetail = () => {
-    setSelectedExpert(null);
-  };
-
   // Filter news by selected category
   const filteredNews = selectedCategory === 'הכל' 
     ? newsArticles 
