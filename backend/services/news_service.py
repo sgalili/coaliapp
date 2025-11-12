@@ -208,3 +208,15 @@ class NewsService:
     async def get_news_by_id(self, news_id: str, channel_id: str = "coali"):
         """Get news by ID from database."""
         return await self.db_service.get_news_by_id(news_id, channel_id)
+    
+    async def save_news(self, news_data: dict) -> dict:
+        """
+        Save or update a news article in the database.
+        
+        Args:
+            news_data: Dictionary containing news article data
+            
+        Returns:
+            dict: The saved news article
+        """
+        return await self.db_service.save_news(news_data)
