@@ -158,57 +158,6 @@ export default function ImpactPage() {
     }
   };
 
-  const ensurePlaceholderNewsInDB = async (channelId: string) => {
-    const BACKEND_URL = '/api';
-    
-    for (const news of placeholderNewsData) {
-      try {
-        // Check if news exists
-        const checkResponse = await fetch(`${BACKEND_URL}/news/${news.id}?channel_id=${channelId}`);
-        
-        if (!checkResponse.ok) {
-          // News doesn't exist, save it
-          console.log(`💾 Saving placeholder news ${news.id} to MongoDB...`);
-          await saveNewsToMongoDB(news, channelId);
-        }
-      } catch (err) {
-        console.log(`⚠️ Error checking news ${news.id}:`, err);
-      }
-    }
-  };
-
-  const saveNewsToMongoDB = async (news: any, channelId: string) => {
-    const BACKEND_URL = '/api';
-    
-    try {
-      const response = await fetch(`${BACKEND_URL}/news`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: news.id,
-          title: news.title,
-          content: news.content,
-          category: news.category,
-          source: news.source,
-          image: news.image,
-          channel_id: channelId,
-          poll_options: news.poll_options,
-          total_votes: news.total_votes || 0
-        })
-      });
-      
-      if (response.ok) {
-        console.log(`✅ Saved news ${news.id} to MongoDB`);
-      } else {
-        console.error(`❌ Failed to save news ${news.id}:`, response.status);
-      }
-    } catch (err) {
-      console.error(`❌ Error saving news ${news.id}:`, err);
-    }
-  };
-
   // Fetch news when channel changes
   // useEffect(() => {
   //   fetchRealNews();
