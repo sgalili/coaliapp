@@ -107,14 +107,24 @@ async def add_expert_comment(comment: CommentRequest = Body(...)):
         logger.error(f"Error adding comment: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to add comment")
 
-@router.get("/{news_id}")
-async def get_news_by_id(news_id: str):
-    """Get a single news article by ID."""
+@router.post("/")
+async def create_news(news_data: dict = Body(...)):
+    """Create or update a news article in the database."""
     try:
-        article = await news_service.get_news_by_id(news_id)
-        if not article:
-            raise HTTPException(status_code=404, detail="News not found")
-        return article
+        logger.info(f"Saving news: {news_data.get('id')}")
+        result = await news_service.save_news(news_data)
+        return {"success": True, "news": result}
+    except Exception as e:
+        logger.error(f"Error saving news: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to save news: {str(e)}")
+
+@router.get("/{news_id}")
+async def get_news_by_id(news_id: str, channel_id: str = Query("העם")):
+    """Retrieve a specific news article by ID with its votes."""
+    try:
+        logger.info(f"Fetching news by ID: {news_id}, channel: {channel_id}")
+        result = await news_service.get_news_by_id(news_id, channel_id)
+        return result
     except Exception as e:
         logger.error(f"Error fetching news by ID: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch news")
