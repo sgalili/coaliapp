@@ -95,10 +95,11 @@ const placeholderNewsData = [
     image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop',
     experts: expertProfiles.slice(0, 3),
     poll_options: [
-      { id: "1", label: "מעניין", value: 60 },
-      { id: "2", label: "חשוב", value: 30 },
-      { id: "3", label: "אחר", value: 10 },
+      { id: "1", label: "מעניין", votes: 60, voter_ids: [] },
+      { id: "2", label: "חשוב", votes: 30, voter_ids: [] },
+      { id: "3", label: "אחר", votes: 10, voter_ids: [] },
     ],
+    total_votes: 100,
   },
 ];
 
