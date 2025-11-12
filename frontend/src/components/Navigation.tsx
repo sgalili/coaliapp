@@ -23,7 +23,8 @@ export const Navigation = ({ zoozBalance = 0, show = true }: NavigationProps) =>
   const getActiveTab = () => {
     const path = location.pathname;
     if (path === '/') return 'home';
-    if (path.startsWith('/news')) return 'news';
+    if (path.startsWith('/impact')) return 'impact';
+    if (path.startsWith('/news')) return 'impact'; // Keep news pages under impact tab
     if (path.startsWith('/toptrusted')) return 'toptrusted';
     if (path.startsWith('/wallet')) return 'wallet';
     if (path.startsWith('/profile')) return 'profile';
