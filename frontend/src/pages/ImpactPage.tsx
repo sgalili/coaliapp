@@ -115,7 +115,34 @@ export default function ImpactPage() {
   useEffect(() => {
     document.documentElement.setAttribute('dir', 'rtl');
     document.documentElement.setAttribute('lang', 'he');
+    
+    // Initialize placeholder news with localStorage votes
+    initializePlaceholderVotes();
   }, []);
+
+  const initializePlaceholderVotes = () => {
+    // Check if we have saved votes in localStorage
+    const savedVotes = localStorage.getItem('impact_news_votes');
+    if (savedVotes) {
+      try {
+        const votesData = JSON.parse(savedVotes);
+        // Update placeholder news with saved votes
+        const updatedNews = placeholderNewsData.map(news => {
+          if (votesData[news.id]) {
+            return {
+              ...news,
+              poll_options: votesData[news.id].poll_options,
+              total_votes: votesData[news.id].total_votes
+            };
+          }
+          return news;
+        });
+        setNewsArticles(updatedNews);
+      } catch (e) {
+        console.error('Error loading saved votes:', e);
+      }
+    }
+  };
 
   // Fetch news when channel changes
   // useEffect(() => {
