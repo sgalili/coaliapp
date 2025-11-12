@@ -78,11 +78,12 @@ const placeholderNewsData = [
     image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=400&fit=crop',
     experts: expertProfiles.slice(0, 4),
     poll_options: [
-      { id: "1", label: "בנייה ממשלתית", value: 50 },
-      { id: "2", label: "הקלות מס", value: 25 },
-      { id: "3", label: "שילוב פתרונות", value: 20 },
-      { id: "4", label: "לא בטוח", value: 5 },
+      { id: "1", label: "בנייה ממשלתית", votes: 50, voter_ids: [] },
+      { id: "2", label: "הקלות מס", votes: 25, voter_ids: [] },
+      { id: "3", label: "שילוב פתרונות", votes: 20, voter_ids: [] },
+      { id: "4", label: "לא בטוח", votes: 5, voter_ids: [] },
     ],
+    total_votes: 100,
   },
   {
     id: 'placeholder-4',
