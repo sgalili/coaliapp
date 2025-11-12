@@ -127,13 +127,13 @@ export default function NewsPage() {
     
     setIsRefreshing(true);
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      const BACKEND_URL = '/api';
       
       if (selectedCategory !== 'הכל') {
         // Find the API value for selected category
         const cat = categories.find(c => c.label === selectedCategory);
         if (cat?.apiValue) {
-          const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=5`;
+          const url = `${BACKEND_URL}/news/by-category/${cat.apiValue}?max_results=5`;
           const response = await fetch(url);
           const data = await response.json();
           
