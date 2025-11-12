@@ -122,46 +122,38 @@ export default function ImpactPage() {
 
   const loadNewsWithVotes = async () => {
     try {
-      const BACKEND_URL = '/api';
-      const channelId = selectedChannel.id || 'העם';
+      console.log('📡 Loading news with votes from localStorage and MongoDB...');
       
-      console.log('📡 Loading news with votes from MongoDB...');
+      // Load from localStorage first for instant display
+      const savedVotes = localStorage.getItem('impact_news_votes');
+      let localVotes: any = {};
       
-      // First, ensure placeholder news exist in MongoDB
-      await ensurePlaceholderNewsInDB(channelId);
+      if (savedVotes) {
+        try {
+          localVotes = JSON.parse(savedVotes);
+          console.log('📱 Loaded votes from localStorage:', Object.keys(localVotes));
+        } catch (e) {
+          console.error('Error parsing localStorage:', e);
+        }
+      }
       
-      // Then fetch latest news data with votes from MongoDB
-      const updatedNews = await Promise.all(
-        placeholderNewsData.map(async (news) => {
-          try {
-            const response = await fetch(`${BACKEND_URL}/news/${news.id}?channel_id=${channelId}`);
-            if (response.ok) {
-              const data = await response.json();
-              console.log(`✅ Loaded news ${news.id} from MongoDB:`, data.total_votes, 'votes');
-              // Return news with updated votes from database
-              return {
-                ...news,
-                poll_options: data.poll_options || news.poll_options,
-                total_votes: data.total_votes || news.total_votes
-              };
-            } else {
-              console.log(`⚠️ News ${news.id} not found in MongoDB (${response.status}), saving it...`);
-              // Save to MongoDB if not exists
-              await saveNewsToMongoDB(news, channelId);
-              return news;
-            }
-          } catch (err) {
-            console.log(`⚠️ Error loading ${news.id}:`, err);
-            return news;
-          }
-        })
-      );
+      // Update placeholder data with localStorage votes immediately
+      const newsWithLocalVotes = placeholderNewsData.map(news => {
+        if (localVotes[news.id]) {
+          return {
+            ...news,
+            poll_options: localVotes[news.id].poll_options,
+            total_votes: localVotes[news.id].total_votes
+          };
+        }
+        return news;
+      });
       
-      setNewsArticles(updatedNews);
-      console.log('✅ All news loaded with votes');
+      setNewsArticles(newsWithLocalVotes);
+      console.log('✅ Displaying news with localStorage votes');
+      
     } catch (error) {
       console.error('Error loading news with votes:', error);
-      // Fallback to placeholder data
       setNewsArticles(placeholderNewsData);
     }
   };
