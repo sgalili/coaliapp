@@ -108,10 +108,11 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     
     try {
       const userId = getUserId();
-      // Vite uses import.meta.env, not process.env
-      const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || '/api';
+      // Use the correct Vite env variable
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
       
       console.log('🔗 Backend URL:', BACKEND_URL);
+      console.log('🔗 Full URL will be:', `${BACKEND_URL}/news/vote`);
       console.log('🔗 Voting for news:', news.id, 'option:', optionId, 'user:', userId);
       
       const response = await fetch(`${BACKEND_URL}/news/vote`, {
