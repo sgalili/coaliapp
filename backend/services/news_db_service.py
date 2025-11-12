@@ -151,6 +151,36 @@ class NewsDBService:
             logger.error(f"Error adding comment: {str(e)}")
             raise
     
+    async def save_news(self, news_data: dict) -> dict:
+        """Save or update a news article."""
+        try:
+            news_id = news_data.get('id')
+            channel_id = news_data.get('channel_id', 'העם')
+            
+            # Check if news already exists
+            existing = await self.news_collection.find_one({
+                "id": news_id,
+                "channel_id": channel_id
+            })
+            
+            if existing:
+                # Update existing news
+                logger.info(f"Updating existing news: {news_id}")
+                await self.news_collection.update_one(
+                    {"id": news_id, "channel_id": channel_id},
+                    {"$set": news_data}
+                )
+            else:
+                # Insert new news
+                logger.info(f"Inserting new news: {news_id}")
+                news_data['published_at'] = news_data.get('published_at', datetime.now().isoformat())
+                await self.news_collection.insert_one(news_data)
+            
+            return news_data
+        except Exception as e:
+            logger.error(f"Error saving news: {str(e)}")
+            raise
+    
     async def get_all_news(self, channel_id: str = "coali", limit: int = 50) -> List[Dict]:
         """Get all news for a channel."""
         try:
