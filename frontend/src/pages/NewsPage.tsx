@@ -227,6 +227,11 @@ export default function NewsPage() {
     ? newsArticles 
     : newsArticles.filter(news => news.categoryLabel === selectedCategory || news.category === selectedCategory);
 
+  console.log('📰 NewsPage render - newsArticles:', newsArticles.length);
+  console.log('📰 filteredNews:', filteredNews.length);
+  console.log('📰 loading:', loading);
+  console.log('📰 selectedCategory:', selectedCategory);
+
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
