@@ -181,12 +181,11 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     } finally {
       setIsVoting(false);
       
-      // Close poll after 3.5 seconds (only if not manually opened)
-      if (!manuallyOpened) {
-        setTimeout(() => {
-          setPollExpanded(false);
-        }, 3500);
-      }
+      // Always close poll after 3.5 seconds after voting
+      setTimeout(() => {
+        setPollExpanded(false);
+        setManuallyOpened(false); // Reset flag
+      }, 3500);
     }
   };
 
