@@ -135,26 +135,77 @@ export const AuthPage = () => {
       if (existingProfile) {
         // EXISTING REAL USER - LOGIN
         console.log('🔵 EXISTING USER FOUND - LOGGING IN');
-        console.log('User: שי גלילי');
         console.log('Phone match:', existingProfile.phone, '===', authData.phone);
         
-        // FORCE set as real user
-        localStorage.clear(); // Clear EVERYTHING first
+        // Create Supabase auth session
+        console.log('🔐 Creating Supabase auth session...');
+        
+        // Generate email from phone for Supabase auth
+        const authEmail = `${authData.phone.replace(/\D/g, '')}@coali.app`;
+        const authPassword = authData.phone; // Use phone as password
+        
+        try {
+          // Try to sign in first
+          let authResult = await supabase.auth.signInWithPassword({
+            email: authEmail,
+            password: authPassword,
+          });
+          
+          // If user doesn't exist in Supabase Auth, create it
+          if (authResult.error && authResult.error.message.includes('Invalid')) {
+            console.log('📝 Creating new Supabase Auth user...');
+            
+            authResult = await supabase.auth.signUp({
+              email: authEmail,
+              password: authPassword,
+              options: {
+                data: {
+                  phone: authData.phone,
+                  full_name: `${existingProfile.first_name} ${existingProfile.last_name}`,
+                }
+              }
+            });
+          }
+          
+          if (authResult.error) {
+            console.error('❌ Supabase auth error:', authResult.error);
+            throw authResult.error;
+          }
+          
+          console.log('✅ Supabase auth session created!');
+          console.log('Auth user ID:', authResult.data.user?.id);
+          
+          // Update profile with Supabase auth user_id if different
+          if (authResult.data.user && existingProfile.user_id !== authResult.data.user.id) {
+            console.log('🔄 Updating profile with Supabase auth user_id...');
+            await supabase
+              .from('profiles')
+              .update({ user_id: authResult.data.user.id })
+              .eq('id', existingProfile.id);
+          }
+          
+        } catch (authError) {
+          console.error('❌ Auth error:', authError);
+          toast.error('שגיאה באימות - אנא נסה שוב');
+          return;
+        }
+        
+        // Also set localStorage for backwards compatibility
         localStorage.setItem('authenticated_user_id', existingProfile.user_id);
         localStorage.setItem('authenticated_user_phone', authData.phone);
         localStorage.setItem('authenticated_user_name', `${existingProfile.first_name} ${existingProfile.last_name}`);
         localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('user_is_real', 'true'); // Extra flag
         
-        console.log('✅ REAL USER SESSION STORED');
-        console.log('Stored user_id:', localStorage.getItem('authenticated_user_id'));
+        console.log('✅ REAL USER SESSION CREATED');
         
         toast.success(`ברוך הבא ${existingProfile.first_name}!`, { duration: 2000 });
         
-        console.log('🚀 REDIRECTING TO HOMEPAGE IMMEDIATELY');
+        console.log('🚀 REDIRECTING TO HOMEPAGE');
         
-        // Immediate redirect (no delay)
-        window.location.href = '/';
+        // Redirect after a short delay to ensure auth state updates
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       } else {
         // NEW USER - Go to profile creation
         console.log('🟢 NEW USER - Going to profile completion');
