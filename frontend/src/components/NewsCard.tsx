@@ -191,5 +191,4 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
       <p>ID: {news.id}</p>
     </article>
   );
-  );
 }
