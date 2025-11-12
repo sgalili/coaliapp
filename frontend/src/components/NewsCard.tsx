@@ -51,6 +51,8 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   const [localPollOptions, setLocalPollOptions] = useState(news.poll_options);
   const [localTotalVotes, setLocalTotalVotes] = useState(news.total_votes || 0);
   const [manuallyOpened, setManuallyOpened] = useState(false);
+  // FIXED: Mettre demoExperts dans state pour éviter re-calcul à chaque render
+  const [demoExperts] = useState(() => expertProfiles.slice(0, Math.floor(Math.random() * 5) + 3));
 
   // Check if current user is expert in this category
   const isExpertInCategory = () => {
@@ -60,9 +62,6 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
       exp.toLowerCase() === news.category.toLowerCase()
     );
   };
-
-  // Get demo expert avatars (for Phase 1)
-  const demoExperts = expertProfiles.slice(0, Math.floor(Math.random() * 5) + 3);
 
   // Debug: Log when poll options change
   useEffect(() => {
