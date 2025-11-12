@@ -124,29 +124,62 @@ export default function NewsDetailPage() {
         {/* Article Content */}
         <div className="px-4 py-6">
           {/* Category Badge */}
-          <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium mb-3">
-            {newsArticle.category}
-          </span>
+          <div className="mb-3">
+            <span className="inline-block text-sm text-primary font-medium">
+              {newsArticle.categoryLabel || newsArticle.category}
+            </span>
+          </div>
+
+          {/* Meta Info - Time and Source */}
+          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
+            <span>לפני {Math.floor(Math.random() * 12) + 1} שעות</span>
+          </div>
+
+          <div className="mb-4">
+            <span className="text-sm text-muted-foreground">{newsArticle.source || 'חדשות 12'}</span>
+          </div>
 
           {/* Headline */}
-          <h1 className="text-3xl font-bold text-foreground mb-4 leading-tight">
+          <h1 className="text-2xl font-bold text-foreground mb-4 leading-tight">
             {newsArticle.title}
           </h1>
 
-          {/* Meta Info */}
-          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-6">
-            <span>{newsArticle.source}</span>
-            <span>•</span>
-            <span>{new Date(newsArticle.published_at).toLocaleDateString('he-IL')}</span>
-          </div>
+          {/* Subtitle/Summary if available */}
+          {newsArticle.description && (
+            <p className="text-base text-muted-foreground mb-6 leading-relaxed">
+              {newsArticle.description}
+            </p>
+          )}
 
           {/* Article Body */}
           <div className="prose prose-lg max-w-none">
-            {newsArticle.content.split('\n\n').map((paragraph: string, idx: number) => (
-              <p key={idx} className="text-foreground leading-relaxed mb-4 text-lg">
-                {paragraph}
-              </p>
-            ))}
+            {newsArticle.content.split('\n').map((line: string, idx: number) => {
+              // Handle bullet points
+              if (line.trim().startsWith('-')) {
+                return (
+                  <li key={idx} className="text-foreground leading-relaxed mb-2 text-base mr-4">
+                    {line.trim().substring(1).trim()}
+                  </li>
+                );
+              }
+              // Handle headings
+              if (line.trim().startsWith('###')) {
+                return (
+                  <h3 key={idx} className="text-xl font-bold text-foreground mt-6 mb-3">
+                    {line.trim().substring(3).trim()}
+                  </h3>
+                );
+              }
+              // Regular paragraphs
+              if (line.trim()) {
+                return (
+                  <p key={idx} className="text-foreground leading-relaxed mb-4 text-base">
+                    {line.trim()}
+                  </p>
+                );
+              }
+              return null;
+            })}
           </div>
 
           {/* Engagement Bar */}
