@@ -95,8 +95,14 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   };
 
   const handleVote = async (optionId: string) => {
-    if (isVoting) return;
+    console.log('🎯 handleVote CALLED!', optionId);
     
+    if (isVoting) {
+      console.log('⏳ Already voting, returning...');
+      return;
+    }
+    
+    console.log('✅ Starting vote process...');
     setIsVoting(true);
     setSelectedOption(optionId);
     
