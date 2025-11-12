@@ -102,9 +102,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     
     try {
       const userId = getUserId();
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      const BACKEND_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || '/api';
       
-      const response = await fetch(`${BACKEND_URL}/api/news/vote`, {
+      console.log('🔗 Backend URL:', BACKEND_URL);
+      console.log('🔗 Voting for news:', news.id, 'option:', optionId, 'user:', userId);
+      
+      const response = await fetch(`${BACKEND_URL}/news/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
