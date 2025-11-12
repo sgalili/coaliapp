@@ -3,7 +3,8 @@ import logging
 from typing import List, Optional
 from datetime import datetime
 from openai import OpenAI
-from models.news import NewsArticle, NewsCategory, NewsSearchResponse
+from models.news import NewsArticle, NewsCategory, NewsSearchResponse, PollOption, ExpertComment
+from services.news_db_service import NewsDBService
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,15 @@ class NewsService:
         NewsCategory.CULTURE: "חדשות תרבות ואומנות ישראל",
     }
     
+    CATEGORY_LABELS = {
+        NewsCategory.POLITICS: "פוליטיקה",
+        NewsCategory.TECHNOLOGY: "טכנולוגיה",
+        NewsCategory.ECONOMY: "כלכלה",
+        NewsCategory.SOCIETY: "חברה",
+        NewsCategory.HEALTH: "בריאות",
+        NewsCategory.CULTURE: "תרבות",
+    }
+    
     def __init__(self, api_key: str):
         """Initialize news service with Perplexity API key."""
         self.client = OpenAI(
@@ -26,6 +36,7 @@ class NewsService:
             base_url="https://api.perplexity.ai"
         )
         self.logger = logger
+        self.db_service = NewsDBService()
     
     async def fetch_news_by_category(
         self,
