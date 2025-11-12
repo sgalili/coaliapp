@@ -15,7 +15,48 @@ export const useAuth = () => {
 
   useEffect(() => {
     console.log('useAuth useEffect running');
-    // Set up auth state listener FIRST
+    
+    // FIRST: Check localStorage for authenticated user
+    const storedUserId = localStorage.getItem('authenticated_user_id');
+    const storedProfile = localStorage.getItem('authenticated_user_profile');
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    
+    if (storedUserId && isAuthenticated && storedUserId !== 'demo-user') {
+      console.log('✅ Found authenticated user in localStorage:', storedUserId);
+      
+      // Create a mock user object for compatibility
+      const mockUser = {
+        id: storedUserId,
+        email: `${storedUserId}@coali.app`,
+        phone: localStorage.getItem('authenticated_user_phone'),
+        user_metadata: {},
+        app_metadata: {},
+        aud: 'authenticated',
+        created_at: new Date().toISOString(),
+      };
+      
+      setUser(mockUser as any);
+      
+      // Load profile
+      if (storedProfile) {
+        try {
+          const profileData = JSON.parse(storedProfile);
+          setProfile(profileData);
+          console.log('✅ Profile loaded from localStorage');
+        } catch (e) {
+          console.error('Error parsing stored profile:', e);
+          fetchProfile(storedUserId);
+        }
+      } else {
+        fetchProfile(storedUserId);
+      }
+      
+      setLoading(false);
+      setInitializing(false);
+      return;
+    }
+    
+    // SECOND: Set up Supabase auth state listener for other auth methods
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.id);
@@ -40,7 +81,7 @@ export const useAuth = () => {
       }
     );
 
-    // THEN check for existing session
+    // THIRD: Check for existing Supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
