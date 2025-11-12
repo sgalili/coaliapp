@@ -28,19 +28,16 @@ interface NewsCardProps {
   userProfile?: any;
 }
 
-const expertProfiles = [
-  '/assets/yaakov-profile-B9QmZK8h.jpg',
-  '/assets/sarah-profile-_yeQYYpH.jpg',
-  '/assets/david-profile-RItxnDNA.jpg',
-  '/assets/netanyahu-profile-C6yQFuUl.jpg',
-  '/assets/noa-profile-Dw6oQwrQ.jpg',
-  '/assets/warren-buffett-profile-Bfn-yren.jpg',
-  '/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
-  '/assets/yaron-profile-DuwqrcEK.jpg',
-  '/assets/maya-profile-BXPf8jtn.jpg',
+// Demo users from database (matching WalletPage structure)
+const demoExpertUsers = [
+  { id: '1', name: 'נועה רותם', avatar: 'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg' },
+  { id: '2', name: 'דוד לוי', avatar: 'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg' },
+  { id: '3', name: 'רחל כהן', avatar: 'https://trust.coali.app/assets/rachel-profile-w3gZXC9S.jpg' },
+  { id: '4', name: 'אמית ברק', avatar: 'https://trust.coali.app/assets/amit-profile-CprpaaC6.jpg' },
+  { id: '5', name: 'מיכל שמיר', avatar: 'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg' },
+  { id: '6', name: 'יוסי בן-דוד', avatar: 'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg' },
+  { id: '7', name: 'תמר פרץ', avatar: 'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg' },
 ];
-
-const expertNames = ['יעקב אליעזרוב', 'שרה כהן', 'דוד לוי', 'בנימין נתניהו', 'נועה קירל', 'וורן באפט', 'ירון זלכה', 'ירון לונדון', 'מאיה רוזמן'];
 
 export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   const navigate = useNavigate();
