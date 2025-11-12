@@ -108,11 +108,11 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     
     try {
       const userId = getUserId();
-      // Use the correct Vite env variable
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
+      // Always use /api path (Kubernetes ingress routes to backend)
+      const BACKEND_URL = '/api';
       
       console.log('🔗 Backend URL:', BACKEND_URL);
-      console.log('🔗 Full URL will be:', `${BACKEND_URL}/news/vote`);
+      console.log('🔗 Full vote URL:', `${BACKEND_URL}/news/vote`);
       console.log('🔗 Voting for news:', news.id, 'option:', optionId, 'user:', userId);
       
       const response = await fetch(`${BACKEND_URL}/news/vote`, {
