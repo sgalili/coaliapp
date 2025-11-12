@@ -264,15 +264,15 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
               {/* Scrollable expert list */}
               <div className="overflow-x-auto pl-16 scrollbar-hide" dir="rtl">
                 <div className="flex gap-1 pt-1">
-                  {demoExperts.map((expertAvatar, idx) => (
+                  {demoExperts.map((expert) => (
                     <button
-                      key={idx}
+                      key={expert.id}
                       className="relative flex-shrink-0"
-                      onClick={() => console.log('Open expert video:', idx)}
+                      onClick={() => console.log('Open expert video:', expert.name)}
                     >
                       <img
-                        src={expertAvatar}
-                        alt={expertNames[idx % expertNames.length]}
+                        src={expert.avatar}
+                        alt={expert.name}
                         className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-110 transition-transform"
                       />
                     </button>
