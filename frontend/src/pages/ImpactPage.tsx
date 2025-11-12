@@ -70,7 +70,8 @@ export default function ImpactPage() {
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (selectedCategory !== 'הכל') {
+      // Filter by category if not "הכל"
+      if (selectedCategory && selectedCategory !== 'הכל') {
         query = query.eq('category', selectedCategory);
       }
 
