@@ -71,3 +71,50 @@ async def get_categories():
             for cat in NewsCategory
         ]
     }
+
+@router.post("/vote")
+async def vote_on_news(vote: VoteRequest = Body(...)):
+    """Vote on a news poll option."""
+    try:
+        result = await news_service.add_vote(
+            news_id=vote.news_id,
+            option_id=vote.option_id,
+            user_id=vote.user_id
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error voting: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to record vote")
+
+@router.post("/comment")
+async def add_expert_comment(comment: CommentRequest = Body(...)):
+    """Add expert video comment to news."""
+    try:
+        result = await news_service.add_expert_comment(
+            news_id=comment.news_id,
+            user_id=comment.user_id,
+            user_name=comment.user_name,
+            user_avatar=comment.user_avatar,
+            video_url=comment.video_url,
+            trust_score=comment.trust_score
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error adding comment: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to add comment")
+
+@router.get("/{news_id}")
+async def get_news_by_id(news_id: str):
+    """Get a single news article by ID."""
+    try:
+        article = await news_service.get_news_by_id(news_id)
+        if not article:
+            raise HTTPException(status_code=404, detail="News not found")
+        return article
+    except Exception as e:
+        logger.error(f"Error fetching news by ID: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch news")
