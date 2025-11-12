@@ -1,313 +1,346 @@
-import { useState } from "react";
-import { ImpactItemComponent } from "@/components/ImpactItem";
-import { ImpactFilters } from "@/components/ImpactFilters";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
+import { ChannelSelector } from "@/components/ChannelSelector";
+import { CategoryDropdown } from "@/components/CategoryDropdown";
+import { NewsCard } from "@/components/NewsCard";
+import { Search, Bell } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useChannel } from "@/contexts/ChannelContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
-// Import profile images for mock data
-import sarahProfile from "@/assets/sarah-profile.jpg";
-import davidProfile from "@/assets/david-profile.jpg";
-import mayaProfile from "@/assets/maya-profile.jpg";
-import amitProfile from "@/assets/amit-profile.jpg";
-import rachelProfile from "@/assets/rachel-profile.jpg";
-import netanyahuProfile from "@/assets/netanyahu-profile.jpg";
-import noaProfile from "@/assets/noa-profile.jpg";
-import warrenProfile from "@/assets/warren-buffett-profile.jpg";
-import yaronProfile from "@/assets/yaron-profile.jpg";
-import yaronZelekhaProfile from "@/assets/yaron-zelekha-profile.jpg";
-import yaakovProfile from "@/assets/yaakov-profile.jpg";
-
-// Mock impact data
-const mockImpacts = [
-  {
-    id: "impact-1",
-    type: "decision" as const,
-    title: "תמך בהצעת תקציב החינוך - השפיע על 234 משתמשים",
-    description: "החלטה קריטית שעזרה למאות משתמשים להבין את ההשלכות של תקציב החינוך החדש והשפעתו על העתיד",
-    thumbnail: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    category: "פוליטיקה",
-    source: "Coali Trust Network",
-    impactValue: 2340,
-    delegatedVotes: 234,
-    totalVotes: 1500,
-    outcome: "אושרה",
-    comments: [
-      {
-        id: "comment-1",
-        userId: "1",
-        username: "דוד לוי",
-        userImage: davidProfile,
-        videoUrl: "mock-video-1",
-        duration: 45,
-        likes: 234,
-        replies: 45,
-        trustLevel: 2340,
-        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const
-      },
-      {
-        id: "comment-2",
-        userId: "2",
-        username: "שרה כהן",
-        userImage: sarahProfile,
-        videoUrl: "mock-video-2",
-        duration: 32,
-        likes: 156,
-        replies: 28,
-        trustLevel: 1890,
-        timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 2 as const
-      },
-      {
-        id: "comment-3",
-        userId: "3",
-        username: "בנימין נתניהו",
-        userImage: netanyahuProfile,
-        videoUrl: "mock-video-3",
-        duration: 58,
-        likes: 567,
-        replies: 89,
-        trustLevel: 4560,
-        timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const
-      },
-      {
-        id: "comment-4",
-        userId: "4",
-        username: "ירון זליכה",
-        userImage: yaronZelekhaProfile,
-        videoUrl: "mock-video-4",
-        duration: 41,
-        likes: 289,
-        replies: 52,
-        trustLevel: 3120,
-        timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 3 as const
-      },
-      {
-        id: "comment-5",
-        userId: "5",
-        username: "יעקב אליעזרוב",
-        userImage: yaakovProfile,
-        videoUrl: "mock-video-5",
-        duration: 35,
-        likes: 178,
-        replies: 31,
-        trustLevel: 2450,
-        timestamp: new Date(Date.now() - 120 * 60 * 1000).toISOString(),
-        category: "פוליטיקה",
-        kycLevel: 2 as const
-      }
-    ]
-  },
-  {
-    id: "impact-2",
-    type: "trust" as const,
-    title: "קיבל אמון מ-45 משתמשים חדשים בתחום הכלכלה",
-    description: "הפך למומחה מהימן בתחום הכלכלה והשקעות, משתמשים רבים מאצילים לו כוח הצבעה בנושאים כלכליים",
-    thumbnail: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    category: "כלכלה",
-    source: "Coali Trust Network",
-    impactValue: 2250,
-    comments: [
-      {
-        id: "comment-6",
-        userId: "6",
-        username: "וורן באפט",
-        userImage: warrenProfile,
-        videoUrl: "mock-video-6",
-        duration: 52,
-        likes: 892,
-        replies: 134,
-        trustLevel: 8920,
-        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה",
-        kycLevel: 3 as const
-      },
-      {
-        id: "comment-7",
-        userId: "7",
-        username: "ירון לונדון",
-        userImage: yaronProfile,
-        videoUrl: "mock-video-7",
-        duration: 38,
-        likes: 445,
-        replies: 67,
-        trustLevel: 4230,
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה",
-        kycLevel: 3 as const
-      },
-      {
-        id: "comment-8",
-        userId: "8",
-        username: "רחל גולד",
-        userImage: rachelProfile,
-        videoUrl: "mock-video-8",
-        duration: 29,
-        likes: 234,
-        replies: 41,
-        trustLevel: 2890,
-        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        category: "כלכלה",
-        kycLevel: 2 as const
-      }
-    ]
-  },
-  {
-    id: "impact-3",
-    type: "vote" as const,
-    title: "השפיע על 120 קולות בהצבעה על מיסוי הייטק",
-    description: "דעתו המקצועית שינתה את תוצאות ההצבעה והשפיעה על החלטה קריטית בנושא מיסוי חברות הייטק",
-    thumbnail: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    category: "טכנולוגיה",
-    source: "Coali Trust Network",
-    impactValue: 600,
-    delegatedVotes: 120,
-    totalVotes: 450,
-    outcome: "השפעה גבוהה",
-    comments: [
-      {
-        id: "comment-9",
-        userId: "9",
-        username: "מיה רוזן",
-        userImage: mayaProfile,
-        videoUrl: "mock-video-9",
-        duration: 31,
-        likes: 123,
-        replies: 19,
-        trustLevel: 1560,
-        timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-        category: "טכנולוגיה",
-        kycLevel: 2 as const
-      },
-      {
-        id: "comment-10",
-        userId: "10",
-        username: "עמית שטיין",
-        userImage: amitProfile,
-        videoUrl: "mock-video-10",
-        duration: 27,
-        likes: 98,
-        replies: 15,
-        trustLevel: 1120,
-        timestamp: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
-        category: "טכנולוגיה",
-        kycLevel: 1 as const
-      }
-    ]
-  },
-  {
-    id: "impact-4",
-    type: "achievement" as const,
-    title: "הגיע ל-1000 עוקבים והפך למומחה בעל השפעה",
-    description: "השיג ציון אמון גבוה והפך לאחד המומחים המשפיעים ביותר בתחום הבריאות והתזונה",
-    thumbnail: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    category: "בריאות",
-    source: "Coali Trust Network",
-    impactValue: 500,
-    outcome: "הישג חדש",
-    comments: [
-      {
-        id: "comment-11",
-        userId: "11",
-        username: "נועה קירל",
-        userImage: noaProfile,
-        videoUrl: "mock-video-11",
-        duration: 24,
-        likes: 567,
-        replies: 78,
-        trustLevel: 3450,
-        timestamp: new Date(Date.now() - 40 * 60 * 60 * 1000).toISOString(),
-        category: "בריאות",
-        kycLevel: 2 as const
-      }
-    ]
-  },
-  {
-    id: "impact-5",
-    type: "decision" as const,
-    title: "תמך ברפורמת תחבורה - עזר ל-180 משתמשים להחליט",
-    description: "עזר למשתמשים רבים להבין את ההשלכות של רפורמת התחבורה הציבורית ולקבל החלטה מושכלת",
-    thumbnail: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop",
-    publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    category: "תחבורה",
-    source: "Coali Trust Network",
-    impactValue: 1800,
-    delegatedVotes: 180,
-    totalVotes: 890,
-    outcome: "נדחתה",
-    comments: []
-  }
+const categories = [
+  { id: 'all', label: 'הכל', apiValue: null },
+  { id: 'politics', label: 'פוליטיקה', apiValue: 'politics' },
+  { id: 'technology', label: 'טכנולוגיה', apiValue: 'technology' },
+  { id: 'economy', label: 'כלכלה', apiValue: 'economy' },
+  { id: 'society', label: 'חברה', apiValue: 'society' },
+  { id: 'health', label: 'בריאות', apiValue: 'health' },
+  { id: 'culture', label: 'תרבות', apiValue: 'culture' },
 ];
 
-const ImpactPage = () => {
-  const [activeFilter, setActiveFilter] = useState("all");
-  const { toast } = useToast();
+const expertProfiles = [
+  'https://trust.coali.app/assets/yaakov-profile-B9QmZK8h.jpg',
+  'https://trust.coali.app/assets/sarah-profile-_yeQYYpH.jpg',
+  'https://trust.coali.app/assets/david-profile-RItxnDNA.jpg',
+  'https://trust.coali.app/assets/netanyahu-profile-C6yQFuUl.jpg',
+  'https://trust.coali.app/assets/noa-profile-Dw6oQwrQ.jpg',
+  'https://trust.coali.app/assets/warren-buffett-profile-Bfn-yren.jpg',
+  'https://trust.coali.app/assets/yaron-zelekha-profile-0jVRyAhY.jpg',
+  'https://trust.coali.app/assets/yaron-profile-DuwqrcEK.jpg',
+  'https://trust.coali.app/assets/maya-profile-BXPf8jtn.jpg',
+];
 
-  const getFilteredImpacts = () => {
-    if (activeFilter === "all") return mockImpacts;
+const expertNames = ['יעקב אליעזרוב', 'שרה כהן', 'דוד לוי', 'בנימין נתניהו', 'נועה קירל', 'וורן באפט', 'ירון זלכה', 'ירון לונדון', 'מאיה רוזמן'];
+
+const placeholderNewsData = [
+  {
+    id: 'placeholder-1',
+    title: 'ההייטק הישראלי שבר שיאים בהשקעות ואקזיטים ב-2025',
+    content: 'בשנת 2025 שבר ההייטק הישראלי שיאים בהיקף ההשקעות והאקזיטים, כאשר תחום הסייבר מוביל עם כ-30% מההשקעות.',
+    category: 'technology',
+    categoryLabel: 'טכנולוגיה',
+    source: 'כלכליסט',
+    image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 5),
+    poll_options: [
+      { id: "1", label: "תומך", votes: 67, voter_ids: [] },
+      { id: "2", label: "מתנגד", votes: 20, voter_ids: [] },
+      { id: "3", label: "צריך שינויים", votes: 10, voter_ids: [] },
+      { id: "4", label: "לא בטוח", votes: 3, voter_ids: [] },
+    ],
+    total_votes: 100,
+  },
+  {
+    id: 'placeholder-2',
+    title: 'הכנסת אישרה את חוק השידור החדש - מה זה אומר על עתיד התקשורת?',
+    content: 'הכנסת אישרה את חוק השידור החדש בקריאה שנייה ושלישית. השינויים החדשים צפויים להשפיע על עתיד התקשורת בישראל.',
+    category: 'politics',
+    categoryLabel: 'פוליטיקה',
+    source: 'חדשות 13',
+    image: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 7),
+    poll_options: [
+      { id: "1", label: "תומך", votes: 45, voter_ids: [] },
+      { id: "2", label: "מתנגד", votes: 35, voter_ids: [] },
+      { id: "3", label: "צריך שינויים", votes: 15, voter_ids: [] },
+      { id: "4", label: "לא בטוח", votes: 5, voter_ids: [] },
+    ],
+    total_votes: 100,
+  },
+  {
+    id: 'placeholder-3',
+    title: 'עליה חדה במחירי הדיור - מה הפתרונות האפשריים?',
+    content: 'מחירי הדיור בישראל ממשיכים לעלות. המומחים דנים בפתרונות אפשריים למשבר.',
+    category: 'economy',
+    categoryLabel: 'כלכלה',
+    source: 'גלובס',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 4),
+    poll_options: [
+      { id: "1", label: "בנייה ממשלתית", votes: 50, voter_ids: [] },
+      { id: "2", label: "הקלות מס", votes: 25, voter_ids: [] },
+      { id: "3", label: "שילוב פתרונות", votes: 20, voter_ids: [] },
+      { id: "4", label: "לא בטוח", votes: 5, voter_ids: [] },
+    ],
+    total_votes: 100,
+  },
+  {
+    id: 'placeholder-4',
+    title: 'מחקר חדש בתחום הבריאות מגלה דרכים לשיפור איכות החיים',
+    content: 'מחקר חדש שפורסם היום מראה כי שינויים פשוטים בהרגלי התזונה יכולים להוביל לשיפור משמעותי בבריאות.',
+    category: 'health',
+    categoryLabel: 'בריאות',
+    source: 'הארץ',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop',
+    experts: expertProfiles.slice(0, 3),
+    poll_options: [
+      { id: "1", label: "מעניין", votes: 60, voter_ids: [] },
+      { id: "2", label: "חשוב", votes: 30, voter_ids: [] },
+      { id: "3", label: "אחר", votes: 10, voter_ids: [] },
+    ],
+    total_votes: 100,
+  },
+];
+
+export default function ImpactPage() {
+  const navigate = useNavigate();
+  const { user, profile } = useAuth();
+  const { selectedChannel, setSelectedChannel, availableChannels, selectedCategory, setSelectedCategory, showChannelIndicator, setShowChannelIndicator } = useChannel();
+  const [newsArticles, setNewsArticles] = useState<any[]>(placeholderNewsData);
+  const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(3); // Demo count
+
+  useEffect(() => {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'he');
+  }, []);
+
+  // Fetch news when channel changes
+  useEffect(() => {
+    fetchRealNews();
+  }, [selectedChannel.id]);
+
+  const refreshNews = async () => {
+    if (isRefreshing) return;
     
-    if (activeFilter === "trending") {
-      // Show impacts with most trusted comments
-      return [...mockImpacts].sort((a, b) => {
-        const aTrustSum = a.comments.reduce((sum, comment) => sum + comment.trustLevel, 0);
-        const bTrustSum = b.comments.reduce((sum, comment) => sum + comment.trustLevel, 0);
-        return bTrustSum - aTrustSum;
-      });
+    setIsRefreshing(true);
+    try {
+      const BACKEND_URL = '/api';
+      
+      if (selectedCategory !== 'הכל') {
+        // Find the API value for selected category
+        const cat = categories.find(c => c.label === selectedCategory);
+        if (cat?.apiValue) {
+          const url = `${BACKEND_URL}/news/by-category/${cat.apiValue}?max_results=5`;
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.articles && data.articles.length > 0) {
+            const newArticles = data.articles.map((article: any) => {
+              let imageUrl = '';
+              let cleanContent = article.content;
+              if (article.content.startsWith('IMAGE_URL:')) {
+                const parts = article.content.split('\n\n');
+                imageUrl = parts[0].replace('IMAGE_URL:', '');
+                cleanContent = parts.slice(1).join('\n\n');
+              }
+              
+              return {
+                ...article,
+                id: `${article.id}_refresh_${Date.now()}`, // Unique ID for refresh
+                content: cleanContent,
+                categoryLabel: cat.label,
+                image: imageUrl || `https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop`,
+                experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
+              };
+            });
+            
+            // Prepend new articles to top
+            setNewsArticles(prev => [...newArticles, ...prev]);
+          }
+        }
+      } else {
+        // Refresh all categories
+        fetchRealNews();
+      }
+    } catch (error) {
+      console.error('Error refreshing news:', error);
+    } finally {
+      setIsRefreshing(false);
     }
-
-    return mockImpacts.filter(impact => impact.type === activeFilter);
   };
 
-  const handleImpactClick = (impactId: string) => {
-    toast({
-      title: "פותח אירוע השפעה",
-      description: "מעבר לפרטי האירוע המלא...",
-    });
+  const fetchRealNews = async () => {
+    setLoading(true);
+    try {
+      const BACKEND_URL = '/api';
+      const allNews: any[] = [];
+      
+      // Fetch from all categories
+      for (const cat of categories) {
+        if (cat.apiValue) {
+          try {
+            const url = `${BACKEND_URL}/news/by-category/${cat.apiValue}?max_results=5`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.articles && data.articles.length > 0) {
+              allNews.push(...data.articles.map((article: any) => {
+                // Extract image URL from content
+                let imageUrl = '';
+                let cleanContent = article.content;
+                if (article.content.startsWith('IMAGE_URL:')) {
+                  const parts = article.content.split('\n\n');
+                  imageUrl = parts[0].replace('IMAGE_URL:', '');
+                  cleanContent = parts.slice(1).join('\n\n');
+                }
+                
+                return {
+                  ...article,
+                  content: cleanContent,
+                  categoryLabel: cat.label,
+                  image: imageUrl || `https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop`,
+                  experts: expertProfiles.slice(0, Math.floor(Math.random() * 7) + 3),
+                };
+              }));
+            }
+          } catch (err) {
+            console.error(`Error fetching ${cat.apiValue}:`, err);
+          }
+        }
+      }
+      
+      if (allNews.length > 0) {
+        setNewsArticles(allNews);
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleProfileClick = (impactId: string, comment: any) => {
-    toast({
-      title: "מפעיל תגובת וידאו",
-      description: `מפעיל את התגובה של ${comment.username}`,
-    });
-  };
+  // Filter news by selected category
+  const filteredNews = selectedCategory === 'הכל' 
+    ? newsArticles 
+    : newsArticles.filter(news => news.categoryLabel === selectedCategory || news.category === selectedCategory);
+
+  console.log('📰 ImpactPage render - newsArticles:', newsArticles.length);
+  console.log('📰 filteredNews:', filteredNews.length);
+  console.log('📰 loading:', loading);
+  console.log('📰 selectedCategory:', selectedCategory);
 
   return (
-    <div className="h-screen bg-slate-100 overflow-hidden">
-      {/* Filters */}
-      <ImpactFilters 
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
-
-      {/* Impact Feed */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4 pb-20">
-          {getFilteredImpacts().map((impactItem) => (
-            <ImpactItemComponent
-              key={impactItem.id}
-              item={impactItem}
-              onImpactClick={handleImpactClick}
-              onProfileClick={handleProfileClick}
+    <div className="min-h-screen bg-background pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-background border-b border-border">
+        <div className="px-4 py-3 flex items-center justify-between">
+          {/* Right - Channel Selector (same layout as homepage) */}
+          <div className="flex items-center gap-2">
+            <ChannelSelector />
+          </div>
+          
+          {/* Center - Category Dropdown (TikTok Style) */}
+          <div className="category-dropdown-dark">
+            <CategoryDropdown
+              categories={selectedChannel.categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
             />
-          ))}
+          </div>
+          
+          {/* Left - Search, Bell & Refresh Icons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={refreshNews}
+              disabled={isRefreshing}
+              className="p-2 hover:bg-muted rounded-full transition-colors disabled:opacity-50"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={cn("text-muted-foreground", isRefreshing && "animate-spin")}
+              >
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+              </svg>
+            </button>
+            <button className="p-2 hover:bg-muted rounded-full transition-colors">
+              <Search className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <button
+              onClick={() => navigate('/notifications')}
+              className="p-2 hover:bg-muted rounded-full transition-colors relative"
+            >
+              <Bell className="w-5 h-5 text-muted-foreground" />
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-[1px] right-[17px] min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <Navigation />
+      {/* Loading State */}
+      {loading && (
+        <div className="max-w-2xl mx-auto p-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="mb-4 animate-pulse">
+              <div className="w-full aspect-[2/1] bg-muted rounded-lg mb-3" />
+              <div className="h-6 bg-muted rounded mb-2 w-3/4" />
+              <div className="h-4 bg-muted rounded w-1/4" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div className="max-w-2xl mx-auto p-8 text-center">
+          <p className="text-lg">טוען חדשות...</p>
+        </div>
+      )}
+
+      {/* News Feed */}
+      {!loading && filteredNews.length > 0 && (
+        <div className="max-w-2xl mx-auto px-4">
+          <p className="text-sm text-muted-foreground mb-4">מציג {filteredNews.length} חדשות</p>
+          {filteredNews.map((news) => (
+            <NewsCard
+              key={news.id}
+              news={news}
+              currentUser={user}
+              userProfile={profile}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && filteredNews.length === 0 && (
+        <div className="max-w-2xl mx-auto p-8 text-center">
+          <p className="text-muted-foreground">אין חדשות בקטגוריה {selectedCategory}</p>
+          <button
+            onClick={() => setSelectedCategory('הכל')}
+            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg"
+          >
+            הצג את כל החדשות
+          </button>
+        </div>
+      )}
+
+      <Navigation zoozBalance={999} />
     </div>
   );
-};
-
-export default ImpactPage;
+}
