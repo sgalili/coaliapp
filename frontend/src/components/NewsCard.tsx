@@ -183,19 +183,26 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
 
   console.log('🎴 About to render JSX for:', news.id);
 
+  // TEMPORARY: Minimal render for testing
+  return (
+    <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 p-4">
+      <h3 className="text-lg font-bold">{news.title}</h3>
+      <p>Category: {news.categoryLabel || news.category}</p>
+      <p>ID: {news.id}</p>
+    </article>
+  );
+
+  /* FULL VERSION - Temporarily commented
   return (
     <article className="bg-white shadow-lg rounded-b-xl overflow-hidden mb-4 transition-shadow">
-      {/* News Header with Image and Title */}
       <div className="px-2 py-5">
         <div className="flex gap-3 cursor-pointer" onClick={() => navigate(`/news/${news.id}`)}>
-          {/* Image on right (first in RTL) */}
           <img
             src={news.image || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=300&h=200&fit=crop'}
             alt={news.title || 'News'}
             className="w-24 h-18 rounded-md object-cover flex-shrink-0"
           />
           
-          {/* Title and category on left */}
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-2">
               {news.title || 'כותרת'}
