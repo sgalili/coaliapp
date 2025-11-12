@@ -114,25 +114,30 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
       if (response.ok) {
         const data = await response.json();
         
+        console.log('📊 Vote response:', data);
+        
         // Update local state with new vote data
         if (data.poll_options) {
+          console.log('✅ Updating poll options:', data.poll_options);
           setLocalPollOptions(data.poll_options);
           setLocalTotalVotes(data.total_votes || 0);
         }
         
         console.log('✅ Vote saved successfully');
       } else {
-        console.error('❌ Failed to save vote');
+        console.error('❌ Failed to save vote:', await response.text());
       }
     } catch (error) {
       console.error('❌ Error voting:', error);
     } finally {
       setIsVoting(false);
       
-      // Close poll after 500ms
-      setTimeout(() => {
-        setPollExpanded(false);
-      }, 500);
+      // Close poll after 3.5 seconds (only if not manually opened)
+      if (!manuallyOpened) {
+        setTimeout(() => {
+          setPollExpanded(false);
+        }, 3500);
+      }
     }
   };
 
