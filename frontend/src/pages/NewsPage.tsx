@@ -341,30 +341,35 @@ export default function NewsPage() {
         <div className="max-w-2xl mx-auto">
           {filteredNews.map((news) => (
             <div key={news.id} className="mb-4">
-              {/* Clickable image */}
-              <button
-                onClick={() => navigate(`/news/${news.id}`)}
-                className="w-full"
-              >
-                <img
-                  src={news.image}
-                  alt={news.title}
-                  className="w-full aspect-[2/1] object-cover hover:opacity-95 transition-opacity"
-                />
-              </button>
+              {/* News item with image on right, title and category on left */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                {/* Left side - Title and Category */}
+                <div className="flex-1 min-w-0">
+                  <button
+                    onClick={() => navigate(`/news/${news.id}`)}
+                    className="w-full text-right"
+                  >
+                    <h3 className="text-lg font-bold text-foreground mb-1.5 leading-tight hover:text-primary transition-colors line-clamp-3">
+                      {news.title}
+                    </h3>
+                  </button>
+                  <p className="text-sm text-muted-foreground">{news.categoryLabel || news.category}</p>
+                </div>
 
-              <div className="px-4 py-4">
-                {/* Clickable headline */}
+                {/* Right side - Smaller Image */}
                 <button
                   onClick={() => navigate(`/news/${news.id}`)}
-                  className="w-full text-right"
+                  className="flex-shrink-0"
                 >
-                  <h3 className="text-xl font-bold text-foreground mb-2 leading-tight hover:text-primary transition-colors">
-                    {news.title}
-                  </h3>
+                  <img
+                    src={news.image}
+                    alt={news.title}
+                    className="w-[120px] h-[120px] object-cover rounded-lg hover:opacity-95 transition-opacity"
+                  />
                 </button>
+              </div>
 
-                <p className="text-sm text-muted-foreground mb-4">{news.categoryLabel || news.category}</p>
+              <div className="px-4 pb-4">
 
                 {/* Expert Comments Section - Expandable Accordion */}
                 <div className="mb-4">
