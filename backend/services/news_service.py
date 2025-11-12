@@ -171,8 +171,31 @@ class NewsService:
         """Generate poll options based on news title."""
         # Default poll options in Hebrew
         return [
-            {"id": "1", "label": "תומך", "value": 0},
-            {"id": "2", "label": "מתנגד", "value": 0},
-            {"id": "3", "label": "צריך שינויים", "value": 0},
-            {"id": "4", "label": "לא בטוח", "value": 0},
+            {"id": "1", "label": "תומך", "votes": 0, "voter_ids": []},
+            {"id": "2", "label": "מתנגד", "votes": 0, "voter_ids": []},
+            {"id": "3", "label": "צריך שינויים", "votes": 0, "voter_ids": []},
+            {"id": "4", "label": "לא בטוח", "votes": 0, "voter_ids": []},
         ]
+    
+    async def add_vote(self, news_id: str, option_id: str, user_id: str, channel_id: str = "coali"):
+        """Add vote to news poll."""
+        return await self.db_service.add_vote(news_id, option_id, user_id, channel_id)
+    
+    async def add_expert_comment(
+        self,
+        news_id: str,
+        user_id: str,
+        user_name: str,
+        user_avatar: str,
+        video_url: str,
+        trust_score: int = 0,
+        channel_id: str = "coali"
+    ):
+        """Add expert comment to news."""
+        return await self.db_service.add_expert_comment(
+            news_id, user_id, user_name, user_avatar, video_url, trust_score, channel_id
+        )
+    
+    async def get_news_by_id(self, news_id: str, channel_id: str = "coali"):
+        """Get news by ID from database."""
+        return await self.db_service.get_news_by_id(news_id, channel_id)
