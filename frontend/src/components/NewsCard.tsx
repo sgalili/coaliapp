@@ -48,8 +48,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   const [localPollOptions, setLocalPollOptions] = useState(news.poll_options);
   const [localTotalVotes, setLocalTotalVotes] = useState(news.total_votes || 0);
   const [manuallyOpened, setManuallyOpened] = useState(false);
-  // FIXED: Mettre demoExperts dans state pour éviter re-calcul à chaque render
-  const [demoExperts] = useState(() => expertProfiles.slice(0, Math.floor(Math.random() * 5) + 3));
+  // FIXED: Use real demo users from database, pick random 3-6 experts per news
+  const [demoExperts] = useState(() => {
+    const shuffled = [...demoExpertUsers].sort(() => Math.random() - 0.5);
+    const count = Math.floor(Math.random() * 4) + 3; // 3-6 experts
+    return shuffled.slice(0, count);
+  });
 
   // Check if current user is expert in this category
   const isExpertInCategory = () => {
