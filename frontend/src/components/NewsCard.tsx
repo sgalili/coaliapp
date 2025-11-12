@@ -344,25 +344,37 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
             </div>
           </div>
 
-          {/* Progress bar with top 2 options */}
+          {/* Progress bar with ALL options */}
           <div className="space-y-2">
-            <div className="flex items-center gap-4 text-xs text-muted-foreground mr-2">
-              <span>{topTwo[0]?.percentage || 0}% {topTwo[0]?.label}</span>
-              <span>•</span>
-              <span>{topTwo[1]?.percentage || 0}% {topTwo[1]?.label}</span>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mr-2 flex-wrap">
+              {pollWithPercentages.map((option, index) => (
+                <div key={option.id} className="flex items-center gap-2">
+                  <span className="font-medium">{option.label}</span>
+                  <span className="text-primary font-bold">{option.percentage}%</span>
+                  <span className="text-muted-foreground">({option.votes})</span>
+                  {index < pollWithPercentages.length - 1 && <span>•</span>}
+                </div>
+              ))}
             </div>
-            <div className="relative h-2 bg-muted overflow-hidden">
-              <div
-                className="absolute right-0 top-0 h-full bg-primary transition-all duration-500"
-                style={{ width: `${topTwo[0]?.percentage || 0}%` }}
-              />
-              <div
-                className="absolute top-0 h-full bg-secondary transition-all duration-500"
-                style={{
-                  right: `${topTwo[0]?.percentage || 0}%`,
-                  width: `${topTwo[1]?.percentage || 0}%`
-                }}
-              />
+            <div className="relative h-2 bg-muted overflow-hidden rounded-full">
+              {pollWithPercentages.map((option, index) => {
+                const leftPosition = pollWithPercentages
+                  .slice(0, index)
+                  .reduce((sum, opt) => sum + opt.percentage, 0);
+                
+                const colors = ['bg-primary', 'bg-secondary', 'bg-purple-500', 'bg-amber-500', 'bg-green-500'];
+                
+                return (
+                  <div
+                    key={option.id}
+                    className={`absolute top-0 h-full transition-all duration-500 ${colors[index % colors.length]}`}
+                    style={{
+                      right: `${100 - leftPosition - option.percentage}%`,
+                      width: `${option.percentage}%`
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
