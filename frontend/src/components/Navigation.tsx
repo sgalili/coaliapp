@@ -57,7 +57,7 @@ export const Navigation = ({ zoozBalance = 0, show = true }: NavigationProps) =>
               )}
             >
               <div className="relative">
-                {tab.id === 'news' ? (
+                {tab.id === 'impact' ? (
                   <ImpactIcon 
                     className={cn(
                       "w-6 h-6 transition-colors",
