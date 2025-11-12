@@ -147,6 +147,9 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
           // Force new array to trigger re-render
           setLocalPollOptions([...data.poll_options]);
           setLocalTotalVotes(data.total_votes || 0);
+          
+          // Also save to localStorage for persistence
+          saveVoteToLocalStorage(news.id, data.poll_options, data.total_votes);
         } else {
           console.error('❌ No poll_options in response!');
         }
@@ -156,6 +159,12 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
         const errorText = await response.text();
         console.error('❌ Failed to save vote. Status:', response.status);
         console.error('❌ Error:', errorText);
+        
+        // If API fails (e.g., news not in DB), handle vote locally
+        if (response.status === 404 || response.status === 400) {
+          console.log('📱 Handling vote locally for placeholder news');
+          handleLocalVote(optionId, userId);
+        }
       }
     } catch (error) {
       console.error('❌ Error voting:', error);
