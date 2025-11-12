@@ -69,12 +69,36 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     console.log('🔄 Total votes:', localTotalVotes);
   }, [localPollOptions, localTotalVotes]);
 
-  // Calculate poll percentages from local state
+  // Calculate poll percentages from local state with proper rounding
   const totalVotes = localTotalVotes || localPollOptions.reduce((sum, opt) => sum + opt.votes, 0) || 100;
-  const pollWithPercentages = localPollOptions.map(opt => ({
-    ...opt,
-    percentage: totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0
-  }));
+  const pollWithPercentages = (() => {
+    const percentages = localPollOptions.map(opt => ({
+      ...opt,
+      exactPercentage: totalVotes > 0 ? (opt.votes / totalVotes) * 100 : 0
+    }));
+    
+    // First pass: floor all values
+    const floored = percentages.map(p => ({
+      ...p,
+      percentage: Math.floor(p.exactPercentage),
+      remainder: p.exactPercentage - Math.floor(p.exactPercentage)
+    }));
+    
+    // Calculate how many we need to round up
+    const sum = floored.reduce((s, p) => s + p.percentage, 0);
+    const diff = 100 - sum;
+    
+    // Sort by remainder and round up the top ones
+    if (diff > 0) {
+      const sorted = [...floored].sort((a, b) => b.remainder - a.remainder);
+      for (let i = 0; i < diff; i++) {
+        sorted[i].percentage += 1;
+      }
+      return sorted.map(({ remainder, exactPercentage, ...rest }) => rest);
+    }
+    
+    return floored.map(({ remainder, exactPercentage, ...rest }) => rest);
+  })();
 
   // Get top 2 options for progress bar
   const sortedOptions = [...pollWithPercentages].sort((a, b) => b.votes - a.votes);
