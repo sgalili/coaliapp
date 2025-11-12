@@ -72,12 +72,12 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ onSubmit, isLoading }) =
       }
       
       // 2. Send OTP via backend
-      const backendUrl = 'https://trustflow-4.preview.emergentagent.com';
+      const backendUrl = '/api'; // Use relative path for Kubernetes ingress
       
       console.log('📤 Sending OTP to backend:', backendUrl);
       console.log('📞 Phone number:', fullPhone);
       
-      const response = await fetch(`${backendUrl}/api/otp/send-otp`, {
+      const response = await fetch(`${backendUrl}/otp/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: fullPhone })
