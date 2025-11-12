@@ -1694,6 +1694,15 @@ export default function Index() {
     });
   };
 
+  // CRITICAL: Don't render until we know if it's real user or demo
+  if (initializing) {
+    return (
+      <div className="h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">טוען...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen bg-black overflow-hidden">
       {/* Zooz Flying Coins Animation - Shoots to top-right corner */}
