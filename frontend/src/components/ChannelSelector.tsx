@@ -59,10 +59,10 @@ export const ChannelSelector = ({ onCreateChannel }: { onCreateChannel?: () => v
       const { data, error } = await supabase
         .from('channel_requests')
         .select('*')
-        .eq('user_id', userId);
+        .eq('user_id', currentUserId);
       
       console.log('📊 User channel query:');
-      console.log('  User ID searched:', userId);
+      console.log('  User ID searched:', currentUserId);
       console.log('  Found:', data?.length || 0);
       console.log('  Error:', error);
       console.log('  Raw data:', data);
