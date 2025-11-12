@@ -175,14 +175,14 @@ export default function NewsPage() {
   const fetchRealNews = async () => {
     setLoading(true);
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      const BACKEND_URL = '/api';
       const allNews: any[] = [];
       
       // Fetch from all categories
       for (const cat of categories) {
         if (cat.apiValue) {
           try {
-            const url = `${BACKEND_URL}/api/news/by-category/${cat.apiValue}?max_results=5`;
+            const url = `${BACKEND_URL}/news/by-category/${cat.apiValue}?max_results=5`;
             const response = await fetch(url);
             const data = await response.json();
             
