@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
 from typing import List
 import logging
-from models.news import NewsCategory, NewsSearchResponse
+from datetime import datetime
+from models.news import NewsCategory, NewsSearchResponse, VoteRequest, CommentRequest
 from services.news_service import NewsService
 import os
 
