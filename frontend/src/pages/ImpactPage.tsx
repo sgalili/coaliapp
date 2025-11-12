@@ -123,41 +123,37 @@ export default function ImpactPage() {
   const loadNewsWithVotes = async () => {
     try {
       const BACKEND_URL = '/api';
+      const channelId = selectedChannel.id || 'העם';
       
-      // Fetch latest news data with votes from MongoDB
+      console.log('📡 Loading news with votes from MongoDB...');
+      
+      // First, ensure placeholder news exist in MongoDB
+      await ensurePlaceholderNewsInDB(channelId);
+      
+      // Then fetch latest news data with votes from MongoDB
       const updatedNews = await Promise.all(
         placeholderNewsData.map(async (news) => {
           try {
-            const response = await fetch(`${BACKEND_URL}/news/${news.id}?channel_id=${selectedChannel.id}`);
+            const response = await fetch(`${BACKEND_URL}/news/${news.id}?channel_id=${channelId}`);
             if (response.ok) {
               const data = await response.json();
-              console.log(`✅ Loaded votes for ${news.id}:`, data.poll_options);
+              console.log(`✅ Loaded news ${news.id} from MongoDB:`, data.total_votes, 'votes');
               // Return news with updated votes from database
               return {
                 ...news,
                 poll_options: data.poll_options || news.poll_options,
                 total_votes: data.total_votes || news.total_votes
               };
+            } else {
+              console.log(`⚠️ News ${news.id} not found in MongoDB (${response.status}), saving it...`);
+              // Save to MongoDB if not exists
+              await saveNewsToMongoDB(news, channelId);
+              return news;
             }
           } catch (err) {
-            console.log(`⚠️ No saved data for ${news.id}, using default`);
+            console.log(`⚠️ Error loading ${news.id}:`, err);
+            return news;
           }
-          
-          // Fallback to localStorage if API fails
-          const savedVotes = localStorage.getItem('impact_news_votes');
-          if (savedVotes) {
-            const votesData = JSON.parse(savedVotes);
-            if (votesData[news.id]) {
-              console.log(`📱 Loaded from localStorage for ${news.id}`);
-              return {
-                ...news,
-                poll_options: votesData[news.id].poll_options,
-                total_votes: votesData[news.id].total_votes
-              };
-            }
-          }
-          
-          return news;
         })
       );
       
@@ -167,6 +163,57 @@ export default function ImpactPage() {
       console.error('Error loading news with votes:', error);
       // Fallback to placeholder data
       setNewsArticles(placeholderNewsData);
+    }
+  };
+
+  const ensurePlaceholderNewsInDB = async (channelId: string) => {
+    const BACKEND_URL = '/api';
+    
+    for (const news of placeholderNewsData) {
+      try {
+        // Check if news exists
+        const checkResponse = await fetch(`${BACKEND_URL}/news/${news.id}?channel_id=${channelId}`);
+        
+        if (!checkResponse.ok) {
+          // News doesn't exist, save it
+          console.log(`💾 Saving placeholder news ${news.id} to MongoDB...`);
+          await saveNewsToMongoDB(news, channelId);
+        }
+      } catch (err) {
+        console.log(`⚠️ Error checking news ${news.id}:`, err);
+      }
+    }
+  };
+
+  const saveNewsToMongoDB = async (news: any, channelId: string) => {
+    const BACKEND_URL = '/api';
+    
+    try {
+      const response = await fetch(`${BACKEND_URL}/news`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: news.id,
+          title: news.title,
+          content: news.content,
+          category: news.category,
+          source: news.source,
+          image: news.image,
+          channel_id: channelId,
+          poll_options: news.poll_options,
+          total_votes: news.total_votes || 0
+        })
+      });
+      
+      if (response.ok) {
+        console.log(`✅ Saved news ${news.id} to MongoDB`);
+      } else {
+        console.error(`❌ Failed to save news ${news.id}:`, response.status);
+      }
+    } catch (err) {
+      console.error(`❌ Error saving news ${news.id}:`, err);
     }
   };
 
