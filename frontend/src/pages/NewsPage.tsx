@@ -305,9 +305,17 @@ export default function NewsPage() {
         </div>
       )}
 
+      {/* Loading State */}
+      {loading && (
+        <div className="max-w-2xl mx-auto p-8 text-center">
+          <p className="text-lg">טוען חדשות...</p>
+        </div>
+      )}
+
       {/* News Feed */}
       {!loading && filteredNews.length > 0 && (
         <div className="max-w-2xl mx-auto px-4">
+          <p className="text-sm text-muted-foreground mb-4">מציג {filteredNews.length} חדשות</p>
           {filteredNews.map((news) => (
             <NewsCard
               key={news.id}
