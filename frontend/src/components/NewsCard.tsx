@@ -119,18 +119,27 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
       if (response.ok) {
         const data = await response.json();
         
-        console.log('📊 Vote response:', data);
+        console.log('📊 Vote response data:', JSON.stringify(data, null, 2));
+        console.log('📊 Old poll options:', JSON.stringify(localPollOptions, null, 2));
+        console.log('📊 Old total votes:', localTotalVotes);
         
         // Update local state with new vote data
         if (data.poll_options) {
-          console.log('✅ Updating poll options:', data.poll_options);
-          setLocalPollOptions(data.poll_options);
+          console.log('✅ NEW poll options from API:', JSON.stringify(data.poll_options, null, 2));
+          console.log('✅ NEW total votes from API:', data.total_votes);
+          
+          // Force new array to trigger re-render
+          setLocalPollOptions([...data.poll_options]);
           setLocalTotalVotes(data.total_votes || 0);
+        } else {
+          console.error('❌ No poll_options in response!');
         }
         
         console.log('✅ Vote saved successfully');
       } else {
-        console.error('❌ Failed to save vote:', await response.text());
+        const errorText = await response.text();
+        console.error('❌ Failed to save vote. Status:', response.status);
+        console.error('❌ Error:', errorText);
       }
     } catch (error) {
       console.error('❌ Error voting:', error);
