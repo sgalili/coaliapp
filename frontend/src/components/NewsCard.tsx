@@ -188,19 +188,19 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
         <div className="flex gap-3 cursor-pointer" onClick={() => navigate(`/news/${news.id}`)}>
           {/* Image on right (first in RTL) */}
           <img
-            src={news.image}
-            alt={news.title}
+            src={news.image || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=300&h=200&fit=crop'}
+            alt={news.title || 'News'}
             className="w-24 h-18 rounded-md object-cover flex-shrink-0"
           />
           
           {/* Title and category on left */}
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-slate-800 leading-tight mb-2 line-clamp-2">
-              {news.title}
+              {news.title || 'כותרת'}
             </h3>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Users className="w-3 h-3" />
-              <span>{news.categoryLabel}</span>
+              <span>{news.categoryLabel || news.category || 'כללי'}</span>
             </div>
           </div>
         </div>
