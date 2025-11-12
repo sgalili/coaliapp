@@ -135,20 +135,28 @@ class NewsService:
                 image_keywords = item.get('image_description', category.value).replace(' ', '-')
                 image_url = f"https://images.unsplash.com/photo-{self._get_category_image_id(category)}?w=800&h=400&fit=crop&q=80"
                 
+                article_id = f"{category.value}_{idx}_{int(datetime.now().timestamp())}"
                 article = NewsArticle(
-                    id=f"{category.value}_{idx}_{int(datetime.now().timestamp())}",
+                    id=article_id,
                     title=item.get('title', ''),
                     content=item.get('full_content', item.get('summary', item.get('content', ''))),
-                    url=f"#/news/{category.value}_{idx}",
+                    url=f"#/news/{article_id}",
                     category=category.value,
+                    category_label=self.CATEGORY_LABELS.get(category, category.value),
                     source=item.get('source', 'Unknown'),
+                    image=image_url,
                     published_at=datetime.now(),
-                    expert_opinions=[],
-                    poll_options=self._generate_poll_options(item.get('title', ''))
+                    expert_comments=[],
+                    poll_options=self._generate_poll_options(item.get('title', '')),
+                    total_votes=0
                 )
-                # Store image URL in content for now
-                article.content = f"IMAGE_URL:{image_url}\n\n{article.content}"
                 articles.append(article)
+                
+                # Save to MongoDB
+                try:
+                    await self.db_service.save_news(article)
+                except Exception as e:
+                    self.logger.error(f"Error saving news to DB: {str(e)}")
         except Exception as e:
             self.logger.error(f"Error parsing response: {str(e)}")
             # Return empty list if parsing fails
