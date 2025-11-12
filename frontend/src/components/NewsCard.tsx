@@ -70,36 +70,32 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
     console.log('🔄 Total votes:', localTotalVotes);
   }, [localPollOptions, localTotalVotes]);
 
-  // Calculate poll percentages from local state with proper rounding
-  const totalVotes = localTotalVotes || localPollOptions.reduce((sum, opt) => sum + opt.votes, 0) || 100;
-  const pollWithPercentages = (() => {
-    const percentages = localPollOptions.map(opt => ({
-      ...opt,
-      exactPercentage: totalVotes > 0 ? (opt.votes / totalVotes) * 100 : 0
-    }));
+  // Calculate poll percentages from local state
+  const totalVotes = localTotalVotes || localPollOptions.reduce((sum, opt) => sum + (opt.votes || 0), 0) || 100;
+  
+  // Simple and safe percentage calculation
+  const pollWithPercentages = localPollOptions.map((opt, index) => {
+    if (totalVotes === 0) return { ...opt, percentage: 0 };
     
-    // First pass: floor all values
-    const floored = percentages.map(p => ({
-      ...p,
-      percentage: Math.floor(p.exactPercentage),
-      remainder: p.exactPercentage - Math.floor(p.exactPercentage)
-    }));
+    // Calculate exact percentage
+    const exactPercent = (opt.votes / totalVotes) * 100;
     
-    // Calculate how many we need to round up
-    const sum = floored.reduce((s, p) => s + p.percentage, 0);
-    const diff = 100 - sum;
-    
-    // Sort by remainder and round up the top ones
-    if (diff > 0) {
-      const sorted = [...floored].sort((a, b) => b.remainder - a.remainder);
-      for (let i = 0; i < diff; i++) {
-        sorted[i].percentage += 1;
-      }
-      return sorted.map(({ remainder, exactPercentage, ...rest }) => rest);
+    // For the last item, calculate to make total = 100
+    if (index === localPollOptions.length - 1) {
+      const sumSoFar = localPollOptions
+        .slice(0, index)
+        .reduce((sum, o) => sum + Math.round((o.votes / totalVotes) * 100), 0);
+      return {
+        ...opt,
+        percentage: Math.max(0, 100 - sumSoFar)
+      };
     }
     
-    return floored.map(({ remainder, exactPercentage, ...rest }) => rest);
-  })();
+    return {
+      ...opt,
+      percentage: Math.round(exactPercent)
+    };
+  });
 
   // Get top 2 options for progress bar
   const sortedOptions = [...pollWithPercentages].sort((a, b) => b.votes - a.votes);
