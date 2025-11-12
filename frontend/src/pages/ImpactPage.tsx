@@ -118,9 +118,9 @@ export default function ImpactPage() {
   }, []);
 
   // Fetch news when channel changes
-  useEffect(() => {
-    fetchRealNews();
-  }, [selectedChannel.id]);
+  // useEffect(() => {
+  //   fetchRealNews();
+  // }, [selectedChannel.id]);
 
   const refreshNews = async () => {
     if (isRefreshing) return;
