@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation';
+import { ChannelSelector } from '@/components/ChannelSelector';
+import { CategoryDropdown } from '@/components/CategoryDropdown';
 import { useAuth } from '@/hooks/useAuth';
+import { useChannel } from '@/contexts/ChannelContext';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   TrendingUp, 
@@ -11,7 +14,7 @@ import {
   ArrowUp, 
   ArrowDown,
   Bell,
-  Filter,
+  Search,
   Crown,
   Target
 } from 'lucide-react';
