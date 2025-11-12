@@ -306,29 +306,31 @@ export default function ImpactPage() {
       </div>
 
       {/* Impact Feed */}
-      <div className="p-4 space-y-3">
+      <div className="px-4 space-y-4">
         {isLoading ? (
           // Loading skeleton
-          [...Array(5)].map((_, i) => (
-            <div key={i} className="bg-card rounded-xl p-4 animate-pulse">
-              <div className="flex gap-3">
-                <div className="w-12 h-12 bg-muted rounded-full" />
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="bg-card rounded-2xl p-4 border animate-pulse">
+              <div className="flex gap-3 mb-3">
+                <div className="w-12 h-12 bg-muted rounded-full flex-shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-3/4" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
+                  <div className="h-4 bg-muted rounded w-2/3" />
+                  <div className="h-3 bg-muted rounded w-1/3" />
                 </div>
               </div>
+              <div className="h-3 bg-muted rounded w-full mb-2" />
+              <div className="h-3 bg-muted rounded w-4/5" />
             </div>
           ))
         ) : impactItems.length === 0 ? (
           // Empty state
-          <div className="text-center py-16">
-            <TrendingUp className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+          <div className="text-center py-20">
+            <TrendingUp className="w-20 h-20 mx-auto text-muted-foreground/30 mb-4" />
             <h3 className="text-xl font-bold mb-2">אין אירועי השפעה</h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm px-8">
               {selectedCategory === 'הכל' 
                 ? 'התחל לעקוב אחרי מומחים כדי לראות את השפעתם'
-                : `אין אירועי השפעה בקטגוריה ${selectedCategory}`
+                : `אין אירועי השפעה ב${selectedCategory}`
               }
             </p>
           </div>
@@ -337,7 +339,7 @@ export default function ImpactPage() {
           impactItems.map((item) => (
             <div
               key={item.id}
-              className="bg-card rounded-xl p-4 border hover:border-primary/50 transition cursor-pointer"
+              className="bg-card rounded-2xl border hover:border-primary/30 transition-all cursor-pointer overflow-hidden"
               onClick={() => {
                 if (item.type === 'decision') {
                   toast.info('פרטי החלטה יוצגו בקרוב');
@@ -346,73 +348,75 @@ export default function ImpactPage() {
                 }
               }}
             >
-              {/* Header */}
-              <div className="flex items-start gap-3 mb-3">
-                {/* Expert Avatar */}
-                <img
-                  src={item.expert_image}
-                  alt={item.expert_name}
-                  className="w-12 h-12 rounded-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://trust.coali.app/assets/default-avatar.jpg';
-                  }}
-                />
+              <div className="p-4">
+                {/* Header */}
+                <div className="flex items-start gap-3 mb-3">
+                  {/* Expert Avatar */}
+                  <img
+                    src={item.expert_image}
+                    alt={item.expert_name}
+                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://trust.coali.app/assets/default-avatar.jpg';
+                    }}
+                  />
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold">{item.expert_name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatTimeAgo(item.timestamp)}
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-bold text-sm">{item.expert_name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatTimeAgo(item.timestamp)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                      {getImpactIcon(item.type)}
+                      <span>{item.category}</span>
+                    </div>
+                  </div>
+
+                  {/* Impact Score Badge */}
+                  <div className={`flex flex-col items-center justify-center px-3 py-2 rounded-xl ${
+                    item.impact_value > 0 ? 'bg-green-50' : 'bg-red-50'
+                  }`}>
+                    {item.impact_value > 0 ? (
+                      <ArrowUp className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <ArrowDown className="w-4 h-4 text-red-600" />
+                    )}
+                    <span className={`text-sm font-bold ${getImpactColor(item.impact_value)}`}>
+                      {Math.abs(item.impact_value)}
                     </span>
                   </div>
-
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                    {getImpactIcon(item.type)}
-                    <span className="capitalize">{item.type}</span>
-                    <span>•</span>
-                    <span>{item.category}</span>
-                  </div>
-
-                  {/* Title & Description */}
-                  <h3 className="font-bold mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {item.description}
-                  </p>
                 </div>
 
-                {/* Impact Score */}
-                <div className={`flex flex-col items-center ${getImpactColor(item.impact_value)}`}>
-                  {item.impact_value > 0 ? (
-                    <ArrowUp className="w-5 h-5" />
-                  ) : (
-                    <ArrowDown className="w-5 h-5" />
-                  )}
-                  <span className="text-lg font-bold">
-                    {Math.abs(item.impact_value)}
-                  </span>
-                </div>
+                {/* Title & Description */}
+                <h3 className="font-bold text-base mb-2 leading-snug">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                  {item.description}
+                </p>
               </div>
 
               {/* Stats Footer */}
-              {(item.delegated_votes || item.total_votes) && (
-                <div className="flex items-center gap-4 text-xs text-muted-foreground pt-3 border-t">
+              {(item.delegated_votes || item.total_votes || item.outcome) && (
+                <div className="flex items-center gap-4 px-4 py-3 bg-muted/30 border-t text-xs">
                   {item.delegated_votes && (
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      <span>{item.delegated_votes} קולות ממונים</span>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Users className="w-3.5 h-3.5" />
+                      <span>{item.delegated_votes} קולות</span>
                     </div>
                   )}
                   {item.total_votes && (
-                    <div className="flex items-center gap-1">
-                      <Vote className="w-4 h-4" />
-                      <span>{item.total_votes} סה"כ קולות</span>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Vote className="w-3.5 h-3.5" />
+                      <span>{item.total_votes} סה"כ</span>
                     </div>
                   )}
                   {item.outcome && (
-                    <div className="flex items-center gap-1 mr-auto">
-                      <Award className="w-4 h-4 text-green-500" />
-                      <span className="text-green-600 font-medium">{item.outcome}</span>
+                    <div className="flex items-center gap-1.5 mr-auto">
+                      <Award className="w-3.5 h-3.5 text-green-600" />
+                      <span className="text-green-700 font-medium">{item.outcome}</span>
                     </div>
                   )}
                 </div>
@@ -423,7 +427,7 @@ export default function ImpactPage() {
       </div>
 
       {/* Navigation */}
-      <Navigation zoozBalance={999} />
+      <Navigation />
     </div>
   );
 }
