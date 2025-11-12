@@ -47,6 +47,9 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   const [expertsExpanded, setExpertsExpanded] = useState(true);
   const [pollExpanded, setPollExpanded] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isVoting, setIsVoting] = useState(false);
+  const [localPollOptions, setLocalPollOptions] = useState(news.poll_options);
+  const [localTotalVotes, setLocalTotalVotes] = useState(news.total_votes || 0);
 
   // Check if current user is expert in this category
   const isExpertInCategory = () => {
@@ -60,9 +63,9 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   // Get demo expert avatars (for Phase 1)
   const demoExperts = expertProfiles.slice(0, Math.floor(Math.random() * 5) + 3);
 
-  // Calculate poll percentages
-  const totalVotes = news.total_votes || news.poll_options.reduce((sum, opt) => sum + opt.votes, 0) || 100;
-  const pollWithPercentages = news.poll_options.map(opt => ({
+  // Calculate poll percentages from local state
+  const totalVotes = localTotalVotes || localPollOptions.reduce((sum, opt) => sum + opt.votes, 0) || 100;
+  const pollWithPercentages = localPollOptions.map(opt => ({
     ...opt,
     percentage: totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0
   }));
@@ -71,15 +74,65 @@ export function NewsCard({ news, currentUser, userProfile }: NewsCardProps) {
   const sortedOptions = [...pollWithPercentages].sort((a, b) => b.votes - a.votes);
   const topTwo = sortedOptions.slice(0, 2);
 
-  const handleVote = (optionId: string) => {
-    setSelectedOption(optionId);
-    // Phase 2: API call here
-    console.log('Vote for option:', optionId);
+  // Get user ID
+  const getUserId = () => {
+    if (isRealUser() && currentUser) {
+      return currentUser.id;
+    }
+    // Demo mode: use localStorage
+    let demoUserId = localStorage.getItem('demo_user_id');
+    if (!demoUserId) {
+      demoUserId = `demo-${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('demo_user_id', demoUserId);
+    }
+    return demoUserId;
+  };
+
+  const handleVote = async (optionId: string) => {
+    if (isVoting) return;
     
-    // Close poll after 500ms
-    setTimeout(() => {
-      setPollExpanded(false);
-    }, 500);
+    setIsVoting(true);
+    setSelectedOption(optionId);
+    
+    try {
+      const userId = getUserId();
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
+      
+      const response = await fetch(`${BACKEND_URL}/api/news/vote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          news_id: news.id,
+          option_id: optionId,
+          user_id: userId,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Update local state with new vote data
+        if (data.poll_options) {
+          setLocalPollOptions(data.poll_options);
+          setLocalTotalVotes(data.total_votes || 0);
+        }
+        
+        console.log('✅ Vote saved successfully');
+      } else {
+        console.error('❌ Failed to save vote');
+      }
+    } catch (error) {
+      console.error('❌ Error voting:', error);
+    } finally {
+      setIsVoting(false);
+      
+      // Close poll after 500ms
+      setTimeout(() => {
+        setPollExpanded(false);
+      }, 500);
+    }
   };
 
   const handleRecordVideo = () => {
